@@ -20,6 +20,8 @@
 /sberweb/pom.xml
 *.jar
 *.class
+*.cljs~
+*.clj~
 /.lein-*
 /sberweb/profiles.clj
 /sberweb/.env
