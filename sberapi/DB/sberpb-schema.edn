@@ -1,0 +1,140 @@
+[
+ ;; user
+ {:db/id #db/id[:db.part/db]
+  :db/ident :user/code
+  :db/valueType :db.type/string
+  :db/cardinality :db.cardinality/one
+  :db/unique :db.unique/identity  
+  :db/fulltext true
+  :db/doc "A user's login"
+  :db.install/_attribute :db.part/db}
+
+ {:db/id #db/id[:db.part/db]
+  :db/ident :user/password
+  :db/valueType :db.type/string
+  :db/cardinality :db.cardinality/one
+  :db/doc "A user's password"
+  :db.install/_attribute :db.part/db}
+
+ {:db/id #db/id[:db.part/db]
+  :db/ident :user/role
+  :db/valueType :db.type/string
+  :db/cardinality :db.cardinality/one
+  :db/doc "A user's role"
+  :db.install/_attribute :db.part/db}
+
+
+ ;; security
+ {:db/id #db/id[:db.part/db]
+  :db/ident :security/code
+  :db/valueType :db.type/string
+  :db/cardinality :db.cardinality/one
+  :db/unique :db.unique/identity  
+  :db/fulltext true
+  :db/doc "Security bloomberg code"
+  :db.install/_attribute :db.part/db}
+
+ {:db/id #db/id[:db.part/db]
+  :db/ident :security/isin
+  :db/valueType :db.type/string
+  :db/cardinality :db.cardinality/one
+  :db/doc "Security ISIN code"
+  :db.install/_attribute :db.part/db}
+
+ {:db/id #db/id[:db.part/db]
+  :db/ident :security/exchange
+  :db/valueType :db.type/string
+  :db/cardinality :db.cardinality/one
+  :db/doc "security trading exchange"
+  :db.install/_attribute :db.part/db}
+
+
+ ;; issuer
+ {:db/id #db/id[:db.part/db]
+  :db/ident :issuer/code
+  :db/valueType :db.type/string
+  :db/cardinality :db.cardinality/one
+  :db/unique :db.unique/identity  
+  :db/fulltext true
+  :db/doc "issuer name"
+  :db.install/_attribute :db.part/db}
+
+ ;; client
+ {:db/id #db/id[:db.part/db]
+  :db/ident :client/code
+  :db/valueType :db.type/string
+  :db/cardinality :db.cardinality/one
+  :db/unique :db.unique/identity  
+  :db/fulltext true
+  :db/doc "Client internal code"
+  :db.install/_attribute :db.part/db}
+
+ {:db/id #db/id[:db.part/db]
+  :db/ident :client/name
+  :db/valueType :db.type/string
+  :db/cardinality :db.cardinality/one
+  :db/doc "Client full name"
+  :db.install/_attribute :db.part/db}
+
+;; transactions
+
+ {:db/id #db/id[:db.part/db]
+  :db/ident :transaction/client
+  :db/valueType :db.type/ref
+  :db/cardinality :db.cardinality/one
+  :db/doc "Portfolio for Transaction"
+  :db.install/_attribute :db.part/db}
+
+ {:db/id #db/id[:db.part/db]
+  :db/ident :transaction/security
+  :db/valueType :db.type/ref
+  :db/cardinality :db.cardinality/one
+  :db/doc "Security bought / sold"
+  :db.install/_attribute :db.part/db}
+
+{:db/id #db/id[:db.part/db]
+  :db/ident :transaction/nominal
+  :db/valueType :db.type/float
+  :db/cardinality :db.cardinality/one
+  :db/doc "Transaction nominal"
+  :db.install/_attribute :db.part/db}
+
+{:db/id #db/id[:db.part/db]
+  :db/ident :transaction/price
+  :db/valueType :db.type/float
+  :db/cardinality :db.cardinality/one
+  :db/doc "Transaction price"
+  :db.install/_attribute :db.part/db}
+
+ {:db/id #db/id[:db.part/db]
+  :db/ident :transaction/direction
+  :db/valueType :db.type/string
+  :db/cardinality :db.cardinality/one
+  :db/doc "B for buy, S for sell"
+  :db.install/_attribute :db.part/db}
+
+
+ {:db/id #db/id[:db.part/db]
+  :db/ident :transaction/valuedate
+  :db/valueType :db.type/instant
+  :db/cardinality :db.cardinality/one
+  :db/doc "Transaction book/value date"
+  :db.install/_attribute :db.part/db}
+
+
+ {:db/id #db/id[:db.part/db]
+  :db/ident :transaction/currency
+  :db/valueType :db.type/string
+  :db/fulltext true
+  :db/cardinality :db.cardinality/one
+  :db/doc "Transaction currency"
+  :db.install/_attribute :db.part/db}
+
+ {:db/id #db/id[:db.part/db]
+  :db/ident :transaction/comment
+  :db/valueType :db.type/string
+  :db/fulltext true
+  :db/cardinality :db.cardinality/one
+  :db/doc "Transaction currency"
+  :db.install/_attribute :db.part/db}
+ ]
