@@ -10,6 +10,8 @@
 /sberapi/.env
 /sberapi/.nrepl-port
 /sberapi/log
+/sberapi/README.md~
+.gitignore~
 
 
 
@@ -22,6 +24,7 @@
 *.class
 *.cljs~
 *.clj~
+/sberweb/README.md~
 /.lein-*
 /sberweb/profiles.clj
 /sberweb/.env
