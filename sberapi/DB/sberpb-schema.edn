@@ -137,4 +137,46 @@
   :db/cardinality :db.cardinality/one
   :db/doc "Transaction currency"
   :db.install/_attribute :db.part/db}
+
+
+
+;; prices
+
+ {:db/id #db/id[:db.part/db]
+  :db/ident :price/security
+  :db/valueType :db.type/ref
+  :db/cardinality :db.cardinality/one
+  :db/doc "Security db/id"
+  :db.install/_attribute :db.part/db}
+
+{:db/id #db/id[:db.part/db]
+  :db/ident :price/lastprice
+  :db/valueType :db.type/float
+  :db/cardinality :db.cardinality/one
+  :db/doc "LAST price"
+  :db.install/_attribute :db.part/db}
+
+
+ {:db/id #db/id[:db.part/db]
+  :db/ident :price/valuedate
+  :db/valueType :db.type/instant
+  :db/cardinality :db.cardinality/one
+  :db/doc "Price date"
+  :db.install/_attribute :db.part/db}
+
+{:db/id #db/id[:db.part/db]
+  :db/ident :price/source
+  :db/valueType :db.type/string
+  :db/fulltext true
+  :db/cardinality :db.cardinality/one
+  :db/doc "Source for the price"
+  :db.install/_attribute :db.part/db}  
+ 
+ {:db/id #db/id[:db.part/db]
+  :db/ident :price/comment
+  :db/valueType :db.type/string
+  :db/fulltext true
+  :db/cardinality :db.cardinality/one
+  :db/doc "Comment for price (manual, auto, etc.."
+  :db.install/_attribute :db.part/db}
  ]

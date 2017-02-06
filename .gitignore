@@ -30,3 +30,4 @@
 /sberweb/.env
 /sberweb/.nrepl-port
 /sberweb/log
+sberweb/resources/public/js/**

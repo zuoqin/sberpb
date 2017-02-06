@@ -8,7 +8,7 @@ sudo nohup bin/console -p 8080 dev datomic:dev://localhost:4334/
 
 d:
 cd C:\datomic-pro-0.9.5544
-
+cd D:\datomic-pro-0.9.5350
 
 
 https://www.youtube.com/watch?v=kd1yTmx7m2A

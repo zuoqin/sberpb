@@ -21,6 +21,7 @@
 
 ;; parse schema edn file
 (def schema-tx (read-string (slurp "C:/DEV/sberpb/sberapi/DB/sberpb-schema.edn")))
+(def schema-tx (read-string (slurp "E:/DEV/clojure/sberpb/sberapi/DB/sberpb-schema.edn")))
 ;;(def schema-tx (read-string (slurp "/home/ec2-user/tripadv-schema.edn")))
 
 ;; display first statement
@@ -31,6 +32,7 @@
 
 ;; parse seed data edn file
 (def data-tx (read-string (slurp "C:/DEV/sberpb/sberapi/DB/output.clj")))
+(def data-tx (read-string (slurp "E:/DEV/clojure/sberpb/sberapi/DB/output.clj")))
 ;;(def data-tx (read-string (slurp "/home/ec2-user//output.clj")))
 
 

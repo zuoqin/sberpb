@@ -58,5 +58,9 @@
 { :transaction/client #db/id[:db.part/user -102001] :transaction/security #db/id[:db.part/user -100006], :transaction/nominal 1000.0 :transaction/price 100.14 :transaction/direction "B" :transaction/valuedate #inst "2014-11-12T00:00:00.0000000Z", :transaction/currency "USD" :transaction/comment "", :db/id #db/id[:db.part/user -110003] }
 
 
-;; { :security/code #db/id[:db.part/user -100001] :trip/destination "Moscow", :trip/startdate #inst "2009-06-15T13:45:30.0000000Z", :trip/enddate #inst "2009-06-15T13:45:30.0000000Z", :trip/comment "Nice trip", :db/id #db/id[:db.part/user -100004] }
+
+;; PRICES
+{ :price/security #db/id[:db.part/user -100004]  :price/lastprice  23.30 :price/valuedate #inst "2017-02-03T00:00:00.0000000Z" :price/comment "manual" :price/source "test data" }
+{ :price/security #db/id[:db.part/user -100005]  :price/lastprice  10100.30 :price/valuedate #inst "2017-02-03T00:00:00.0000000Z" :price/comment "manual" :price/source "test data" }
+{ :price/security #db/id[:db.part/user -100006]  :price/lastprice  100.01 :price/valuedate #inst "2017-02-03T00:00:00.0000000Z" :price/comment "manual" :price/source "test data" }
 ]

@@ -11,6 +11,8 @@
             [sberapi.routes.dbservices :as dbservices]
             [sberapi.routes.user :as userapi]
             [sberapi.routes.position :as positionapi]
+            [sberapi.routes.security :as securityapi]
+            [sberapi.routes.client :as clientapi]
             ))
 
 (defapi service-routes
@@ -97,36 +99,40 @@
 
 
   )
+
+
+
+  (context "/api" []
+    :tags ["security"]
+
+    (GET "/security" []
+      :header-params [authorization :- String]
+      :summary      "retrieve all securoties"
+
+      (ok  (securityapi/getSecurities (nth (str/split authorization #" ") 1))))
+
+    (OPTIONS "/security" []
+      :summary  "Allows OPTIONS requests"
+      (ok "")
+    )    
+
+
+  )
+
+  (context "/api" []
+    :tags ["client"]
+
+    (GET "/client" []
+      :header-params [authorization :- String]
+      :summary      "retrieve all clients"
+
+      (ok  (clientapi/getClients (nth (str/split authorization #" ") 1))))
+
+    (OPTIONS "/client" []
+      :summary  "Allows OPTIONS requests"
+      (ok "")
+    )    
+
+
+  )
 )
-
-
-
-    ;; (GET "/plus" []
-    ;;   :return       Long
-    ;;   :query-params [x :- Long, {y :- Long 1}]
-    ;;   :summary      "x+y with query-parameters. y defaults to 1."
-    ;;   (ok (+ x y)))
-
-    ;; (POST "/minus" []
-    ;;   :return      Long
-    ;;   :body-params [x :- Long, y :- Long]
-    ;;   :summary     "x-y with body-parameters."
-    ;;   (ok (- x y)))
-
-    ;; (GET "/times/:x/:y" []
-    ;;   :return      Long
-    ;;   :path-params [x :- Long, y :- Long]
-    ;;   :summary     "x*y with path-parameters"
-    ;;   (ok (* x y)))
-
-    ;; (POST "/divide" []
-    ;;   :return      Double
-    ;;   :form-params [x :- Long, y :- Long]
-    ;;   :summary     "x/y with form-parameters"
-    ;;   (ok (/ x y)))
-
-    ;; (GET "/power" []
-    ;;   :return      Long
-    ;;   :header-params [x :- Long, y :- Long]
-    ;;   :summary     "x^y with header-parameters"
-    ;;   (ok (long (Math/pow x y))))

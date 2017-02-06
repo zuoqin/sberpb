@@ -11,7 +11,7 @@
                  [cprop "0.1.10"]
                  [luminus-immutant "0.2.3"]
                  [luminus-nrepl "0.1.4"]
-		 [luminus/ring-ttl-session "0.3.1"]
+                 [luminus/ring-ttl-session "0.3.1"]
                  [markdown-clj "0.9.92"]
                  [metosin/compojure-api "1.1.10"]
                  [metosin/ring-http-response "0.8.1"]
