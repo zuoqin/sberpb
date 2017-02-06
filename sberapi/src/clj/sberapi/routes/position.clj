@@ -19,23 +19,36 @@
     transactions (into [] (db/get-transactions client)   )
 
     positions (loop [result {} trans transactions]
-                
-      (if (seq trans) 
-        (recur (assoc result (keyword (str (:security (first trans))) )  (:nominal (first trans)) )
-             (rest trans))
-      result)
+                (if (seq trans) 
+                  (recur (assoc result (str (:security (first trans)))   (:nominal (first trans)) )
+                         (rest trans))
+                  result)
 
 
-               )
+                ) 
 
 
-    result positions
+    result (map (fn [x] (let [y (Long. (name (first x)))   z (second x)] [y z] ))  positions) 
+    
+    ]
+    ;;result
+    positions
+  )
+ 
+)
+
+
+(defn getPostrans [token client security]
+  (let [
+    ;usercode (:iss (-> token str->jwt :claims)  ) 
+    transactions (into [] (db/get-transactions-bysec client security)   )
+
+
+    result transactions
     
     ]
     result
   )
  
 )
-
-
 

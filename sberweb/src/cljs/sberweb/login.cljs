@@ -15,6 +15,7 @@
 	    
             [sberweb.userdetail :as userdetail]
             [sberweb.positions :as positions]
+            [sberweb.postrans :as postrans]
             [sberweb.users :as users]
             [cljs.core.async :refer [put! dropping-buffer chan take! <!]]
   )

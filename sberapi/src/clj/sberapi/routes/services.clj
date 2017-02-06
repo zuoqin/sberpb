@@ -103,6 +103,26 @@
 
 
   (context "/api" []
+    :tags ["postran"]
+
+    (GET "/postran" []
+      :header-params [authorization :- String]
+      :query-params [client :- String, security :- Long]
+      :summary      "retrieve all transactions for given security for a given client"
+
+      (ok  (positionapi/getPostrans (nth (str/split authorization #" ") 1) client security)))
+
+    (OPTIONS "/postran" []
+      :summary  "Allows OPTIONS requests"
+      (ok "")
+    )    
+
+
+  )
+
+
+
+  (context "/api" []
     :tags ["security"]
 
     (GET "/security" []
