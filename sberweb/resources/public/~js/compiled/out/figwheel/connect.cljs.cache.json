@@ -1,1 +1,0 @@
-["^ ","~:name","~$figwheel.connect","~:doc",null,"~:excludes",["~#set",[]],"~:use-macros",null,"~:require-macros",null,"~:uses",null,"~:requires",["^ ","~$figwheel.client","^9","~$figwheel.client.utils","^:","~$sberweb.login","^;"],"~:imports",null,"~:cljs.analyzer/constants",["^ ","~:seen",["^4",["~:build-id","~:websocket-url"]],"~:order",["^?","^@"]]]
