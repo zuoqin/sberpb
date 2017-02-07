@@ -16,7 +16,7 @@
 
 (defn security-to-map [security]
   (let [
-    newsec {:id (nth security 0) :code (nth security 1) :exchange (nth security 2) :isin (nth security 3)}
+    newsec {:id (nth security 0) :acode (nth security 1) :exchange (nth security 2) :isin (nth security 3)}
         
   ]
 
@@ -29,8 +29,8 @@
   (let [
         securities (d/q '[:find ?e ?c ?x ?i
                           :where
-                          [?e :security/code]
-                          [?e :security/code ?c]
+                          [?e :security/acode]
+                          [?e :security/acode ?c]
                           [?e :security/exchange ?x]
                           [?e :security/isin ?i]
                           ]

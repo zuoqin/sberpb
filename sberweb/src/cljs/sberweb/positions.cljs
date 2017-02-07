@@ -63,17 +63,19 @@
     (dom/div {:className "list-group" :style {:display "block"}}
       (map (fn [item]
         (dom/div {:className "row"}
-          (dom/div {:className "col-md-8"}
+          (dom/div {:className "col-md-3"}
             (dom/a {:className "list-group-item" :href (str  "#/postrans/" (:id item)    ) }
 
-              (dom/h4  #js {:className "list-group-item-heading" :dangerouslySetInnerHTML #js {:__html (:code (first (filter (fn[x] (if (= (:id x) (:id item) ) true false)) (:securities @sbercore/app-state))))}} nil)
+              (dom/h4  #js {:className "list-group-item-heading" :dangerouslySetInnerHTML #js {:__html (:acode (first (filter (fn[x] (if (= (:id x) (:id item) ) true false)) (:securities @sbercore/app-state))))}} nil)
             )
 
           )
-          (dom/div {:className "col-md-4"}
+          (dom/div {:className "col-md-3"}
             
-
-            (dom/h4 {:className "list-group-item-heading"} (:amount item)  )
+            (dom/a {:className "list-group-item" :href (str  "#/postrans/" (:id item)    ) }
+              (dom/h4 {:className "list-group-item-heading"} (:amount item)  )
+            )
+            
           )
 
         )
@@ -128,8 +130,8 @@
         (dom/div  (assoc styleprimary  :className "panel panel-primary" ;:onClick (fn [e](println e))
         )
           (dom/div {:className "row"}
-            (dom/div {:className "col-md-8"} "Security Name")
-            (dom/div {:className "col-md-4"} "Amount")
+            (dom/div {:className "col-md-3"} "Security Name")
+            (dom/div {:className "col-md-3"} "Amount")
           )
           (om/build showpositions-view  data {})
         )

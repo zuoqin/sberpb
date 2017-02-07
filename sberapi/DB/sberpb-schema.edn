@@ -26,13 +26,23 @@
 
  ;; security
  {:db/id #db/id[:db.part/db]
-  :db/ident :security/code
+  :db/ident :security/acode
+  :db/valueType :db.type/string
+  :db/cardinality :db.cardinality/one
+  :db/unique :db.unique/identity  
+  :db/fulltext true
+  :db/doc "Security Arena code"
+  :db.install/_attribute :db.part/db}
+
+ {:db/id #db/id[:db.part/db]
+  :db/ident :security/bcode
   :db/valueType :db.type/string
   :db/cardinality :db.cardinality/one
   :db/unique :db.unique/identity  
   :db/fulltext true
   :db/doc "Security bloomberg code"
   :db.install/_attribute :db.part/db}
+
 
  {:db/id #db/id[:db.part/db]
   :db/ident :security/isin

@@ -11,6 +11,8 @@
 /sberapi/.nrepl-port
 /sberapi/log
 /sberapi/README.md~
+/sberapi/DB/arenaparse/target
+sberapi/DB/cl.clj
 .gitignore~
 
 
