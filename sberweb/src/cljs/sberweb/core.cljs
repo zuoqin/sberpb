@@ -10,6 +10,10 @@
             [om.dom :as omdom :include-macros true]
 
             [om-bootstrap.button :as b]
+
+            [clojure.string :as str]
+            [goog.string :as gstring]
+            [goog.string.format]
   )
   (:import goog.History)
 )
@@ -24,6 +28,16 @@
 
 (def jquery (js* "$"))
 
+
+(defn split-thousands
+  [n-str]
+  (->> n-str
+       reverse
+       (partition 3 3 [])
+       (map reverse)
+       reverse
+       (map #(apply str %))
+       (str/join " ")))
 
 
 (defn doLogout [data]
@@ -59,7 +73,7 @@
 )
 
 (defn map-position [position]
-  (let [result {:id (js/parseInt (name (nth position 0)))   :amount (nth position 1)}]
+  (let [result {:id (js/parseInt (name (nth position 0)))   :amount (:amount (nth position 1)) :wap (:price (nth position 1))}]
 
     result
   )

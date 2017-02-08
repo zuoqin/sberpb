@@ -13,13 +13,17 @@
 
             [cljs-time.format :as tf]
             [cljs-time.coerce :as tc]
+
+            [clojure.string :as str]
+            [goog.string :as gstring]
+            [goog.string.format]
   )
   (:import goog.History)
 )
 
 (enable-console-print!)
 
-(defonce app-state (atom  {:users [] :trips [] }))
+(defonce app-state (atom  {}))
 
 (def custom-formatter (tf/formatter "dd/MM/yyyy"))
 
@@ -57,30 +61,49 @@
 
 )
 
+
+(defn comp-positions
+  [position1 position2]
+
+  (if (> (compare (:acode (first (filter (fn[x] (if (= (:id x) (:id position1) ) true false)) (:securities @sbercore/app-state)))) (:acode (first (filter (fn[x] (if (= (:id x) (:id position2) ) true false)) (:securities @sbercore/app-state))))) 0) 
+      false
+      true
+  )
+
+)
+
 (defcomponent showpositions-view [data owner]
   (render
     [_]
     (dom/div {:className "list-group" :style {:display "block"}}
       (map (fn [item]
-        (dom/div {:className "row"}
-          (dom/div {:className "col-md-3"}
+        (dom/div {:className "row" :style {:margin-left "0px" :margin-right "0px"}} 
+          (dom/div {:className "col-xs-3 col-md-3" :style {:padding-left "0px" :padding-right "0px"}}
             (dom/a {:className "list-group-item" :href (str  "#/postrans/" (:id item)    ) }
 
               (dom/h4  #js {:className "list-group-item-heading" :dangerouslySetInnerHTML #js {:__html (:acode (first (filter (fn[x] (if (= (:id x) (:id item) ) true false)) (:securities @sbercore/app-state))))}} nil)
             )
 
           )
-          (dom/div {:className "col-md-3"}
+          (dom/div {:className "col-xs-3 col-md-3" :style {:padding-left "0px" :padding-right "0px"}}
             
-            (dom/a {:className "list-group-item" :href (str  "#/postrans/" (:id item)    ) }
-              (dom/h4 {:className "list-group-item-heading"} (:amount item)  )
+            (dom/a {:className "list-group-item" :style {:text-align "right"} :href (str  "#/postrans/" (:id item)    ) }
+              (dom/h4 {:className "list-group-item-heading"} (sbercore/split-thousands (str (:amount item)))   )
             )
             
           )
 
+
+          (dom/div {:className "col-xs-3 col-md-3" :style {:padding-left "0px" :padding-right "0px"}}
+            
+            (dom/a {:className "list-group-item" :style {:text-align "right"} :href (str  "#/postrans/" (:id item)    ) }
+              (dom/h4 {:className "list-group-item-heading"} (if (> (:wap item) 1) (gstring/format "%.2f" (:wap item))  (subs (str (:wap item)) 0 5) )    )
+            )
+            
+          )
         )
         )
-	(:positions ((keyword (:selectedclient @sbercore/app-state)) @sbercore/app-state) ) 
+        (sort (comp comp-positions) (filter (fn [x] (if (<= (:amount x) 0) false true)) (:positions ((keyword (:selectedclient @sbercore/app-state)) @sbercore/app-state) ) ))
       )
     )
   )
@@ -90,9 +113,7 @@
 (defn onMount [data]
   (getPositions)
   (put! ch 42)
-  (swap! sbercore/app-state assoc-in [:current] 
-    "Positions"
-  )
+  (swap! sbercore/app-state assoc-in [:current] "Positions")
 )
 
 
@@ -121,19 +142,25 @@
     (onMount data)
   )
   (render [_]
-    (let [style {:style {:margin "10px" :padding-bottom "0px"}}
-      styleprimary {:style {:margin-top "70px"}}
+    (let [
+      stylerow {:style {:margin-left "0px" :margin-right "0px"}}
+      styleprimary {:style {:margin-top "70px" :margin-left "0px" :margin-right "0px"}}
       ]
 
       (dom/div
         (om/build sbercore/website-view sbercore/app-state {})
-        (dom/div  (assoc styleprimary  :className "panel panel-primary" ;:onClick (fn [e](println e))
-        )
-          (dom/div {:className "row"}
-            (dom/div {:className "col-md-3"} "Security Name")
-            (dom/div {:className "col-md-3"} "Amount")
+        (dom/div  (assoc styleprimary  :className "panel panel-primary")
+          (dom/div {:className "panel-heading"}
+
+            (dom/div (assoc stylerow  :className "row" )
+              (dom/div {:className "col-xs-3 col-md-3" :style {:text-align "center"}}  "Security Name")
+              (dom/div {:className "col-xs-3 col-md-3" :style {:text-align "center"}} "Amount")
+              (dom/div {:className "col-xs-3 col-md-3" :style {:text-align "center"}} "WAP price")
+            )
           )
-          (om/build showpositions-view  data {})
+          (dom/div {:className "panel-body"}
+            (om/build showpositions-view  data {})
+          )
         )
       ) 
     )

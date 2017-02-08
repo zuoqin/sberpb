@@ -88,7 +88,7 @@
     (GET "/position" []
       :header-params [authorization :- String]
       :query-params [client :- String ]
-      :summary      "retrieve all trips for given user"
+      :summary      "retrieve all positions for given user"
 
       (ok  (positionapi/getPositions (nth (str/split authorization #" ") 1) client)))
 

@@ -19,27 +19,25 @@
     transactions (into [] (db/get-transactions client)   )
 
     positions (loop [result {} trans transactions]
-
-                
                 (if (seq trans) 
                   (let [
-                        sec (str (:security (first trans)))
-                        amnt (get result sec )
+                        tran (first trans)
+                        sec (str (:security tran))
+                        amnt (:amount ( (keyword sec) result ))
+                        prevpr (:price ((keyword sec) result))
 
-                        tranamnt (if (= "B" (:direction (first trans))) (:nominal (first trans)) (- 0 (:nominal (first trans))))
+                        tranamnt (if (= "B" (:direction tran)) (:nominal tran) (- 0 (:nominal tran)))
                         newamnt (if (nil? amnt ) tranamnt (+ amnt tranamnt) )
+                        wap (if (nil? amnt ) (:price tran) (if (> newamnt 0) (/ (+ (* prevpr amnt) (* (:price tran) tranamnt)) newamnt) 0))
                         ]
-
-                    (recur (assoc result sec newamnt )
+                    (recur (assoc-in result [(keyword sec) ] {:amount newamnt :price wap} )
                          (rest trans))
                   )                  
                   result)
-
-
                 ) 
 
 
-    result (map (fn [x] (let [y (Long. (name (first x)))   z (second x)] [y z] ))  positions) 
+    ;result (map (fn [x] (let [y (name (first x))   z (if (< (second x) 0) 0 (second x)) ] [y z] ))  positions) 
     
     ]
     ;;result

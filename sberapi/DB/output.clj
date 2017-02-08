@@ -45,17 +45,17 @@
 { :security/acode "EVRKHOL1P1R" :security/isin "RU000A0JWBH2", :security/exchange "MOSCOW", :db/id #db/id[:db.part/user -100039] }
 
 
-{ :security/acode "BANEP"       :security/isin "RU0007976965", :security/exchange "MOSCOW", :db/id #db/id[:db.part/user -100040] }
-{ :security/acode "GILDUS"      :security/isin "US3755581036", :security/exchange "NYSE", :db/id #db/id[:db.part/user -100041] }
-{ :security/acode "MGNT"        :security/isin "RU000A0JKQU8", :security/exchange "MOSCOW", :db/id #db/id[:db.part/user -100042] }
-{ :security/acode "RUALR"       :security/isin "RU000A0JR5Z5", :security/exchange "MOSCOW", :db/id #db/id[:db.part/user -100043] }
-{ :security/acode "VIPUS"       :security/isin "US92719A1060", :security/exchange "NYSE", :db/id #db/id[:db.part/user -100044] }
-{ :security/acode "EFGIF_0318C" :security/isin "CH0347656545", :security/exchange "SWISS", :db/id #db/id[:db.part/user -100045] }
-{ :security/acode "EURONAT19L"  :security/isin "XS1468260598", :security/exchange "XETRA", :db/id #db/id[:db.part/user -100046] }
-{ :security/acode "HALKBK21"    :security/isin "XS1439838548", :security/exchange "XETRA", :db/id #db/id[:db.part/user -100047] }
-{ :security/acode "KOKS18"      :security/isin "XS1255387976", :security/exchange "XETRA", :db/id #db/id[:db.part/user -100048] }
-{ :security/acode "SBER23"      :security/isin "XS0935311240", :security/exchange "XETRA", :db/id #db/id[:db.part/user -100049] }
-{ :security/acode "YPFSA21"     :security/isin "USP989MJBG51", :security/exchange "NYSE", :db/id #db/id[:db.part/user -100050] }
+{ :security/acode "BANEP"       :security/isin "RU0007976965", :security/bcode "BANEP RX EQUITY",   :security/exchange "MOSCOW", :db/id #db/id[:db.part/user -100040] }
+{ :security/acode "GILDUS"      :security/isin "US3755581036", :security/bcode "BANEP RX EQUITY",   :security/exchange "NYSE", :db/id #db/id[:db.part/user -100041] }
+{ :security/acode "MGNT"        :security/isin "RU000A0JKQU8", :security/bcode "BANEP RX EQUITY",   :security/exchange "MOSCOW", :db/id #db/id[:db.part/user -100042] }
+{ :security/acode "RUALR"       :security/isin "RU000A0JR5Z5", :security/bcode "BANEP RX EQUITY",   :security/exchange "MOSCOW", :db/id #db/id[:db.part/user -100043] }
+{ :security/acode "VIPUS"       :security/isin "US92719A1060", :security/bcode "BANEP RX EQUITY",   :security/exchange "NYSE", :db/id #db/id[:db.part/user -100044] }
+{ :security/acode "EFGIF_0318C" :security/isin "CH0347656545", :security/bcode "CH0347656545 Corp", :security/exchange "SWISS", :db/id #db/id[:db.part/user -100045] }
+{ :security/acode "EURONAT19L"  :security/isin "XS1468260598", :security/bcode "XS1468260598 Corp", :security/exchange "XETRA", :db/id #db/id[:db.part/user -100046] }
+{ :security/acode "HALKBK21"    :security/isin "XS1439838548", :security/bcode "XS1439838548 Corp", :security/exchange "XETRA", :db/id #db/id[:db.part/user -100047] }
+{ :security/acode "KOKS18"      :security/isin "XS1255387976", :security/bcode "XS1255387976 Corp", :security/exchange "XETRA", :db/id #db/id[:db.part/user -100048] }
+{ :security/acode "SBER23"      :security/isin "XS0935311240", :security/bcode "XS0935311240 Corp", :security/exchange "XETRA", :db/id #db/id[:db.part/user -100049] }
+{ :security/acode "YPFSA21"     :security/isin "USP989MJBG51", :security/bcode "USP989MJBG51 Corp", :security/exchange "NYSE", :db/id #db/id[:db.part/user -100050] }
 
 
 { :security/acode "EDCLLI20"    :security/isin "XS0918604496", :security/exchange "XETRA", :db/id #db/id[:db.part/user -100051] }

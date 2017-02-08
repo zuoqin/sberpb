@@ -81,20 +81,20 @@
     [_]
     (dom/div {:className "list-group" :style {:display "block"}}
       (map (fn [item]
-        (dom/div {:className "row"}
-          (dom/div {:className "col-md-3"}
+        (dom/div {:className "row" :style {:margin-left "0px" :margin-right "0px"}}
+          (dom/div {:className "col-xs-3 col-md-3"}
             (dom/h4 {:className "list-group-item-heading"} (str (tf/unparse custom-formatter (tc/from-date (:valuedate item)))))
           )
 
-          (dom/div {:className "col-md-3"} 
+          (dom/div {:className "col-xs-3 col-md-3"} 
             (dom/h4 {:className "list-group-item-heading"} (if (= (:direction item) "B") "Buy" "Sell"))
           )
 
-          (dom/div {:className "col-md-3"} 
-            (dom/h4 {:className "list-group-item-heading"} (:nominal item) )
+          (dom/div {:className "col-xs-3 col-md-3"} 
+            (dom/h4 {:className "list-group-item-heading" :style {:text-align "right"}} (sbercore/split-thousands (str (:nominal item)) )  )
           )
 
-          (dom/div {:className "col-md-3"}
+          (dom/div {:className "col-xs-3 col-md-3" :style {:text-align "right"}}
             (dom/h4 {:className "list-group-item-heading"} (:price item))
           )
         )
@@ -146,15 +146,18 @@
 
       (dom/div
         (om/build sbercore/website-view sbercore/app-state {})
-        (dom/div  (assoc styleprimary  :className "panel panel-primary"
-        )
-          (dom/div (assoc stylerow  :className "row" )
-            (dom/div {:className "col-md-3"} "Date")
-            (dom/div {:className "col-md-3"} "Buy/Sell")
-            (dom/div {:className "col-md-3"} "Amount")
-            (dom/div {:className "col-md-3"} "Price")
+        (dom/div  (assoc styleprimary :className "panel panel-primary")
+          (dom/div {:className "panel-heading"}
+            (dom/div (assoc stylerow  :className "row" )
+              (dom/div {:className "col-xs-3 col-md-3" :style {:text-align "center"}} "Date")
+              (dom/div {:className "col-xs-3 col-md-3" :style {:text-align "center"}} "Buy/Sell")
+              (dom/div {:className "col-xs-3 col-md-3" :style {:text-align "center"}} "Amount")
+              (dom/div {:className "col-xs-3 col-md-3" :style {:text-align "center"}} "Price")
+            )
           )
-          (om/build showtransactions-view  data {})
+          (dom/div {:className "panel-body"}
+            (om/build showtransactions-view  data {})
+          )          
         )
       ) 
     )
