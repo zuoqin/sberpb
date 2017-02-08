@@ -82,15 +82,19 @@
     (dom/div {:className "list-group" :style {:display "block"}}
       (map (fn [item]
         (dom/div {:className "row"}
-          (dom/div {:className "col-md-4"}
+          (dom/div {:className "col-md-3"}
             (dom/h4 {:className "list-group-item-heading"} (str (tf/unparse custom-formatter (tc/from-date (:valuedate item)))))
           )
 
-          (dom/div {:className "col-md-4"} 
+          (dom/div {:className "col-md-3"} 
             (dom/h4 {:className "list-group-item-heading"} (if (= (:direction item) "B") "Buy" "Sell"))
           )
 
-          (dom/div {:className "col-md-4"}
+          (dom/div {:className "col-md-3"} 
+            (dom/h4 {:className "list-group-item-heading"} (:nominal item) )
+          )
+
+          (dom/div {:className "col-md-3"}
             (dom/h4 {:className "list-group-item-heading"} (:price item))
           )
         )
@@ -135,18 +139,20 @@
     (onMount data)
   )
   (render [_]
-    (let [style {:style {:margin "10px" :padding-bottom "0px"}}
-      styleprimary {:style {:margin-top "70px" :margin-left "0px"}}
+    (let [
+      styleprimary {:style {:margin-top "70px" :margin-left "0px" :margin-right "0px"}}
+      stylerow {:style {:margin-left "0px" :margin-right "0px"}}
       ]
 
       (dom/div
         (om/build sbercore/website-view sbercore/app-state {})
-        (dom/div  (assoc styleprimary  :className "panel panel-primary" ;:onClick (fn [e](println e))
+        (dom/div  (assoc styleprimary  :className "panel panel-primary"
         )
-          (dom/div {:className "row"}
-            (dom/div {:className "col-md-4"} "Date")
-            (dom/div {:className "col-md-4"} "Buy/SellAmount")
-            (dom/div {:className "col-md-4"} "Amount")
+          (dom/div (assoc stylerow  :className "row" )
+            (dom/div {:className "col-md-3"} "Date")
+            (dom/div {:className "col-md-3"} "Buy/Sell")
+            (dom/div {:className "col-md-3"} "Amount")
+            (dom/div {:className "col-md-3"} "Price")
           )
           (om/build showtransactions-view  data {})
         )

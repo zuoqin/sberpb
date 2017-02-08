@@ -19,9 +19,20 @@
     transactions (into [] (db/get-transactions client)   )
 
     positions (loop [result {} trans transactions]
+
+                
                 (if (seq trans) 
-                  (recur (assoc result (str (:security (first trans)))   (:nominal (first trans)) )
+                  (let [
+                        sec (str (:security (first trans)))
+                        amnt (get result sec )
+
+                        tranamnt (if (= "B" (:direction (first trans))) (:nominal (first trans)) (- 0 (:nominal (first trans))))
+                        newamnt (if (nil? amnt ) tranamnt (+ amnt tranamnt) )
+                        ]
+
+                    (recur (assoc result sec newamnt )
                          (rest trans))
+                  )                  
                   result)
 
 

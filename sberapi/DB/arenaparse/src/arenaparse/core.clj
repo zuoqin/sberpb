@@ -17,6 +17,43 @@
 (def conn (d/connect uri))
 
 
+(defn ent [id]  (seq (d/entity (d/db conn) (ffirst id))) )
+
+
+(defn find-transaction [tran]
+  (let [
+         client (ent (d/q '[:find ?eid
+                          :in $ ?eid
+                          :where
+                          [?eid]
+                          ] (d/db conn) (:client tran))) 
+         trans (d/q '[:find ?e
+                      :in $ ?client ?currency ?direction ?nominal ?price ?dt
+                      :where
+                      [?e :transaction/client ?c]
+                      [?c :client/code ?client]
+                      [?e :transaction/currency ?currency]
+                      [?e :transaction/direction ?direction]
+                      [?e :transaction/nominal ?nominal1]
+                      [?e :transaction/price ?price1]
+                      [?e :transaction/valuedate ?dt]
+                      [(* ?price 1.000001) ?p1]
+                      [(* ?price 0.999999) ?p2]
+                      [(* ?nominal 1.000001) ?n1]
+                      [(* ?nominal 0.999999) ?n2]
+                      [(< ?nominal1 ?n1)]
+                      [(> ?nominal1 ?n2)]
+                      [(< ?price1 ?p1)]
+                      [(> ?price1 ?p2)]
+                     ] (d/db conn) (second (first client))  (:currency tran) (str (:direction tran))  (:nominal tran) (:price tran) (:valuedate tran))
+        
+
+    ]
+    (count trans) 
+    ;(ent client)
+  )
+
+)
 
 (defn client-to-map [client]
   (let [
@@ -159,10 +196,11 @@
         newid (- 0 110001 id)
         str1 (str "{ :transaction/client #db/id[:db.part/user " (:client tran) "] :transaction/security #db/id[:db.part/user " (:security tran) "], :transaction/nominal " (format "%.1f" (:nominal tran)) " :transaction/price " (:price tran) " :transaction/direction \"" (:direction tran) "\" :transaction/valuedate  #inst \"" (f/unparse built-in-formatter (c/from-long (c/to-long (:valuedate tran))) ) "0000Z\", :transaction/currency \"" (:currency tran) "\" :transaction/comment \"\", :db/id #db/id[:db.part/user " newid "]}\n")
         ]
-
-    (spit "E:/DEV/clojure/sberpb/sberapi/DB/cl.clj" str1 :append true)
+    (if (= (find-transaction tran) 0) 
+      (spit "E:/DEV/clojure/sberpb/sberapi/DB/cl.clj" str1 :append true)
+    )
+    
   )
-  
 )
 
 (defn get-transactions []
@@ -209,9 +247,8 @@
      ;;(nth (:content (nth (:content (nth   (:content (nth (:content x) 4) )  0 ) )  36)) 29) 
     ;;(println (:content x) )
     (spit "E:/DEV/clojure/sberpb/sberapi/DB/cl.clj" "[\n" :append false)
-    (map append-tran-to-file tranmap (range cnt)) 
-    ;(spit "E:/DEV/clojure/sberpb/sberapi/DB/cl.clj" "\n]\n" :append true)    
-    ;;cnt
+    (doall (map append-tran-to-file tranmap (range cnt))) 
+    (spit "E:/DEV/clojure/sberpb/sberapi/DB/cl.clj" "\n]\n" :append true)
   )
 )
 
@@ -226,9 +263,9 @@
 
 )
 
-(defn -main
-  "I don't do a whole lot ... yet."
-  [& args]
+
+(defn find-not-registered-secs []
+
   (let [trans (get-transactions)
         secs (for [x trans
          :let [res (checktransec x)]
@@ -236,7 +273,18 @@
          ]
         (:security x))
     ]
-    secs
+    (distinct secs) 
+  )
+)
 
+(defn -main
+  "I don't do a whole lot ... yet."
+  [& args]
+  ;;(find-not-registered-secs)
+  (let [trans (get-transactions)
+    res (map (fn [x] (if (> (find-transaction x) 0) (println x) (println 0))) trans) 
+        
+   ]
+   res
   )
 )

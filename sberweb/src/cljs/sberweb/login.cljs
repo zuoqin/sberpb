@@ -259,12 +259,6 @@
         (dom/input {:className "form-control" :ref "txtPassword" :id "txtPassword" :defaultValue settings/demopassword :type "password"  :placeholder "Password"} )
         (dom/button #js {
           :className (if (= (:state @app-state) 0) "btn btn-lg btn-primary btn-block" "btn btn-lg btn-primary btn-block m-progress" )  :type "button" :onClick (fn [e](checklogin owner))} "Login")
-
-
-        (dom/button #js {
-          :className (if (= (:state @app-state) 0) "btn btn-lg btn-primary btn-block" "btn btn-lg btn-primary btn-block m-progress" )  :type "button"  :onClick (fn [e] (-> js/document
-      .-location
-      (set! "#/registration")))} "Register")
         
       )
       (addModal)
