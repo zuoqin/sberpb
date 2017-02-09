@@ -157,7 +157,6 @@
       ;response1 (js->clj response)
       newdata {:token (get response (keyword "access_token"))  :expires (get response (keyword "expires_in") ) }
     ]
-    (.log js/console (str newdata))
     ;;(.log js/console (str (select-keys (js->clj response) [:Title :Reference :Introduction])  ))    
     (swap! sbercore/app-state assoc-in [:token] newdata )
     (swap! sbercore/app-state assoc-in [:view] 1 )
@@ -207,9 +206,7 @@
     thePassword (-> (om/get-node owner "txtPassword") .-value)
     ]
     ;(aset js/window "location" "http://localhost:3449/#/something")
-    ;(.log js/console owner ) 
-
-    (.log js/console (str  theUserName ))
+    ;(.log js/console owner )
     (dologin (str theUserName) (str thePassword)) 
   )
 )

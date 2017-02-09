@@ -66,7 +66,7 @@
 
 
 (defn handle-change [e owner]
-  ;(.log js/console () e)
+  
   (swap! app-state assoc-in [:form (keyword (.. e -target -id))] 
     (.. e -target -value)
   ) 
@@ -87,7 +87,7 @@
 (defn error-handler [{:keys [status status-text]}]
   (.log js/console (str "something bad happened: " status " " status-text))
 )
-
+,
 (defn getPositions [] 
   (GET (str settings/apipath "api/position?client=" (:selectedclient @app-state) ) {
     :handler OnGetPositions
@@ -146,8 +146,7 @@
    (jquery
      (fn []
        (-> (jquery "#clients" )
-         (.selectpicker "val" (:selectedclient @app-state)
-                          )
+         (.selectpicker "val" (:id (first (filter (fn [x] (if (= (:code x) (:selectedclient @app-state)) true false )) (:clients @app-state)) )) )
          (.on "change"
            (fn [e]
              (
@@ -163,7 +162,6 @@
 
 
 (defn onDidUpdate [data]
-    (.log js/console "Update Core happened") 
   (setClientsDropDown)
     ;; (jquery
     ;;   (fn []

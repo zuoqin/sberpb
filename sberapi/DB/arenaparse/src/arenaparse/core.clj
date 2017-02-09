@@ -4,25 +4,44 @@
             [clojure.zip :as zip]
             [clj-time.format :as f]
             [clj-time.coerce :as c]
-
+            [clj-time.core :as t]
 
             [clojure.string :as str]
             [datomic.api :as d]
   )
 )
 
-
 (def uri "datomic:dev://localhost:4334/sberpb_dev")
 
 (def conn (d/connect uri))
 
+(defn disconnect []  (d/release conn))
+
+(def client "DACFF" ) ;;"VADZF" "AANDF"
+
+(defn addclient []
+  (d/transact conn  [{ :client/code client :client/name "New client name" :db/id #db/id[:db.part/user -102005]}] )
+
+)
+
+
+(defn addsecs []
+  (d/transact conn  [{ :security/acode "24018",        :security/isin "RU000A0JV7K7", :security/bcode "RU000A0JV7K7 Corp",  :security/exchange "MOSCOW", :db/id #db/id[:db.part/user -100113] }] )
+
+)
+
+(defn addtrans []
+
+)
+
+(def built-in-formatter (f/formatters :date-hour-minute-second-fraction))
+(def build-in-basicdate-formatter (f/formatters :basic-date))
 
 (defn ent [id]  (seq (d/entity (d/db conn) (ffirst id))) )
 
 
 (defn find-transaction [tran]
   (let [
-         tr1 (if (nil? (:client tran)) (println tran)  )
          client (ent (d/q '[:find ?eid
                           :in $ ?eid
                           :where
@@ -119,7 +138,14 @@
    (clojure.xml/parse
      (java.io.ByteArrayInputStream. (.getBytes s))))
 
-(def built-in-formatter (f/formatters :date-hour-minute-second-fraction))
+
+(defn get-isin-by-seccode [code]
+  (let [secs (get-securities)
+        sec (first (filter (fn [x] (if (= (:acode x) code) true false)) secs)) 
+        ]
+    (:isin sec)
+  )
+)
 
 (defn get-sec-by-code [code]
   (let [secs (get-securities)
@@ -130,10 +156,43 @@
 )
 
 (defn get-client-by-code [code]
-  (let [clients (get-clients)
+  (let [
+        clients (get-clients)
         client (first (filter (fn [x] (if (= (:code x) code) true false)) clients)) 
         ]
     (:id client)
+  )
+)
+
+
+(defn tran-to-bmap [tran]
+  (let [
+    tranmap (
+      loop [result {} num 0 ]
+        (if (< num 36)
+
+          (case num
+            1 (recur (assoc result :status (first (:content  (first (:content (nth tran num)  )  )))  ) (inc num))
+            3 (recur (assoc result :client (first (:content  (first (:content (nth tran num)  )  )))  ) (inc num))
+            6 (recur (assoc result :valuedate (java.util.Date. (c/to-long (f/parse built-in-formatter (first (:content  (first (:content (nth tran num)  )  ))) )))
+
+    ) (inc num)) 
+            9 (recur (assoc result :direction (if (str/includes? (str/lower-case (first (:content  (first (:content (nth tran num)  )  )))) "repo") "R"  (if (= "B" (subs (first (:content  (first (:content (nth tran num)  )  ))) 3 4 )) "S" "B"))   ) (inc num))
+            10 (recur (assoc result :price (if (nil? (first (:content  (first (:content (nth tran num)  )  )))) 0 (Float/parseFloat (first (:content  (first (:content (nth tran num)  )  ))))))    (inc num)
+                    )
+            12 (recur (assoc result :nominal (Float/parseFloat (if (= (subs (first (:content  (first (:content (nth tran num)  )  ))) 0 1) "-") (subs (first (:content  (first (:content (nth tran num)  )  ))) 1)  (first (:content  (first (:content (nth tran num)  )  )))) )  ) (inc num))
+            14 (recur (assoc result :currency (first (:content  (first (:content (nth tran num)  )  ))) ) (inc num))
+            ;16 (recur (assoc result :client (subs (first (:content  (first (:content (nth tran num)  )  ))) 1 )  ) (inc num))
+            23 (recur (assoc result :security (get-isin-by-seccode (first (:content  (first (:content (nth tran num)  )  ))))  ) (inc num))
+            24 result
+            (recur result (inc num))
+          )
+          result
+        )
+        )
+
+  ]
+    tranmap
   )
 )
 
@@ -144,6 +203,7 @@
         (if (< num 36)
 
           (case num
+            1 (recur (assoc result :status (first (:content  (first (:content (nth tran num)  )  )))  ) (inc num))
             3 (recur (assoc result :client (get-client-by-code (first (:content  (first (:content (nth tran num)  )  ))))  ) (inc num))
             6 (recur (assoc result :valuedate (java.util.Date. (c/to-long (f/parse built-in-formatter (first (:content  (first (:content (nth tran num)  )  ))) )))
 
@@ -154,7 +214,9 @@
             12 (recur (assoc result :nominal (Float/parseFloat (if (= (subs (first (:content  (first (:content (nth tran num)  )  ))) 0 1) "-") (subs (first (:content  (first (:content (nth tran num)  )  ))) 1)  (first (:content  (first (:content (nth tran num)  )  )))) )  ) (inc num))
             14 (recur (assoc result :currency (first (:content  (first (:content (nth tran num)  )  ))) ) (inc num))
             ;16 (recur (assoc result :client (subs (first (:content  (first (:content (nth tran num)  )  ))) 1 )  ) (inc num))
-            23 (recur (assoc result :security (get-sec-by-code (first (:content  (first (:content (nth tran num)  )  ))))  ) (inc num))
+            ;;23 (recur (assoc result :security (get-sec-by-code (first (:content  (first (:content (nth tran num)  )  ))))  ) (inc num))
+
+            23 (recur (assoc result :security (first (:content  (first (:content (nth tran num)  )  )))  ) (inc num))
             24 result
             (recur result (inc num))
           )
@@ -175,54 +237,111 @@
         ]
     (if (= (find-transaction tran) 0) 
       (spit "E:/DEV/clojure/sberpb/sberapi/DB/cl.clj" str1 :append true)
+      (println tran)
     )
     
   )
 )
 
-(defn get-transactions []
-  (let [f (slurp "E:/DEV/Java/AANDF.xml")
+(defn append-position-to-file [position]
+  (let [
+        str1 (str client "," client "," (name (first position)) "," (:currency (second position)) "," (:amount (second position)) "," (:price (second position)) "," (f/unparse build-in-basicdate-formatter (c/from-long (c/to-long (java.util.Date.))) ) "\n")
+        ]
+    ;;(println str1)
+    (spit (str "E:/DEV/clojure/sberpb/sberapi/DB/" client ".txt") str1 :append true)
+  )
+)
+
+
+(defn get-positions-bloomberg []
+  (let [f (slurp (str "E:/DEV/Java/" client ".xml") )
         x (parse f)
         trancnt (- (count (:content (nth   (:content (nth (:content x) 4) )  0 ) ) ) 1)  
         trans (loop [result [] num 0 ]
-
-
           (let [item (:content (nth (:content (nth   (:content (nth (:content x) 4) )  0 ) )  num))]
-
-
             (if (< num trancnt)            
               
               (if (= (:ss:StyleID (:attrs (nth item 0))) "s72" )
                 (recur (conj result item ) (inc num))
                 (recur result (inc num))
-              )
-
-              
+              )              
               result
             )
-
           )
-
-
         )
+        tranmap (map tran-to-bmap trans)
 
-        tranmap (map tran-to-map trans)
+        newtrans (filter (fn [x] (if (or  (not (str/includes? (str/lower-case (:status x) ) "valid") )   (= "RUR" (:security x)) (= "USD" (:security x)) (nil? (:client x)) (nil? (:currency x))  (= "R" (:direction x))) false true)) tranmap)
 
-        ;tran (:content (nth (:content (nth   (:content (nth (:content x) 4) )  0 ) )  36))      
-      ;;tran (nth tranmap 0)
-      ;(count (:content (nth   (:content (nth (:content x) 4) )  0 ) ) ) 
+
+
+
+        positions (loop [result {} trans newtrans]
+                (if (seq trans) 
+                  (let [
+                        tran (first trans)
+                        sec (str (:security tran))
+                        amnt (:amount ( (keyword sec) result ))
+                        prevpr (:price ((keyword sec) result))
+
+                        tranamnt (if (= "B" (:direction tran)) (:nominal tran) (- 0 (:nominal tran)))
+                        newamnt (if (nil? amnt ) tranamnt (+ amnt tranamnt) )
+                        wap (if (nil? amnt ) (:price tran) (if (> newamnt 0) (/ (+ (* prevpr amnt) (* (:price tran) tranamnt)) newamnt) 0))
+                        ]
+                    (recur (assoc-in result [(keyword sec) ] {:amount newamnt :price wap :currency (:currency tran)} )
+                         (rest trans))
+                  )                  
+                  result)
+                ) 
     ]
-    (filter (fn [x] (if (or (= "RUR" (:security x)) (= "USD" (:security x)) (nil? (:client x)) (nil? (:currency x))  (= "R" (:direction x))) false true)) tranmap) 
+    (filter (fn [x] (if (= 0.0 (:amount (second x) )) false true))  positions) 
+  )
+)
+
+(defn get-transactions []
+  (let [f (slurp (str "E:/DEV/Java/" client ".xml"))
+        x (parse f)
+        trancnt (- (count (:content (nth   (:content (nth (:content x) 4) )  0 ) ) ) 1)  
+        trans (loop [result [] num 0 ]
+          (let [item (:content (nth (:content (nth   (:content (nth (:content x) 4) )  0 ) )  num))]
+            (if (< num trancnt)            
+              
+              (if (= (:ss:StyleID (:attrs (nth item 0))) "s72" )
+                (recur (conj result item ) (inc num))
+                (recur result (inc num))
+              )              
+              result
+            )
+          )
+        )
+        tranmap (map tran-to-map trans)
+    ]
+    (filter (fn [x] (if (or (not (str/includes? (str/lower-case (:status x)) "valid") ) (= "RUR" (:security x)) (= "USD" (:security x)) (nil? (:client x)) (nil? (:currency x))  (= "R" (:direction x))) false true)) tranmap)
+    ;;(first tranmap)
   )
 )
 
 (defn save-transactions []
   (let [tranmap (get-transactions)
-        cnt (count tranmap )
+        newtran (map (fn [x] {:client (:client x) :valuedate (:valuedate x) :direction (:direction x) :price (:price x) :nominal (:nominal x) :currency (:currency x) :security (get-sec-by-code (:security x)) }) tranmap)
+        cnt (count newtran )
     ]
     (spit "E:/DEV/clojure/sberpb/sberapi/DB/cl.clj" "[\n" :append false)
-    (doall (map append-tran-to-file tranmap (range cnt))) 
+    (doall (map append-tran-to-file newtran (range cnt))) 
     ;;(spit "E:/DEV/clojure/sberpb/sberapi/DB/cl.clj" "\n]\n" :append true)
+    ;;(first newtran)
+    cnt
+  )
+)
+
+(defn save-transactions-bloomberg []
+  (let [positions (get-positions-bloomberg)
+    ]
+    (spit (str "E:/DEV/clojure/sberpb/sberapi/DB/" client ".txt")  ",,,,,,\n" :append false)
+    (spit (str "E:/DEV/clojure/sberpb/sberapi/DB/" client ".txt") "Account/Customer-ID,Portfolio Name,Security ID,Security Currency,Position/Quantity/Nominal,Cost Px asset Currency,Date\n" :append true)
+    (doall (map append-position-to-file positions )) 
+    ;;(spit "E:/DEV/clojure/sberpb/sberapi/DB/cl.clj" "\n]\n" :append true)
+    (count positions)
   )
 )
 
@@ -248,6 +367,7 @@
     ]
     ;(map (fn [x] (if (nil? x) 0 (ent [[x]]  ))) (distinct secs))  
     (distinct secs)
+    ;trans
   )
 )
 

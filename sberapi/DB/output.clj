@@ -121,8 +121,24 @@
 { :security/acode "SNGSP",        :security/isin "RU0009029524", :security/bcode "SNGSP RX Equity",    :security/exchange "MOSCOW", :db/id #db/id[:db.part/user -100111] }
 { :security/acode "URKA",         :security/isin "RU0007661302", :security/bcode "URKA RX Equity",     :security/exchange "MOSCOW", :db/id #db/id[:db.part/user -100112] }
 { :security/acode "INTNEDPERPJ",  :security/isin "US456837AE31", :security/bcode "US456837AE31 Corp"  ,:security/exchange "NYSE", :db/id #db/id[:db.part/user -100008] }
-{ :security/acode "LSR-BO-01",        :security/isin "RU000A0JWU98", :security/bcode "RU000A0JWU98 Corp",  :security/exchange "MOSCOW", :db/id #db/id[:db.part/user -100090] }
-
+{ :security/acode "LSR-BO-01",    :security/isin "RU000A0JWU98", :security/bcode "RU000A0JWU98 Corp",  :security/exchange "MOSCOW", :db/id #db/id[:db.part/user -100090] }
+{ :security/acode "24018",        :security/isin "RU000A0JV7K7", :security/bcode "RU000A0JV7K7 Corp",  :security/exchange "MOSCOW", :db/id #db/id[:db.part/user -100113] }
+{ :security/acode "AVTOBAN-F1",   :security/isin "RU000A0JWM49", :security/bcode "RU000A0JWM49 Corp",  :security/exchange "MOSCOW", :db/id #db/id[:db.part/user -100114] }
+{ :security/acode "GTLKOA21",     :security/isin "XS1449458915", :security/bcode "XS1449458915 Corp",  :security/exchange "NYSE", :db/id #db/id[:db.part/user -100115] }
+{ :security/acode "HALKBK21N",    :security/isin "XS1188073081", :security/bcode "XS1188073081 Corp",  :security/exchange "XETRA", :db/id #db/id[:db.part/user -100116] }
+{ :security/acode "MKRB12",       :security/isin "RU000A0JTPD7", :security/bcode "RU000A0JTPD7 Corp",  :security/exchange "MOSCOW", :db/id #db/id[:db.part/user -100117] }
+{ :security/acode "MKRBBO07",     :security/isin "RU000A0JU8W1", :security/bcode "RU000A0JU8W1 Corp",  :security/exchange "MOSCOW", :db/id #db/id[:db.part/user -100118] }
+{ :security/acode "PGK-01",       :security/isin "RU000A0JVT76", :security/bcode "RU000A0JVT76 Corp",  :security/exchange "MOSCOW", :db/id #db/id[:db.part/user -100119] }
+{ :security/acode "PKT-03",       :security/isin "RU000A0JWBP5", :security/bcode "RU000A0JWBP5 Corp",  :security/exchange "MOSCOW", :db/id #db/id[:db.part/user -100120] }
+{ :security/acode "SMOL34001",    :security/isin "RU000A0JU7R3", :security/bcode "RU000A0JU7R3 Corp",  :security/exchange "MOSCOW", :db/id #db/id[:db.part/user -100121] }
+{ :security/acode "SUEKF05",      :security/isin "RU000A0JU336", :security/bcode "RU000A0JU336 Corp",  :security/exchange "MOSCOW", :db/id #db/id[:db.part/user -100122] }
+{ :security/acode "VEDLN18",      :security/isin "USG9328DAD24", :security/bcode "USG9328DAD24 Corp",  :security/exchange "NYSE", :db/id #db/id[:db.part/user -100123] }
+{ :security/acode "KMG",          :security/isin "US48666V2043", :security/bcode "US48666V2043 Corp",  :security/exchange "NYSE", :db/id #db/id[:db.part/user -100124] }
+{ :security/acode "NLMK",         :security/isin "RU0009046452", :security/bcode "NLMK RX Equity",     :security/exchange "MOSCOW", :db/id #db/id[:db.part/user -100125] }
+{ :security/acode "OMEAUSAID",    :security/isin "IE00BLP5S353", :security/bcode "IE00BLP5S353 Corp",  :security/exchange "IRELAND", :db/id #db/id[:db.part/user -100126] }
+{ :security/acode "TATN",         :security/isin "RU0009033591", :security/bcode "TATN RX Equity",     :security/exchange "MOSCOW", :db/id #db/id[:db.part/user -100127] }
+{ :security/acode "TATNP",        :security/isin "RU0006944147", :security/bcode "TATNP RX Equity",    :security/exchange "MOSCOW", :db/id #db/id[:db.part/user -100128] }
+{ :security/acode "TRMK",         :security/isin "RU000A0B6NK6", :security/bcode "TRMK RX Equity",     :security/exchange "MOSCOW", :db/id #db/id[:db.part/user -100129] }
 ;; ISSUERS
 { :issuer/code "Mail.Ru Group Ltd" :db/id #db/id[:db.part/user -101001] }
 { :issuer/code "Magnit PJSC" :db/id #db/id[:db.part/user -101002] }
@@ -143,12 +159,10 @@
 
 
 ;; CLIENTS
-
-{ :client/code "KDBSF" :client/name "best client" :db/id #db/id[:db.part/user -102001]}
-{ :client/code "KDBRF" :client/name "first client" :db/id #db/id[:db.part/user -102002]}
-{ :client/code "PYUMF" :client/name "Палочкин" :db/id #db/id[:db.part/user -102003]}
-{ :client/code "DACFF" :client/name "Дергачева Елена Сергеевна" :db/id #db/id[:db.part/user -102004]}
-{ :client/code "AANDF" :client/name "Аршинов Александр Владимирович" :db/id #db/id[:db.part/user -102005]}
+{ :client/code "PYUMF" :client/name "Клиент PYUMF" :db/id #db/id[:db.part/user -102003]}
+{ :client/code "DACFF" :client/name "Клиент DACFF" :db/id #db/id[:db.part/user -102004]}
+{ :client/code "AANDF" :client/name "Клиент AANDF" :db/id #db/id[:db.part/user -102005]}
+{ :client/code "VADZF" :client/name "Клиент VADZF" :db/id #db/id[:db.part/user -102006]}
 
 
 ;; TRANSACTIONS
