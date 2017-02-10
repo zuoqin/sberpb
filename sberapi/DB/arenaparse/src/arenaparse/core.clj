@@ -8,8 +8,13 @@
 
             [clojure.string :as str]
             [datomic.api :as d]
+
+            [clojure.data.csv :as csv]
+            [clojure.java.io :as io]
   )
 )
+
+(def cbr-date-formatter (f/formatter "dd.MM.yyyy"))
 
 (def uri "datomic:dev://localhost:4334/sberpb_dev")
 
@@ -17,16 +22,50 @@
 
 (defn disconnect []  (d/release conn))
 
-(def client "DACFF" ) ;;"VADZF" "AANDF"
+(def client "PYUMF" ) ;;"VADZF" "AANDF" "DACFF"
+
+
+(defn save-rate-to-db [rate]
+  (let [
+    fxid  (ffirst (d/q '[:find ?e
+                       :in $ ?sec
+                       :where
+                       [?e :security/acode ?sec]
+                       ] (d/db conn) "USD")) 
+    ]
+    (d/transact conn  [{ :price/security fxid :price/lastprice (:rate rate) :price/valuedate (:date rate) :price/source "CBR" :price/comment "Import from CBR web site 2017-02-10" :db/id #db/id[:db.part/user -100001 ]}] )
+  )
+  ;(println rate)
+)
+
+(defn readusd []
+  (let [
+      f (with-open [in-file (io/reader "e:/dev/java/rates.txt")]
+          (doall
+           (csv/read-csv in-file)))
+
+      r (map (fn [x] (let [s (first x)] {:date (java.util.Date. (c/to-long (f/parse cbr-date-formatter (subs s 0 10))) )   :rate (Float/parseFloat (subs s 13 20))}) ) f)
+
+    ]
+    (doall (map save-rate-to-db r))
+    (count r)
+  )
+)
+
+
 
 (defn addclient []
-  (d/transact conn  [{ :client/code client :client/name "New client name" :db/id #db/id[:db.part/user -102005]}] )
-
+  ;(d/transact conn  [{ :client/code client :client/name "New client name" :db/id #db/id[:db.part/user -102005]}] )
+     (d/transact
+    conn
+    [{:db/id 17592186045464
+      :security/currency "USD"
+      }])
 )
 
 
 (defn addsecs []
-  (d/transact conn  [{ :security/acode "24018",        :security/isin "RU000A0JV7K7", :security/bcode "RU000A0JV7K7 Corp",  :security/exchange "MOSCOW", :db/id #db/id[:db.part/user -100113] }] )
+  (d/transact conn  [{:security/acode "RUR" :security/bcode "RUB Curncy" :security/exchange "MICEX" :security/isin "RUB ISIN" :db/id #db/id[:db.part/user -102005]}] )
 
 )
 

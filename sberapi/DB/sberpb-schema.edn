@@ -51,6 +51,13 @@
   :db/doc "Security ISIN code"
   :db.install/_attribute :db.part/db}
 
+{:db/id #db/id[:db.part/db]
+  :db/ident :security/currency
+  :db/valueType :db.type/string
+  :db/cardinality :db.cardinality/one
+  :db/doc "Security ISIN code"
+  :db.install/_attribute :db.part/db}
+
  {:db/id #db/id[:db.part/db]
   :db/ident :security/exchange
   :db/valueType :db.type/string
@@ -165,7 +172,6 @@
   :db/cardinality :db.cardinality/one
   :db/doc "LAST price"
   :db.install/_attribute :db.part/db}
-
 
  {:db/id #db/id[:db.part/db]
   :db/ident :price/valuedate

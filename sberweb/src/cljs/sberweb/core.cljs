@@ -73,8 +73,22 @@
 )
 
 (defn map-position [position]
-  (let [result {:id (js/parseInt (name (nth position 0)))   :amount (:amount (nth position 1)) :wap (:price (nth position 1))}]
+  (let [
+    secid (js/parseInt (name (nth position 0)))
+    security (first (filter (fn [x] (if (= (:id x) secid) true false)) (:securities @app-state)))
+    
+    posprice (:price (nth position 1))
+    price (if (nil? (:price security)) posprice (:price security))
 
+    fxrate (if (or (= "RUB" (:currency security)) (= "RUR" (:currency security))) 1 (:price  (first (filter (fn[x] (if( = (:acode x) (:currency security)) true false)) (:securities @app-state))))) 
+    
+
+    result {:id secid   :amount (:amount (nth position 1)) :wap posprice :price price :waprub (:rubprice (nth position 1)) :currubprice (* price fxrate)}
+
+
+
+    ]
+    (.log js/console (str "price: " price " fxrate:" fxrate))
     result
   )
 )

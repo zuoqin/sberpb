@@ -14,25 +14,45 @@
 
 
 
+(defn get-last-fx [currency]
+  (let [
+    security (ffirst (d/q '[:find ?e
+                       :in $ ?sec
+                       :where
+                       [?e :security/acode ?sec]
+                       ] (d/db conn) currency)) 
+
+    rate (sort-by first #(> (c/to-long %1) (c/to-long %2)) (d/q '[:find ?dt ?p
+                                                         :in $ ?sec
+                                                         :where
+                                                         [?e :price/security ?sec]
+                                                         [?e :price/valuedate ?dt]
+                                                         [?e :price/lastprice ?p]
+                                                         ]
+                                 (d/db conn) security)  ) 
+    ]
+    (second (first rate)) 
+  )
+)
+
 (defn security-to-map [security]
   (let [
-    newsec {:id (nth security 0) :acode (nth security 1) :exchange (nth security 2) :isin (nth security 3)}
+    newsec {:id (nth security 0) :acode (nth security 1) :exchange (nth security 2) :isin (nth security 3) :price (get-last-fx (nth security 1)) :currency (nth security 4)}
         
   ]
-
   newsec
   )
-
 )
 
 (defn get-securities []
   (let [
-        securities (d/q '[:find ?e ?c ?x ?i
+        securities (d/q '[:find ?e ?a ?x ?i ?c
                           :where
                           [?e :security/acode]
-                          [?e :security/acode ?c]
+                          [?e :security/acode ?a]
                           [?e :security/exchange ?x]
                           [?e :security/isin ?i]
+                          [?e :security/currency ?c]
                           ]
                         (d/db conn)) 
 

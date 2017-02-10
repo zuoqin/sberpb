@@ -15,16 +15,48 @@
 
 (defn ent [id]  (seq (d/entity (d/db conn) (ffirst id))) )
 
+(defn get-fxrate-by-date [currency dt]
+  (let [
+
+    ;tr1 (println (str "in get-fxrate-by-date " currency) )
+    newdate (java.util.Date. (c/to-long (f/parse custom-formatter (f/unparse custom-formatter (c/from-long (c/to-long dt))))))
+
+    security (ffirst (d/q '[:find ?e
+                       :in $ ?sec
+                       :where
+                       [?e :security/acode ?sec]
+                       ] (d/db conn) currency)) 
+
+    rate (first (sort-by first #(> (c/to-long %1) (c/to-long %2))
+           (d/q '[:find ?d ?p
+                  :in $ ?sec ?dt
+                  :where
+                  [?e :price/security]
+                  [?e :price/security ?s]
+                  [?e :price/valuedate ?d]
+                  [?e :price/lastprice ?p]
+                  [(<= ?d ?dt)]
+                  ]
+                (d/db conn) security newdate)))  
+    ]
+    (nth rate 1) 
+    ;rate
+  )
+)
+ 
 
 (defn trans-to-map [tran tranid]
 
   (let [
         client (ent [[(:db/id (nth (nth tran 0) 1))]]  )
-        ;security (ent [[(:db/id (nth (nth tran 1) 1))]]  )
+        security (ent [[(:db/id (nth (nth tran 1) 1))]]  )
 
-
+        ;;tr1 (println security)
+        currency (second (first (filter (fn [x] (if (= (first x) (keyword "security/currency")) true false)) security)))
         ;;:security (nth (nth security 0) 1)
-        newtran {:client (nth (nth client 0) 1) :security (:db/id (nth (nth tran 1) 1))  :nominal (nth (nth tran 2) 1) :price (nth (nth tran 3) 1) :direction (nth (nth tran 4) 1) :valuedate (nth (nth tran 5) 1) :currency (nth (nth tran 6) 1) :comment (nth (nth tran 7) 1) :id (first tranid) }
+
+
+        newtran {:client (nth (nth client 0) 1) :security (:db/id (nth (nth tran 1) 1))  :nominal (nth (nth tran 2) 1) :price (nth (nth tran 3) 1) :direction (nth (nth tran 4) 1) :valuedate (nth (nth tran 5) 1) :currency currency :comment (nth (nth tran 7) 1) :fx (if (or (= "RUR" currency) (= "RUB" currency))  1 (get-fxrate-by-date currency (nth (nth tran 5) 1)))  :id (first tranid) }
         ]
 
     newtran
@@ -64,7 +96,7 @@
          newtrans2 (map (fn [x y] (trans-to-map x y)) newtrans transactions)
 
 
-	positions  newtrans2
+         positions  newtrans2
     ]
     positions
   )
