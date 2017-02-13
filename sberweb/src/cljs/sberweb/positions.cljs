@@ -102,13 +102,23 @@
             
           )
 
-          ;; Sec Currency P/L, %%
           (dom/div {:className "col-xs-1 col-md-1" :style {:padding-left "0px" :padding-right "0px"}}
             
             (dom/a {:className "list-group-item" :style {:text-align "right"} :href (str  "#/postrans/" (:id item)    ) }
-              (dom/h4 {:className "list-group-item-heading"} (gstring/format "%.2f" (* 100.0 (/ (-  (:price item) (:wap item)) (:wap item)))  ))
+              (dom/h4 {:className "list-group-item-heading"} (:currency item)    )
             )
             
+          )
+
+
+          ;; Sec Currency P/L, %%
+          (dom/div {:className "col-xs-1 col-md-1" :style {:padding-left "0px" :padding-right "0px" :padding-top "10px"}}
+            (dom/div {:className "progress"}
+              (dom/div {:className (str "progress-bar" (if (< (:price item) (:wap item)) " progress-bar-danger" ""))  :role "progresbar" :aria-valuenow (str (.round js/Math (.abs js/Math (* 100.0 (/ (-  (:price item) (:wap item)) (:waprub item)))))) :aria-valuemin "0" :aria-valuemax "100" :style {:color "black" :width (str (.round js/Math (.abs js/Math (* 100.0 (/ (-  (:price item) (:wap item)) (:wap item))))) "%") }}
+                (dom/span {:style {:position "absolute" :display "block" :width "100%"}} (.round js/Math (* 100.0 (/ (-  (:price item) (:wap item)) (:wap item)))) ) 
+                
+              )
+            )
           )
 
 
@@ -120,10 +130,6 @@
                 
               )
             )
-            ;; (dom/a {:className "list-group-item" :style {:text-align "right"} :href (str  "#/postrans/" (:id item)    ) }
-            ;;   (dom/h4 {:className "list-group-item-heading"} (gstring/format "%.2f" (* 100.0 (/ (-  (:currubprice item) (:waprub item)) (:waprub item)))  ))
-            ;; )
-            
           )
         )
         )
@@ -180,6 +186,7 @@
               (dom/div {:className "col-xs-3 col-md-3" :style {:text-align "center"}}  "Security Name")
               (dom/div {:className "col-xs-3 col-md-3" :style {:text-align "center"}} "Amount")
               (dom/div {:className "col-xs-3 col-md-3" :style {:text-align "center"}} "WAP price")
+              (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "Currency")
               (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "P/L, %")
               (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "P/L RUB, %")
             )

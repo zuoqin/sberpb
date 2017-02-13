@@ -1,5 +1,6 @@
 (ns arenaparse.core
   (:gen-class)
+  (use dk.ative.docjure.spreadsheet)
   (:require [clojure.xml :as xml]
             [clojure.zip :as zip]
             [clj-time.format :as f]
@@ -11,6 +12,7 @@
 
             [clojure.data.csv :as csv]
             [clojure.java.io :as io]
+            [dk.ative.docjure.spreadsheet]
   )
 )
 
@@ -25,13 +27,55 @@
 (def client "PYUMF" ) ;;"VADZF" "AANDF" "DACFF"
 
 
+(defn find-price [sec date]
+  (let [
+         price (d/q '[:find ?e
+                      :in $ ?sec ?dt
+                      :where
+                      [?e :price/security ?sec]
+                      [?e :price/valuedate ?dt]
+                     ] (d/db conn) sec  date)
+    ]
+    (count price)
+  )
+)
+
+(defn excel-quote-to-db [quote sec]
+  (let [
+    dt (:date quote)
+    price (:price quote)
+
+    ;tr1 (println quote)
+    ;tr2 (println sec)
+  ]
+  (if (or (nil? dt) (nil? price) (nil? sec) (> (find-price sec dt) 0) ) (println quote) (d/transact conn  [{ :price/security sec :price/lastprice price :price/valuedate dt :price/source "Excel import" :price/comment "Import from Bllomberg Excel output on 2017-02-13" :db/id #db/id[:db.part/user -100001 ]}] ) ) 
+  )
+)
+
+(defn import-price-for-sec [bcode]
+  (let [
+    sec (ffirst (d/q '[:find ?e
+                       :in $ ?bcode
+                       :where
+                       [?e :security/bcode ?bcode]
+                       ] (d/db conn) bcode))
+
+    prices (drop 6 (->> (load-workbook "e:/dev/java/quotes.xlsx")
+                   (select-sheet bcode)
+                   (select-columns {:A :date, :B :price})))
+    trans (map (fn [x] (excel-quote-to-db x sec))  prices)
+    ]
+    (count trans)
+  )
+)
+
 (defn save-rate-to-db [rate]
   (let [
     fxid  (ffirst (d/q '[:find ?e
                        :in $ ?sec
                        :where
                        [?e :security/acode ?sec]
-                       ] (d/db conn) "USD")) 
+                       ] (d/db conn) "USD"))
     ]
     (d/transact conn  [{ :price/security fxid :price/lastprice (:rate rate) :price/valuedate (:date rate) :price/source "CBR" :price/comment "Import from CBR web site 2017-02-10" :db/id #db/id[:db.part/user -100001 ]}] )
   )
@@ -58,8 +102,8 @@
   ;(d/transact conn  [{ :client/code client :client/name "New client name" :db/id #db/id[:db.part/user -102005]}] )
      (d/transact
     conn
-    [{:db/id 17592186045464
-      :security/currency "USD"
+    [{:db/id 17592186045513
+      :security/bcode "BANE RM Equity"
       }])
 )
 

@@ -83,7 +83,7 @@
     fxrate (if (or (= "RUB" (:currency security)) (= "RUR" (:currency security))) 1 (:price  (first (filter (fn[x] (if( = (:acode x) (:currency security)) true false)) (:securities @app-state))))) 
     
 
-    result {:id secid   :amount (:amount (nth position 1)) :wap posprice :price price :waprub (:rubprice (nth position 1)) :currubprice (* price fxrate)}
+    result {:id secid :currency (:currency security) :amount (:amount (nth position 1)) :wap posprice :price price :waprub (:rubprice (nth position 1)) :currubprice (* price fxrate)}
 
 
 

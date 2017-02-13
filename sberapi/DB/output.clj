@@ -19,7 +19,7 @@
 { :security/bcode "XS0524610812 Corp", :security/isin "VEBBNK 6.902 07/09/20", :security/exchange "OTC", :security/currency "RUB",    :db/id #db/id[:db.part/user -100016] }
 { :security/bcode "SNGSP RX EQUITY", :security/isin "SNGSP ISIN", :security/exchange "MOSCOW", :security/currency "RUB",    :db/id #db/id[:db.part/user -100017] }
 { :security/acode "XS1255387976 Corp", :security/isin "IMHRUS 10 3/4 12/28/18", :security/exchange "OTC", :security/currency "RUB",    :db/id #db/id[:db.part/user -100018] }
-{ :security/acode "POLYLN",      :security/isin "JE00B6T5S470", :security/exchange "MOSCOW", :security/currency "RUB",    :db/id #db/id[:db.part/user -100019] }
+{ :security/acode "POLYLN",      :security/isin "JE00B6T5S470", :security/bcode    "POLY LN Equity",     :security/exchange "MOSCOW", :security/currency "RUB",    :db/id #db/id[:db.part/user -100019] }
 
 
 { :security/acode "FKEC01",      :security/isin "RU000A0JP039", :security/exchange "MOSCOW", :security/currency "RUB",    :db/id #db/id[:db.part/user -100020] }
@@ -47,7 +47,7 @@
 { :security/acode "BANEP",       :security/isin "RU0007976965", :security/bcode "BANEP RX EQUITY",   :security/exchange "MOSCOW", :security/currency "RUB",    :db/id #db/id[:db.part/user -100040] }
 { :security/acode "GILDUS",      :security/isin "US3755581036", :security/bcode "GILDUS EQUITY",     :security/exchange "NYSE", :security/currency "RUB",    :db/id #db/id[:db.part/user -100041] }
 { :security/acode "MGNT",        :security/isin "RU000A0JKQU8", :security/bcode "MGNT RX EQUITY",    :security/exchange "MOSCOW", :security/currency "RUB",    :db/id #db/id[:db.part/user -100042] }
-{ :security/acode "RUALR",       :security/isin "RU000A0JR5Z5", :security/bcode "RUALR RX EQUITY",   :security/exchange "MOSCOW", :security/currency "RUB",    :db/id #db/id[:db.part/user -100043] }
+{ :security/acode "RUALR",       :security/isin "RU000A0JR5Z5", :security/bcode "RUALR RX Equity",   :security/exchange "MOSCOW", :security/currency "RUB",    :db/id #db/id[:db.part/user -100043] }
 { :security/acode "VIPUS",       :security/isin "US92719A1060", :security/bcode "VIPUS EQUITY",      :security/exchange "NYSE", :security/currency "RUB",    :db/id #db/id[:db.part/user -100044] }
 { :security/acode "EFGIF_0318C", :security/isin "CH0347656545", :security/bcode "CH0347656545 Corp", :security/exchange "SWISS", :security/currency "RUB",    :db/id #db/id[:db.part/user -100045] }
 { :security/acode "EURONAT19L",  :security/isin "XS1468260598", :security/bcode "XS1468260598 Corp", :security/exchange "XETRA", :security/currency "RUB",    :db/id #db/id[:db.part/user -100046] }
@@ -70,7 +70,7 @@
 { :security/acode "RRAIL23",     :security/isin "XS1041815116", :security/exchange "XETRA", :security/currency "RUB",    :db/id #db/id[:db.part/user -100061] }
 { :security/acode "RTKM10",      :security/isin "RU000A0JRDQ9", :security/exchange "MOSCOW", :security/currency "RUB",    :db/id #db/id[:db.part/user -100062] }
 { :security/acode "SBER24",      :security/isin "XS1032750165", :security/exchange "XETRA", :security/currency "RUB",    :db/id #db/id[:db.part/user -100063] }
-{ :security/acode "URANIUM18",   :security/isin "XS1003273767", :security/exchange "XETRA", :security/currency "RUB",    :db/id #db/id[:db.part/user -100064] }
+{ :security/acode "URANIUM18",   :security/isin "XS1003273767", :security/bcode    "XS1003273767 Corp", :security/exchange "XETRA", :security/currency "RUB",    :db/id #db/id[:db.part/user -100064] }
 { :security/acode "VEB18E",      :security/isin "XS0893205186", :security/exchange "XETRA", :security/currency "RUB",    :db/id #db/id[:db.part/user -100065] }
 { :security/acode "VTBPERP",     :security/isin "XS0810596832", :security/exchange "XETRA", :security/currency "RUB",    :db/id #db/id[:db.part/user -100066] }
 { :security/acode "ALRS",        :security/isin "RU0007252813", :security/exchange "MOSCOW", :security/currency "RUB",    :db/id #db/id[:db.part/user -100067] }
@@ -104,7 +104,7 @@
 { :security/acode "SBER16R",      :security/isin "XS0882561821", :security/bcode "XS0882561821 Corp",  :security/exchange "XETRA", :security/currency "RUB",    :db/id #db/id[:db.part/user -100094] }
 { :security/acode "UCGIM23",      :security/isin "XS0925177130", :security/bcode "XS0925177130 Corp",  :security/exchange "XETRA", :security/currency "RUB",    :db/id #db/id[:db.part/user -100095] }
 { :security/acode "AFKS",         :security/isin "RU000A0DQZE3", :security/bcode "AFKS RX Equity",     :security/exchange "MOSCOW", :security/currency "RUB",    :db/id #db/id[:db.part/user -100096] }
-{ :security/acode "AGNUS",        :security/isin "IE00BY9D5467", :security/bcode "IE00BY9D5467 Equity",:security/exchange "LONDON", :security/currency "RUB",    :db/id #db/id[:db.part/user -100097] }
+{ :security/acode "AGNUS",        :security/isin "IE00BY9D5467", :security/bcode "AGN US Equity",:security/exchange "LONDON", :security/currency "RUB",    :db/id #db/id[:db.part/user -100097] }
 { :security/acode "BANE",         :security/isin "RU0007976957", :security/bcode "BANE RX Equity",     :security/exchange "MOSCOW", :security/currency "RUB",    :db/id #db/id[:db.part/user -100098] }
 { :security/acode "DXJUS",        :security/isin "US97717W8516", :security/bcode "DXJUS Equity",       :security/exchange "NYSE",       :security/currency "RUB",    :db/id #db/id[:db.part/user -100099] }
 { :security/acode "EDCLLI",       :security/isin "US29843U2024", :security/bcode "EDCLLI Equity",      :security/exchange "NYSE",       :security/currency "RUB",    :db/id #db/id[:db.part/user -100100] }
