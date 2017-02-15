@@ -35,7 +35,6 @@
    (swap! app-state assoc :positions response  )
    (sbercore/setClientsDropDown)
    ;;(.log js/console (:client @app-state)) 
-
 )
 
 
@@ -85,7 +84,7 @@
             )
 
           )
-          (dom/div {:className "col-xs-3 col-md-3" :style {:padding-left "0px" :padding-right "0px"}}
+          (dom/div {:className "col-xs-1 col-md-1" :style {:padding-left "0px" :padding-right "0px"}}
             
             (dom/a {:className "list-group-item" :style {:text-align "right"} :href (str  "#/postrans/" (:id item)    ) }
               (dom/h4 {:className "list-group-item-heading"} (sbercore/split-thousands (str (:amount item)))   )
@@ -131,6 +130,32 @@
               )
             )
           )
+
+
+
+
+
+          ;; RUB P/L
+          (dom/div {:className "col-xs-1 col-md-1" :style {:padding-left "0px" :padding-right "0px" :padding-top "10px"}}
+            (dom/div {:className "progress"}
+              (dom/div {:className (str "progress-bar" (if (< (:currubprice item) (:waprub item)) " progress-bar-danger" ""))  :role "progresbar" :aria-valuenow (str (.round js/Math (.abs js/Math (* 100.0 (/ (-  (:currubprice item) (:waprub item)) (:waprub item)))))) :aria-valuemin "0" :aria-valuemax "100" :style {:color "black" :width (str (.round js/Math (.abs js/Math (* 100.0 (/ (-  (:currubprice item) (:waprub item)) (:waprub item))))) "%") }}
+                (dom/span {:style {:position "absolute" :display "block" :width "100%"}} (.round js/Math (* 100.0 (/ (-  (:currubprice item) (:waprub item)) (:waprub item)))) ) 
+                
+              )
+            )
+          )
+
+
+          ;; USD P/L
+          (dom/div {:className "col-xs-1 col-md-1" :style {:padding-left "0px" :padding-right "0px" :padding-top "10px"}}
+            (dom/div {:className "progress"}
+              (dom/div {:className (str "progress-bar" (if (< (:currubprice item) (:waprub item)) " progress-bar-danger" ""))  :role "progresbar" :aria-valuenow (str (.round js/Math (.abs js/Math (* 100.0 (/ (-  (:currubprice item) (:waprub item)) (:waprub item)))))) :aria-valuemin "0" :aria-valuemax "100" :style {:color "black" :width (str (.round js/Math (.abs js/Math (* 100.0 (/ (-  (:currubprice item) (:waprub item)) (:waprub item))))) "%") }}
+                (dom/span {:style {:position "absolute" :display "block" :width "100%"}} (.round js/Math (* 100.0 (/ (-  (:currubprice item) (:waprub item)) (:waprub item)))) ) 
+                
+              )
+            )
+          )
+
         )
         )
         (sort (comp comp-positions) (filter (fn [x] (if (<= (:amount x) 0) false true)) (:positions ((keyword (:selectedclient @sbercore/app-state)) @sbercore/app-state) ) ))
@@ -184,15 +209,39 @@
 
             (dom/div (assoc stylerow  :className "row" )
               (dom/div {:className "col-xs-3 col-md-3" :style {:text-align "center"}}  "Security Name")
-              (dom/div {:className "col-xs-3 col-md-3" :style {:text-align "center"}} "Amount")
+              (dom/div {:className "col-xs-3 col-md-1" :style {:text-align "center"}} "Amount")
               (dom/div {:className "col-xs-3 col-md-3" :style {:text-align "center"}} "WAP price")
               (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "Currency")
               (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "P/L, %")
               (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "P/L RUB, %")
+              (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "P/L, RUB")
+              (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "P/L, USD")
             )
           )
           (dom/div {:className "panel-body"}
             (om/build showpositions-view  data {})
+          )
+        )
+
+        (dom/div {:style {:margin-top "30px"} :className "panel panel-info"}
+          (dom/div {:className "panel-heading"}
+            (dom/div (assoc stylerow  :className "row" )
+              (dom/div {:className "col-xs-12 col-md-12" :style {:text-align "center"}} "Закрытые позиции")
+            )
+          )
+        )
+        (dom/div  {:className "panel panel-primary"}
+          (dom/div {:className "panel-heading"}
+            (dom/div (assoc stylerow  :className "row" )
+              (dom/div {:className "col-xs-3 col-md-3" :style {:text-align "center"}}  "Security Name")
+              (dom/div {:className "col-xs-3 col-md-1" :style {:text-align "center"}} "Amount")
+              (dom/div {:className "col-xs-3 col-md-3" :style {:text-align "center"}} "WAP price")
+              (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "Currency")
+              (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "P/L, %")
+              (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "P/L RUB, %")
+              (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "P/L, RUB")
+              (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "P/L, USD")
+            )
           )
         )
       ) 

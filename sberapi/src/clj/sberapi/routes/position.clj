@@ -19,7 +19,7 @@
     ;usercode (:iss (-> token str->jwt :claims)  ) 
     transactions (into [] (db/get-transactions client)   )
 
-    tr1 (println (first transactions))
+    ;tr1 (println (first transactions))
     securities (secs/get-securities)
     positions (loop [result {} trans transactions]
                 (if (seq trans) 

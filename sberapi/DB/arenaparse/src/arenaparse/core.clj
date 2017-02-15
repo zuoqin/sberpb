@@ -27,6 +27,37 @@
 (def client "PYUMF" ) ;;"VADZF" "AANDF" "DACFF"
 
 
+(def custom-formatter (f/formatter "dd/MM/yyyy"))
+
+(defn get-fxrate-by-date [currency dt]
+  (let [
+
+    ;;tr1 (println (str "in get-fxrate-by-date " currency " for date: " dt) )
+    newdate (java.util.Date. (c/to-long (f/parse custom-formatter (f/unparse custom-formatter (c/from-long (c/to-long dt))))))
+
+    security (ffirst (d/q '[:find ?e
+                       :in $ ?sec
+                       :where
+                       [?e :security/acode ?sec]
+                       ] (d/db conn) currency)) 
+
+    rate (first (sort-by first #(> (c/to-long %1) (c/to-long %2))
+           (d/q '[:find ?d ?p
+                  :in $ ?sec ?dt
+                  :where
+                  [?e :price/security]
+                  [?e :price/security ?s]
+                  [?e :price/valuedate ?d]
+                  [?e :price/lastprice ?p]
+                  [(<= ?d ?dt)]
+                  ]
+                (d/db conn) security newdate)))  
+    ]
+    (nth rate 1) 
+    ;rate
+  )
+)
+
 (defn find-price [sec date]
   (let [
          price (d/q '[:find ?e
@@ -37,6 +68,7 @@
                      ] (d/db conn) sec  date)
     ]
     (count price)
+    ;(ent price)
   )
 )
 
@@ -48,7 +80,7 @@
     ;tr1 (println quote)
     ;tr2 (println sec)
   ]
-  (if (or (nil? dt) (nil? price) (nil? sec) (> (find-price sec dt) 0) ) (println quote) (d/transact conn  [{ :price/security sec :price/lastprice price :price/valuedate dt :price/source "Excel import" :price/comment "Import from Bllomberg Excel output on 2017-02-13" :db/id #db/id[:db.part/user -100001 ]}] ) ) 
+  (if (or (nil? dt) (nil? price) (nil? sec) (> (find-price sec dt) 0) ) 1 (d/transact conn  [{ :price/security sec :price/lastprice price :price/valuedate dt :price/source "Excel import" :price/comment "Import from Bllomberg Excel output on 2017-02-13" :db/id #db/id[:db.part/user -100001 ]}] ) ) 
   )
 )
 
@@ -60,10 +92,25 @@
                        [?e :security/bcode ?bcode]
                        ] (d/db conn) bcode))
 
+    tr1 (println (str sec " bcode: " bcode))
     prices (drop 6 (->> (load-workbook "e:/dev/java/quotes.xlsx")
-                   (select-sheet bcode)
-                   (select-columns {:A :date, :B :price})))
+                                (select-sheet bcode)
+                                (select-columns {:A :date, :B :price})))
     trans (map (fn [x] (excel-quote-to-db x sec))  prices)
+    ]
+    (count trans)
+  )
+)
+
+
+(defn import-excel-quotes []
+  (let [
+    secs (drop 0 (->> (load-workbook "e:/dev/java/quotes.xlsx")
+                   (select-sheet "Content")
+                   (select-columns {:B :code :C :isquote})))
+
+    newsecs (filter (fn [x] (if (> (:isquote x) 0.0) true false)) secs)
+    trans (map (fn [x] (import-price-for-sec (:code x)))  newsecs )
     ]
     (count trans)
   )
@@ -75,16 +122,16 @@
                        :in $ ?sec
                        :where
                        [?e :security/acode ?sec]
-                       ] (d/db conn) "USD"))
+                       ] (d/db conn) "GBP"))
     ]
-    (d/transact conn  [{ :price/security fxid :price/lastprice (:rate rate) :price/valuedate (:date rate) :price/source "CBR" :price/comment "Import from CBR web site 2017-02-10" :db/id #db/id[:db.part/user -100001 ]}] )
+    (d/transact conn  [{ :price/security fxid :price/lastprice (:rate rate) :price/valuedate (:date rate) :price/source "CBR" :price/comment "Import from CBR web site 2017-02-14" :db/id #db/id[:db.part/user -100001 ]}] )
   )
   ;(println rate)
 )
 
-(defn readusd []
+(defn readcbrrates [currency]
   (let [
-      f (with-open [in-file (io/reader "e:/dev/java/rates.txt")]
+      f (with-open [in-file (io/reader (str "e:/dev/java/rates_" currency ".txt") )]
           (doall
            (csv/read-csv in-file)))
 
@@ -93,6 +140,8 @@
     ]
     (doall (map save-rate-to-db r))
     (count r)
+
+    ;(first f)
   )
 )
 
@@ -102,9 +151,10 @@
   ;(d/transact conn  [{ :client/code client :client/name "New client name" :db/id #db/id[:db.part/user -102005]}] )
      (d/transact
     conn
-    [{:db/id 17592186045513
-      :security/bcode "BANE RM Equity"
-      }])
+    [{:db/id  17592186045432
+      :security/currency "GBX"
+      }
+])
 )
 
 
@@ -406,7 +456,20 @@
 
 (defn save-transactions []
   (let [tranmap (get-transactions)
-        newtran (map (fn [x] {:client (:client x) :valuedate (:valuedate x) :direction (:direction x) :price (:price x) :nominal (:nominal x) :currency (:currency x) :security (get-sec-by-code (:security x)) }) tranmap)
+
+        newtran (map (fn [x] (let [
+          sec (ent [[(get-sec-by-code (:security x))]] )
+
+          seccurrency (second (first (filter (fn [security] (if (= (keyword "security/currency") (first security)) x)) sec)))
+
+          trancurrency (if (= 0 (compare "RUR" (:currency x)) ) "RUB" (:currency x)) 
+
+          newrate (if (= (compare seccurrency trancurrency) 0) 1 (if (= trancurrency "RUB") (/ 1 (get-fxrate-by-date seccurrency (:valuedate x))) (get-fxrate-by-date trancurrency (:valuedate x)) ) )
+          newprice (if (= seccurrency trancurrency) (:price x) )
+          ]
+           {:client (:client x) :valuedate (:valuedate x) :direction (:direction x) :price (* newrate (:price x))  :nominal (:nominal x) :currency seccurrency :security (get-sec-by-code (:security x)) }
+
+          )) tranmap)
         cnt (count newtran )
     ]
     (spit "E:/DEV/clojure/sberpb/sberapi/DB/cl.clj" "[\n" :append false)
