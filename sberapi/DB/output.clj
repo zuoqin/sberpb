@@ -16,7 +16,7 @@
 { :security/bcode "XS0524610812 Corp", :security/isin "VEBBNK 6.902 07/09/20", :security/exchange "OTC", :security/currency "RUB",    :db/id #db/id[:db.part/user -100016] }
 { :security/bcode "SNGSP RX EQUITY", :security/isin "SNGSP ISIN", :security/exchange "MOSCOW", :security/currency "RUB",    :db/id #db/id[:db.part/user -100017] }
 { :security/acode "XS1255387976 Corp", :security/isin "IMHRUS 10 3/4 12/28/18", :security/exchange "OTC", :security/currency "RUB",    :db/id #db/id[:db.part/user -100018] }
-{ :security/acode "POLYLN",      :security/isin "JE00B6T5S470", :security/bcode    "POLY LN Equity",     :security/exchange "MOSCOW", :security/currency "GBX",    :db/id #db/id[:db.part/user -100019] }
+{ :security/acode "POLYLN",      :security/isin "JE00B6T5S470", :security/bcode    "POLY LN Equity",     :security/exchange "LONDON", :security/currency "GBX",    :db/id #db/id[:db.part/user -100019] }
 
 
 { :security/acode "FKEC01",      :security/isin "RU000A0JP039", :security/exchange "MOSCOW", :security/currency "RUB",    :db/id #db/id[:db.part/user -100020] }
@@ -142,6 +142,8 @@
 
 { :security/acode "USD",          :security/isin "RUB Curncy",   :security/bcode "RUB Curncy",         :security/exchange "IMM",        :security/currency "RUB",   :db/id #db/id[:db.part/user -100132] }
 { :security/acode "GBP",          :security/isin "GBPRUB ISIN",  :security/bcode "GBPRUB Curncy",      :security/exchange "IMM",        :security/currency "RUB",   :db/id #db/id[:db.part/user -100005] }
+{ :security/acode "RUR",          :security/isin "RUR RF",       :security/bcode "RUR",                :security/exchange "",        :security/currency "RUB",      :db/id #db/id[:db.part/user -100133] }
+{ :security/acode "RUB",          :security/isin "RUB RF",       :security/bcode "RUB",                :security/exchange "",        :security/currency "RUB",      :db/id #db/id[:db.part/user -100134] }
 
 
 
@@ -201,7 +203,7 @@
 ;;{ :transaction/client #db/id[:db.part/user -102003] :transaction/security #db/id[:db.part/user -100047], :transaction/nominal 200000.0 :transaction/price 95.30 :transaction/direction "B" :transaction/valuedate #inst "2016-10-25T00:00:00.0000000Z", :transaction/currency "USD" :transaction/comment "", :db/id #db/id[:db.part/user -110011] }
 
 ;; PRICES
-;;{ :price/security #db/id[:db.part/user -100004]  :price/lastprice  23.30 :price/valuedate #inst "2017-02-03T00:00:00.0000000Z" :price/comment "manual" :price/source "test data" }
-;;{ :price/security #db/id[:db.part/user -100005]  :price/lastprice  10100.30 :price/valuedate #inst "2017-02-03T00:00:00.0000000Z" :price/comment "manual" :price/source "test data" }
+{ :price/security #db/id[:db.part/user -100133]    :price/lastprice  1.0     :price/valuedate #inst "2000-01-01T00:00:00.0000000Z" :price/comment "manual" :price/source "test data", :db/id #db/id[:db.part/user -110001] }
+{ :price/security #db/id[:db.part/user -100134]    :price/lastprice  1.0     :price/valuedate #inst "2000-01-01T00:00:00.0000000Z" :price/comment "manual" :price/source "test data", :db/id #db/id[:db.part/user -110002] }
 ;;{ :price/security #db/id[:db.part/user -100006]  :price/lastprice  100.01 :price/valuedate #inst "2017-02-03T00:00:00.0000000Z" :price/comment "manual" :price/source "test data" }
 ]

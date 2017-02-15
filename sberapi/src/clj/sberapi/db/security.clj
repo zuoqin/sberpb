@@ -20,18 +20,20 @@
                        :in $ ?sec
                        :where
                        [?e :security/acode ?sec]
-                       ] (d/db conn) currency)) 
+                       ] (d/db conn) (if (= 0 (compare currency "GBX")) "GBP" currency))) 
 
-    rate (sort-by first #(> (c/to-long %1) (c/to-long %2)) (d/q '[:find ?dt ?p
-                                                         :in $ ?sec
-                                                         :where
-                                                         [?e :price/security ?sec]
-                                                         [?e :price/valuedate ?dt]
-                                                         [?e :price/lastprice ?p]
-                                                         ]
-                                 (d/db conn) security)  ) 
+    rate (first (sort-by first #(> (c/to-long %1) (c/to-long %2))
+           (d/q '[:find ?dt ?p
+                  :in $ ?sec
+                  :where
+                  [?e :price/security ?sec]
+                  [?e :price/valuedate ?dt]
+                  [?e :price/lastprice ?p]
+                  ]    
+       (d/db conn) security)))
+    newrate (if (= 0 (compare currency "GBX")) (/ (nth rate 1) 100.0) (nth rate 1))
     ]
-    (second (first rate)) 
+    newrate 
   )
 )
 

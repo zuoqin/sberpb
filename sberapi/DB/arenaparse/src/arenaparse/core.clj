@@ -32,28 +32,28 @@
 (defn get-fxrate-by-date [currency dt]
   (let [
 
-    ;;tr1 (println (str "in get-fxrate-by-date " currency " for date: " dt) )
+    ;tr1 (println (str "in get-fxrate-by-date " currency " for date: " dt) )
     newdate (java.util.Date. (c/to-long (f/parse custom-formatter (f/unparse custom-formatter (c/from-long (c/to-long dt))))))
 
     security (ffirst (d/q '[:find ?e
                        :in $ ?sec
                        :where
                        [?e :security/acode ?sec]
-                       ] (d/db conn) currency)) 
+                       ] (d/db conn) (if (= 0 (compare currency "GBX")) "GBP" currency))) 
 
     rate (first (sort-by first #(> (c/to-long %1) (c/to-long %2))
            (d/q '[:find ?d ?p
                   :in $ ?sec ?dt
                   :where
-                  [?e :price/security]
-                  [?e :price/security ?s]
+                  [?e :price/security ?sec]
                   [?e :price/valuedate ?d]
                   [?e :price/lastprice ?p]
                   [(<= ?d ?dt)]
                   ]
-                (d/db conn) security newdate)))  
+                (d/db conn) security newdate)))
+    newrate (if (= 0 (compare currency "GBX")) (/ (nth rate 1) 100.0) (nth rate 1))
     ]
-    (nth rate 1) 
+    newrate 
     ;rate
   )
 )
@@ -92,7 +92,7 @@
                        [?e :security/bcode ?bcode]
                        ] (d/db conn) bcode))
 
-    tr1 (println (str sec " bcode: " bcode))
+    ;tr1 (println (str sec " bcode: " bcode))
     prices (drop 6 (->> (load-workbook "e:/dev/java/quotes.xlsx")
                                 (select-sheet bcode)
                                 (select-columns {:A :date, :B :price})))
@@ -116,13 +116,13 @@
   )
 )
 
-(defn save-rate-to-db [rate]
+(defn save-rate-to-db [currency rate]
   (let [
     fxid  (ffirst (d/q '[:find ?e
                        :in $ ?sec
                        :where
                        [?e :security/acode ?sec]
-                       ] (d/db conn) "GBP"))
+                       ] (d/db conn) currency))
     ]
     (d/transact conn  [{ :price/security fxid :price/lastprice (:rate rate) :price/valuedate (:date rate) :price/source "CBR" :price/comment "Import from CBR web site 2017-02-14" :db/id #db/id[:db.part/user -100001 ]}] )
   )
@@ -138,7 +138,7 @@
       r (map (fn [x] (let [s (first x)] {:date (java.util.Date. (c/to-long (f/parse cbr-date-formatter (subs s 0 10))) )   :rate (Float/parseFloat (subs s 13 20))}) ) f)
 
     ]
-    (doall (map save-rate-to-db r))
+    (doall (map (fn [x] (save-rate-to-db currency x)) r))
     (count r)
 
     ;(first f)
@@ -148,12 +148,16 @@
 
 
 (defn addclient []
-  ;(d/transact conn  [{ :client/code client :client/name "New client name" :db/id #db/id[:db.part/user -102005]}] )
+;;   (d/transact conn  [{ :security/acode "RUR",          :security/isin "RUR RF",       :security/bcode "RUR",                :security/exchange "",        :security/currency "RUB",      :db/id #db/id[:db.part/user -100133] }
+;; { :security/acode "RUB",          :security/isin "RUB RF",       :security/bcode "RUB",                :security/exchange "",        :security/currency "RUB",      :db/id #db/id[:db.part/user -100134] }] )
      (d/transact
     conn
-    [{:db/id  17592186045432
-      :security/currency "GBX"
-      }
+    [{ :price/security #db/id[:db.part/user 17592186055599]    :price/lastprice  1.0     :price/valuedate #inst "2000-01-01T00:00:00.0000000Z" :price/comment "manual" :price/source "test data", :db/id #db/id[:db.part/user -110006] }
+{ :price/security #db/id[:db.part/user 17592186055600]    :price/lastprice  1.0     :price/valuedate #inst "2000-01-01T00:00:00.0000000Z" :price/comment "manual" :price/source "test data",:db/id #db/id[:db.part/user -110007] }
+
+;; {:db/id  17592186055599
+;;       :price/lastprice 1.0
+;;       }
 ])
 )
 
@@ -461,11 +465,15 @@
           sec (ent [[(get-sec-by-code (:security x))]] )
 
           seccurrency (second (first (filter (fn [security] (if (= (keyword "security/currency") (first security)) x)) sec)))
+          rateseccurrency (get-fxrate-by-date seccurrency (:valuedate x))
 
-          trancurrency (if (= 0 (compare "RUR" (:currency x)) ) "RUB" (:currency x)) 
+          trancurrency (if (= 0 (compare "RUR" (:currency x)) ) "RUB" (:currency x))          
+          ratetranscurrency (get-fxrate-by-date trancurrency (:valuedate x))
 
-          newrate (if (= (compare seccurrency trancurrency) 0) 1 (if (= trancurrency "RUB") (/ 1 (get-fxrate-by-date seccurrency (:valuedate x))) (get-fxrate-by-date trancurrency (:valuedate x)) ) )
-          newprice (if (= seccurrency trancurrency) (:price x) )
+          newrate (/ ratetranscurrency rateseccurrency )
+          newprice (if (= seccurrency trancurrency) (:price x) (* (:price x) newrate))
+
+          ;;tr1 (println "rate1: " ratetranscurrency " rate2: " rates)
           ]
            {:client (:client x) :valuedate (:valuedate x) :direction (:direction x) :price (* newrate (:price x))  :nominal (:nominal x) :currency seccurrency :security (get-sec-by-code (:security x)) }
 

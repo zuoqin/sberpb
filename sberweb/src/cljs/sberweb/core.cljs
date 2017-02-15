@@ -80,15 +80,20 @@
     posprice (:price (nth position 1))
     price (if (nil? (:price security)) posprice (:price security))
 
-    fxrate (if (or (= "RUB" (:currency security)) (= "RUR" (:currency security))) 1 (:price  (first (filter (fn[x] (if( = (:acode x) (:currency security)) true false)) (:securities @app-state))))) 
-    
 
-    result {:id secid :currency (:currency security) :amount (:amount (nth position 1)) :wap posprice :price price :waprub (:rubprice (nth position 1)) :currubprice (* price fxrate)}
+    currency (if (= 0 (compare "GBX" (:currency security))) "GBP" (:currency security))
+
+
+    fxrate (if (or (= "RUB" currency) (= "RUR" currency)) 1 (:price  (first (filter (fn[x] (if( = (:acode x) currency) true false)) (:securities @app-state)))))
+
+    newfxrate (if (= 0 (compare "GBX" (:currency security))) (/ fxrate 100.) fxrate)    
+
+    result {:id secid :currency (:currency security) :amount (:amount (nth position 1)) :wap posprice :price price :waprub (:rubprice (nth position 1)) :currubprice (* price newfxrate)}
 
 
 
     ]
-    (.log js/console (str "price: " price " fxrate:" fxrate))
+    ;(.log js/console (str "price: " price " fxrate:" fxrate))
     result
   )
 )

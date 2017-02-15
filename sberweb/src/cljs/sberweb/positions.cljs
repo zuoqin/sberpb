@@ -84,16 +84,14 @@
             )
 
           )
-          (dom/div {:className "col-xs-1 col-md-1" :style {:padding-left "0px" :padding-right "0px"}}
-            
-            (dom/a {:className "list-group-item" :style {:text-align "right"} :href (str  "#/postrans/" (:id item)    ) }
+          (dom/div {:className "col-xs-1 col-md-1" :style {:padding-left "0px" :padding-right "0px"}}            
+            (dom/a {:className "list-group-item" :style {:padding-left "3px" :padding-right "3px" :text-align "right"} :href (str  "#/postrans/" (:id item)    ) }
               (dom/h4 {:className "list-group-item-heading"} (sbercore/split-thousands (str (:amount item)))   )
-            )
-            
+            )            
           )
 
 
-          (dom/div {:className "col-xs-3 col-md-3" :style {:padding-left "0px" :padding-right "0px"}}
+          (dom/div {:className "col-xs-1 col-md-1" :style {:padding-left "0px" :padding-right "0px"}}
             
             (dom/a {:className "list-group-item" :style {:text-align "right"} :href (str  "#/postrans/" (:id item)    ) }
               (dom/h4 {:className "list-group-item-heading"} (if (> (:wap item) 1) (gstring/format "%.2f" (:wap item))  (subs (str (:wap item)) 0 5) )    )
@@ -121,7 +119,7 @@
           )
 
 
-          ;; RUB P/L, %
+          ;; RUB %% P/L
           (dom/div {:className "col-xs-1 col-md-1" :style {:padding-left "0px" :padding-right "0px" :padding-top "10px"}}
             (dom/div {:className "progress"}
               (dom/div {:className (str "progress-bar" (if (< (:currubprice item) (:waprub item)) " progress-bar-danger" ""))  :role "progresbar" :aria-valuenow (str (.round js/Math (.abs js/Math (* 100.0 (/ (-  (:currubprice item) (:waprub item)) (:waprub item)))))) :aria-valuemin "0" :aria-valuemax "100" :style {:color "black" :width (str (.round js/Math (.abs js/Math (* 100.0 (/ (-  (:currubprice item) (:waprub item)) (:waprub item))))) "%") }}
@@ -131,15 +129,11 @@
             )
           )
 
-
-
-
-
           ;; RUB P/L
           (dom/div {:className "col-xs-1 col-md-1" :style {:padding-left "0px" :padding-right "0px" :padding-top "10px"}}
-            (dom/div {:className "progress"}
-              (dom/div {:className (str "progress-bar" (if (< (:currubprice item) (:waprub item)) " progress-bar-danger" ""))  :role "progresbar" :aria-valuenow (str (.round js/Math (.abs js/Math (* 100.0 (/ (-  (:currubprice item) (:waprub item)) (:waprub item)))))) :aria-valuemin "0" :aria-valuemax "100" :style {:color "black" :width (str (.round js/Math (.abs js/Math (* 100.0 (/ (-  (:currubprice item) (:waprub item)) (:waprub item))))) "%") }}
-                (dom/span {:style {:position "absolute" :display "block" :width "100%"}} (.round js/Math (* 100.0 (/ (-  (:currubprice item) (:waprub item)) (:waprub item)))) ) 
+            (dom/div
+              (dom/div 
+                (dom/span {:style {:position "absolute" :padding-right "5px" :text-align "right" :display "block" :width "100%"}} (sbercore/split-thousands (str (.round js/Math (* (-  (:currubprice item) (:waprub item)) (:amount item))   ) )))   
                 
               )
             )
@@ -148,6 +142,17 @@
 
           ;; USD P/L
           (dom/div {:className "col-xs-1 col-md-1" :style {:padding-left "0px" :padding-right "0px" :padding-top "10px"}}
+            (dom/div
+              (dom/div 
+                (dom/span {:style {:position "absolute" :padding-right "5px" :text-align "right" :display "block" :width "100%"}} (sbercore/split-thousands (str (.round js/Math (* (-  (:price item) (:wap item)) (:amount item))   ) )))   
+                
+              )
+            )
+          )
+
+
+          ;; YTD P/L, %%
+          (dom/div {:className "col-xs-1 col-md-1" :style {:padding-left "0px" :padding-right "0px" :padding-top "10px"}}
             (dom/div {:className "progress"}
               (dom/div {:className (str "progress-bar" (if (< (:currubprice item) (:waprub item)) " progress-bar-danger" ""))  :role "progresbar" :aria-valuenow (str (.round js/Math (.abs js/Math (* 100.0 (/ (-  (:currubprice item) (:waprub item)) (:waprub item)))))) :aria-valuemin "0" :aria-valuemax "100" :style {:color "black" :width (str (.round js/Math (.abs js/Math (* 100.0 (/ (-  (:currubprice item) (:waprub item)) (:waprub item))))) "%") }}
                 (dom/span {:style {:position "absolute" :display "block" :width "100%"}} (.round js/Math (* 100.0 (/ (-  (:currubprice item) (:waprub item)) (:waprub item)))) ) 
@@ -156,9 +161,26 @@
             )
           )
 
+          ;; 1Y P/L, %%
+          (dom/div {:className "col-xs-1 col-md-1" :style {:padding-left "0px" :padding-right "0px" :padding-top "10px"}}
+            (dom/div {:className "progress"}
+              (dom/div {:className (str "progress-bar" (if (< (:currubprice item) (:waprub item)) " progress-bar-danger" ""))  :role "progresbar" :aria-valuenow (str (.round js/Math (.abs js/Math (* 100.0 (/ (-  (:currubprice item) (:waprub item)) (:waprub item)))))) :aria-valuemin "0" :aria-valuemax "100" :style {:color "black" :width (str (.round js/Math (.abs js/Math (* 100.0 (/ (-  (:currubprice item) (:waprub item)) (:waprub item))))) "%") }}
+                (dom/span {:style {:position "absolute" :display "block" :width "100%"}} (.round js/Math (* 100.0 (/ (-  (:currubprice item) (:waprub item)) (:waprub item)))) ) 
+                
+              )
+            )
+          )
         )
         )
-        (sort (comp comp-positions) (filter (fn [x] (if (<= (:amount x) 0) false true)) (:positions ((keyword (:selectedclient @sbercore/app-state)) @sbercore/app-state) ) ))
+
+        (sort (comp comp-positions) (filter (fn [x] (let [
+seccode (:acode (first (filter (fn[y] (if (= (:id x) (:id y) ) true false)) (:securities @sbercore/app-state))))
+
+]
+(if (or (<= (:amount x) 0) (= false (str/includes? seccode (:search @sbercore/app-state))))  false true)
+) ) (:positions ((keyword (:selectedclient @sbercore/app-state)) @sbercore/app-state) ) ))
+
+        
       )
     )
   )
@@ -209,13 +231,15 @@
 
             (dom/div (assoc stylerow  :className "row" )
               (dom/div {:className "col-xs-3 col-md-3" :style {:text-align "center"}}  "Security Name")
-              (dom/div {:className "col-xs-3 col-md-1" :style {:text-align "center"}} "Amount")
-              (dom/div {:className "col-xs-3 col-md-3" :style {:text-align "center"}} "WAP price")
+              (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "Amount")
+              (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "WAP price")
               (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "Currency")
               (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "P/L, %")
               (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "P/L RUB, %")
               (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "P/L, RUB")
               (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "P/L, USD")
+              (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "YTD P/L, %")
+              (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "1Y P/L, %")
             )
           )
           (dom/div {:className "panel-body"}
@@ -234,13 +258,15 @@
           (dom/div {:className "panel-heading"}
             (dom/div (assoc stylerow  :className "row" )
               (dom/div {:className "col-xs-3 col-md-3" :style {:text-align "center"}}  "Security Name")
-              (dom/div {:className "col-xs-3 col-md-1" :style {:text-align "center"}} "Amount")
-              (dom/div {:className "col-xs-3 col-md-3" :style {:text-align "center"}} "WAP price")
+              (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "Amount")
+              (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "WAP price")
               (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "Currency")
               (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "P/L, %")
               (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "P/L RUB, %")
               (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "P/L, RUB")
               (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "P/L, USD")
+              (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "YTD P/L, %")
+              (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "1Y P/L, %")
             )
           )
         )
