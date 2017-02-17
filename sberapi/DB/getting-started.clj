@@ -35,6 +35,7 @@
 (def data-tx (read-string (slurp "E:/DEV/clojure/sberpb/sberapi/DB/output.clj")))
 
 (def data-tx (read-string (slurp "E:/DEV/clojure/sberpb/sberapi/DB/cl.clj")))
+(def data-tx (read-string (slurp "c:/DEV/clojure/sberpb/sberapi/DB/cl.clj")))
 ;;(def data-tx (read-string (slurp "/home/ec2-user//output.clj")))
 
 

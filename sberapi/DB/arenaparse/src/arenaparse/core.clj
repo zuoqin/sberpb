@@ -22,27 +22,29 @@
 
 (def uri "datomic:dev://localhost:4334/sberpb_dev")
 
-(def conn (d/connect uri))
+;;(defn disconnect []  (d/release conn))
 
-(defn disconnect []  (d/release conn))
-
-(def client "PYUMF" ) ;;"AANDF" "VADZF" "AANDF" "DACFF"
+(def client "ELLQF" ) ;;"PYUMF" "AANDF" "VADZF" "AANDF" "DACFF"
 
 
 (def custom-formatter (f/formatter "dd/MM/yyyy"))
+
+(def built-in-formatter (f/formatters :date-hour-minute-second-fraction))
+(def build-in-basicdate-formatter (f/formatters :basic-date))
+
 
 (defn append-position-to-file [position dt]
   (let [
         str1 (str client "," (name (first position)) "," (:amount (second position)) "," (:price (second position)) "," (f/unparse build-in-basicdate-formatter (c/from-long (c/to-long dt)) ) "\n")
         ]
     ;;(println str1)
-    (spit (str "E:/DEV/clojure/sberpb/sberapi/DB/" client ".txt") str1 :append true)
+    (spit (str "c:/DEV/clojure/sberpb/sberapi/DB/" client ".txt") str1 :append true)
   )
 )
 
 (defn get-fxrate-by-date [currency dt]
   (let [
-
+    conn (d/connect uri)
     ;tr1 (println (str "in get-fxrate-by-date " currency " for date: " dt) )
     newdate (java.util.Date. (c/to-long (f/parse custom-formatter (f/unparse custom-formatter (c/from-long (c/to-long dt))))))
 
@@ -71,6 +73,7 @@
 
 (defn find-price [sec date]
   (let [
+         conn (d/connect uri)
          price (d/q '[:find ?e
                       :in $ ?sec ?dt
                       :where
@@ -90,6 +93,7 @@
 
     ;tr1 (println quote)
     ;tr2 (println sec)
+    conn (d/connect uri)
   ]
   (if (or (nil? dt) (nil? price) (nil? sec) (> (find-price sec dt) 0) ) 1 (d/transact conn  [{ :price/security sec :price/lastprice price :price/valuedate dt :price/source "Excel import" :price/comment "Import from Bllomberg Excel output on 2017-02-13" :db/id #db/id[:db.part/user -100001 ]}] ) ) 
   )
@@ -97,6 +101,7 @@
 
 (defn import-price-for-sec [bcode]
   (let [
+    conn (d/connect uri)
     sec (ffirst (d/q '[:find ?e
                        :in $ ?bcode
                        :where
@@ -104,7 +109,7 @@
                        ] (d/db conn) bcode))
 
     ;tr1 (println (str sec " bcode: " bcode))
-    prices (drop 6 (->> (load-workbook "e:/dev/java/quotes.xlsx")
+    prices (drop 6 (->> (load-workbook "c:/dev/java/quotes.xlsx")
                                 (select-sheet bcode)
                                 (select-columns {:A :date, :B :price})))
     trans (map (fn [x] (excel-quote-to-db x sec))  prices)
@@ -116,7 +121,7 @@
 
 (defn import-excel-quotes []
   (let [
-    secs (drop 0 (->> (load-workbook "e:/dev/java/quotes.xlsx")
+    secs (drop 0 (->> (load-workbook "c:/dev/java/quotes.xlsx")
                    (select-sheet "Content")
                    (select-columns {:B :code :C :isquote})))
 
@@ -129,6 +134,7 @@
 
 (defn save-rate-to-db [currency rate]
   (let [
+    conn (d/connect uri)
     fxid  (ffirst (d/q '[:find ?e
                        :in $ ?sec
                        :where
@@ -137,17 +143,20 @@
     ]
     (d/transact conn  [{ :price/security fxid :price/lastprice (:rate rate) :price/valuedate (:date rate) :price/source "CBR" :price/comment "Import from CBR web site 2017-02-14" :db/id #db/id[:db.part/user -100001 ]}] )
   )
-  ;(println rate)
+  (println rate)
 )
 
 (defn readcbrrates [currency]
   (let [
-      f (with-open [in-file (io/reader (str "e:/dev/java/rates_" currency ".txt") )]
+      tr1 (println "in cbr rates")
+      f (with-open [in-file (io/reader (str "c:/dev/java/rates_" currency ".txt") )]
           (doall
            (csv/read-csv in-file)))
 
-      r (map (fn [x] (let [s (first x)] {:date (java.util.Date. (c/to-long (f/parse cbr-date-formatter (subs s 0 10))) )   :rate (Float/parseFloat (subs s 13 20))}) ) f)
 
+      tr2 (println (first f))
+      r (map (fn [x] (let [s (first x)] {:date (java.util.Date. (c/to-long (f/parse cbr-date-formatter (subs s 0 10))) )   :rate (Float/parseFloat (subs s 13 20))}) ) f)
+      tr3 (println (first r))
     ]
     (doall (map (fn [x] (save-rate-to-db currency x)) r))
     (count r)
@@ -159,22 +168,17 @@
 
 
 (defn addclient []
-;;   (d/transact conn  [{ :security/acode "RUR",          :security/isin "RUR RF",       :security/bcode "RUR",                :security/exchange "",        :security/currency "RUB",      :db/id #db/id[:db.part/user -100133] }
-;; { :security/acode "RUB",          :security/isin "RUB RF",       :security/bcode "RUB",                :security/exchange "",        :security/currency "RUB",      :db/id #db/id[:db.part/user -100134] }] )
-     (d/transact
-    conn
-    [{ :price/security #db/id[:db.part/user 17592186055599]    :price/lastprice  1.0     :price/valuedate #inst "2000-01-01T00:00:00.0000000Z" :price/comment "manual" :price/source "test data", :db/id #db/id[:db.part/user -110006] }
-{ :price/security #db/id[:db.part/user 17592186055600]    :price/lastprice  1.0     :price/valuedate #inst "2000-01-01T00:00:00.0000000Z" :price/comment "manual" :price/source "test data",:db/id #db/id[:db.part/user -110007] }
-
-;; {:db/id  17592186055599
-;;       :price/lastprice 1.0
-;;       }
-])
+  (let [
+     conn (d/connect uri)
+     ]
+     (d/transact conn [{ :client/code "ELLQF" :client/name "Клиент ELLQF" :db/id #db/id[:db.part/user -102007]}]
+    )
+  )
 )
 
 
 (defn addsecs []
-  (d/transact conn  [{:security/acode "RUR" :security/bcode "RUB Curncy" :security/exchange "MICEX" :security/isin "RUB ISIN" :db/id #db/id[:db.part/user -102005]}] )
+  ;(d/transact conn  [{:security/acode "RUR" :security/bcode "RUB Curncy" :security/exchange "MICEX" :security/isin "RUB ISIN" :db/id #db/id[:db.part/user -102005]}] )
 
 )
 
@@ -182,18 +186,20 @@
 
 )
 
-(def built-in-formatter (f/formatters :date-hour-minute-second-fraction))
-(def build-in-basicdate-formatter (f/formatters :basic-date))
-
-(defn ent [id]  (seq (d/entity (d/db conn) (ffirst id))) )
+(defn ent [id]
+  (let [
+   conn (d/connect uri)
+  ]
+  (seq (d/entity (d/db conn) (ffirst id))) )
+)
 
 
 (defn get-trans-count-for-day [dt]
   (let [
         dt1 (java.util.Date. (c/to-long (f/parse custom-formatter (f/unparse custom-formatter (c/from-long (c/to-long dt))))))
-
+        conn (d/connect uri)
         dt2 (java.util.Date. (c/to-long (f/parse custom-formatter (f/unparse custom-formatter (c/from-long (+ (c/to-long dt) (* 1000 24 3600)))))))
-         trans (d/q '[:find ?e
+        trans (d/q '[:find ?e
                       :in $ ?client ?dt1 ?dt2
                       :where
                       [?e :transaction/client ?c]
@@ -213,6 +219,7 @@
 
 (defn find-transaction [tran]
   (let [
+         conn (d/connect uri)
          client (ent (d/q '[:find ?eid
                           :in $ ?eid
                           :where
@@ -261,6 +268,7 @@
 
 (defn get-clients []
   (let [
+         conn (d/connect uri)
          clients (d/q '[:find ?e ?c ?n
                           :where
                           [?e :client/code]
@@ -289,6 +297,7 @@
 
 (defn get-securities []
   (let [
+        conn (d/connect uri)
         securities (d/q '[:find ?e ?c ?x ?i
                           :where
                           [?e :security/acode]
@@ -404,10 +413,10 @@
 (defn append-tran-to-file [tran id]
   (let [
         newid (- 0 110001 id)
-        str1 (str "{ :transaction/client #db/id[:db.part/user " (:client tran) "] :transaction/security #db/id[:db.part/user " (:security tran) "], :transaction/nominal " (format "%.1f" (:nominal tran)) " :transaction/price " (:price tran) " :transaction/direction \"" (:direction tran) "\" :transaction/valuedate  #inst \"" (f/unparse built-in-formatter (c/from-long (c/to-long (:valuedate tran))) ) "0000Z\", :transaction/currency \"" (:currency tran) "\" :transaction/comment \"\", :db/id #db/id[:db.part/user " newid "]}\n")
+        str1 (str "{ :transaction/client #db/id[:db.part/user " (:client tran) "] :transaction/security #db/id[:db.part/user " (:security tran) "], :transaction/nominal " (str/replace (format "%.1f" (:nominal tran)) "," ".")  " :transaction/price " (:price tran) " :transaction/direction \"" (:direction tran) "\" :transaction/valuedate  #inst \"" (f/unparse built-in-formatter (c/from-long (c/to-long (:valuedate tran))) ) "0000Z\", :transaction/currency \"" (:currency tran) "\" :transaction/comment \"\", :db/id #db/id[:db.part/user " newid "]}\n")
         ]
     (if (= (find-transaction tran) 0) 
-      (spit "E:/DEV/clojure/sberpb/sberapi/DB/cl.clj" str1 :append true)
+      (spit "c:/DEV/clojure/sberpb/sberapi/DB/cl.clj" str1 :append true)
       (println tran)
     )
     
@@ -419,13 +428,13 @@
         str1 (str client "," client "," (name (first position)) "," (:currency (second position)) "," (:amount (second position)) "," (:price (second position)) "," (f/unparse build-in-basicdate-formatter (c/from-long (c/to-long (java.util.Date.))) ) "\n")
         ]
     ;;(println str1)
-    (spit (str "E:/DEV/clojure/sberpb/sberapi/DB/" client ".txt") str1 :append true)
+    (spit (str "c:/DEV/clojure/sberpb/sberapi/DB/" client ".txt") str1 :append true)
   )
 )
 
 
 (defn get-positions-bloomberg []
-  (let [f (slurp (str "E:/DEV/Java/" client ".xml") )
+  (let [f (slurp (str "c:/DEV/Java/" client ".xml") )
         x (parse f)
         trancnt (- (count (:content (nth   (:content (nth (:content x) 4) )  0 ) ) ) 1)  
         trans (loop [result [] num 0 ]
@@ -470,8 +479,9 @@
 )
 
 (defn get-transactions [dt]
-  (let [f (slurp (str "E:/DEV/Java/" client ".xml"))
+  (let [f (slurp (str "C:/DEV/Java/" client ".xml"))
         x (parse f)
+	
         trancnt (- (count (:content (nth   (:content (nth (:content x) 4) )  0 ) ) ) 1)  
         trans (loop [result [] num 0 ]
           (let [item (:content (nth (:content (nth   (:content (nth (:content x) 4) )  0 ) )  num))]
@@ -486,6 +496,7 @@
           )
         )
         tranmap (map tran-to-map trans)
+	tr1 (println (first tranmap))
     ]
     (filter (fn [x] (if (or (> (c/to-long (:valuedate x)) (c/to-long dt)) (not (str/includes? (str/lower-case (:status x)) "valid") ) (= "RUR" (:security x)) (= "USD" (:security x)) (nil? (:client x)) (nil? (:currency x))  (= "R" (:direction x))) false true)) tranmap)
     ;;(first tranmap)
@@ -534,13 +545,13 @@
 
 
 (defn save-positions-bloomberg [positions dt]
-  (spit (str "E:/DEV/clojure/sberpb/sberapi/DB/" client ".txt")  ",,,,\n" :append true)
+  (spit (str "c:/DEV/clojure/sberpb/sberapi/DB/" client ".txt")  ",,,,\n" :append true)
   (doall (map (fn [x] (append-position-to-file x dt)) positions))
 )
 
 (defn get-portf-by-num [num]
   (let [
-    newnum (+ 1420070400000 (* num 86400000) )
+    newnum (+ 1420156799000 (* num 86400000) )
     newdate (java.util.Date. newnum)
     ;tr1 (println newdate)
     day-of-week (f/unparse day-of-week-formatter (c/from-long (c/to-long newdate)))
@@ -567,8 +578,8 @@
 (defn generateportfs []
   (let [
 
-    ;res1 (spit (str "E:/DEV/clojure/sberpb/sberapi/DB/" client ".txt")  ",,,,\n" :append false)
-    res1 (spit (str "E:/DEV/clojure/sberpb/sberapi/DB/" client ".txt") (str "Portfolio Name,Security ID,Position/Quantity/Nominal,Cost Px asset Currency,Date\n")  :append false)
+    ;res1 (spit (str "C:/DEV/clojure/sberpb/sberapi/DB/" client ".txt")  ",,,,\n" :append false)
+    res1 (spit (str "C:/DEV/clojure/sberpb/sberapi/DB/" client ".txt") (str "Portfolio Name,Security ID,Position/Quantity/Nominal,Cost Px asset Currency,Date\n")  :append false)
     days (map (fn [x] (get-portf-by-num x)) (range 0 2000 1))
     ]
     (doall days)
@@ -600,9 +611,9 @@
           )) tranmap)
           cnt (count newtran )
     ]
-    (spit "E:/DEV/clojure/sberpb/sberapi/DB/cl.clj" "[\n" :append false)
+    (spit "c:/DEV/clojure/sberpb/sberapi/DB/cl.clj" "[\n" :append false)
     (doall (map append-tran-to-file newtran (range cnt))) 
-    ;;(spit "E:/DEV/clojure/sberpb/sberapi/DB/cl.clj" "\n]\n" :append true)
+    ;;(spit "c:/DEV/clojure/sberpb/sberapi/DB/cl.clj" "\n]\n" :append true)
     ;;(first newtran)
     cnt
   )
@@ -621,7 +632,7 @@
 
 (defn find-not-registered-secs []
 
-  (let [trans (get-transactions)
+  (let [trans (get-transactions (java.util.Date.))
         secs (for [x trans
          :let [res (checktransec x)]
          :when (= res false)
@@ -634,14 +645,40 @@
   )
 )
 
+(defn append-sec-to-file [sec id]
+  (let [
+        newid (+ 10000 id)
+        str1 (str  "{ :security/acode \"" (:acode sec)  "\", :security/isin\"" (:isin sec) "\", :security/bcode \"" (:bcode sec) "\", :security/exchange \"" (:exchange sec) "\" :security/currency \"" (:currency sec) "\",   :db/id #db/id[:db.part/user - newid "]}" ) )
+        ]
+    ;;(println str1)
+    (spit (str "c:/DEV/clojure/sberpb/sberapi/DB/" client ".txt") str1 :append true)
+  )
+)
+
+;;{ :security/acode "ALFARU15N",     :security/isin "XS0494933806", :security/bcode "XS0494933806 Corp",  :security/exchange "XETRA",      :security/currency "USD",   :db/id #db/id[:db.part/user -100135] }
+
+(defn import-new-secs []
+  (let [
+    secs (drop 0 (->> (load-workbook "c:/data/secs.xlsx")
+                   (select-sheet "Sheet3")
+                   (select-columns {:A :acode :B :isin :C :bcode :D :currency :E :exchange})))
+
+    ;newsecs (filter (fn [x] (if (> (:isquote x) 0.0) true false)) secs)
+    ;trans (map (fn [x] (import-price-for-sec (:code x)))  newsecs )
+    ]
+   (doall (map append-sec-to-file secs (range (count secs)))) 
+  )
+)
+
 (defn -main
   "I don't do a whole lot ... yet."
   [& args]
-  ;;(find-not-registered-secs)
-  (let [trans (get-transactions)
-    res (map (fn [x] (if (> (find-transaction x) 0) (println x) (println 0))) trans) 
-        
-   ]
-   res
-  )
+  ;(doall (map (fn [x] (println x)) (find-not-registered-secs)))
+  ;(addclient)
+  ;(readcbrrates "GBP")
+  ;(save-transactions)
+  ;(println (format "%.1f" 3000.0))
+  ;(generateportfs)
+  (import-new-secs)
+  (println "Success")
 )

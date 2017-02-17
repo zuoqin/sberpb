@@ -107,7 +107,7 @@
 { :security/acode "EDCLLI",       :security/isin "US29843U2024", :security/bcode "EDCLLI Equity",      :security/exchange "NYSE",       :security/currency "USD",    :db/id #db/id[:db.part/user -100100] }
 { :security/acode "ETLNLI",       :security/isin "US29760G1031", :security/bcode "US29760G1031 Equity",:security/exchange "NYSE",       :security/currency "USD",    :db/id #db/id[:db.part/user -100101] }
 { :security/acode "HEDJUS",       :security/isin "US97717X7012", :security/bcode "US97717X7012 Equity",:security/exchange "NYSE",       :security/currency "USD",    :db/id #db/id[:db.part/user -100102] }
-{ :security/acode "HGMLN",        :security/isin "GB0032360173", :security/bcode "GB0032360173 Equity",:security/exchange "LONDON",     :security/currency "RUB",    :db/id #db/id[:db.part/user -100103] }
+{ :security/acode "HGMLN",        :security/isin "GB0032360173", :security/bcode "GB0032360173 Equity",:security/exchange "LONDON",     :security/currency "USD",    :db/id #db/id[:db.part/user -100103] }
 { :security/acode "HHPA2AHLX",    :security/isin "LU0974284688", :security/bcode "LU0974284688 Equity",:security/exchange "LUXEMBURG",  :security/currency "RUB",    :db/id #db/id[:db.part/user -100104] }
 { :security/acode "HYGUS",        :security/isin "US4642885135", :security/bcode "US4642885135 Equity",:security/exchange "NYSE",       :security/currency "USD",    :db/id #db/id[:db.part/user -100105] }
 { :security/acode "KCELLI",       :security/isin "US48668G2057", :security/bcode "US48668G2057 Equity",:security/exchange "NYSE",       :security/currency "RUB",    :db/id #db/id[:db.part/user -100106] }
@@ -138,6 +138,15 @@
 { :security/acode "TRMK",         :security/isin "RU000A0B6NK6", :security/bcode "TRMK RX Equity",     :security/exchange "MOSCOW",     :security/currency "RUB",    :db/id #db/id[:db.part/user -100129] }
 { :security/acode "EFGIF_1017B",  :security/isin "CH0340808812", :security/bcode "CH0340808812 Corp",  :security/exchange "SWISS",      :security/currency "USD",   :db/id #db/id[:db.part/user -100130] }
 { :security/acode "EU42REGS",     :security/isin "XS0767473852", :security/bcode "XS0767473852 Corp",  :security/exchange "XETRA",      :security/currency "USD",   :db/id #db/id[:db.part/user -100131] }
+
+
+
+{ :security/acode "ALFARU15N",     :security/isin "XS0494933806", :security/bcode "XS0494933806 Corp",  :security/exchange "XETRA",      :security/currency "USD",   :db/id #db/id[:db.part/user -100135] }
+{ :security/acode "ALFARU16R",     :security/isin "XS0922142574", :security/bcode "XS0922142574 Corp",  :security/exchange "XETRA",      :security/currency "USD",   :db/id #db/id[:db.part/user -100136] }
+{ :security/acode "ALOC15",        :security/isin "XS0493579238", :security/bcode "XS0493579238 Corp",  :security/exchange "XETRA",      :security/currency "USD",   :db/id #db/id[:db.part/user -100137] }
+{ :security/acode "ALROSA20",      :security/isin "XS0555493203", :security/bcode "XS0555493203 Corp",  :security/exchange "XETRA",      :security/currency "USD",   :db/id #db/id[:db.part/user -100138] }
+{ :security/acode "BORFIN18",      :security/isin "XS0555493203", :security/bcode "XS0555493203 Corp",  :security/exchange "XETRA",      :security/currency "USD",   :db/id #db/id[:db.part/user -100139] }
+
 
 
 { :security/acode "USD",          :security/isin "RUB Curncy",   :security/bcode "RUB Curncy",         :security/exchange "IMM",        :security/currency "RUB",   :db/id #db/id[:db.part/user -100132] }
@@ -174,7 +183,7 @@
 { :client/code "DACFF" :client/name "Клиент DACFF" :db/id #db/id[:db.part/user -102004]}
 { :client/code "AANDF" :client/name "Клиент AANDF" :db/id #db/id[:db.part/user -102005]}
 { :client/code "VADZF" :client/name "Клиент VADZF" :db/id #db/id[:db.part/user -102006]}
-
+{ :client/code "ELLQF" :client/name "Клиент "ELLQF" :db/id #db/id[:db.part/user -102007]}
 
 ;; TRANSACTIONS
 
