@@ -141,18 +141,20 @@
 
 
 
-{ :security/acode "ALFARU15N",     :security/isin "XS0494933806", :security/bcode "XS0494933806 Corp",  :security/exchange "XETRA",      :security/currency "USD",   :db/id #db/id[:db.part/user -100135] }
-{ :security/acode "ALFARU16R",     :security/isin "XS0922142574", :security/bcode "XS0922142574 Corp",  :security/exchange "XETRA",      :security/currency "USD",   :db/id #db/id[:db.part/user -100136] }
-{ :security/acode "ALOC15",        :security/isin "XS0493579238", :security/bcode "XS0493579238 Corp",  :security/exchange "XETRA",      :security/currency "USD",   :db/id #db/id[:db.part/user -100137] }
-{ :security/acode "ALROSA20",      :security/isin "XS0555493203", :security/bcode "XS0555493203 Corp",  :security/exchange "XETRA",      :security/currency "USD",   :db/id #db/id[:db.part/user -100138] }
-{ :security/acode "BORFIN18",      :security/isin "XS0555493203", :security/bcode "XS0555493203 Corp",  :security/exchange "XETRA",      :security/currency "USD",   :db/id #db/id[:db.part/user -100139] }
+;;{ :security/acode "ALFARU15N",     :security/isin "XS0494933806", :security/bcode "XS0494933806 Corp",  :security/exchange "XETRA",      :security/currency "USD",   :db/id #db/id[:db.part/user -100135] }
+;;{ :security/acode "ALFARU16R",     :security/isin "XS0922142574", :security/bcode "XS0922142574 Corp",  :security/exchange "XETRA",      :security/currency "USD",   :db/id #db/id[:db.part/user -100136] }
+;;{ :security/acode "ALOC15",        :security/isin "XS0493579238", :security/bcode "XS0493579238 Corp",  :security/exchange "XETRA",      :security/currency "USD",   :db/id #db/id[:db.part/user -100137] }
+;;{ :security/acode "ALROSA20",      :security/isin "XS0555493203", :security/bcode "XS0555493203 Corp",  :security/exchange "XETRA",      :security/currency "USD",   :db/id #db/id[:db.part/user -100138] }
+;;{ :security/acode "BORFIN18",      :security/isin "XS0555493203", :security/bcode "XS0555493203 Corp",  :security/exchange "XETRA",      :security/currency "USD",   :db/id #db/id[:db.part/user -100139] }
 
 
 
 { :security/acode "USD",          :security/isin "RUB Curncy",   :security/bcode "RUB Curncy",         :security/exchange "IMM",        :security/currency "RUB",   :db/id #db/id[:db.part/user -100132] }
 { :security/acode "GBP",          :security/isin "GBPRUB ISIN",  :security/bcode "GBPRUB Curncy",      :security/exchange "IMM",        :security/currency "RUB",   :db/id #db/id[:db.part/user -100005] }
-{ :security/acode "RUR",          :security/isin "RUR RF",       :security/bcode "RUR",                :security/exchange "",        :security/currency "RUB",      :db/id #db/id[:db.part/user -100133] }
-{ :security/acode "RUB",          :security/isin "RUB RF",       :security/bcode "RUB",                :security/exchange "",        :security/currency "RUB",      :db/id #db/id[:db.part/user -100134] }
+{ :security/acode "RUR",          :security/isin "RUR RF",       :security/bcode "RUR",                :security/exchange "",           :security/currency "RUB",    :db/id #db/id[:db.part/user -100133] }
+{ :security/acode "RUB",          :security/isin "RUB RF",       :security/bcode "RUB",                :security/exchange "",           :security/currency "RUB",    :db/id #db/id[:db.part/user -100134] }
+{ :security/acode "EUR",          :security/isin "EURRUB ISIN",  :security/bcode "EURRUB Curncy",      :security/exchange "IMM",        :security/currency "RUB",    :db/id #db/id[:db.part/user -100135] }
+{ :security/acode "SEK",          :security/isin "SEKRUB ISIN",  :security/bcode "SEKRUB Curncy",      :security/exchange "IMM",        :security/currency "RUB",    :db/id #db/id[:db.part/user -100136] }
 
 
 
@@ -183,7 +185,7 @@
 { :client/code "DACFF" :client/name "Клиент DACFF" :db/id #db/id[:db.part/user -102004]}
 { :client/code "AANDF" :client/name "Клиент AANDF" :db/id #db/id[:db.part/user -102005]}
 { :client/code "VADZF" :client/name "Клиент VADZF" :db/id #db/id[:db.part/user -102006]}
-{ :client/code "ELLQF" :client/name "Клиент "ELLQF" :db/id #db/id[:db.part/user -102007]}
+{ :client/code "ELLQF" :client/name "Клиент ELLQF" :db/id #db/id[:db.part/user -102007]}
 
 ;; TRANSACTIONS
 
@@ -212,7 +214,7 @@
 ;;{ :transaction/client #db/id[:db.part/user -102003] :transaction/security #db/id[:db.part/user -100047], :transaction/nominal 200000.0 :transaction/price 95.30 :transaction/direction "B" :transaction/valuedate #inst "2016-10-25T00:00:00.0000000Z", :transaction/currency "USD" :transaction/comment "", :db/id #db/id[:db.part/user -110011] }
 
 ;; PRICES
-{ :price/security #db/id[:db.part/user -100133]    :price/lastprice  1.0     :price/valuedate #inst "2000-01-01T00:00:00.0000000Z" :price/comment "manual" :price/source "test data", :db/id #db/id[:db.part/user -110001] }
-{ :price/security #db/id[:db.part/user -100134]    :price/lastprice  1.0     :price/valuedate #inst "2000-01-01T00:00:00.0000000Z" :price/comment "manual" :price/source "test data", :db/id #db/id[:db.part/user -110002] }
+{ :price/security #db/id[:db.part/user -100133],    :price/lastprice  1.0,     :price/valuedate #inst "2000-01-01T00:00:00.0000000Z", :price/comment "manual", :price/source "test data", :db/id #db/id[:db.part/user -110001] }
+{ :price/security #db/id[:db.part/user -100134],    :price/lastprice  1.0,     :price/valuedate #inst "2000-01-01T00:00:00.0000000Z", :price/comment "manual", :price/source "test data", :db/id #db/id[:db.part/user -110002] }
 ;;{ :price/security #db/id[:db.part/user -100006]  :price/lastprice  100.01 :price/valuedate #inst "2017-02-03T00:00:00.0000000Z" :price/comment "manual" :price/source "test data" }
 ]
