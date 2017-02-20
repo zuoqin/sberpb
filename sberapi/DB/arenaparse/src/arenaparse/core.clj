@@ -26,7 +26,7 @@
 
 ;;(defn disconnect []  (d/release conn))
 
-(def client "ELLQF" ) ;;"PYUMF" "AANDF" "VADZF" "AANDF" "DACFF"
+(def client "ELLQF" ) ;;"XGZQF" "TADFF" "PYUMF" "AANDF" "VADZF" "AANDF" "DACFF"
 
 
 (def custom-formatter (f/formatter "dd/MM/yyyy"))
@@ -37,7 +37,7 @@
 
 (defn append-position-to-file [position dt]
   (let [
-        str1 (str client "," (name (first position)) "," (:amount (second position)) "," (:price (second position)) "," (f/unparse build-in-basicdate-formatter (c/from-long (c/to-long dt)) ) "\n")
+        str1 (str client "," (name (first position)) "," (format "%.1f" (:amount (second position)))  "," (:price (second position)) "," (f/unparse build-in-basicdate-formatter (c/from-long (c/to-long dt)) ) "\n")
         ]
     ;;(println str1)
     (spit (str drive ":/DEV/clojure/sberpb/sberapi/DB/" client ".txt") str1 :append true)
@@ -47,14 +47,18 @@
 (defn get-fxrate-by-date [currency dt]
   (let [
     conn (d/connect uri)
-    ;;tr1 (println (str "in get-fxrate-by-date " currency " for date: " dt) )
+    ;tr1 (println (str "in get-fxrate-by-date " currency " for date: " dt) )
     newdate (java.util.Date. (c/to-long (f/parse custom-formatter (f/unparse custom-formatter (c/from-long (c/to-long dt))))))
 
+
+ 
     security (ffirst (d/q '[:find ?e
                        :in $ ?sec
                        :where
                        [?e :security/acode ?sec]
-                       ] (d/db conn) (if (= 0 (compare currency "GBX")) "GBP" currency))) 
+                       ] (d/db conn) (if (= 0 (compare currency "GBX")) "GBP" currency)))
+
+    ;tr2 (println security)
 
     rate (first (sort-by first #(> (c/to-long %1) (c/to-long %2))
            (d/q '[:find ?d ?p
@@ -66,6 +70,9 @@
                   [(<= ?d ?dt)]
                   ]
                 (d/db conn) security newdate)))
+
+
+    ;tr3 (println rate)
     newrate (if (= 0 (compare currency "GBX")) (/ (nth rate 1) 100.0) (nth rate 1))
     ]
     newrate 
@@ -142,10 +149,13 @@
                        :where
                        [?e :security/acode ?sec]
                        ] (d/db conn) currency))
+
+
+        ;tr1 (println rate)
     ]
-    (d/transact conn  [{ :price/security fxid :price/lastprice (:rate rate) :price/valuedate (:date rate) :price/source "CBR" :price/comment "Import from CBR web site 2017-02-14" :db/id #db/id[:db.part/user -100001 ]}] )
+    (d/transact conn  [{ :price/security fxid :price/lastprice (Double/parseDouble (str (:rate rate)))  :price/valuedate (:date rate) :price/source "CBR" :price/comment "Import from CBR web site 2017-02-14" :db/id #db/id[:db.part/user -100001 ]}] )
   )
-  ;;(println rate)
+  ;(println rate)
 )
 
 (defn readcbrrates [currency]
@@ -159,7 +169,7 @@
       r (map (fn [x] (let [s (first x)] {:date (java.util.Date. (c/to-long (f/parse cbr-date-formatter (subs s 0 10))) )   :rate (Float/parseFloat (subs s 13))}) ) f)
       ;tr3 (println (first r))
     ]
-    (doall (map (fn [x] (save-rate-to-db currency x)) r))
+    (doall (map (fn [x] (save-rate-to-db currency x)) r ))
     (count r)
 
     ;(first f)
@@ -172,8 +182,12 @@
   (let [
      conn (d/connect uri)
      ]
-     (d/transact conn [{ :security/acode "SEK",          :security/isin "SEKRUB ISIN",  :security/bcode "SEKRUB Curncy",      :security/exchange "IMM",        :security/currency "RUB",    :db/id #db/id[:db.part/user -100136] }]
+    (d/transact conn [{ :client/code "TADFF" :client/name "Клиент TADFF" :db/id #db/id[:db.part/user -102009]}]
     )
+    ; To insert new entity:
+    ;(d/transact conn [{ :transaction/client #db/id[:db.part/user 17592186045573] :transaction/security #db/id[:db.part/user 17592186065674], :transaction/nominal 108000.0 :transaction/price 100.0 :transaction/direction "S" :transaction/valuedate #inst "2014-04-22T00:00:00.0000000Z", :transaction/currency "RUB" :transaction/comment "", :db/id #db/id[:db.part/user -110002] }])
+     ; To delete entity by id:
+     ;(d/transact conn [[:db.fn/retractEntity 17592186045577]])
   )
 )
 
@@ -502,7 +516,7 @@
 
 (defn get-transactions-from-db [dt]
   (let [
-        dt1 (java.util.Date. (c/to-long (f/parse custom-formatter (f/unparse custom-formatter (c/from-long (c/to-long dt))))))
+        dt1 (java.util.Date. (c/to-long (f/parse custom-formatter (f/unparse custom-formatter (c/from-long (c/to-long #inst "2000-01-01T00:00:00.000-00:00" ))))))
         conn (d/connect uri)
         dt2 (java.util.Date. (c/to-long (f/parse custom-formatter (f/unparse custom-formatter (c/from-long (+ (c/to-long dt) (* 1000 24 3600)))))))
         trans (d/q '[:find ?e
@@ -534,14 +548,22 @@
         x (parse f)
 	
         trancnt (- (count (:content (nth   (:content (nth (:content x) 4) )  0 ) ) ) 1)  
+        ;tr1 (println (nth (:content (nth   (:content (nth (:content x) 4) )  0 ) ) 101)) 
         trans (loop [result [] num 0 ]
-          (let [item (:content (nth (:content (nth   (:content (nth (:content x) 4) )  0 ) )  num))]
-            (if (< num trancnt)            
+          (let [item (if (<= num trancnt) (:content (nth (:content (nth   (:content (nth (:content x) 4) )  0 ) )  num)))  
+            ]
+            (if (<= num trancnt)            
               
-              (if (= (:ss:StyleID (:attrs (nth item 0))) "s72" )
+              (if (and
+                   (= (:ss:StyleID (:attrs (nth item 0))) "s72" )
+                   (or (= 0 (compare "We Sell" (first (:content  (first (:content (nth item 9)  )  ))))) 
+                       (= 0 (compare "We Buy" (first (:content  (first (:content (nth item 9)  )  )))))
+                   )
+                   (not (str/includes? (str/lower-case (first (:content  (first (:content (nth item 4)  )  )))) "forts"))
+                )
                 (recur (conj result item ) (inc num))
                 (recur result (inc num))
-              )              
+              )
               result
             )
           )
@@ -549,7 +571,7 @@
         ;tr5 (println (first trans ) )
         ;filtertran  (filter (fn [x] (if (nil? (:security x)) false true)) trans)
         tranmap (map tran-to-map trans)
-	;tr1 (println (first tranmap))
+	;tr2 (println (nth tranmap 25))
     ]
     (filter (fn [x] (if (or (> (c/to-long (:valuedate x)) (c/to-long dt)) (not (str/includes? (str/lower-case (:status x)) "valid") ) (= "RUR" (:security x)) (= "USD" (:security x)) (nil? (:client x)) (nil? (:currency x))  (= "R" (:direction x))) false true)) tranmap)
     ;;(first tranmap)
@@ -610,7 +632,7 @@
 
 (defn get-portf-by-num [num]
   (let [
-    newnum (+ 1451692799000 (* num 86400000) ) ;;1325462399000
+    newnum (+ 1451692799000 (* num 86400000) ) ;;1487116799000  1451692799000  1325462399000
     newdate (java.util.Date. newnum)
     ;tr1 (println newdate)
     day-of-week (f/unparse day-of-week-formatter (c/from-long (c/to-long newdate)))
@@ -624,7 +646,7 @@
                                                (= 0 (compare "Wed" day-of-week))
                                                (= 0 (compare "Thu" day-of-week))
                                                (= 0 (compare "Fri" day-of-week))
-                                               ) )  (getPositions newdate))
+                                               ) )  (filter (fn [x] (if (> (:amount (second x)) 0) true false)) (getPositions newdate)) )
         ]    
     (if (not (nil? positions)) (save-positions-bloomberg positions newdate) )
     "Success"
@@ -639,7 +661,7 @@
 
     ;res1 (spit (str "C:/DEV/clojure/sberpb/sberapi/DB/" client ".txt")  ",,,,\n" :append false)
     res1 (spit (str drive ":/DEV/clojure/sberpb/sberapi/DB/" client ".txt") (str "Portfolio Name,Security ID,Position/Quantity/Nominal,Cost Px asset Currency,Date\n")  :append false)
-    days (map (fn [x] (get-portf-by-num x)) (range 0 400 1))
+    days (map (fn [x] (get-portf-by-num x)) (range 0 500 1))
     ]
     (doall days)
     "Success"
@@ -652,22 +674,23 @@
           tranmap (get-transactions (java.util.Date.))
 
           newtran (map (fn [x] (let [
-          sec (ent [[(get-sec-by-code (:security x))]] )
 
-                  
+      
+          sec (ent [[(get-sec-by-code (:security x))]] )
 
           seccurrency (second (first (filter (fn [security] (if (= (keyword "security/currency") (first security)) x)) sec)))
 
-          tr2 (if (nil? sec) (println x))
+          ;tr2 (println x)
           rateseccurrency (get-fxrate-by-date seccurrency (:valuedate x))
 
           trancurrency (if (= 0 (compare "RUR" (:currency x)) ) "RUB" (:currency x))          
           ratetranscurrency (get-fxrate-by-date trancurrency (:valuedate x))
 
+        
           newrate (/ ratetranscurrency rateseccurrency )
           newprice (if (= seccurrency trancurrency) (:price x) (* (:price x) newrate))
 
-          ;;tr1 (println "rate1: " ratetranscurrency " rate2: " rates)
+          ;tr1 (println "rate1: " ratetranscurrency " rate2: " newrate)
           ]
           {:client (:client x) :valuedate (:valuedate x) :direction (:direction x) :price (* newrate (:price x))  :nominal (:nominal x) :currency seccurrency :security (get-sec-by-code (:security x)) }
 
@@ -712,7 +735,7 @@
 
 (defn append-sec-to-file [sec id]
   (let [
-        newid (+ 100010 id)
+        newid (+ 100138 id)
         str1 (str  "{ :security/acode \"" (:acode sec)  "\", :security/isin\"" (:isin sec) "\", :security/bcode \"" (:bcode sec) "\", :security/exchange \"" (:exchange sec) "\" :security/currency \"" (:currency sec) "\",   :db/id #db/id[:db.part/user -" newid "]}\n" ) 
         ]
     ;;(println str1)
@@ -723,7 +746,7 @@
 (defn import-new-secs []
   (let [
     secs (drop 0 (->> (load-workbook (str drive ":/dev/java/secs.xlsx") )
-                   (select-sheet "ELLQF")
+                   (select-sheet client)
                    (select-columns {:A :acode :B :isin :C :bcode :D :currency :E :exchange})))
 
     ;newsecs (filter (fn [x] (if (> (:isquote x) 0.0) true false)) secs)
@@ -741,9 +764,10 @@
   ;(doall (map (fn [x] (println x)) (find-not-registered-secs)))
   ;(addclient)
   ;(readcbrrates "GBP")
+  ;(import-new-secs)
   ;(save-transactions)
   ;(println (format "%.1f" 3000.0))
   ;(generateportfs)
-  (import-new-secs)
+  ;(import-new-secs)
   (println "Success")
 )

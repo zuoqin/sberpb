@@ -38,7 +38,7 @@
   :db/ident :security/bcode
   :db/valueType :db.type/string
   :db/cardinality :db.cardinality/one
-  :db/unique :db.unique/identity  
+  :db/unique :db.unique/identity
   :db/fulltext true
   :db/doc "Security bloomberg code"
   :db.install/_attribute :db.part/db}
@@ -48,6 +48,8 @@
   :db/ident :security/isin
   :db/valueType :db.type/string
   :db/cardinality :db.cardinality/one
+  :db/unique :db.unique/identity
+  :db/fulltext true
   :db/doc "Security ISIN code"
   :db.install/_attribute :db.part/db}
 
@@ -111,14 +113,14 @@
 
 {:db/id #db/id[:db.part/db]
   :db/ident :transaction/nominal
-  :db/valueType :db.type/float
+  :db/valueType :db.type/double
   :db/cardinality :db.cardinality/one
   :db/doc "Transaction nominal"
   :db.install/_attribute :db.part/db}
 
 {:db/id #db/id[:db.part/db]
   :db/ident :transaction/price
-  :db/valueType :db.type/float
+  :db/valueType :db.type/double
   :db/cardinality :db.cardinality/one
   :db/doc "Transaction price"
   :db.install/_attribute :db.part/db}
@@ -168,7 +170,7 @@
 
 {:db/id #db/id[:db.part/db]
   :db/ident :price/lastprice
-  :db/valueType :db.type/float
+  :db/valueType :db.type/double
   :db/cardinality :db.cardinality/one
   :db/doc "LAST price"
   :db.install/_attribute :db.part/db}
