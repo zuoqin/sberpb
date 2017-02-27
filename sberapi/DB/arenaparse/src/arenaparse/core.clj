@@ -182,7 +182,9 @@
   (let [
      conn (d/connect uri)
      ]
-    (d/transact conn [{ :client/code "BBKEF",  :client/name "Клиент BBKEF",  :db/id #db/id[:db.part/user -102015]}]
+    (d/transact conn [{ :security/acode "GMSS27", :security/isin"RU000A0JXJE0", :security/bcode "RU000A0JXJE0 Corp", :security/exchange "MICB", :security/currency "RUR",   :db/id #db/id[:db.part/user -100232]}
+{ :security/acode "GTLK-1P-03", :security/isin"RU000A0JXE06", :security/bcode "RU000A0JXE06 Corp", :security/exchange "MICB", :security/currency "RUR",   :db/id #db/id[:db.part/user -100233]}
+]
     )
     ; To insert new entity:
     ;(d/transact conn [{ :transaction/client #db/id[:db.part/user 17592186045573] :transaction/security #db/id[:db.part/user 17592186065674], :transaction/nominal 108000.0 :transaction/price 100.0 :transaction/direction "S" :transaction/valuedate #inst "2014-04-22T00:00:00.0000000Z", :transaction/currency "RUB" :transaction/comment "", :db/id #db/id[:db.part/user -110002] }])
@@ -573,7 +575,7 @@
         tranmap (map tran-to-map trans)
 	;tr2 (println (nth tranmap 25))
     ]
-    (filter (fn [x] (if (or (> (c/to-long (:valuedate x)) (c/to-long dt)) (not (str/includes? (str/lower-case (:status x)) "valid") ) (= "RUR" (:security x)) (= "USD" (:security x)) (nil? (:client x)) (nil? (:currency x))  (= "R" (:direction x))) false true)) tranmap)
+    (filter (fn [x] (if (or (> (c/to-long (:valuedate x)) (c/to-long dt)) (not (str/includes? (str/lower-case (:status x)) "valid") ) (= "RUR" (:security x)) (= "GBP/RUR" (:security x)) (= "USD/RUR" (:security x)) (= "GBP/USD" (:security x)) (= "GBP/EUR" (:security x)) (= "EUR/USD" (:security x)) (= "EUR/RUR" (:security x)) (= "USD" (:security x)) (nil? (:client x)) (nil? (:currency x))  (= "R" (:direction x))) false true)) tranmap)
     ;tranmap
   )
 )
@@ -680,7 +682,7 @@
 
           seccurrency (second (first (filter (fn [security] (if (= (keyword "security/currency") (first security)) x)) sec)))
 
-          ;tr2 (println x)
+          tr2 (println x)
           rateseccurrency (get-fxrate-by-date seccurrency (:valuedate x))
 
           trancurrency (if (= 0 (compare "RUR" (:currency x)) ) "RUB" (:currency x))          
@@ -735,7 +737,7 @@
 
 (defn append-sec-to-file [client sec id]
   (let [
-        newid (+ 100184 id)
+        newid (+ 100224 id)
         str1 (str  "{ :security/acode \"" (:acode sec)  "\", :security/isin\"" (:isin sec) "\", :security/bcode \"" (:bcode sec) "\", :security/exchange \"" (:exchange sec) "\", :security/currency \"" (:currency sec) "\",   :db/id #db/id[:db.part/user -" newid "]}\n" ) 
         ]
     (spit (str drive ":/DEV/clojure/sberpb/sberapi/DB/" client ".txt") str1 :append true)
