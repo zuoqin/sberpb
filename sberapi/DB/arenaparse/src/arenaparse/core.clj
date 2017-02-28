@@ -16,7 +16,7 @@
   )
 )
 
-(def drive "e")
+(def drive "c")
 
 (def cbr-date-formatter (f/formatter "dd.MM.yyyy"))
 
@@ -599,16 +599,18 @@
                         sec (get-isin-by-seccode (str (:security tran))) 
                         currency (:currency (first (filter (fn [x] (if (= (:security tran) (:id x)) true false)) securities)))
                         amnt (:amount ( (keyword sec) result ))
-                        prevpr (:price ((keyword sec) result))
+                        prevpr (if (nil? (:price ((keyword sec) result))) 0 (:price ((keyword sec) result))) 
                         
                         ;rubprice (* (:fx tran) (:price tran))
-
+                        
                         ;prevrubprice (:rubprice ((keyword sec) result))
                         tranamnt (if (= "B" (:direction tran)) (:nominal tran) (- 0 (:nominal tran)))
+                        ;tr1 (println (str "sec: " sec " prevpr: " prevpr " tranamnt: " tranamnt) )
+                        ;tr2 (println tran)
                         newamnt (if (nil? amnt ) tranamnt (+ amnt tranamnt) )
                         wap (if (nil? amnt ) (:price tran) (if (> newamnt 0) (/ (+ (* prevpr amnt) (* (:price tran) tranamnt)) newamnt) 0))
 
-                        ;tr1 (println wap)
+                        ;tr5 (if (= java.lang.String (type wap) ) (println 4444444444) (println (type wap)))
                         ]
                     (recur (assoc-in result [(keyword sec) ] {:amount newamnt :price wap} )
                          (rest trans))
@@ -632,7 +634,7 @@
 
 (defn get-portf-by-num [client num]
   (let [
-    newnum (+ 1325462399000 (* num 86400000) ) ;;1487116799000  1451692799000  1325462399000
+    newnum (+ 1325462399000 (* num 86400000) ) ;;1325462399000 1487116799000  1451692799000  1325462399000
     newdate (java.util.Date. newnum)
     ;tr1 (println newdate)
     day-of-week (f/unparse day-of-week-formatter (c/from-long (c/to-long newdate)))
@@ -695,7 +697,7 @@
           ]
           {:client (:client x) :valuedate (:valuedate x) :direction (:direction x) :price (* newrate (:price x))  :nominal (:nominal x) :currency seccurrency :security (get-sec-by-code (:security x)) }
 
-          ))  (filter (fn [x] (if (nil? (:security x)) false true))  tranmap))
+          ))  (filter (fn [x] (if (or (nil? (:security x)) (= 0 (compare "TNBP" (:security x))) (= 0 (compare "TNBPP" (:security x))))  false true))  tranmap))
 
           filtertran (filter (fn [x] (if (nil? (:security x)) false true))  newtran)
           cnt (count filtertran )
@@ -736,7 +738,7 @@
 
 (defn append-sec-to-file [client sec id]
   (let [
-        newid (+ 100285 id)
+        newid (+ 100322 id)
         str1 (str  "{ :security/acode \"" (:acode sec)  "\", :security/isin \"" (:isin sec) "\", :security/bcode \"" (:bcode sec) "\", :security/exchange \"" (:exchange sec) "\", :security/currency \"" (:currency sec) "\",   :db/id #db/id[:db.part/user -" newid "]}\n" ) 
         ]
     (spit (str drive ":/DEV/clojure/sberpb/sberapi/DB/" client ".txt") str1 :append true)

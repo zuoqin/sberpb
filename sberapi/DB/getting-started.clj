@@ -20,7 +20,7 @@
 (def conn (d/connect uri))
 
 ;; parse schema edn file
-(def schema-tx (read-string (slurp "C:/DEV/sberpb/sberapi/DB/sberpb-schema.edn")))
+(def schema-tx (read-string (slurp "C:/DEV/clojure/sberpb/sberapi/DB/sberpb-schema.edn")))
 (def schema-tx (read-string (slurp "E:/DEV/clojure/sberpb/sberapi/DB/sberpb-schema.edn")))
 ;;(def schema-tx (read-string (slurp "/home/ec2-user/tripadv-schema.edn")))
 
@@ -31,7 +31,7 @@
 @(d/transact conn schema-tx)
 
 ;; parse seed data edn file
-(def data-tx (read-string (slurp "C:/DEV/sberpb/sberapi/DB/output.clj")))
+(def data-tx (read-string (slurp "C:/DEV/clojure/sberpb/sberapi/DB/output.clj")))
 (def data-tx (read-string (slurp "E:/DEV/clojure/sberpb/sberapi/DB/output.clj")))
 
 (def data-tx (read-string (slurp "E:/DEV/clojure/sberpb/sberapi/DB/cl.clj")))
