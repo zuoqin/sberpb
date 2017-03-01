@@ -99,7 +99,23 @@
 
 
   )
+  (context "/api" []
+    :tags ["portfolios"]
 
+    (GET "/portfolios" []
+      :header-params [authorization :- String]
+      :query-params [security :- Long ]
+      :summary      "retrieve all portfolios for given security"
+
+      (ok  (positionapi/getPortfolios (nth (str/split authorization #" ") 1) security)))
+
+    (OPTIONS "/portfolios" []
+      :summary  "Allows OPTIONS requests"
+      (ok "")
+    )    
+
+
+  )
 
 
   (context "/api" []

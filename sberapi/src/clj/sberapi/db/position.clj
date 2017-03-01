@@ -65,7 +65,7 @@
   )
 )
 
-(defn get-transactions-bysec [client security]
+(defn get-transactions-by-client-security [client security]
   (let [
         transactions (into [] (d/q '[:find ?e
                                      :in $ ?code ?s
@@ -83,6 +83,21 @@
   )
 )
 
+(defn get-transactions-by-security [security]
+  (let [
+        transactions (into [] (d/q '[:find ?e
+                                     :in $ ?s
+                                     :where
+                                     [?e :transaction/security ?s]
+                                    ]
+                             (d/db conn) security)) 
+         newtrans (map  (fn [x] (ent [x]))  transactions)
+         newtrans2 (map (fn [x y] (trans-to-map x y)) newtrans transactions)
+
+    ]
+    newtrans2
+  )
+)
 
 
 (defn get-transactions [client]

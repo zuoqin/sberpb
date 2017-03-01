@@ -420,6 +420,10 @@
 { :security/acode "TGKA", :security/isin "RU000A0JNUD0", :security/bcode "TGKA RX Equity", :security/exchange "RX", :security/currency "RUB",   :db/id #db/id[:db.part/user -100372]}
 
 { :security/acode "DEUTPERPB", :security/isin "DE000DB7XHP3", :security/bcode "DE000DB7XHP3 Corp", :security/exchange "CBBT", :security/currency "EUR",   :db/id #db/id[:db.part/user -100373]}
+{ :security/acode "TNBP", :security/isin "TNBPISIN", :security/bcode "TNBP Equty",:security/exchange "CBBT", :security/currency "RUB",   :db/id #db/id[:db.part/user -100374]}
+{ :security/acode "TNBPP", :security/isin "TNBPPISIN", :security/bcode "TNBPP Equty",:security/exchange "CBBT", :security/currency "RUB",   :db/id #db/id[:db.part/user -100375]}
+{ :security/acode "TRNFBO1P5", :security/isin "RU000A0JXC24", :security/bcode "RU000A0JXC24 Corp",:security/exchange "CBBT", :security/currency "RUB",   :db/id #db/id[:db.part/user -100376]}
+
 
 ;; ISSUERS
 { :issuer/code "Mail.Ru Group Ltd" :db/id #db/id[:db.part/user -101001] }

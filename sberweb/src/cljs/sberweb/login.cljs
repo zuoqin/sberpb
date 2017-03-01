@@ -15,6 +15,7 @@
 	    
             [sberweb.userdetail :as userdetail]
             [sberweb.positions :as positions]
+            [sberweb.portfolios :as portfolios]
             [sberweb.postrans :as postrans]
             [sberweb.users :as users]
             [cljs.core.async :refer [put! dropping-buffer chan take! <!]]
@@ -91,7 +92,7 @@
 
 (defn OnGetSecurities [response]
   (swap! sbercore/app-state assoc-in [:securities] response )
-  (aset js/window "location" "#/positions")
+  (aset js/window "location" "#/portfolios")
 )
 
 (defn reqsecurities []
@@ -159,13 +160,10 @@
     ]
     ;;(.log js/console (str (select-keys (js->clj response) [:Title :Reference :Introduction])  ))    
     (swap! sbercore/app-state assoc-in [:token] newdata )
-    (swap! sbercore/app-state assoc-in [:view] 1 )
+    (swap! sbercore/app-state assoc-in [:view] 2 )
     (swap! sbercore/app-state assoc-in [:users] [] )
     (requser)
-
   )
-
-
 )
 
 (defn OnLogin [response]
