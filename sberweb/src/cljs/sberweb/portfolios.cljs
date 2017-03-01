@@ -76,14 +76,13 @@
       (map (fn [item]
         (dom/div {:className "row" :style {:margin-left "0px" :margin-right "0px"}} 
           (dom/div {:className "col-xs-3 col-md-3" :style {:padding-left "0px" :padding-right "0px"}}
-            (dom/a {:className "list-group-item" :href (str  "#/postrans/" (:id item)    ) }
-
+            (dom/a {:className "list-group-item" :href (str  "#/postrans/" (:id item) "/" (:selectedsec @sbercore/app-state)  )}
               (dom/h4  #js {:className "list-group-item-heading" :dangerouslySetInnerHTML #js {:__html (:name (first (filter (fn[x] (if (= (:id x) (:id item) ) true false)) (:clients @sbercore/app-state))))}} nil)
             )
 
           )
           (dom/div {:className "col-xs-1 col-md-1" :style {:padding-left "0px" :padding-right "0px"}}            
-            (dom/a {:className "list-group-item" :style {:padding-left "3px" :padding-right "3px" :text-align "right"} :href (str  "#/postrans/" (:id item)    ) }
+            (dom/a {:className "list-group-item" :style {:padding-left "3px" :padding-right "3px" :text-align "right"} :href (str  "#/postrans/" (:id item) "/" (:selectedsec @sbercore/app-state)) }
               (dom/h4 {:className "list-group-item-heading"} (sbercore/split-thousands (str (:amount item)))   )
             )            
           )
@@ -91,7 +90,7 @@
 
           (dom/div {:className "col-xs-1 col-md-1" :style {:padding-left "0px" :padding-right "0px"}}
             
-            (dom/a {:className "list-group-item" :style {:text-align "right"} :href (str  "#/postrans/" (:id item)    ) }
+            (dom/a {:className "list-group-item" :style {:text-align "right"} :href (str  "#/postrans/" (:id item)  "/" (:selectedsec @sbercore/app-state)  ) }
               (dom/h4 {:className "list-group-item-heading"} (if (> (:wap item) 1) (gstring/format "%.2f" (:wap item))  (subs (str (:wap item)) 0 5) )    )
             )
             
@@ -99,7 +98,7 @@
 
           (dom/div {:className "col-xs-1 col-md-1" :style {:padding-left "0px" :padding-right "0px"}}
             
-            (dom/a {:className "list-group-item" :style {:text-align "right"} :href (str  "#/postrans/" (:id item)    ) }
+            (dom/a {:className "list-group-item" :style {:text-align "right"} :href (str  "#/postrans/" (:id item)  "/" (:selectedsec @sbercore/app-state)  ) }
               (dom/h4 {:className "list-group-item-heading"} (:currency item)    )
             )
             
@@ -170,16 +169,10 @@
           )
         )
         )
-        
-
-(sort (comp comp-portfs) (filter (fn [x] (let [
-portfname (:name (first (filter (fn[y] (if (= (:id x) (:id y) ) true false)) (:clients @sbercore/app-state))))
-
-]
-(if (or (= false (str/includes? portfname (:search @sbercore/app-state))))  false true)
-) ) (:portfolios ((keyword (str (:selectedsec @sbercore/app-state))) @sbercore/app-state))
-
-))
+           (sort (comp comp-portfs) (filter (fn [x] (let [
+               portfname (:name (first (filter (fn[y] (if (= (:id x) (:id y) ) true false)) (:clients @sbercore/app-state))))
+               ]
+               (if (or (= false (str/includes? portfname (:search @sbercore/app-state))))  false true)) ) (:portfolios ((keyword (str (:selectedsec @sbercore/app-state))) @sbercore/app-state))))
 
         
       )

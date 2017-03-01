@@ -44,8 +44,14 @@
   (swap! app-state assoc-in [:view]   0 )
 )
 
-(defn goPortfolios [data]
+(defn goPortfolios [e]
+  (aset js/window "location" "#/portfolios")
   (swap! app-state assoc-in [:view] 2 )
+)
+
+(defn goPositions [e]
+  (aset js/window "location" "#/positions")
+  (swap! app-state assoc-in [:view] 1 )
 )
 
 (defn goUsers [data]
@@ -123,7 +129,7 @@
 
 
     ]
-    (.log js/console item)
+    ;(.log js/console item)
     result
   )
 )
@@ -250,7 +256,7 @@
    (jquery
      (fn []
        (-> (jquery "#securities" )
-         (.selectpicker "val" (:id (first (filter (fn [x] (if (= (:code x) (:selectedclient @app-state)) true false )) (:clients @app-state)) )) )
+         (.selectpicker "val" (:id (first (filter (fn [x] (if (= (:id x) (:selectedsec @app-state)) true false )) (:securities @app-state)) )) )
          (.on "change"
            (fn [e]
              (
@@ -401,6 +407,29 @@
               (b/button {:className "btn btn-info"  :onClick (fn [e] (printMonth))  } "Print positions")
             )
           )
+          (dom/ul {:className "nav navbar-nav navbar-right"}
+            (dom/li
+              (dom/a {:style {:margin "10px" :padding-bottom "0px"} :href "#/portfolios" :onClick (fn [e] (goPortfolios e))}
+                 (dom/span {:className "glyphicon glyphicon-cog"})
+                 "Portfolios"
+              )
+            )         
+            ;; (dom/li {:style {:visibility 
+            ;;                                (if 
+            ;;                                  (or (= (:role (:user @app-state)) "admin")
+            ;;                                      (= (:role (:user @app-state)) "manager")) "visible" "hidden")}}
+            ;;   (dom/a (assoc style :href "#/users")
+            ;;     (dom/span {:className "glyphicon glyphicon-log-out"})
+            ;;     "Users"
+            ;;   )
+            ;; )
+            (dom/li
+              (dom/a (assoc style :href "#/login")
+                (dom/i {:className "fa fa-sign-out fa-fw"})
+                "Exit"
+              )
+            )
+          )
         )
       )
     )
@@ -447,6 +476,31 @@
 
             (dom/li {:style {:margin-left "5px"}}
               (b/button {:className "btn btn-info"  :onClick (fn [e] (printMonth))  } "Print portfolios")
+            )
+          )
+
+
+          (dom/ul {:className "nav navbar-nav navbar-right"}
+            (dom/li
+              (dom/a {:style {:margin "10px" :padding-bottom "0px"} :href "#/positions" :onClick (fn [e] (goPositions e))}
+                 (dom/span {:className "glyphicon glyphicon-cog"})
+                 "Positions"
+              )
+            )         
+            ;; (dom/li {:style {:visibility 
+            ;;                                (if 
+            ;;                                  (or (= (:role (:user @app-state)) "admin")
+            ;;                                      (= (:role (:user @app-state)) "manager")) "visible" "hidden")}}
+            ;;   (dom/a (assoc style :href "#/users")
+            ;;     (dom/span {:className "glyphicon glyphicon-log-out"})
+            ;;     "Users"
+            ;;   )
+            ;; )
+            (dom/li
+              (dom/a (assoc style :href "#/login")
+                (dom/i {:className "fa fa-sign-out fa-fw"})
+                "Exit"
+              )
             )
           )
         )

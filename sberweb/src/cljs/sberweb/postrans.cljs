@@ -35,10 +35,13 @@
 )
 
 (defn OnGetTransactions [response]
-   (swap! sbercore/app-state assoc-in [ (keyword (:selectedclient @sbercore/app-state)) :transactions] (map tran-to-map response)  )
+  (let [
+    client (:code (first (filter (fn [x] (if (= (:id x) (:clientid @app-state)) true false)) (:clients @sbercore/app-state))))
+   ]
+   (swap! sbercore/app-state assoc-in [ (keyword client) :transactions] (map tran-to-map response))
+  )
    ;;(sbercore/setClientsDropDown)
-   ;;(.log js/console (:client @app-state)) 
-
+   ;;(.log js/console (:client @app-state))
 )
 
 
@@ -50,9 +53,11 @@
 
 
 (defn getTransactions []
-  (if (nil? ( (keyword (str (:secid @app-state))) (:transactions (((keyword (:selectedclient @sbercore/app-state)) @sbercore/app-state) @sbercore/app-state))))
-    
-    (GET (str settings/apipath "api/postran?client=" (:selectedclient @sbercore/app-state) "&security=" (:secid @app-state)) {
+  (let [
+    client (:code (first (filter (fn [x] (if (= (:id x) (:clientid @app-state)) true false))  (:clients @sbercore/app-state))))
+   ]
+   (if (or (nil? ((keyword client) @sbercore/app-state)) (nil? (:transactions (((keyword client) @sbercore/app-state) @sbercore/app-state))) ) 
+    (GET (str settings/apipath "api/postran?client=" client "&security=" (:secid @app-state)) {
       :handler OnGetTransactions
       :error-handler error-handler
       :headers {
@@ -61,6 +66,8 @@
     })
     (sbercore/setClientsDropDown)
 )
+  )
+  
 
 )
 
@@ -100,7 +107,7 @@
         )
 
         )
-	(sort (comp comp-trans) (filter (fn [x] (if (= (:security x) (:secid @app-state)) true false)) (:transactions ((keyword (:selectedclient @sbercore/app-state)) @sbercore/app-state))))    
+	(sort (comp comp-trans) (filter (fn [x] (if (= (:security x) (:secid @app-state)) true false)) (:transactions ((keyword (:code (first (filter (fn [x] (if (= (:id x) (:clientid @app-state)) true false)) (:clients @sbercore/app-state)))) ) @sbercore/app-state))))    
       )
     )
   )
@@ -167,8 +174,9 @@
 
 
 
-(sec/defroute transactions-page "/postrans/:id" [id]
-  (swap! app-state assoc-in [:secid]  (js/parseInt id)  )
+(sec/defroute transactions-page "/postrans/:clientid/:secid" [clientid secid]
+  (swap! app-state assoc-in [:secid]  (js/parseInt secid)  )
+  (swap! app-state assoc-in [:clientid]  (js/parseInt clientid)  )
   (om/root transactions-view
            sbercore/app-state
            {:target (. js/document (getElementById "app"))}))
