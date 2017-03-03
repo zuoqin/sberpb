@@ -1,4 +1,4 @@
-get-(ns arenaparse.core
+(ns arenaparse.core
   (:gen-class)
   (use dk.ative.docjure.spreadsheet)
   (use (incanter core charts excel))
@@ -547,7 +547,7 @@ get-(ns arenaparse.core
         fx_tran_currency (if (or (= "RUR" (nth (nth tran 5) 1)) (= "RUB" (nth (nth tran 5) 1)))  1 (get-fxrate-by-date (nth (nth tran 6) 1) (nth (nth tran 5) 1)))
 
         newtran {:client client :security acode  :nominal (nth (nth tran 2) 1) :price (nth (nth tran 3) 1) :direction (nth (nth tran 4) 1) :valuedate (nth (nth tran 5) 1) :currency currency :comment (if (> (count (nth tran 7)) 1) (nth (nth tran 7) 1) "")  :fx (/ fx_tran_currency fx_sec_currency) :id (nth (nth tran 8) 1)}
-        ;tr1 (if (= (compare acode "HGMLN" ) 0) (println (str (nth (nth tran 6) 1) " fx1: " fx_tran_currency " " currency " fx2: " fx_sec_currency " fx: " (:fx newtran) " date: " (:valuedate newtran) "\n")) ) 
+        ;tr1 (if (= (compare acode "HMSGLI" ) 0) (println (str (nth (nth tran 6) 1) " fx1: " fx_tran_currency " " currency " fx2: " fx_sec_currency " fx: " (:fx newtran) " date: " (:valuedate newtran) "\n")) ) 
         ]
     newtran
   )
@@ -725,7 +725,7 @@ get-(ns arenaparse.core
     ;;transactions (into [] (get-transactions dt))
 
     ;; Retrieve transactions from database
-    transactions (get-transactions-from-db client dt)
+    transactions (sort (comp sort-tran-from-db) (get-transactions-from-db client dt))
 
     newtrans (filter (fn [x] (if (or (nil? (:security x)) (= 0 (compare "MSTT" (:security x))) )  false true)) transactions)
     ;;tr1 (println (first transactions))
@@ -739,7 +739,7 @@ get-(ns arenaparse.core
                         amnt (:amount ( (keyword sec) result ))
                         prevpr (if (nil? (:price ((keyword sec) result))) 0 (:price ((keyword sec) result))) 
                         
-                        tranprice (/ (:price tran) (:fx tran) )
+                        tranprice (* (:price tran) (:fx tran) )
                         
                         ;prevrubprice (:rubprice ((keyword sec) result))
                         tranamnt (if (= "B" (:direction tran)) (:nominal tran) (- 0 (:nominal tran)))
@@ -772,7 +772,7 @@ get-(ns arenaparse.core
 
 (defn get-portf-by-num [client num]
   (let [
-    newnum (+ 1325462399000 (* num 86400000) ) ;;1488412799000  1487116799000  1451692799000  1325462399000
+    newnum (+ 1488412799000 (* num 86400000) ) ;;1325462399000 1488412799000  1487116799000  1451692799000  1325462399000
     newdate (java.util.Date. newnum)
     ;tr1 (println newdate)
     day-of-week (f/unparse day-of-week-formatter (c/from-long (c/to-long newdate)))

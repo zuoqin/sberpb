@@ -105,8 +105,8 @@
 { :security/acode "HGMLN",        :security/isin "GB0032360173", :security/bcode "GB0032360173 Equity",:security/exchange "LONDON",     :security/currency "GBX", :db/id #db/id[:db.part/user -100103] }
 { :security/acode "HHPA2AHLX",    :security/isin "LU0974284688", :security/bcode "LU0974284688 Equity",:security/exchange "LUXEMBURG",  :security/currency "RUB",    :db/id #db/id[:db.part/user -100104] }
 { :security/acode "HYGUS",        :security/isin "US4642885135", :security/bcode "US4642885135 Equity",:security/exchange "NYSE",       :security/currency "USD",    :db/id #db/id[:db.part/user -100105] }
-{ :security/acode "KCELLI",       :security/isin "US48668G2057", :security/bcode "US48668G2057 Equity",:security/exchange "NYSE",       :security/currency "RUB",    :db/id #db/id[:db.part/user -100106] }
-{ :security/acode "LXFTUS",       :security/isin "VGG572791041", :security/bcode "VGG572791041 Equity",:security/exchange "NYSE",       :security/currency "RUB",    :db/id #db/id[:db.part/user -100107] }
+{ :security/acode "KCELLI",       :security/isin "US48668G2057", :security/bcode "US48668G2057 Equity",:security/exchange "NYSE",       :security/currency "USD",    :db/id #db/id[:db.part/user -100106] }
+{ :security/acode "LXFTUS",       :security/isin "VGG572791041", :security/bcode "VGG572791041 Equity",:security/exchange "NYSE",       :security/currency "USD",    :db/id #db/id[:db.part/user -100107] }
 { :security/acode "MFON",         :security/isin "RU000A0JS942", :security/bcode "MFON RX Equity",     :security/exchange "MOSCOW",     :security/currency "RUB",    :db/id #db/id[:db.part/user -100108] }
 { :security/acode "NMTP",         :security/isin "RU0009084446", :security/bcode "NMTP RX Equity",     :security/exchange "MOSCOW",     :security/currency "RUB",    :db/id #db/id[:db.part/user -100109] }
 { :security/acode "SCGSAUALX",    :security/isin "LU0885727932", :security/bcode "LU0885727932 Equity",:security/exchange "LUXEMBURG",  :security/currency "RUB",    :db/id #db/id[:db.part/user -100110] }
@@ -229,7 +229,7 @@
 { :security/acode "MFONLI",        :security/isin  "US58517T2096", :security/bcode "MFON LI Equity", :security/exchange "LI", :security/currency "USD",   :db/id #db/id[:db.part/user -100204]}
 { :security/acode "NLMKDR",        :security/isin  "US67011E2046", :security/bcode "NLMK LI Equity", :security/exchange "LI", :security/currency "USD",   :db/id #db/id[:db.part/user -100205]}
 { :security/acode "OGZPY",         :security/isin  "US3682872078", :security/bcode "US3682872078 US Equity", :security/exchange "US", :security/currency "USD",   :db/id #db/id[:db.part/user -100206]}
-{ :security/acode "QIWIUS",        :security/isin  "US74735M1080", :security/bcode "QIWI RX Equity", :security/exchange "RX", :security/currency "RUB",   :db/id #db/id[:db.part/user -100207]}
+{ :security/acode "QIWIUS",        :security/isin  "US74735M1080", :security/bcode "QIWI RX Equity", :security/exchange "RX", :security/currency "USD",   :db/id #db/id[:db.part/user -100207]}
 { :security/acode "SBKYY",         :security/isin  "US36829G1076", :security/bcode "GZPFY SW Equity", :security/exchange "SW", :security/currency "CHF",   :db/id #db/id[:db.part/user -100208]}
 { :security/acode "YNDXUS",        :security/isin  "NL0009805522", :security/bcode "YNDX US Equity", :security/exchange "US", :security/currency "USD",   :db/id #db/id[:db.part/user -100209]}
 
