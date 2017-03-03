@@ -746,7 +746,15 @@
                         ;tr1 (println (str "sec: " sec " prevpr: " prevpr " tranamnt: " tranamnt) )
                         ;tr2 (println tran)
                         newamnt (if (nil? amnt ) tranamnt (+ amnt tranamnt) )
-                        wap (if (nil? amnt ) tranprice (if (> newamnt 0) (/ (+ (* prevpr amnt) (* tranprice tranamnt)) newamnt) 0))
+
+
+                        
+
+                        wap (if (nil? amnt ) tranprice (if (> newamnt 0) 
+
+
+
+                        (if (> tranamnt 0) (/ (+ (* prevpr amnt) (* tranprice tranamnt)) newamnt)  prevpr)  0))
 
                         ;tr5 (if (= java.lang.String (type wap) ) (println 4444444444) (println (type wap)))
                         ]
