@@ -1,6 +1,7 @@
-(ns arenaparse.core
+get-(ns arenaparse.core
   (:gen-class)
   (use dk.ative.docjure.spreadsheet)
+  (use (incanter core charts excel))
   (:require [clojure.xml :as xml]
             [clojure.zip :as zip]
             [clj-time.format :as f]
@@ -28,6 +29,23 @@
 
 ;(def client "RWVQF" ) ;;"PYUMF" "ELLQF" "XGZQF" "TADFF"  "AANDF" "VADZF" "AANDF" "DACFF"
 
+(defn sort-tran-from-db [tran1 tran2]
+  (let [
+        ;tr1 (println tran1)
+        ;tr2 (println tran2)
+
+        
+        dt1 (c/to-long (:valuedate tran1))
+        dt2 (c/to-long (:valuedate tran2))
+
+        ]
+    
+    (if (or  (< dt1  dt2)
+	  (and (= dt1 dt2)(< (:id tran1) (:id tran2))))
+    true
+    false)
+  )
+)
 
 (def custom-formatter (f/formatter "dd/MM/yyyy"))
 
@@ -47,7 +65,7 @@
 (defn get-fxrate-by-date [currency dt]
   (let [
     conn (d/connect uri)
-    ;tr1 (println (str "in get-fxrate-by-date " currency " for date: " dt) )
+    ;;tr1 (println (str "in get-fxrate-by-date " currency " for date: " dt) )
     newdate (java.util.Date. (c/to-long (f/parse custom-formatter (f/unparse custom-formatter (c/from-long (c/to-long dt))))))
 
 
@@ -176,6 +194,15 @@
   )
 )
 
+(defn readallcbrrates []
+  (let [
+        currencies ["USD" "EUR" "CHF" "GBP"]
+
+        
+  ]
+  (doall (map (fn [x] (readcbrrates x)) currencies ))
+  )
+)
 
 
 (defn addclient []
@@ -300,7 +327,7 @@
 
 (defn security-to-map [security]
   (let [
-    newsec {:id (nth security 0) :acode (nth security 1) :exchange (nth security 2) :isin (nth security 3)}
+    newsec {:id (nth security 0) :acode (nth security 1) :exchange (nth security 2) :isin (nth security 3) :currency (nth security 4)}
         
   ]
 
@@ -313,12 +340,13 @@
 (defn get-securities []
   (let [
         conn (d/connect uri)
-        securities (d/q '[:find ?e ?c ?x ?i
+        securities (d/q '[:find ?e ?c ?x ?i ?currency
                           :where
                           [?e :security/acode]
                           [?e :security/acode ?c]
                           [?e :security/exchange ?x]
                           [?e :security/isin ?i]
+                          [?e :security/currency ?currency]
                           ]
                         (d/db conn)) 
 
@@ -345,6 +373,14 @@
 (defn get-sec-by-code [code]
   (let [secs (get-securities)
         sec (first (filter (fn [x] (if (= (:acode x) code) true false)) secs)) 
+        ]
+    (:id sec)
+  )
+)
+
+(defn get-secid-by-isin [isin]
+  (let [secs (get-securities)
+        sec (first (filter (fn [x] (if (= (compare (:isin x) isin) 0) true false)) secs))
         ]
     (:id sec)
   )
@@ -502,12 +538,16 @@
 
         acode (second (first (filter (fn [x] (if (= (first x) (keyword "security/acode")) true false)) security) ))
         ;; ;tr1 (println security)
+       
+        ;; security currency
         currency (second (first (filter (fn [x] (if (= (first x) (keyword "security/currency")) true false)) security)))
-        ;; ;;:security (nth (nth security 0) 1)
+        fx_sec_currency  (if (or (= "RUR" currency) (= "RUB" currency))  1 (get-fxrate-by-date currency (nth (nth tran 5) 1)))
 
 
-        newtran {:client client :security acode  :nominal (nth (nth tran 2) 1) :price (nth (nth tran 3) 1) :direction (nth (nth tran 4) 1) :valuedate (nth (nth tran 5) 1) :currency currency :comment (if (> (count (nth tran 7)) 1) (nth (nth tran 7) 1) "")  :fx (if (or (= "RUR" currency) (= "RUB" currency))  1 (get-fxrate-by-date currency (nth (nth tran 5) 1)))}
-        ;tr1 (println newtran)
+        fx_tran_currency (if (or (= "RUR" (nth (nth tran 5) 1)) (= "RUB" (nth (nth tran 5) 1)))  1 (get-fxrate-by-date (nth (nth tran 6) 1) (nth (nth tran 5) 1)))
+
+        newtran {:client client :security acode  :nominal (nth (nth tran 2) 1) :price (nth (nth tran 3) 1) :direction (nth (nth tran 4) 1) :valuedate (nth (nth tran 5) 1) :currency currency :comment (if (> (count (nth tran 7)) 1) (nth (nth tran 7) 1) "")  :fx (/ fx_tran_currency fx_sec_currency) :id (nth (nth tran 8) 1)}
+        ;tr1 (if (= (compare acode "HGMLN" ) 0) (println (str (nth (nth tran 6) 1) " fx1: " fx_tran_currency " " currency " fx2: " fx_sec_currency " fx: " (:fx newtran) " date: " (:valuedate newtran) "\n")) ) 
         ]
     newtran
   )
@@ -530,7 +570,7 @@
                       [(< ?dt ?dt2)]
                       [(> ?dt ?dt1)]
                      ] (d/db conn) client dt1 dt2)
-        newtrans  (map (fn [x] (ent [x])) trans)
+        newtrans  (map (fn [x] ( concat (ent [x]) [[:id (first x)]] ) ) trans)
         newtrans2 (map (fn [x] (trans-to-map x)) newtrans)
 
 
@@ -580,6 +620,104 @@
 
 
 
+(defn build-excel-positions [client]
+  (let [
+    transactions (sort (comp sort-tran-from-db) (get-transactions-from-db client (java.util.Date.))   )
+
+    ;tr1 (println (first transactions))
+    securities (get-securities)
+    positions (loop [result {} trans transactions]
+                (if (seq trans) 
+                  (let [
+                        tran (first trans)
+                        
+                        sec (str (:security tran)) ;;acode
+
+
+                        currency (:currency (first (filter (fn [x] (if (= (:security tran) (:acode x)) true false)) securities)))
+
+                        isin (:isin (first (filter (fn [x] (if (= (:security tran) (:acode x)) true false)) securities)))
+
+                        amnt (:amount ( (keyword isin) result ))
+
+                        prevpr (if (nil? (:wapseccurr ((keyword isin) result))) 0 (:wapseccurr ((keyword isin) result)))
+                        
+                        rubprice (* (get-fxrate-by-date (:currency tran) (:valuedate tran)) (:price tran))
+
+                        usdrate (get-fxrate-by-date "USD" (:valuedate tran))
+                        ;seccurrrate (get-fxrate-by-date currency (:valuedate tran))
+
+                        usdprice (/ rubprice usdrate)
+                        seccurrprice (* (:fx tran) (:price tran))
+
+
+                        ;tr3 (if (= (compare (:security tran) "HGMLN") 0) (println tran)) 
+                        ;tr4 (if (= (compare (:security tran) "HGMLN") 0) (println (str "seccurrencyprice: " seccurrprice " rubprice: " rubprice))) 
+                        prevrubprice (:waprub ((keyword isin) result))
+                        prevusdprice (:wapusd ((keyword isin) result))
+
+                        tranamnt (if (= "B" (:direction tran)) (:nominal tran) (- 0 (:nominal tran)))
+                        newamnt (if (nil? amnt ) tranamnt (+ amnt tranamnt) )
+
+                        wapseccurr (if (nil? amnt ) seccurrprice (if (> newamnt 0) (/ (+ (* prevpr amnt) (* seccurrprice tranamnt)) newamnt) 0))
+
+
+                        waprub (if (nil? amnt ) rubprice (if (> newamnt 0) (/ (+ (* prevrubprice amnt) (* rubprice tranamnt)) newamnt) 0))
+
+
+                        wapusd (if (nil? amnt ) usdprice (if (> newamnt 0) (/ (+ (* prevusdprice amnt) (* usdprice tranamnt)) newamnt) 0))
+                        ]
+                    (recur (assoc-in result [(keyword isin) ] {:amount newamnt :wapseccurr wapseccurr :waprub waprub :wapusd wapusd} )
+                         (rest trans))
+                  )
+                  result)
+                ) 
+
+
+    result (filter (fn [x] (if (> (:amount (second x)) 0) true false))  positions) 
+    
+    ]
+    result
+    ;positions
+  )
+)
+
+
+(defn sort-positions-by-isin [pos1 pos2] 
+  (let [
+        ;tr1 (println tran1)
+        ;tr2 (println tran2)
+
+        
+        isin1 (name (first pos1))
+        isin2 (name (first pos2))
+
+        ]
+    
+    (if (>  (compare isin1  isin2) 0)
+    true
+    false)
+  )
+)
+
+(def matrix-set-2 
+         (dataset [:isin :amount :waprub :wapusd :wapcurr]
+                         [[1 2 3] [4 5 6]]))
+(defn save-to-excel []
+  (save-xls ["sheet1" matrix-set-2] "c:/DEV/Java/yyy.xlsx")
+)
+
+
+(defn create-excel-report [client]
+  (let [
+        positions (sort (comp sort-positions-by-isin) (build-excel-positions client))
+       newpositions (into [] (map (fn [x] [(name (first x))  (:amount (second x)) (:waprub (second x)) (:wapusd (second x)) (:wapseccurr (second x))]) positions)) 
+    ]
+    (save-xls ["sheet1" (dataset [:isin :amount :waprub :wapusd :wapcurr] newpositions)] "c:/DEV/Java/yyy.xlsx")
+    "Success"
+  )
+)
+
 (defn get-positions [client dt]
   (let [
 
@@ -601,14 +739,14 @@
                         amnt (:amount ( (keyword sec) result ))
                         prevpr (if (nil? (:price ((keyword sec) result))) 0 (:price ((keyword sec) result))) 
                         
-                        ;rubprice (* (:fx tran) (:price tran))
+                        tranprice (/ (:price tran) (:fx tran) )
                         
                         ;prevrubprice (:rubprice ((keyword sec) result))
                         tranamnt (if (= "B" (:direction tran)) (:nominal tran) (- 0 (:nominal tran)))
                         ;tr1 (println (str "sec: " sec " prevpr: " prevpr " tranamnt: " tranamnt) )
                         ;tr2 (println tran)
                         newamnt (if (nil? amnt ) tranamnt (+ amnt tranamnt) )
-                        wap (if (nil? amnt ) (:price tran) (if (> newamnt 0) (/ (+ (* prevpr amnt) (* (:price tran) tranamnt)) newamnt) 0))
+                        wap (if (nil? amnt ) tranprice (if (> newamnt 0) (/ (+ (* prevpr amnt) (* tranprice tranamnt)) newamnt) 0))
 
                         ;tr5 (if (= java.lang.String (type wap) ) (println 4444444444) (println (type wap)))
                         ]
@@ -634,7 +772,7 @@
 
 (defn get-portf-by-num [client num]
   (let [
-    newnum (+ 1325462399000 (* num 86400000) ) ;;1325462399000 1487116799000  1451692799000  1325462399000
+    newnum (+ 1325462399000 (* num 86400000) ) ;;1488412799000  1487116799000  1451692799000  1325462399000
     newdate (java.util.Date. newnum)
     ;tr1 (println newdate)
     day-of-week (f/unparse day-of-week-formatter (c/from-long (c/to-long newdate)))
@@ -656,7 +794,75 @@
 )
 
 
+(defn append-positions-to-excel [client]
+  (let [
+        dt (java.util.Date.)
+        positions (get-positions client dt)
+        secs (into [] (map (fn [position] [(first position)] ) positions))
+        ]
+    ;secs
+    (with-open [out-file (io/writer (str "C:/DEV/clojure/sberpb/sberapi/DB/" client ".csv") )] (csv/write-csv out-file secs))
+                                        ;(doall (map (fn [position] (append-position-to-excel position)) positions))
+    )
+)
 
+(defn get-all-secs []
+  (let [
+        dt (java.util.Date.)
+        theportfs ["AANDF" "AKTOS" "AQLON1" "BBJSF" "BBKEF" "ELLQF" "INFLE" "KDBSF" "LABKS" "MADUN2" "PYUFF" "PYUMF" "RWVQF" "STHUF" "TADPF" "VADAF" "VADZF" "XFEQF" "XGNQF" "XKQQF" "BBJUF" "KDBRF"]
+
+        secs (loop [result [] portfs theportfs]
+                (if (seq portfs)
+                  (let [
+                        dt (java.util.Date.)
+                        client (first portfs)
+                        positions (get-positions client dt)
+
+                        secs (into [] (map (fn [position] [(first position)] ) positions))
+                        ]
+                    (recur (into [] (concat result secs))
+                         (rest portfs))
+                  )
+                  result)
+                )
+        ]
+    (with-open [out-file (io/writer (str "C:/DEV/clojure/sberpb/sberapi/DB/out.csv") )] (csv/write-csv out-file secs))
+    ;
+  )
+)
+
+(defn addprice [isin price]
+  (let [
+     conn (d/connect uri)
+     secid (get-secid-by-isin isin)
+     ]
+    (d/transact conn [{ :price/comment "First try with Excel import",  :price/lastprice price, :price/security secid, :price/valuedate (java.util.Date.) :price/source "Excel import 2017-03-02" :db/id #db/id[:db.part/user -102031]}]
+    )
+    ; To insert new entity:
+    ;(d/transact conn [{ :transaction/client #db/id[:db.part/user 17592186045573] :transaction/security #db/id[:db.part/user 17592186065674], :transaction/nominal 108000.0 :transaction/price 100.0 :transaction/direction "S" :transaction/valuedate #inst "2014-04-22T00:00:00.0000000Z", :transaction/currency "RUB" :transaction/comment "", :db/id #db/id[:db.part/user -110002] }])
+     ; To delete entity by id:
+     ;(d/transact conn [[:db.fn/retractEntity 17592186045577]])
+  )
+)
+
+(defn readsecprices []
+  (let [
+    theprices (with-open [in-file (io/reader "C:/Data/secprices.csv")] (doall (csv/read-csv in-file)))
+
+    newprices (loop [result {} prices (drop 1 theprices) ]
+                (if (seq prices)
+                  (let [
+                        secprice (str/split (first (first prices)) #";")
+                        ]
+                    (recur (assoc result (keyword (nth secprice 0)) (Double. (nth secprice 3))   ) (rest prices))
+                  )
+                  result)
+   )
+  ]
+  (doall (map (fn [item] (addprice (name (first item)) (second item))) newprices))
+  "Success"
+  )
+)
 
 (defn generateportfs [client]
   (let [
@@ -683,7 +889,9 @@
           seccurrency (second (first (filter (fn [security] (if (= (keyword "security/currency") (first security)) x)) sec)))
 
           ;tr2 (println seccurrency)
-          ;tr3 (println x)
+          
+
+
           rateseccurrency (get-fxrate-by-date seccurrency (:valuedate x))
 
           trancurrency (if (= 0 (compare "RUR" (:currency x)) ) "RUB" (:currency x))          
@@ -691,6 +899,11 @@
 
         
           newrate (/ ratetranscurrency rateseccurrency )
+
+
+          ;tr3 (if (= (compare (:security x) "HGMLN" ) 0) (println (str (:currency x) " fx1: " ratetranscurrency  " " seccurrency  " fx2: " rateseccurrency " fx: " newrate  " date: " (:valuedate x) "\n")) )
+
+
           newprice (if (= seccurrency trancurrency) (:price x) (* (:price x) newrate))
 
           ;tr1 (println "rate1: " ratetranscurrency " rate2: " newrate)

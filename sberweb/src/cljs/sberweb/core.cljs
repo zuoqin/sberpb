@@ -124,7 +124,7 @@
 
     newfxrate (if (= 0 (compare "GBX" (:currency security))) (/ fxrate 100.) fxrate)    
 
-    result {:id (:id portfolio) :amount (:amount (nth item 1) ) :wap posprice :price price :waprub (:rubprice (nth item 1) ) :currubprice (* price newfxrate)}
+    result {:id (:id portfolio) :amount (:amount (nth item 1) ) :wap (:rubprice (nth item 1) ) :price (:rubprice (nth item 1) ) :waprub (:rubprice (nth item 1) ) :currubprice (* price newfxrate)}
 
 
 
@@ -335,7 +335,7 @@
             (dom/span {:className "icon-bar"})
           )
           (dom/a  (assoc stylehome :className "navbar-brand")
-            (dom/span {:id "pageTitle"}  (:current @data))
+            (dom/span {:id "pageTitle"}  (:text (:current @data)) )
           )
         )
         (dom/ul {:className "nav navbar-top-links navbar-right"}
@@ -376,13 +376,13 @@
             (dom/span {:className "icon-bar"})
           )
           (dom/a  (assoc stylehome :className "navbar-brand")
-            (dom/span {:id "pageTitle"} (:current @data))
+            (dom/span {:id "pageTitle"} (:text (:current @data)) )
           )
         )
         (dom/div {:className "collapse navbar-collapse navbar-ex1-collapse" :id "menu"}
-          (dom/ul {:className "nav navbar-nav" :style {:padding-top "17px" :visibility (if (= (:current @app-state) "Positions") "visible" "hidden")}}
+          (dom/ul {:className "nav navbar-nav" :style {:padding-top "17px" :visibility (if (= (compare (:name (:current @app-state))  "Positions") 0 ) "visible" "hidden")}}
             (dom/li
-              (dom/div {:style {:margin-right "10px" :visibility (if (and (= (:current @app-state) "Positions") (or (= (:role (:user @app-state)) "admin") (= (:role (:user @app-state)) "admin")) ) "visible" "hidden")}} 
+              (dom/div {:style {:margin-right "10px" :visibility (if (and (= (compare (:name (:current @app-state)) "Positions") 0) (or (= (:role (:user @app-state)) "admin") (= (:role (:user @app-state)) "admin")) ) "visible" "hidden")}} 
                 (omdom/select #js {:id "clients"
                                    :className "selectpicker"
                                    :data-show-subtext "true"
@@ -452,13 +452,13 @@
             (dom/span {:className "icon-bar"})
           )
           (dom/a  (assoc stylehome :className "navbar-brand")
-            (dom/span {:id "pageTitle"} (:current @data))
+            (dom/span {:id "pageTitle"} (:text (:current @data)) )
           )
         )
         (dom/div {:className "collapse navbar-collapse navbar-ex1-collapse" :id "menu"}
-          (dom/ul {:className "nav navbar-nav" :style {:padding-top "17px" :visibility (if (= (:current @app-state) "Portfolios") "visible" "hidden")}}
+          (dom/ul {:className "nav navbar-nav" :style {:padding-top "17px" :visibility (if (= (compare (:name (:current @app-state))  "Portfolios") 0) "visible" "hidden")}}
             (dom/li
-              (dom/div {:style {:margin-right "10px" :visibility (if (and (= (:current @app-state) "Portfolios") (or (= (:role (:user @app-state)) "admin") (= (:role (:user @app-state)) "admin")) ) "visible" "hidden")}} 
+              (dom/div {:style {:margin-right "10px" :visibility (if (and (= (compare (:name (:current @app-state)) "Portfolios") 0) (or (= (:role (:user @app-state)) "admin") (= (:role (:user @app-state)) "admin")) ) "visible" "hidden")}} 
                 (omdom/select #js {:id "securities"
                                    :className "selectpicker"
                                    :data-show-subtext "true"

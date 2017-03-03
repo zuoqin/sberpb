@@ -190,7 +190,7 @@ seccode (:acode (first (filter (fn[y] (if (= (:id x) (:id y) ) true false)) (:se
 (defn onMount [data]
   (getPositions)
   (put! ch 42)
-  (swap! sbercore/app-state assoc-in [:current] "Positions")
+  (swap! sbercore/app-state assoc-in [:current] {:name "Positions" :text "Positions with this security"} )
 )
 
 

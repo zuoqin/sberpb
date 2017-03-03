@@ -117,7 +117,7 @@
 (defn onMount [data]
   (getTransactions)
   (put! ch 42)
-  (swap! sbercore/app-state assoc-in [:current]  "Transactions")
+  (swap! sbercore/app-state assoc-in [:current]  {:name "Transactions" :text (str "Transactions with " (:acode (first (filter (fn [x] (if (= (:id x) (:secid @app-state)) true false)) (:securities @sbercore/app-state)))) " security for "(:code (first (filter (fn [x] (if (= (:id x) (:clientid @app-state)) true false)) (:clients @sbercore/app-state)))) ) } )
 )
 
 
