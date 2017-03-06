@@ -67,6 +67,14 @@
   :db/doc "security trading exchange"
   :db.install/_attribute :db.part/db}
 
+ {:db/id #db/id[:db.part/db]
+  :db/ident :security/assettype
+  :db/valueType :db.type/long
+  :db/cardinality :db.cardinality/one
+  :db/doc "Bond = 5 /Share/Note etc/.."
+  :db.install/_attribute :db.part/db}
+
+
 
  ;; issuer
  {:db/id #db/id[:db.part/db]

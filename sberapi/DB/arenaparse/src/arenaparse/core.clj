@@ -62,10 +62,67 @@
   )
 )
 
+(defn get-transactions-by-client-security [client security dt]
+  (let [
+    conn (d/connect uri)
+    newdate (java.util.Date. (c/to-long (f/parse custom-formatter (f/unparse custom-formatter (c/from-long (c/to-long dt))))))
+
+
+ 
+    ;; security (ffirst (d/q '[:find ?e
+    ;;                    :in $ ?sec
+    ;;                    :where
+    ;;                    [?e :security/acode ?sec]
+    ;;                    ] (d/db conn) (if (= 0 (compare currency "GBX")) "GBP" currency)))
+
+
+
+    clientid (ffirst (d/q '[:find ?e
+                       :in $ ?client
+                       :where
+                       [?e :client/code ?client]
+                       ] (d/db conn) client))
+    ;tr2 (println security)
+    dt1 (java.util.Date. (c/to-long (f/parse custom-formatter (f/unparse custom-formatter (c/from-long (c/to-long #inst "2000-01-01T00:00:00.000-00:00" ))))))
+        conn (d/connect uri)
+    dt2 (java.util.Date. (c/to-long (f/parse custom-formatter (f/unparse custom-formatter (c/from-long (+ (c/to-long dt) (* 1000 24 3600)))))))
+    trans (d/q '[:find ?e
+                      :in $ ?client ?sec ?dt1 ?dt2
+                      :where
+                      [?e :transaction/client ?client]
+                      [?e :transaction/security ?sec]
+                      [?e :transaction/currency ?currency]
+                      [?e :transaction/direction ?direction]
+                      [?e :transaction/valuedate ?dt]
+                      [(< ?dt ?dt2)]
+                      [(> ?dt ?dt1)]
+                     ] (d/db conn) clientid security dt1 dt2)
+    newtrans  (map (fn [x] ( concat (ent [x]) [[:id (first x)]] ) ) trans)
+    newtrans2 (sort (comp sort-tran-from-db)  (map (fn [x] (trans-to-map x)) newtrans)) 
+
+    ]
+    newtrans2
+    ;rate
+  )
+)
+
+(defn calc-wap-prices [client security dt] 
+  (let [
+        transactions (get-transactions-by-client-security client security dt)
+
+
+        selltrans (filter (fn [x] (if (= (compare (:direction x) "S") 0) true false)) transactions)
+
+        sellamount (reduce (fn [x y] {:nominal (+ (:nominal x) (:nominal y))}) selltrans)
+    ]
+    sellamount
+  )
+)
+
 (defn get-fxrate-by-date [currency dt]
   (let [
     conn (d/connect uri)
-    ;;tr1 (println (str "in get-fxrate-by-date " currency " for date: " dt) )
+    ;tr1 (println (str "in get-fxrate-by-date " currency " for date: " dt) )
     newdate (java.util.Date. (c/to-long (f/parse custom-formatter (f/unparse custom-formatter (c/from-long (c/to-long dt))))))
 
 
@@ -209,7 +266,7 @@
   (let [
      conn (d/connect uri)
      ]
-    (d/transact conn [{ :client/code "KDBRF",  :client/name "Клиент KDBRF",  :db/id #db/id[:db.part/user -102031]}]
+    (d/transact conn [{ :security/acode "25082",     :security/assettype 5, :security/bcode "25082 Corp"   :security/isin "RU000A0JTWW3", :security/exchange "MOSCOW", :security/currency "RUB",    :db/id #db/id[:db.part/user -100080] }]
     )
     ; To insert new entity:
     ;(d/transact conn [{ :transaction/client #db/id[:db.part/user 17592186045573] :transaction/security #db/id[:db.part/user 17592186065674], :transaction/nominal 108000.0 :transaction/price 100.0 :transaction/direction "S" :transaction/valuedate #inst "2014-04-22T00:00:00.0000000Z", :transaction/currency "RUB" :transaction/comment "", :db/id #db/id[:db.part/user -110002] }])
@@ -327,7 +384,7 @@
 
 (defn security-to-map [security]
   (let [
-    newsec {:id (nth security 0) :acode (nth security 1) :exchange (nth security 2) :isin (nth security 3) :currency (nth security 4)}
+    newsec {:id (nth security 0) :acode (nth security 1) :exchange (nth security 2) :isin (nth security 3) :currency (nth security 4) :bcode (nth security 5)}
         
   ]
 
@@ -340,13 +397,14 @@
 (defn get-securities []
   (let [
         conn (d/connect uri)
-        securities (d/q '[:find ?e ?c ?x ?i ?currency
+        securities (d/q '[:find ?e ?c ?x ?i ?currency ?bcode
                           :where
                           [?e :security/acode]
                           [?e :security/acode ?c]
                           [?e :security/exchange ?x]
                           [?e :security/isin ?i]
                           [?e :security/currency ?currency]
+                          (or [?e :security/bcode ?bcode] [?e :security/bcode ?bcode]) 
                           ]
                         (d/db conn)) 
 
@@ -370,7 +428,7 @@
   )
 )
 
-(defn get-sec-by-code [code]
+(defn get-sec-by-acode [acode]
   (let [secs (get-securities)
         sec (first (filter (fn [x] (if (= (:acode x) code) true false)) secs)) 
         ]
@@ -385,6 +443,16 @@
     (:id sec)
   )
 )
+
+
+(defn get-secbcode-by-isin [isin]
+  (let [secs (get-securities)
+        sec (first (filter (fn [x] (if (= (compare (:isin x) isin) 0) true false)) secs))
+        ]
+    (:bcode sec)
+  )
+)
+
 
 (defn get-client-by-code [code]
   (let [
@@ -638,6 +706,8 @@
 
                         isin (:isin (first (filter (fn [x] (if (= (:security tran) (:acode x)) true false)) securities)))
 
+                        ;tr8 ( println tran)  
+                        
                         amnt (:amount ( (keyword isin) result ))
 
                         prevpr (if (nil? (:wapseccurr ((keyword isin) result))) 0 (:wapseccurr ((keyword isin) result)))
@@ -710,8 +780,8 @@
 
 (defn create-excel-report [client]
   (let [
-        positions (sort (comp sort-positions-by-isin) (build-excel-positions client))
-       newpositions (into [] (map (fn [x] [(name (first x))  (:amount (second x)) (:waprub (second x)) (:wapusd (second x)) (:wapseccurr (second x))]) positions)) 
+    positions (sort (comp sort-positions-by-isin) (build-excel-positions client))
+    newpositions (into [] (map (fn [x] [(get-secbcode-by-isin (name (first x)))   (:amount (second x)) (:waprub (second x)) (:wapusd (second x)) (:wapseccurr (second x))]) positions))
     ]
     (save-xls ["sheet1" (dataset [:isin :amount :waprub :wapusd :wapcurr] newpositions)] "c:/DEV/Java/yyy.xlsx")
     "Success"
@@ -743,7 +813,8 @@
                         
                         ;prevrubprice (:rubprice ((keyword sec) result))
                         tranamnt (if (= "B" (:direction tran)) (:nominal tran) (- 0 (:nominal tran)))
-                        ;tr1 (println (str "sec: " sec " prevpr: " prevpr " tranamnt: " tranamnt) )
+                        
+                        
                         ;tr2 (println tran)
                         newamnt (if (nil? amnt ) tranamnt (+ amnt tranamnt) )
 
@@ -756,7 +827,8 @@
 
                         (if (> tranamnt 0) (/ (+ (* prevpr amnt) (* tranprice tranamnt)) newamnt)  prevpr)  0))
 
-                        ;tr5 (if (= java.lang.String (type wap) ) (println 4444444444) (println (type wap)))
+                        ;tr5 (if (= (compare "XS0088543193" sec) 0) (println "tranprice: " tranprice " wap " wap))
+                        ;tr1 (println sec) 
                         ]
                     (recur (assoc-in result [(keyword sec) ] {:amount newamnt :price wap} )
                          (rest trans))
@@ -780,7 +852,7 @@
 
 (defn get-portf-by-num [client num]
   (let [
-    newnum (+ 1488412799000 (* num 86400000) ) ;;1325462399000 1488412799000  1487116799000  1451692799000  1325462399000
+    newnum (+ 1325462399000 (* num 86400000) ) ;;1488412799000 1488412799000 1325462399000 1488412799000  1487116799000  1451692799000  1325462399000
     newdate (java.util.Date. newnum)
     ;tr1 (println newdate)
     day-of-week (f/unparse day-of-week-formatter (c/from-long (c/to-long newdate)))
@@ -893,10 +965,13 @@
 
       
           sec (ent [[(get-sec-by-code (:security x))]] )
-
+          assettype (second (first (filter (fn [x] (if (= (first x) :security/assettype) true false)) sec)))
           seccurrency (second (first (filter (fn [security] (if (= (keyword "security/currency") (first security)) x)) sec)))
 
-          ;tr2 (println seccurrency)
+          secisin (second (first (filter (fn [security] (if (= (keyword "security/isin") (first security)) x)) sec)))
+
+
+          tr2 (println (str (:security x) " isin = " secisin " seccurrency = " seccurrency " trancurrency = " (:currency x)) )
           
 
 
@@ -905,8 +980,8 @@
           trancurrency (if (= 0 (compare "RUR" (:currency x)) ) "RUB" (:currency x))          
           ratetranscurrency (get-fxrate-by-date trancurrency (:valuedate x))
 
-        
-          newrate (/ ratetranscurrency rateseccurrency )
+                                     
+          newrate (if (= 5 assettype) 1 (/ ratetranscurrency rateseccurrency )) 
 
 
           ;tr3 (if (= (compare (:security x) "HGMLN" ) 0) (println (str (:currency x) " fx1: " ratetranscurrency  " " seccurrency  " fx2: " rateseccurrency " fx: " newrate  " date: " (:valuedate x) "\n")) )
