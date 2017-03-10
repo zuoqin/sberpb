@@ -77,7 +77,7 @@
     (dom/div {:className "list-group" :style {:display "block"}}
       (map (fn [item]
         (dom/div {:className "row" :style {:margin-left "0px" :margin-right "0px"}} 
-          (dom/div {:className "col-xs-3 col-md-3" :style {:padding-left "0px" :padding-right "0px"}}
+          (dom/div {:className "col-xs-2 col-md-2" :style {:padding-left "0px" :padding-right "0px"}}
             (dom/a {:className "list-group-item" :href (str  "#/postrans/" (:id (first (filter (fn [x] (if (= (compare (:code x) (:selectedclient @sbercore/app-state)) 0) true false)) (:clients @sbercore/app-state)))) "/" (:id item) ) }
 
               (dom/h4  #js {:className "list-group-item-heading" :dangerouslySetInnerHTML #js {:__html (:acode (first (filter (fn[x] (if (= (:id x) (:id item) ) true false)) (:securities @sbercore/app-state))))}} nil)
@@ -99,12 +99,20 @@
             
           )
 
+
+          (dom/div {:className "col-xs-1 col-md-1" :style {:padding-left "0px" :padding-right "0px"}}
+            
+            (dom/a {:className "list-group-item" :style {:text-align "right"} :href (str  "#/postrans/" (:id (first (filter (fn [x] (if (= (compare (:code x) (:selectedclient @sbercore/app-state)) 0) true false)) (:clients @sbercore/app-state)))) "/" (:id item) ) }
+              (dom/h4 {:className "list-group-item-heading"} (if (> (:price item) 1) (gstring/format "%.2f" (:price item))  (subs (str (:price item)) 0 5) )    )
+            )
+            
+          )
+
           (dom/div {:className "col-xs-1 col-md-1" :style {:padding-left "0px" :padding-right "0px"}}
             
             (dom/a {:className "list-group-item" :style {:text-align "right"} :href (str  "#/postrans/" (:id (first (filter (fn [x] (if (= (compare (:code x) (:selectedclient @sbercore/app-state)) 0) true false)) (:clients @sbercore/app-state)))) "/" (:id item) ) }
               (dom/h4 {:className "list-group-item-heading"} (:currency item)    )
-            )
-            
+            )            
           )
 
 
@@ -112,8 +120,7 @@
           (dom/div {:className "col-xs-1 col-md-1" :style {:padding-left "0px" :padding-right "0px" :padding-top "10px"}}
             (dom/div {:className "progress"}
               (dom/div {:className (str "progress-bar" (if (< (:price item) (:wap item)) " progress-bar-danger" ""))  :role "progresbar" :aria-valuenow (str (.round js/Math (.abs js/Math (* 100.0 (/ (-  (:price item) (:wap item)) (:waprub item)))))) :aria-valuemin "0" :aria-valuemax "100" :style {:color "black" :width (str (.round js/Math (.abs js/Math (* 100.0 (/ (-  (:price item) (:wap item)) (:wap item))))) "%") }}
-                (dom/span {:style {:position "absolute" :display "block" :width "100%"}} (.round js/Math (* 100.0 (/ (-  (:price item) (:wap item)) (:wap item)))) ) 
-                
+                (dom/span {:style {:position "absolute" :display "block" :width "100%"}} (.round js/Math (* 100.0 (/ (-  (:price item) (:wap item)) (:wap item)))) )                
               )
             )
           )
@@ -177,7 +184,9 @@
 seccode (:acode (first (filter (fn[y] (if (= (:id x) (:id y) ) true false)) (:securities @sbercore/app-state))))
 
 ]
-(if (or (<= (:amount x) 0) (= false (str/includes? seccode (:search @sbercore/app-state))))  false true)
+(if (or (<= (:amount x) 0) 
+        ;(= false (str/includes? seccode (:search @sbercore/app-state))) 
+)  false true)
 ) ) (:positions ((keyword (:selectedclient @sbercore/app-state)) @sbercore/app-state) ) ))
 
         
@@ -230,9 +239,10 @@ seccode (:acode (first (filter (fn[y] (if (= (:id x) (:id y) ) true false)) (:se
           (dom/div {:className "panel-heading"}
 
             (dom/div (assoc stylerow  :className "row" )
-              (dom/div {:className "col-xs-3 col-md-3" :style {:text-align "center"}}  "Security Name")
+              (dom/div {:className "col-xs-2 col-md-2" :style {:text-align "center"}}  "Security Name")
               (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "Amount")
               (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "WAP price")
+              (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "Last price")
               (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "Currency")
               (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "P/L, %")
               (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "P/L RUB, %")
@@ -257,9 +267,10 @@ seccode (:acode (first (filter (fn[y] (if (= (:id x) (:id y) ) true false)) (:se
         (dom/div  {:className "panel panel-primary"}
           (dom/div {:className "panel-heading"}
             (dom/div (assoc stylerow  :className "row" )
-              (dom/div {:className "col-xs-3 col-md-3" :style {:text-align "center"}}  "Security Name")
+              (dom/div {:className "col-xs-2 col-md-2" :style {:text-align "center"}}  "Security Name")
               (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "Amount")
               (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "WAP price")
+              (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "Last price")
               (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "Currency")
               (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "P/L, %")
               (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "P/L RUB, %")

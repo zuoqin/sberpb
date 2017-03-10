@@ -13,6 +13,10 @@
 
             [cljs-time.format :as tf]
             [cljs-time.coerce :as tc]
+
+            [clojure.string :as str]
+            [goog.string :as gstring]
+            [goog.string.format]
   )
   (:import goog.History)
 )
@@ -102,7 +106,7 @@
           )
 
           (dom/div {:className "col-xs-3 col-md-3" :style {:text-align "right"}}
-            (dom/h4 {:className "list-group-item-heading"} (:price item))
+            (dom/h4 {:className "list-group-item-heading"} (if (> (:price item) 1) (gstring/format "%.2f" (:price item))  (subs (str (:price item)) 0 5) ))
           )
         )
 

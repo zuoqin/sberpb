@@ -227,3 +227,10 @@ Peer.deleteDatabase(uri);
 ]
 
 bearer eyJhbGciOiJub25lIiwidHlwIjoiSldUIn0.eyJpc3MiOiJ6dW9xaW4iLCJleHAiOjE0ODQ3MTg1MzEsImlhdCI6MTQ4NDYzMjEzMX0.
+
+
+[:find ?name
+ :where
+ [?s :security/acode ?name]
+ [(missing? $ ?s :security/assettype)]
+]

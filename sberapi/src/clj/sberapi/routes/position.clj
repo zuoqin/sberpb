@@ -8,16 +8,41 @@
             [clj-jwt.key   :refer [private-key]]
             [clj-time.core :refer [now plus days]]
 
+            [clj-time.format :as f]
+            [clj-time.coerce :as c]
+            [clj-time.core :as t]
+
             [sberapi.db.position :as db]
             [sberapi.db.security :as secs]
 
             [clojure.string :as str]
 ))
 
+(defn sort-tran-from-db [tran1 tran2]
+  (let [
+        ;tr1 (println tran1)
+        ;tr2 (println tran2)
+
+        
+        dt1 (c/to-long (:valuedate tran1))
+        dt2 (c/to-long (:valuedate tran2))
+
+        ]
+    
+    (if (or  (< dt1  dt2)
+	  (and (= dt1 dt2)(< (:id tran1) (:id tran2))))
+    true
+    false)
+  )
+)
+
 (defn getPositions [token client]
   (let [
     ;usercode (:iss (-> token str->jwt :claims)  ) 
-    transactions (into [] (db/get-transactions client)   )
+    transactions (sort (comp sort-tran-from-db) (db/get-transactions client))
+    newtrans (filter (fn [x] (if (or (nil? (:security x)) (= 0 (compare "MSTT" (:security x))) )  false true)) transactions)
+
+        ;(into [] (db/get-transactions client)   )
 
     ;tr1 (println (first transactions))
     securities (secs/get-securities)
@@ -28,14 +53,20 @@
                         sec (str (:security tran))
                         currency (:currency (first (filter (fn [x] (if (= (:security tran) (:id x)) true false)) securities)))
                         amnt (:amount ( (keyword sec) result ))
-                        prevpr (:price ((keyword sec) result))
+                        prevpr (if (nil? (:price ((keyword sec) result))) 0 (:price ((keyword sec) result)))
                         
                         rubprice (* (:fx tran) (:price tran))
 
                         prevrubprice (:rubprice ((keyword sec) result))
                         tranamnt (if (= "B" (:direction tran)) (:nominal tran) (- 0 (:nominal tran)))
                         newamnt (if (nil? amnt ) tranamnt (+ amnt tranamnt) )
-                        wap (if (nil? amnt ) (:price tran) (if (> newamnt 0) (/ (+ (* prevpr amnt) (* (:price tran) tranamnt)) newamnt) 0))
+                        
+
+                        wap (if (nil? amnt ) (:price tran) (if (> newamnt 0) 
+
+
+
+                        (if (> tranamnt 0) (/ (+ (* prevpr amnt) (* (:price tran) tranamnt)) newamnt)  prevpr)  0))
 
 
                         waprub (if (nil? amnt ) rubprice (if (> newamnt 0) (/ (+ (* prevrubprice amnt) (* rubprice tranamnt)) newamnt) 0))
