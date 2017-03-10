@@ -13,7 +13,8 @@
 
 { :security/bcode "XS0359381331 Corp", :security/isin "EVRAZ 9 1/2 04/24/18", :security/assettype 5, :security/exchange "OTC", :security/currency "RUB",    :db/id #db/id[:db.part/user -100013] }
 { :security/bcode "XS0524610812 Corp", :security/isin "VEBBNK 6.902 07/09/20", :security/exchange "OTC", :security/currency "RUB",    :db/id #db/id[:db.part/user -100016] }
-{ :security/bcode "SNGSP RX EQUITY", :security/assettype 1, :security/isin "SNGSP ISIN", :security/exchange "MOSCOW", :security/currency "RUB",    :db/id #db/id[:db.part/user -100017] }
+
+{ :security/bcode "SNGSP RX EQUITY", :security/assettype 1, :security/isin "SNGSP ISIN", :security/assettype 1, :security/exchange "MOSCOW", :security/currency "RUB",    :db/id #db/id[:db.part/user -100017] }
 
 { :security/acode "POLYLN",      :security/isin "JE00B6T5S470", :security/bcode    "POLY LN Equity",     :security/assettype  1,  :security/exchange "LONDON", :security/currency "GBX",    :db/id #db/id[:db.part/user -100019] }
 
@@ -61,7 +62,8 @@
 
 { :security/acode "BANEP",       :security/isin "RU0007976965", :security/bcode "BANEP RM Equity",   :security/exchange "MOSCOW",          :security/assettype 1, :security/currency "RUB",    :db/id #db/id[:db.part/user -100040] }
 
-{ :security/acode "GILDUS",      :security/isin "US3755581036", :security/bcode "GILD US Equity",    :security/exchange "NYSE",            :security/currency "USD",    :db/id #db/id[:db.part/user -100041] }
+{ :security/acode "GILDUS",      :security/isin "US3755581036", :security/bcode "GILD US Equity",    :security/assettype 1,  :security/exchange "NYSE",            :security/currency "USD",    :db/id #db/id[:db.part/user -100041] }
+
 { :security/acode "MGNT",        :security/isin "RU000A0JKQU8", :security/bcode "MGNT RX Equity",    :security/exchange "MOSCOW",          :security/currency "RUB",    :db/id #db/id[:db.part/user -100042] }
 
 { :security/acode "RUALR",       :security/isin "RU000A0JR5Z5", :security/bcode "RUALR RM Equity",   :security/assettype 1, :security/exchange "MOSCOW",          :security/currency "RUB",    :db/id #db/id[:db.part/user -100043] }
@@ -295,7 +297,8 @@
 { :security/acode "VIP21",         :security/isin  "XS0587031096", :security/bcode "XS0587031096 Corp", :security/exchange "TRDB",         :security/currency "USD",   :db/id #db/id[:db.part/user -100173]}
 
 
-{ :security/acode "EVRAZ21",       :security/isin  "XS1319822752", :security/bcode "XS1319822752 Corp", :security/exchange "CBBT",         :security/currency "USD",   :db/id #db/id[:db.part/user -100174]}
+{ :security/acode "EVRAZ21",       :security/isin  "XS1319822752", :security/bcode "XS1319822752 Corp", :security/assettype 5, :security/exchange "CBBT",         :security/currency "USD",   :db/id #db/id[:db.part/user -100174]}
+
 { :security/acode "VEB23",         :security/isin  "XS0993162683", :security/bcode "XS0993162683 CBBT Corp", :security/exchange "CBBT",    :security/currency "USD",   :db/id #db/id[:db.part/user -100175]}
 
 { :security/acode "VTB22",         :security/isin  "XS0842078536", :security/bcode "EJ394063 Corp", :security/assettype 5, :security/exchange "CBBT",    :security/currency "USD",   :db/id #db/id[:db.part/user -100176]}
@@ -324,7 +327,7 @@
 { :security/acode "GDXUS",         :security/isin  "US92189F1066", :security/bcode "US92189F1066", :security/exchange "NYSE",              :security/currency "USD",   :db/id #db/id[:db.part/user -100190]}
 { :security/acode "GLDUS",         :security/isin  "US78463V1070", :security/bcode "GLD US Equity", :security/exchange "US",               :security/currency "RUB",   :db/id #db/id[:db.part/user -100191]}
 
-{ :security/acode "KORSUS",        :security/isin  "VGG607541015", :security/bcode "KORS US Equity", :security/exchange "SW",              :security/currency "USD",   :db/id #db/id[:db.part/user -100192]}
+{ :security/acode "KORSUS",        :security/isin  "VGG607541015", :security/bcode "KORS US Equity", :security/assettype 1,  :security/exchange "SW",              :security/currency "USD",   :db/id #db/id[:db.part/user -100192]}
 
 { :security/acode "DIXY",          :security/isin  "RU000A0JP7H1", :security/bcode "DIXY RM Equity", :security/exchange "RX",           :security/assettype 1,          :security/currency "RUB",   :db/id #db/id[:db.part/user -100193]}
 { :security/acode "NVTK",          :security/isin  "RU000A0DKVS5", :security/bcode "NVTK RX Equity", :security/exchange "RX",              :security/currency "RUB",   :db/id #db/id[:db.part/user -100194]}
@@ -400,6 +403,7 @@
 
 
 { :security/acode "NOMUR21A", :security/isin  "XS1542704421", :security/bcode "XS1542704421 Corp", :security/exchange "NYSE", :security/currency "USD",   :db/id #db/id[:db.part/user -100230]}
+
 { :security/acode "AGROLI", :security/isin  "US7496552057", :security/bcode "AGRO EB Equity", :security/exchange "EB", :security/currency "USD",   :db/id #db/id[:db.part/user -100231]}
 
 
