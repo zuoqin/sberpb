@@ -164,7 +164,7 @@
   (let [
      conn (d/connect uri)
      ]
-    (d/transact conn [{ :client/code "XGPQF",  :client/name "Клиент XGPQF",  :db/id #db/id[:db.part/user -102038]}]
+    (d/transact conn [{ :client/code "PYUZF",  :client/name "Клиент PYUZF",  :db/id #db/id[:db.part/user -102048]}]
     )
     ; To insert new entity:
     ;(d/transact conn [{ :transaction/client #db/id[:db.part/user 17592186045573] :transaction/security #db/id[:db.part/user 17592186065674], :transaction/nominal 108000.0 :transaction/price 100.0 :transaction/direction "S" :transaction/valuedate #inst "2014-04-22T00:00:00.0000000Z", :transaction/currency "RUB" :transaction/comment "", :db/id #db/id[:db.part/user -110002] }])

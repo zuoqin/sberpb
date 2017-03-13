@@ -14,7 +14,7 @@
 { :security/bcode "XS0359381331 Corp", :security/isin "EVRAZ 9 1/2 04/24/18", :security/assettype 5, :security/exchange "OTC", :security/currency "RUB",    :db/id #db/id[:db.part/user -100013] }
 { :security/bcode "XS0524610812 Corp", :security/isin "VEBBNK 6.902 07/09/20", :security/exchange "OTC", :security/currency "RUB",    :db/id #db/id[:db.part/user -100016] }
 
-{ :security/bcode "SNGSP RX EQUITY", :security/assettype 1, :security/isin "SNGSP ISIN", :security/assettype 1, :security/exchange "MOSCOW", :security/currency "RUB",    :db/id #db/id[:db.part/user -100017] }
+{ :security/bcode "SNGSP RX EQUITY", :security/isin "SNGSP ISIN", :security/assettype 1, :security/exchange "MOSCOW", :security/currency "RUB",    :db/id #db/id[:db.part/user -100017] }
 
 { :security/acode "POLYLN",      :security/isin "JE00B6T5S470", :security/bcode    "POLY LN Equity",     :security/assettype  1,  :security/exchange "LONDON", :security/currency "GBX",    :db/id #db/id[:db.part/user -100019] }
 
@@ -208,15 +208,25 @@
 
 { :security/acode "LSR-BO-01",    :security/isin "RU000A0JWU98", :security/bcode "QZ580267 Corp",  :security/assettype 5, :security/exchange "MOSCOW",     :security/currency "RUB",    :db/id #db/id[:db.part/user -100090] }
 
-{ :security/acode "24018",        :security/isin "RU000A0JV7K7", :security/bcode "RU000A0JV7K7 Corp",  :security/exchange "MOSCOW",     :security/currency "RUB",    :db/id #db/id[:db.part/user -100113] }
-{ :security/acode "AVTOBAN-F1",   :security/isin "RU000A0JWM49", :security/bcode "RU000A0JWM49 Corp",  :security/exchange "MOSCOW",     :security/currency "RUB",    :db/id #db/id[:db.part/user -100114] }
-{ :security/acode "GTLKOA21",     :security/isin "XS1449458915", :security/bcode "XS1449458915 Corp",  :security/exchange "NYSE",       :security/currency "RUB",    :db/id #db/id[:db.part/user -100115] }
-{ :security/acode "HALKBK21N",    :security/isin "XS1188073081", :security/bcode "XS1188073081 Corp",  :security/exchange "XETRA",      :security/currency "RUB",    :db/id #db/id[:db.part/user -100116] }
-{ :security/acode "MKRB12",       :security/isin "RU000A0JTPD7", :security/bcode "RU000A0JTPD7 Corp",  :security/exchange "MOSCOW",     :security/currency "RUB",    :db/id #db/id[:db.part/user -100117] }
-{ :security/acode "MKRBBO07",     :security/isin "RU000A0JU8W1", :security/bcode "RU000A0JU8W1 Corp",  :security/exchange "MOSCOW",     :security/currency "RUB",    :db/id #db/id[:db.part/user -100118] }
-{ :security/acode "PGK-01",       :security/isin "RU000A0JVT76", :security/bcode "RU000A0JVT76 Corp",  :security/exchange "MOSCOW",     :security/currency "RUB",    :db/id #db/id[:db.part/user -100119] }
-{ :security/acode "PKT-03",       :security/isin "RU000A0JWBP5", :security/bcode "RU000A0JWBP5 Corp",  :security/exchange "MOSCOW",     :security/currency "RUB",    :db/id #db/id[:db.part/user -100120] }
-{ :security/acode "SMOL34001",    :security/isin "RU000A0JU7R3", :security/bcode "RU000A0JU7R3 Corp",  :security/exchange "MOSCOW",     :security/currency "RUB",    :db/id #db/id[:db.part/user -100121] }
+{ :security/acode "24018",        :security/isin "RU000A0JV7K7", :security/bcode "RU000A0JV7K7 Corp", :security/assettype 5, :security/exchange "MOSCOW",     :security/currency "RUB",    :db/id #db/id[:db.part/user -100113] }
+
+{ :security/acode "AVTOBAN-F1",   :security/isin "RU000A0JWM49", :security/bcode "RU000A0JWM49 Corp", :security/assettype 5,  :security/exchange "MOSCOW",     :security/currency "RUB",    :db/id #db/id[:db.part/user -100114] }
+
+
+{ :security/acode "GTLKOA21",     :security/isin "XS1449458915", :security/bcode "XS1449458915 Corp", :security/assettype 5,  :security/exchange "NYSE",       :security/currency "RUB",    :db/id #db/id[:db.part/user -100115] }
+
+{ :security/acode "HALKBK21N",    :security/isin "XS1188073081", :security/bcode "XS1188073081 Corp", :security/assettype 5,  :security/exchange "XETRA",      :security/currency "RUB",    :db/id #db/id[:db.part/user -100116] }
+
+{ :security/acode "MKRB12",       :security/isin "RU000A0JTPD7", :security/bcode "RU000A0JTPD7 Corp", :security/assettype 5,  :security/exchange "MOSCOW",     :security/currency "RUB",    :db/id #db/id[:db.part/user -100117] }
+
+{ :security/acode "MKRBBO07",     :security/isin "RU000A0JU8W1", :security/bcode "RU000A0JU8W1 Corp", :security/assettype 5,  :security/exchange "MOSCOW",     :security/currency "RUB",    :db/id #db/id[:db.part/user -100118] }
+
+{ :security/acode "PGK-01",       :security/isin "RU000A0JVT76", :security/bcode "RU000A0JVT76 Corp", :security/assettype 5,  :security/exchange "MOSCOW",     :security/currency "RUB",    :db/id #db/id[:db.part/user -100119] }
+
+{ :security/acode "PKT-03",       :security/isin "RU000A0JWBP5", :security/bcode "RU000A0JWBP5 Corp", :security/assettype 5,  :security/exchange "MOSCOW",     :security/currency "RUB",    :db/id #db/id[:db.part/user -100120] }
+
+{ :security/acode "SMOL34001",    :security/isin "RU000A0JU7R3", :security/bcode "RU000A0JU7R3 Corp", :security/assettype 5,  :security/exchange "MOSCOW",     :security/currency "RUB",    :db/id #db/id[:db.part/user -100121] }
+
 { :security/acode "SUEKF05",      :security/isin "RU000A0JU336", :security/bcode "RU000A0JU336 Corp",  :security/exchange "MOSCOW",     :security/currency "RUB",    :db/id #db/id[:db.part/user -100122] }
 { :security/acode "VEDLN18",      :security/isin "USG9328DAD24", :security/bcode "USG9328DAD24 Corp",  :security/exchange "NYSE",       :security/currency "RUB",    :db/id #db/id[:db.part/user -100123] }
 
@@ -236,7 +246,7 @@
 { :security/acode "USD",          :security/isin "RUB Curncy",   :security/bcode "RUB Curncy", :security/assettype 10,  :security/exchange "IMM",        :security/currency "RUB",   :db/id #db/id[:db.part/user -100132] }
 { :security/acode "GBP",          :security/isin "GBPRUB ISIN",  :security/bcode "GBPRUB Curncy", :security/assettype 10,      :security/exchange "IMM",        :security/currency "RUB",   :db/id #db/id[:db.part/user -100005] }
 { :security/acode "RUR",          :security/isin "RUR RF",       :security/bcode "RUR", :security/assettype 10,                :security/exchange "",           :security/currency "RUB",    :db/id #db/id[:db.part/user -100133] }
-{ :security/acode "RUB",          :security/isin "RUB RF",       :security/bcode "RUB",                :security/exchange "",           :security/currency "RUB",    :db/id #db/id[:db.part/user -100134] }
+{ :security/acode "RUB",          :security/isin "RUB RF",       :security/bcode "RUB",           :security/assettype 10,      :security/exchange "",           :security/currency "RUB",    :db/id #db/id[:db.part/user -100134] }
 { :security/acode "EUR",          :security/isin "EURRUB ISIN",  :security/bcode "EURRUB Curncy", :security/assettype 10,      :security/exchange "IMM",        :security/currency "RUB",    :db/id #db/id[:db.part/user -100135] }
 { :security/acode "SEK",          :security/isin "SEKRUB ISIN",  :security/bcode "SEKRUB Curncy", :security/assettype 10,      :security/exchange "IMM",        :security/currency "RUB",    :db/id #db/id[:db.part/user -100136] }
 { :security/acode "CHF",          :security/isin "CHFRUB ISIN",  :security/bcode "CHFRUB Curncy", :security/assettype 10,      :security/exchange "IMM",        :security/currency "RUB",    :db/id #db/id[:db.part/user -100144] }
@@ -571,17 +581,16 @@
 { :security/acode "VIP18R", :security/isin "XS0889402029", :security/bcode "EJ548954 Corp", :security/assettype 5, :security/exchange "CBBT", :security/currency "RUR",   :db/id #db/id[:db.part/user -100357]}
 
 { :security/acode "BSPB", :security/isin "RU0009100945", :security/assettype 1, :security/bcode "BSPB RM Equity", :security/exchange "RX", :security/currency "RUB",   :db/id #db/id[:db.part/user -100358]}
-{ :security/acode "HMSGLI_OLD", :security/isin "US40425X2099", :security/bcode "HMSGL PO Equity", :security/exchange "PO", :security/currency "USD",   :db/id #db/id[:db.part/user -100359]}
-{ :security/acode "LSRGLI", :security/isin "US50218G2066", :security/bcode "LSRG LI Equity", :security/exchange "LI", :security/currency "USD",   :db/id #db/id[:db.part/user -100360]}
-{ :security/acode "MBT", :security/isin "US6074091090", :security/bcode "US6074091090 LI Equity", :security/exchange "LI", :security/currency "USD",   :db/id #db/id[:db.part/user -100361]}
 
+{ :security/acode "HMSGLI_OLD", :security/isin "US40425X2099", :security/bcode "HMSGL PO Equity", :security/exchange "PO", :security/currency "USD",   :db/id #db/id[:db.part/user -100359]}
+
+{ :security/acode "LSRGLI", :security/isin "US50218G2066", :security/bcode "LSRG LI Equity", :security/exchange "LI", :security/currency "USD",   :db/id #db/id[:db.part/user -100360]}
+
+{ :security/acode "MBT", :security/isin "US6074091090", :security/bcode "US6074091090 LI Equity", :security/exchange "LI", :security/currency "USD",   :db/id #db/id[:db.part/user -100361]}
 
 { :security/acode "MHPCLI", :security/isin "US55302T2042", :security/bcode "MHPC LI Equity", :security/assettype 1,      :security/exchange "LI", :security/currency "USD",   :db/id #db/id[:db.part/user -100362]}
 
-
 { :security/acode "MRKV", :security/isin "RU000A0JPPN4", :security/bcode "MRKV RM Equity", :security/assettype  1,   :security/exchange "RX", :security/currency "RUB",   :db/id #db/id[:db.part/user -100363]}
-
-
 
 { :security/acode "NKNC", :security/isin "RU0009100507", :security/bcode "NKNC RM Equity", :security/assettype 1,    :security/exchange "RX", :security/currency "RUB",   :db/id #db/id[:db.part/user -100364]}
 
@@ -606,7 +615,9 @@
 { :security/acode "TGKA", :security/isin "RU000A0JNUD0", :security/bcode "TGKA RM Equity", :security/assettype 1, :security/exchange "RX", :security/currency "RUB",   :db/id #db/id[:db.part/user -100372]}
 
 { :security/acode "DEUTPERPB", :security/isin "DE000DB7XHP3", :security/bcode "DE000DB7XHP3 Corp", :security/exchange "CBBT", :security/currency "EUR",   :db/id #db/id[:db.part/user -100373]}
+
 { :security/acode "TNBP", :security/isin "TNBPISIN", :security/bcode "TNBP Equty",:security/exchange "CBBT", :security/currency "RUB",   :db/id #db/id[:db.part/user -100374]}
+
 { :security/acode "TNBPP", :security/isin "TNBPPISIN", :security/bcode "TNBPP Equty",:security/exchange "CBBT", :security/currency "RUB",   :db/id #db/id[:db.part/user -100375]}
 
 { :security/acode "TRNFBO1P5", :security/isin "RU000A0JXC24", :security/bcode "RU000A0JXC24 Corp",  :security/assettype 5,  :security/exchange "CBBT", :security/currency "RUB",   :db/id #db/id[:db.part/user -100376]}
@@ -633,11 +644,44 @@
 { :security/acode "GTLK02", :security/isin "RU000A0JTKM9", :security/bcode "RU000A0JTKM9 Corp", :security/assettype 5, :security/exchange "", :security/currency "RUB",   :db/id #db/id[:db.part/user -100386]}
 
 { :security/acode "PETBRA18E", :security/isin "XS0716979249", :security/bcode "XS0716979249 Corp", :security/assettype 5, :security/exchange "CBBT", :security/currency "EUR",   :db/id #db/id[:db.part/user -100387]}
+
 { :security/acode "PETBRA19A", :security/isin "XS0835886598", :security/bcode "XS0835886598 Corp", :security/assettype 5, :security/exchange "CBBT", :security/currency "EUR",   :db/id #db/id[:db.part/user -100388]}
 
 { :security/acode "VEBL11", :security/isin "RU000A0JTQU9", :security/bcode "RU000A0JTQU9 MICB Corp", :security/assettype 5, :security/exchange "MICB", :security/currency "RUB",   :db/id #db/id[:db.part/user -100389]}
 
 { :security/acode "26219", :security/isin "RU000A0JWM07", :security/bcode "RU000A0JWM07 MICB Corp", :security/assettype 5, :security/exchange "MICB", :security/currency "RUB",   :db/id #db/id[:db.part/user -100390]}
+
+{ :security/acode "GAZBKPERP", :security/isin "XS0848137708", :security/bcode "XS0848137708 Corp", :security/assettype 5, :security/exchange "NY", :security/currency "USD",   :db/id #db/id[:db.part/user -100391]}
+
+{ :security/acode "METINR16", :security/isin "XS0650962185", :security/bcode "XS0650962185 Corp", :security/assettype 5, :security/exchange "NY", :security/currency "USD",   :db/id #db/id[:db.part/user -100392]}
+
+{ :security/acode "MAGNIT1P02", :security/isin "RU000A0JW662", :security/bcode "RU000A0JW662 Corp", :security/assettype 5, :security/exchange "MICEX", :security/currency "RUB",   :db/id #db/id[:db.part/user -100393]}
+
+{ :security/acode "RSHB16", :security/isin "RU000A0JS6N8", :security/bcode "RU000A0JS6N8 Corp", :security/assettype 5, :security/exchange "MICEX", :security/currency "RUB",   :db/id #db/id[:db.part/user -100394]}
+
+{ :security/acode "SPTEL02", :security/isin "RU000A0JRKD2", :security/bcode "RU000A0JRKD2 Corp", :security/assettype 5, :security/exchange "MICEX", :security/currency "RUB",   :db/id #db/id[:db.part/user -100395]}
+
+{ :security/acode "BANE06", :security/isin "RU000A0JTM28", :security/bcode "RU000A0JTM28 Corp", :security/assettype 5, :security/exchange "MICEX", :security/currency "RUB",   :db/id #db/id[:db.part/user -100396]}
+
+{ :security/acode "GTLKBO02", :security/isin "RU000A0JU609", :security/bcode "RU000A0JU609 Corp", :security/assettype 5, :security/exchange "MICEX", :security/currency "RUB",   :db/id #db/id[:db.part/user -100397]}
+
+{ :security/acode "HALKBK19", :security/isin "XS1069383856", :security/bcode "XS1069383856 Corp", :security/assettype 5, :security/exchange "NY", :security/currency "USD",   :db/id #db/id[:db.part/user -100398]}
+
+{ :security/acode "VEB-PBO1R4", :security/isin "RU000A0JWNJ3", :security/bcode "RU000A0JWNJ3 Corp", :security/assettype 5, :security/exchange "MICEX", :security/currency "RUB",   :db/id #db/id[:db.part/user -100399]}
+
+{ :security/acode "EVRAZ22", :security/isin "XS1405775377", :security/bcode "XS1405775377 Corp", :security/assettype 5, :security/exchange "NY", :security/currency "USD",   :db/id #db/id[:db.part/user -100400]}
+
+{ :security/acode "24019", :security/isin "RU000A0JX0J2", :security/bcode "RU000A0JX0J2 Corp", :security/assettype 5, :security/exchange "MICEX", :security/currency "RUB",   :db/id #db/id[:db.part/user -100401]}
+
+{ :security/acode "PGK-05", :security/isin "RU000A0JVUL6", :security/bcode "RU000A0JVUL6 Corp", :security/assettype 5, :security/exchange "MICEX", :security/currency "RUB",   :db/id #db/id[:db.part/user -100402]}
+
+{ :security/acode "RSHB-08T1", :security/isin "RU000A0JWV63", :security/bcode "RU000A0JWV63 Corp", :security/assettype 5, :security/exchange "MICEX", :security/currency "RUB",   :db/id #db/id[:db.part/user -100403]}
+
+{ :security/acode "SILMASHBO-3", :security/isin "RU000A0JWTW3", :security/bcode "RU000A0JWTW3 Corp", :security/assettype 5, :security/exchange "MICEX", :security/currency "RUB",   :db/id #db/id[:db.part/user -100404]}
+
+{ :security/acode "SPTEL04", :security/isin "RU000A0JS3M7", :security/bcode "RU000A0JS3M7 Corp", :security/assettype 5, :security/exchange "MICEX", :security/currency "RUB",   :db/id #db/id[:db.part/user -100405]}
+
+{ :security/acode "VEBL10", :security/isin "RU000A0JTQS3", :security/bcode "RU000A0JTQS3 Corp", :security/assettype 5, :security/exchange "MICEX", :security/currency "RUB",   :db/id #db/id[:db.part/user -100406]}
 
 ;; ISSUERS
 { :issuer/code "Mail.Ru Group Ltd" :db/id #db/id[:db.part/user -101001] }
@@ -696,6 +740,14 @@
 { :client/code "LADUF",  :client/name "Клиент LADUF",  :db/id #db/id[:db.part/user -102037]}
 { :client/code "XGPQF",  :client/name "Клиент XGPQF",  :db/id #db/id[:db.part/user -102038]}
 { :client/code "PYUNF1",  :client/name "Клиент PYUNF1",  :db/id #db/id[:db.part/user -102039]}
+{ :client/code "KDFMF",  :client/name "Клиент KDFMF",  :db/id #db/id[:db.part/user -102040]}
+{ :client/code "KDCEF1",  :client/name "Клиент KDCEF1",  :db/id #db/id[:db.part/user -102041]}
+{ :client/code "ZADNF",  :client/name "Клиент ZADNF",  :db/id #db/id[:db.part/user -102042]}
+{ :client/code "ZADNF1",  :client/name "Клиент ZADNF1",  :db/id #db/id[:db.part/user -102043]}
+{ :client/code "KDESF",  :client/name "Клиент KDESF",  :db/id #db/id[:db.part/user -102044]}
+{ :client/code "KDERF",  :client/name "Клиент KDERF",  :db/id #db/id[:db.part/user -102045]}
+{ :client/code "PYVCF",  :client/name "Клиент PYVCF",  :db/id #db/id[:db.part/user -102046]}
+{ :client/code "PYUHF",  :client/name "Клиент PYUHF",  :db/id #db/id[:db.part/user -102047]}
 
 ;; TRANSACTIONS
 
@@ -963,7 +1015,13 @@
 
 { :transaction/client #db/id[:db.part/user -102038], :transaction/security #db/id[:db.part/user -100387], :transaction/nominal 200000.0,   :transaction/price 98.13,  :transaction/direction "S", :transaction/valuedate #inst "2016-06-14T10:00:00.0000000Z", :transaction/currency "EUR", :transaction/comment "Оферта Petrobras, 4.875% 7mar2018, EUR",                    :db/id #db/id[:db.part/user -110187] }
 
- 
+{ :transaction/client #db/id[:db.part/user -102041], :transaction/security #db/id[:db.part/user -100169], :transaction/nominal 100000.0,   :transaction/price 100.00,  :transaction/direction "S", :transaction/valuedate #inst "2015-03-13T10:00:00.0000000Z", :transaction/currency "USD", :transaction/comment "Transfer out",                    :db/id #db/id[:db.part/user -110188] }
+
+{ :transaction/client #db/id[:db.part/user -102045], :transaction/security #db/id[:db.part/user -100098], :transaction/nominal 4199.0,      :transaction/price 3706.41, :transaction/direction "S", :transaction/valuedate #inst "2017-02-20T10:00:00.0000000Z", :transaction/currency "RUB", :transaction/comment "Оферта",                                            :db/id #db/id[:db.part/user -110189] }
+
+{ :transaction/client #db/id[:db.part/user -102047], :transaction/security #db/id[:db.part/user -100098], :transaction/nominal 2803.0,      :transaction/price 3706.41, :transaction/direction "S", :transaction/valuedate #inst "2017-02-20T10:00:00.0000000Z", :transaction/currency "RUB", :transaction/comment "Оферта",                                            :db/id #db/id[:db.part/user -110190] }
+
+
 ;; PRICES
 { :price/security #db/id[:db.part/user -100133],    :price/lastprice  1.0,     :price/valuedate #inst "2000-01-01T10:00:00.0000000Z", :price/comment "manual", :price/source "test data", :db/id #db/id[:db.part/user -200001] }
 { :price/security #db/id[:db.part/user -100134],    :price/lastprice  1.0,     :price/valuedate #inst "2000-01-01T10:00:00.0000000Z", :price/comment "manual", :price/source "test data", :db/id #db/id[:db.part/user -200002] }

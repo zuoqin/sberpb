@@ -151,8 +151,7 @@
           (dom/div {:className "col-xs-1 col-md-1" :style {:padding-left "0px" :padding-right "0px" :padding-top "10px"}}
             (dom/div
               (dom/div 
-                (dom/span {:style {:position "absolute" :padding-right "5px" :text-align "right" :display "block" :width "100%"}} (sbercore/split-thousands (str (.round js/Math (* (-  (:price item) (:wap item)) (:amount item))   ) )))   
-                
+                (dom/span {:style {:position "absolute" :padding-right "5px" :text-align "right" :display "block" :width "100%"}} (sbercore/split-thousands (str (.round js/Math (* (-  (:price item) (:wap item)) (/ (:price (first (filter (fn[x] (if( = (:currency item) (:acode x)) true false)) (:securities @sbercore/app-state))) )  (:price (first (filter (fn[x] (if( = "USD" (:acode x)) true false)) (:securities @sbercore/app-state))) )) (:amount item))) )))                
               )
             )
           )
