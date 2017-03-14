@@ -126,7 +126,7 @@
 
         ;tr1 (println rate)
     ]
-    (d/transact conn  [{ :price/security fxid :price/lastprice (Double/parseDouble (str (:rate rate)))  :price/valuedate (:date rate) :price/source "CBR" :price/comment "Import from CBR web site 2017-02-14" :db/id #db/id[:db.part/user -100001 ]}] )
+    (d/transact-async conn  [{ :price/security fxid :price/lastprice (Double/parseDouble (str (:rate rate)))  :price/valuedate (:date rate) :price/source "CBR" :price/comment "Import from CBR web site 2017-02-14" :db/id #db/id[:db.part/user -100001 ]}] )
   )
   ;(println rate)
 )
@@ -164,7 +164,7 @@
   (let [
      conn (d/connect uri)
      ]
-    (d/transact conn [{ :client/code "PYUZF",  :client/name "Клиент PYUZF",  :db/id #db/id[:db.part/user -102048]}]
+    (d/transact-async conn [{ :client/code "PYUZF",  :client/name "Клиент PYUZF",  :db/id #db/id[:db.part/user -102048]}]
     )
     ; To insert new entity:
     ;(d/transact conn [{ :transaction/client #db/id[:db.part/user 17592186045573] :transaction/security #db/id[:db.part/user 17592186065674], :transaction/nominal 108000.0 :transaction/price 100.0 :transaction/direction "S" :transaction/valuedate #inst "2014-04-22T00:00:00.0000000Z", :transaction/currency "RUB" :transaction/comment "", :db/id #db/id[:db.part/user -110002] }])
@@ -324,13 +324,15 @@
 (defn excel-quote-to-db [quote]
   (let [
     dt (java.util.Date.)
-    price (double (:price quote)) 
+    price (double (:price quote))
+    target (double (:target quote))
+    anr (double (:anr quote))
     secid (get-secid-by-isin (:isin quote))
     ;tr1 (println quote)
     ;tr2 (println secid)
     conn (d/connect uri)
   ]
- (d/transact conn  [{ :price/security secid :price/lastprice price :price/valuedate dt :price/source "Excel import" :price/comment "Import from Bllomberg Excel output on 2017-03-10" :db/id #db/id[:db.part/user -100001 ]}]))
+ (d/transact-async conn  [{ :price/security secid :price/lastprice price :price/valuedate dt :price/targetprice target :price/analystrating anr  :price/source "Excel import" :price/comment "Import from Bllomberg Excel output on 2017-03-10" :db/id #db/id[:db.part/user -100001 ]}]))
 )
 
 (defn import-price-for-sec [bcode]
@@ -357,7 +359,7 @@
   (let [
     secs (drop 0 (->> (load-workbook (str drive ":/DEV/clojure/sberpb/sberapi/DB/quotes.xlsx") )
                    (select-sheet "Data")
-                   (select-columns {:A :isin :C :price})))
+                   (select-columns {:A :isin :C :price :D :anr :E :target})))
 
     ;newsecs (filter (fn [x] (if (= (compare (:isin x) "XS0493579238")  0) true false)) secs)
     trans (doall (map (fn [x] (excel-quote-to-db x))  secs )) 
@@ -405,6 +407,15 @@
         client (first (filter (fn [x] (if (= (:code x) code) true false)) clients)) 
         ]
     (:id client)
+  )
+)
+
+(defn get-client-name-by-id [id]
+  (let [
+        clients (get-clients)
+        client (first (filter (fn [x] (if (= (:id x) id) true false)) clients)) 
+        ]
+    (:code client)
   )
 )
 
@@ -476,14 +487,14 @@
 
 (defn append-tran-to-file [tran id]
   (let [
+        name (get-client-name-by-id (:client tran))
         newid (- 0 110001 id)
         str1 (str "{ :transaction/client #db/id[:db.part/user " (:client tran) "] :transaction/security #db/id[:db.part/user " (:security tran) "], :transaction/nominal " (str/replace (format "%.1f" (:nominal tran)) "," ".")  " :transaction/price " (:price tran) " :transaction/direction \"" (:direction tran) "\" :transaction/valuedate  #inst \"" (f/unparse built-in-formatter (c/from-long (c/to-long (:valuedate tran))) ) "0000Z\", :transaction/currency \"" (:currency tran) "\" :transaction/comment \"\", :db/id #db/id[:db.part/user " newid "]}\n")
         ]
-    (if (= (find-transaction tran) 0) 
-      (spit (str drive ":/DEV/clojure/sberpb/sberapi/DB/cl.clj")  str1 :append true)
+    (if (= (find-transaction tran) 0)
+      (spit (str drive ":/DEV/clojure/sberpb/sberapi/DB/" name ".clj")  str1 :append true)
       (println tran)
     )
-    
   )
 )
 
@@ -860,7 +871,7 @@
 
 (defn get-portf-by-num [client num]
   (let [
-    newnum (+ 1325462399000 (* num 86400000) ) ;; 1488412799000 1488412799000 1325462399000 1488412799000  1487116799000  1451692799000  1325462399000
+    newnum (+ 1488412799000 (* num 86400000) ) ;;1325462399000 1488412799000 1488412799000 1325462399000 1488412799000  1487116799000  1451692799000  1325462399000
     newdate (java.util.Date. newnum)
     ;tr1 (println newdate)
     day-of-week (f/unparse day-of-week-formatter (c/from-long (c/to-long newdate)))
@@ -924,7 +935,7 @@
      conn (d/connect uri)
      secid (get-secid-by-isin isin)
      ]
-    (d/transact conn [{ :price/comment "First try with Excel import",  :price/lastprice price, :price/security secid, :price/valuedate (java.util.Date.) :price/source "Excel import 2017-03-02" :db/id #db/id[:db.part/user -102031]}]
+    (d/transact-async conn [{ :price/comment "First try with Excel import",  :price/lastprice price, :price/security secid, :price/valuedate (java.util.Date.) :price/source "Excel import 2017-03-02" :db/id #db/id[:db.part/user -102031]}]
     )
     ; To insert new entity:
     ;(d/transact conn [{ :transaction/client #db/id[:db.part/user 17592186045573] :transaction/security #db/id[:db.part/user 17592186065674], :transaction/nominal 108000.0 :transaction/price 100.0 :transaction/direction "S" :transaction/valuedate #inst "2014-04-22T00:00:00.0000000Z", :transaction/currency "RUB" :transaction/comment "", :db/id #db/id[:db.part/user -110002] }])
@@ -967,6 +978,7 @@
 
 (defn save-transactions [client]
   (let [
+          t1 (println (str "in save-transactions " client))
           tranmap (get-transactions client (java.util.Date.))
 
           newtran (map (fn [x] (let [
@@ -1005,13 +1017,50 @@
 
           filtertran (filter (fn [x] (if (nil? (:security x)) false true))  newtran)
           cnt (count filtertran )
+          t1 (spit (str drive ":/DEV/clojure/sberpb/sberapi/DB/" client ".clj")  "[\n" :append false)
+          t2 (doall (map append-tran-to-file  filtertran (range cnt)))
+          t3 (spit (str drive ":/DEV/clojure/sberpb/sberapi/DB/" client ".clj")  "]" :append true)
     ]
-    (spit (str drive ":/DEV/clojure/sberpb/sberapi/DB/cl.clj")  "[\n" :append false)
-    (doall (map append-tran-to-file  filtertran (range cnt))) 
+
     ;;(spit "c:/DEV/clojure/sberpb/sberapi/DB/cl.clj" "\n]\n" :append true)
     ;;(first newtran)
     cnt
   )
+)
+
+(defn import-client-trans [client]
+  (let [
+        t1 (println (str "in import-client-trans " client))
+        conn (d/connect uri)
+        path (str drive ":/DEV/clojure/sberpb/sberapi/DB/" client ".clj")
+        t2 (println path)
+        data-tx (read-string (slurp path)) 
+        ]
+    @(d/transact-async conn data-tx)
+  )
+)
+
+(defn create-tran-files []
+  (let [
+        conn (d/connect uri)
+        clients (d/q '[:find ?e
+                       :in $ 
+                       :where
+                       [?e :client/name]
+                       ] (d/db conn)) 
+
+        t1 (doall (map (fn [x] (let [name (second (first (ent [x])))
+                                     ]
+                              (if (= (.exists (io/as-file (str drive ":/DEV/Java/" name ".xml"))) true) (save-transactions name)))) clients))
+
+
+        t2 (doall (map (fn [x] (let [name (second (first (ent [x])))]
+                              (if (= (.exists (io/as-file (str drive ":/DEV/clojure/sberpb/sberapi/DB/" name ".clj"))) true) (import-client-trans name)))) clients))
+
+        ;; t1 (spit (str drive ":/DEV/clojure/sberpb/sberapi/DB/cl.clj")  "[\n" :append false)
+        ;; t2 (doall (map (fn [x] (spit (str drive ":/DEV/clojure/sberpb/sberapi/DB/cl.clj")  (str x) :append true)) (range 10)))
+        ;; t3 (spit (str drive ":/DEV/clojure/sberpb/sberapi/DB/cl.clj")  "]" :append true)
+  ])
 )
 
 (defn checktransec [tran]

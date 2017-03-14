@@ -154,7 +154,7 @@
 
 { :security/acode "26206",        :security/assettype 5, :security/bcode "RU000A0JRJU8 Corp", :security/isin "RU000A0JRJU8", :security/exchange "MOSCOW", :security/currency "RUB",    :db/id #db/id[:db.part/user -100083] }
 
-{ :security/acode "26216",        :security/assettype 5, :security/bcode "RU000A0JU9V1 CorpБ", :security/isin "RU000A0JU9V1", :security/exchange "MOSCOW", :security/currency "RUB",    :db/id #db/id[:db.part/user -100084] }
+{ :security/acode "26216",        :security/assettype 5, :security/bcode "RU000A0JU9V1 Corp", :security/isin "RU000A0JU9V1", :security/exchange "MOSCOW", :security/currency "RUB",    :db/id #db/id[:db.part/user -100084] }
 
 { :security/acode "EFGIF_0616",   :security/isin "CH0279929233", :security/bcode "CH0279929233 Corp",:security/exchange "SWISS", :security/currency "USD",    :db/id #db/id[:db.part/user -100085] }
 { :security/acode "EVRAZ18N",     :security/isin "XS0618905219", :security/bcode "XS0618905219 Corp",:security/exchange "XETRA", :security/currency "USD",    :db/id #db/id[:db.part/user -100086] }
@@ -173,9 +173,12 @@
 
 { :security/acode "UCGIM23",      :security/isin "XS0925177130", :security/bcode "XS0925177130 Corp",  :security/assettype 5,  :security/exchange "XETRA", :security/currency "USD",    :db/id #db/id[:db.part/user -100095] }
 
-{ :security/acode "AFKS",         :security/isin "RU000A0DQZE3", :security/bcode "AFKS RX Equity",     :security/exchange "MOSCOW", :security/currency "RUB",    :db/id #db/id[:db.part/user -100096] }
+{ :security/acode "AFKS",         :security/isin "RU000A0DQZE3", :security/bcode "AFKS RX Equity", :security/assettype 1,    :security/exchange "MOSCOW", :security/currency "RUB",    :db/id #db/id[:db.part/user -100096] }
+
 { :security/acode "AGNUS",        :security/isin "IE00BY9D5467", :security/bcode "AGN US Equity",      :security/exchange "NYSE",       :security/currency "USD",    :db/id #db/id[:db.part/user -100097] }
-{ :security/acode "BANE",         :security/isin "RU0007976957", :security/bcode "BANE RX Equity",     :security/exchange "MOSCOW",     :security/currency "RUB",    :db/id #db/id[:db.part/user -100098] }
+
+{ :security/acode "BANE",         :security/isin "RU0007976957", :security/bcode "BANE RX Equity",     :security/assettype 1, :security/exchange "MOSCOW",     :security/currency "RUB",    :db/id #db/id[:db.part/user -100098] }
+
 { :security/acode "DXJUS",        :security/isin "US97717W8516", :security/bcode "DXJUS Equity",       :security/exchange "NYSE",       :security/currency "USD",    :db/id #db/id[:db.part/user -100099] }
 { :security/acode "EDCLLI",       :security/isin "US29843U2024", :security/bcode "EDCLLI Equity",      :security/exchange "NYSE",       :security/currency "USD",    :db/id #db/id[:db.part/user -100100] }
 
@@ -379,7 +382,7 @@
 
 { :security/acode "MSTT", :security/isin  "RU0009177331", :security/bcode "MSTT RM Equity", :security/assettype 1, :security/exchange "RX", :security/currency "RUB",   :db/id #db/id[:db.part/user -100007]}
 
-{ :security/acode "COMNED", :security/isin  "RU000A0ERGA7", :security/bcode "RU000A0ERGA7 Equity", :security/exchange "MICEX", :security/currency "RUB",   :db/id #db/id[:db.part/user -100214]}
+{ :security/acode "COMNED", :security/isin  "RU000A0ERGA7", :security/bcode "RU000A0ERGA7 Equity", :security/assettype 1, :security/exchange "MICEX", :security/currency "RUB",   :db/id #db/id[:db.part/user -100214]}
 
 { :security/acode "KMAZ",          :security/isin  "RU0008959580", :security/bcode "KMAZ RM Equity",   :security/assettype  1,            :security/exchange "MICEX",      :security/currency "RUB",   :db/id #db/id[:db.part/user -100215]}
 
@@ -398,10 +401,12 @@
 
 
 { :security/acode "SBERP", :security/isin  "RU0009029557", :security/bcode "SBERP RM Equity", :security/exchange "RX", :security/currency "RUB",   :db/id #db/id[:db.part/user -100216]}
-{ :security/acode "486HK", :security/isin  "JE00B5BCW814", :security/bcode "JE00B5BCW814 Equity", :security/exchange "HK", :security/currency "HKD",   :db/id #db/id[:db.part/user -100222]}
+
+{ :security/acode "486HK", :security/isin  "JE00B5BCW814", :security/bcode "JE00B5BCW814 Equity", :security/assettype 1, :security/exchange "HK", :security/currency "HKD",   :db/id #db/id[:db.part/user -100222]}
 
 
-{ :security/acode "25079", :security/isin  "RU000A0JRHZ1", :security/bcode "RU000A0JRHZ1 MICX Corp", :security/exchange "MICX", :security/currency "RUB",   :db/id #db/id[:db.part/user -100224]}
+{ :security/acode "25079", :security/isin  "RU000A0JRHZ1", :security/bcode "RU000A0JRHZ1 MICX Corp", :security/assettype 5, :security/exchange "MICX", :security/currency "RUB",   :db/id #db/id[:db.part/user -100224]}
+
 { :security/acode "GAZBK15R", :security/isin  "XS0833264335", :security/bcode "XS0833264335 SBER Corp", :security/exchange "SBER", :security/currency "RUB",   :db/id #db/id[:db.part/user -100225]}
 
 { :security/acode "LSRG", :security/isin  "RU000A0JPFP0", :security/bcode "LSRG RM Equity", :security/assettype  1,   :security/exchange "RX", :security/currency "RUB",   :db/id #db/id[:db.part/user -100226]}
@@ -683,6 +688,11 @@
 
 { :security/acode "VEBL10", :security/isin "RU000A0JTQS3", :security/bcode "RU000A0JTQS3 Corp", :security/assettype 5, :security/exchange "MICEX", :security/currency "RUB",   :db/id #db/id[:db.part/user -100406]}
 
+{ :security/acode "26218",        :security/assettype 5, :security/bcode "RU000A0JVW48 Corp", :security/isin "RU000A0JVW48", :security/exchange "MOSCOW", :security/currency "RUB",    :db/id #db/id[:db.part/user -100407] }
+
+{ :security/acode "SISTEMB1P5",        :security/assettype 5, :security/bcode "RU000A0JWZY6 Corp", :security/isin "RU000A0JWZY6", :security/exchange "MOSCOW", :security/currency "RUB",    :db/id #db/id[:db.part/user -100408] }
+
+
 ;; ISSUERS
 { :issuer/code "Mail.Ru Group Ltd" :db/id #db/id[:db.part/user -101001] }
 { :issuer/code "Magnit PJSC" :db/id #db/id[:db.part/user -101002] }
@@ -921,6 +931,8 @@
 { :transaction/client #db/id[:db.part/user -102019], :transaction/security #db/id[:db.part/user -100064], :transaction/nominal 200000.0,   :transaction/price 103.13, :transaction/direction "S", :transaction/valuedate #inst "2016-12-13T10:00:00.0000000Z", :transaction/currency "USD", :transaction/comment "Call options on URANIUM18",                          :db/id #db/id[:db.part/user -110074] }
 { :transaction/client #db/id[:db.part/user -102019], :transaction/security #db/id[:db.part/user -100152], :transaction/nominal 2500000.0,  :transaction/price 100.0,  :transaction/direction "S", :transaction/valuedate #inst "2015-10-28T10:00:00.0000000Z", :transaction/currency "RUB", :transaction/comment "Погашение РусГидро, 7.875% 28oct2015",               :db/id #db/id[:db.part/user -110075] }
 { :transaction/client #db/id[:db.part/user -102019], :transaction/security #db/id[:db.part/user -100075], :transaction/nominal 22133.0,    :transaction/price 4.2521, :transaction/direction "S", :transaction/valuedate #inst "2015-06-24T10:00:00.0000000Z", :transaction/currency "USD", :transaction/comment "Transfer out",                                       :db/id #db/id[:db.part/user -110076] }
+{ :transaction/client #db/id[:db.part/user -102019], :transaction/security #db/id[:db.part/user -100098], :transaction/nominal 361.0,      :transaction/price 3706.41, :transaction/direction "S", :transaction/valuedate #inst "2017-02-20T10:00:00.0000000Z", :transaction/currency "RUB", :transaction/comment "Оферта",                                            :db/id #db/id[:db.part/user -110190] }
+
 
 
 { :transaction/client #db/id[:db.part/user -102020], :transaction/security #db/id[:db.part/user -100064], :transaction/nominal 1303000.0,  :transaction/price 103.13, :transaction/direction "S", :transaction/valuedate #inst "2016-12-13T10:00:00.0000000Z", :transaction/currency "USD", :transaction/comment "Call options on URANIUM18",                          :db/id #db/id[:db.part/user -110077] }
@@ -1019,7 +1031,37 @@
 
 { :transaction/client #db/id[:db.part/user -102045], :transaction/security #db/id[:db.part/user -100098], :transaction/nominal 4199.0,      :transaction/price 3706.41, :transaction/direction "S", :transaction/valuedate #inst "2017-02-20T10:00:00.0000000Z", :transaction/currency "RUB", :transaction/comment "Оферта",                                            :db/id #db/id[:db.part/user -110189] }
 
-{ :transaction/client #db/id[:db.part/user -102047], :transaction/security #db/id[:db.part/user -100098], :transaction/nominal 2803.0,      :transaction/price 3706.41, :transaction/direction "S", :transaction/valuedate #inst "2017-02-20T10:00:00.0000000Z", :transaction/currency "RUB", :transaction/comment "Оферта",                                            :db/id #db/id[:db.part/user -110190] }
+{ :transaction/client #db/id[:db.part/user -102047], :transaction/security #db/id[:db.part/user -100098], :transaction/nominal 2803.0,      :transaction/price 3706.41, :transaction/direction "S", :transaction/valuedate #inst "2017-02-20T10:00:00.0000000Z", :transaction/currency "RUB", :transaction/comment "Оферта",                                            :db/id #db/id[:db.part/user -110191] }
+
+
+{ :transaction/client #db/id[:db.part/user -102035], :transaction/security #db/id[:db.part/user -100377], :transaction/nominal 9960.0,      :transaction/price 98.49, :transaction/direction "S", :transaction/valuedate #inst "2017-03-07T10:00:00.0000000Z", :transaction/currency "RUB", :transaction/comment "Intreraccount transfer", :db/id #db/id[:db.part/user -110192]}
+{ :transaction/client #db/id[:db.part/user -102039], :transaction/security #db/id[:db.part/user -100377], :transaction/nominal 9960.0,      :transaction/price 98.49, :transaction/direction "B", :transaction/valuedate #inst "2017-03-07T10:00:00.0000000Z", :transaction/currency "RUB", :transaction/comment "Intreraccount transfer", :db/id #db/id[:db.part/user -110193] }
+
+{ :transaction/client #db/id[:db.part/user -102035], :transaction/security #db/id[:db.part/user -100380], :transaction/nominal 11325.0,      :transaction/price 86.34, :transaction/direction "S", :transaction/valuedate #inst "2017-03-07T10:00:00.0000000Z", :transaction/currency "RUB", :transaction/comment "Intreraccount transfer", :db/id #db/id[:db.part/user -110194]}
+{ :transaction/client #db/id[:db.part/user -102039], :transaction/security #db/id[:db.part/user -100380], :transaction/nominal 11325.0,      :transaction/price 86.34, :transaction/direction "B", :transaction/valuedate #inst "2017-03-07T10:00:00.0000000Z", :transaction/currency "RUB", :transaction/comment "Intreraccount transfer", :db/id #db/id[:db.part/user -110195] }
+
+{ :transaction/client #db/id[:db.part/user -102035], :transaction/security #db/id[:db.part/user  -100018], :transaction/nominal 71420.0,      :transaction/price 34.222, :transaction/direction "S", :transaction/valuedate #inst "2017-03-07T10:00:00.0000000Z", :transaction/currency "RUB", :transaction/comment "Intreraccount transfer", :db/id #db/id[:db.part/user -110196]}
+{ :transaction/client #db/id[:db.part/user -102039], :transaction/security #db/id[:db.part/user  -100018], :transaction/nominal 71420.0,      :transaction/price 34.222, :transaction/direction "B", :transaction/valuedate #inst "2017-03-07T10:00:00.0000000Z", :transaction/currency "RUB", :transaction/comment "Intreraccount transfer", :db/id #db/id[:db.part/user -110197] }
+
+
+{ :transaction/client #db/id[:db.part/user -102035], :transaction/security #db/id[:db.part/user  -100233], :transaction/nominal 7500.0,      :transaction/price 101.5, :transaction/direction "S", :transaction/valuedate #inst "2017-03-07T10:00:00.0000000Z", :transaction/currency "RUB", :transaction/comment "Intreraccount transfer", :db/id #db/id[:db.part/user -110198]}
+{ :transaction/client #db/id[:db.part/user -102039], :transaction/security #db/id[:db.part/user  -100233], :transaction/nominal 7500.0,      :transaction/price 101.5, :transaction/direction "B", :transaction/valuedate #inst "2017-03-07T10:00:00.0000000Z", :transaction/currency "RUB", :transaction/comment "Intreraccount transfer", :db/id #db/id[:db.part/user -110199] }
+
+
+{ :transaction/client #db/id[:db.part/user -102035], :transaction/security #db/id[:db.part/user  -100378], :transaction/nominal 10390.0,      :transaction/price 93.34, :transaction/direction "S", :transaction/valuedate #inst "2017-03-07T10:00:00.0000000Z", :transaction/currency "RUB", :transaction/comment "Intreraccount transfer", :db/id #db/id[:db.part/user -110200]}
+{ :transaction/client #db/id[:db.part/user -102039], :transaction/security #db/id[:db.part/user  -100378], :transaction/nominal 10390.0,      :transaction/price 93.34, :transaction/direction "B", :transaction/valuedate #inst "2017-03-07T10:00:00.0000000Z", :transaction/currency "RUB", :transaction/comment "Intreraccount transfer", :db/id #db/id[:db.part/user -110201] }
+
+{ :transaction/client #db/id[:db.part/user -102035], :transaction/security #db/id[:db.part/user  -100232], :transaction/nominal 2500.0,      :transaction/price 100.00, :transaction/direction "S", :transaction/valuedate #inst "2017-03-07T10:00:00.0000000Z", :transaction/currency "RUB", :transaction/comment "Intreraccount transfer", :db/id #db/id[:db.part/user -110202]}
+{ :transaction/client #db/id[:db.part/user -102039], :transaction/security #db/id[:db.part/user  -100232], :transaction/nominal 2500.0,      :transaction/price 100.00, :transaction/direction "B", :transaction/valuedate #inst "2017-03-07T10:00:00.0000000Z", :transaction/currency "RUB", :transaction/comment "Intreraccount transfer", :db/id #db/id[:db.part/user -110203] }
+
+
+{ :transaction/client #db/id[:db.part/user -102035], :transaction/security #db/id[:db.part/user  -100083], :transaction/nominal 9798.0,      :transaction/price 99.03, :transaction/direction "S", :transaction/valuedate #inst "2017-03-07T10:00:00.0000000Z", :transaction/currency "RUB", :transaction/comment "Intreraccount transfer", :db/id #db/id[:db.part/user -110204]}
+{ :transaction/client #db/id[:db.part/user -102039], :transaction/security #db/id[:db.part/user  -100083], :transaction/nominal 9798.0,      :transaction/price 99.03, :transaction/direction "B", :transaction/valuedate #inst "2017-03-07T10:00:00.0000000Z", :transaction/currency "RUB", :transaction/comment "Intreraccount transfer", :db/id #db/id[:db.part/user -110205] }
+
+
+{ :transaction/client #db/id[:db.part/user -102035], :transaction/security #db/id[:db.part/user  -100379], :transaction/nominal 11430.0,      :transaction/price 85.75, :transaction/direction "S", :transaction/valuedate #inst "2017-03-07T10:00:00.0000000Z", :transaction/currency "RUB", :transaction/comment "Intreraccount transfer", :db/id #db/id[:db.part/user -110206]}
+{ :transaction/client #db/id[:db.part/user -102039], :transaction/security #db/id[:db.part/user  -100379], :transaction/nominal 11430.0,      :transaction/price 85.75, :transaction/direction "B", :transaction/valuedate #inst "2017-03-07T10:00:00.0000000Z", :transaction/currency "RUB", :transaction/comment "Intreraccount transfer", :db/id #db/id[:db.part/user -110207] }
+
 
 
 ;; PRICES

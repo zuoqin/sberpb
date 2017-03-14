@@ -60,6 +60,8 @@
                            :asset-path "js/compiled/out"
                            :output-to "resources/public/js/compiled/sberweb.js"
                            :output-dir "resources/public/js/compiled/out"
+                           :optimizations :none
+                           :pretty-print true
                            :source-map-timestamp true}}
 
                {:id "test"

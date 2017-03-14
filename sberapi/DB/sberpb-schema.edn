@@ -183,6 +183,21 @@
   :db/doc "LAST price"
   :db.install/_attribute :db.part/db}
 
+
+{:db/id #db/id[:db.part/db]
+  :db/ident :price/targetprice
+  :db/valueType :db.type/double
+  :db/cardinality :db.cardinality/one
+  :db/doc "Target price"
+  :db.install/_attribute :db.part/db}
+
+{:db/id #db/id[:db.part/db]
+  :db/ident :price/analystrating
+  :db/valueType :db.type/double
+  :db/cardinality :db.cardinality/one
+  :db/doc "Target price"
+  :db.install/_attribute :db.part/db}
+
  {:db/id #db/id[:db.part/db]
   :db/ident :price/valuedate
   :db/valueType :db.type/instant

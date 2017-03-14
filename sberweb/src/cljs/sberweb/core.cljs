@@ -124,9 +124,7 @@
 
     newfxrate (if (= 0 (compare "GBX" (:currency security))) (/ fxrate 100.) fxrate)    
 
-    result {:id (:id portfolio) :amount (:amount (nth item 1) ) :wap (:rubprice (nth item 1) ) :price (:rubprice (nth item 1) ) :waprub (:rubprice (nth item 1) ) :currubprice (* price newfxrate)}
-
-
+    result {:id (:id portfolio) :amount (:amount (nth item 1) ) :wapcur (:price (nth item 1) ) :wapusd (:price (nth item 1) ) :waprub (:rubprice (nth item 1) ) :currubprice (* price newfxrate)}
 
     ]
     ;(.log js/console item)
