@@ -76,7 +76,9 @@
     [_]
     (dom/div {:className "list-group" :style {:display "block"}}
       (map (fn [item]
-        (let [sec (first (filter (fn[x] (if (= (:id x) (:id item) ) true false)) (:securities @sbercore/app-state)))]
+        (let [sec (first (filter (fn[x] (if (= (:id x) (:id item) ) true false)) (:securities @sbercore/app-state)))
+              ;;tr1 (.log js/console "fieldcode"  sec)
+          ]
 
           (dom/div {:className "row" :style {:margin-left "0px" :margin-right "0px"}} 
             (dom/div {:className "col-xs-2 col-md-2" :style {:padding-left "0px" :padding-right "0px"}}
@@ -113,7 +115,7 @@
             (dom/div {:className "col-xs-1 col-md-1" :style {:padding-left "0px" :padding-right "0px"}}
 
               (dom/a {:className "list-group-item" :style {:text-align "right"} :href (str  "#/postrans/" (:id (first (filter (fn [x] (if (= (compare (:code x) (:selectedclient @sbercore/app-state)) 0) true false)) (:clients @sbercore/app-state)))) "/" (:id item) ) }
-                (dom/h4 {:className "list-group-item-heading"} (if (> (:price item) 1) (gstring/format "%.2f" (:target sec))  (subs (str (:target sec)) 0 5)))
+                (dom/h4 {:className "list-group-item-heading"} (if (> (:price item) 1) (gstring/format "%.2f" (if (nil? (:target sec)) 0.0 (:target sec)) )  (subs (str (if (nil? (:target sec)) 0.0 (:target sec))) 0 5)))
               )            
             )
 
@@ -121,7 +123,7 @@
             (dom/div {:className "col-xs-1 col-md-1" :style {:padding-left "0px" :padding-right "0px"}}
 
               (dom/a {:className "list-group-item" :style {:text-align "right"} :href (str  "#/postrans/" (:id (first (filter (fn [x] (if (= (compare (:code x) (:selectedclient @sbercore/app-state)) 0) true false)) (:clients @sbercore/app-state)))) "/" (:id item) ) }
-                (dom/h4 {:className "list-group-item-heading"} (if (> (:price item) 1) (gstring/format "%.2f" (:anr sec))  (subs (str (:anr sec)) 0 5)))
+                (dom/h4 {:className "list-group-item-heading"} (if (> (:price item) 1) (gstring/format "%.2f" (if (nil? (:anr sec)) 0.0 (:anr sec)) )  (subs (str (if (nil? (:anr sec)) 0.0 (:anr sec))) 0 5)))
               )            
             )
 
@@ -179,13 +181,13 @@
         )
 
         (sort (comp comp-positions) (filter (fn [x] (let [
-seccode (:acode (first (filter (fn[y] (if (= (:id x) (:id y) ) true false)) (:securities @sbercore/app-state))))
+                                                          seccode (:acode (first (filter (fn[y] (if (= (:id x) (:id y) ) true false)) (:securities @sbercore/app-state))))
 
-]
-(if (or (<= (:amount x) 0) 
-        ;(= false (str/includes? seccode (:search @sbercore/app-state))) 
-)  false true)
-) ) (:positions ((keyword (:selectedclient @sbercore/app-state)) @sbercore/app-state) ) ))
+                                                          ]
+                                                      (if (or (<= (:amount x) 0) 
+                                        ;(= false (str/includes? seccode (:search @sbercore/app-state))) 
+                                                              )  false true)
+                                                      ) ) (:positions ((keyword (:selectedclient @sbercore/app-state)) @sbercore/app-state) ) ) )
 
         
       )
