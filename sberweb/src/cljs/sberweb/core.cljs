@@ -91,12 +91,19 @@
 
     currency (if (= 0 (compare "GBX" (:currency security))) "GBP" (:currency security))
 
-
+    
     fxrate (if (or (= "RUB" currency) (= "RUR" currency)) 1 (:price  (first (filter (fn[x] (if( = (:acode x) currency) true false)) (:securities @app-state)))))
+    usdrate (:price (first (filter (fn [x] (if (= "USD" (:acode x)) true false)) (:securities @app-state))))
 
-    newfxrate (if (= 0 (compare "GBX" (:currency security))) (/ fxrate 100.) fxrate)    
+    isrusbond (if (and (= 5 (:assettype security)) 
+                       (= "RU" (subs (:isin security) 0 2))
+                       )  true false)
+    isbond (if (and (= 5 (:assettype security)) 
+                   ;(= "RU" (subs (:isin security) 0 2))
+                   )  true false)
+    newfxrate (if (= 0 (compare "GBX" (:currency security))) (/ fxrate 100.) fxrate)
 
-    result {:id secid :currency (:currency security) :amount (:amount (nth position 1)) :wap posprice :price price :waprub (:rubprice (nth position 1)) :currubprice (* price newfxrate)}
+    result {:id secid :currency (:currency security) :amount (:amount (nth position 1)) :wap posprice :price price :waprub (:rubprice (nth position 1)) :currubprice (* price newfxrate) :usdvalue (if (= isrusbond true) (/ (* 1000.0 (:wapusd (nth position 1)) (:amount (nth position 1)) ) 100.0 ) (if (= isbond true) (/ (* (:amount (nth position 1)) (:wapusd (nth position 1)) ) 100.0 ) (* (:amount (nth position 1)) (:wapusd (nth position 1))  )  )) }
 
 
 
@@ -110,7 +117,6 @@
   (let [
     portfid (name (nth item 0))
     portfolio (first (filter (fn [x] (if (= (compare (:code x) portfid) 0) true false)) (:clients @app-state)))
-    
 
     security (first (filter (fn [x] (if (= (:id x) (:selectedsec @app-state)) true false)) (:securities @app-state)))
     posprice (get (nth item 1) "price")
@@ -119,12 +125,15 @@
 
     currency (if (= 0 (compare "GBX" (:currency security))) "GBP" (:currency security))
 
+    usdrate (:price (first (filter (fn [x] (if (= "USD" (:acode x)) true false)) (:securities @app-state)))) 
 
     fxrate (if (or (= "RUB" currency) (= "RUR" currency)) 1 (:price  (first (filter (fn[x] (if( = (:acode x) currency) true false)) (:securities @app-state)))))
 
-    newfxrate (if (= 0 (compare "GBX" (:currency security))) (/ fxrate 100.) fxrate)    
+    newfxrate (if (= 0 (compare "GBX" (:currency security))) (/ fxrate 100.) fxrate)
 
-    result {:id (:id portfolio) :amount (:amount (nth item 1) ) :wapcur (:price (nth item 1) ) :wapusd (:price (nth item 1) ) :waprub (:rubprice (nth item 1) ) :currubprice (* price newfxrate)}
+    
+
+    result {:id (:id portfolio) :amount (:amount (nth item 1) ) :wapcur (:price (nth item 1) ) :wapusd (:price (nth item 1) ) :waprub (:rubprice (nth item 1) ) :currubprice (* price newfxrate) :usdvalue 1.0 }
 
     ]
     ;(.log js/console item)

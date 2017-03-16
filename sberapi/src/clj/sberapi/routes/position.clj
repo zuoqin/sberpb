@@ -57,21 +57,27 @@
                         
                         rubprice (* (:fx tran) (:price tran))
 
+                        usdrate (db/get-fxrate-by-date "USD" (:valuedate tran))
+                        usdprice (/ rubprice usdrate)
+
                         prevrubprice (:rubprice ((keyword sec) result))
                         tranamnt (if (= "B" (:direction tran)) (:nominal tran) (- 0 (:nominal tran)))
                         newamnt (if (nil? amnt ) tranamnt (+ amnt tranamnt) )
                         
+                        prevusdprice (:wapusd ((keyword sec) result))
 
                         wap (if (nil? amnt ) (:price tran) (if (> newamnt 0) 
-
+                                                           
 
 
                         (if (> tranamnt 0) (/ (+ (* prevpr amnt) (* (:price tran) tranamnt)) newamnt)  prevpr)  0))
 
 
                         waprub (if (nil? amnt ) rubprice (if (> newamnt 0) (/ (+ (* prevrubprice amnt) (* rubprice tranamnt)) newamnt) 0))
+
+                        wapusd (if (nil? amnt ) usdprice (if (> newamnt 0) (/ (+ (* prevusdprice amnt) (* usdprice tranamnt)) newamnt) 0))
                         ]
-                    (recur (assoc-in result [(keyword sec) ] {:amount newamnt :price wap :rubprice waprub} )
+                    (recur (assoc-in result [(keyword sec) ] {:amount newamnt :price wap :rubprice waprub :wapusd wapusd} )
                          (rest trans))
                   )                  
                   result)

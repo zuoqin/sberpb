@@ -58,7 +58,7 @@
         str1 (str client "," (name (first position)) "," (format "%.1f" (:amount (second position)))  "," (:price (second position)) "," (f/unparse build-in-basicdate-formatter (c/from-long (c/to-long dt)) ) "\n")
         ]
     ;;(println str1)
-    (spit (str drive ":/DEV/clojure/sberpb/sberapi/DB/" client ".txt") str1 :append true)
+    (spit (str drive ":/DEV/output/" client ".txt") str1 :append true)
   )
 )
 
@@ -126,7 +126,7 @@
 
         ;tr1 (println rate)
     ]
-    (d/transact-async conn  [{ :price/security fxid :price/lastprice (Double/parseDouble (str (:rate rate)))  :price/valuedate (:date rate) :price/source "CBR" :price/comment "Import from CBR web site 2017-02-14" :db/id #db/id[:db.part/user -100001 ]}] )
+    (d/transact conn  [{ :price/security fxid, :price/lastprice (Double/parseDouble (str (:rate rate))),  :price/valuedate (:date rate), :price/targetprice (Double/parseDouble (str (:rate rate))), :price/analystrating 0.0, :price/source "CBR", :price/comment (str "Import from CBR web site " (f/unparse cbr-date-formatter (c/from-long (c/to-long (java.util.Date.))) )), :db/id #db/id[:db.part/user -100001 ]}] )
   )
   ;(println rate)
 )
@@ -164,7 +164,7 @@
   (let [
      conn (d/connect uri)
      ]
-    (d/transact-async conn [{ :client/code "PYUZF",  :client/name "Клиент PYUZF",  :db/id #db/id[:db.part/user -102048]}]
+    (d/transact-async conn [{ :client/code "ELLQF1",  :client/name "Клиент ELLQF1",  :db/id #db/id[:db.part/user -102008]}]
     )
     ; To insert new entity:
     ;(d/transact conn [{ :transaction/client #db/id[:db.part/user 17592186045573] :transaction/security #db/id[:db.part/user 17592186065674], :transaction/nominal 108000.0 :transaction/price 100.0 :transaction/direction "S" :transaction/valuedate #inst "2014-04-22T00:00:00.0000000Z", :transaction/currency "RUB" :transaction/comment "", :db/id #db/id[:db.part/user -110002] }])
@@ -492,7 +492,7 @@
         str1 (str "{ :transaction/client #db/id[:db.part/user " (:client tran) "] :transaction/security #db/id[:db.part/user " (:security tran) "], :transaction/nominal " (str/replace (format "%.1f" (:nominal tran)) "," ".")  " :transaction/price " (:price tran) " :transaction/direction \"" (:direction tran) "\" :transaction/valuedate  #inst \"" (f/unparse built-in-formatter (c/from-long (c/to-long (:valuedate tran))) ) "0000Z\", :transaction/currency \"" (:currency tran) "\" :transaction/comment \"\", :db/id #db/id[:db.part/user " newid "]}\n")
         ]
     (if (= (find-transaction tran) 0)
-      (spit (str drive ":/DEV/clojure/sberpb/sberapi/DB/" name ".clj")  str1 :append true)
+      (spit (str drive ":/DEV/output/" name ".clj")  str1 :append true)
       (println tran)
     )
   )
@@ -503,7 +503,7 @@
         str1 (str client "," client "," (name (first position)) "," (:currency (second position)) "," (:amount (second position)) "," (:price (second position)) "," (f/unparse build-in-basicdate-formatter (c/from-long (c/to-long (java.util.Date.))) ) "\n")
         ]
     ;;(println str1)
-    (spit (str drive ":/DEV/clojure/sberpb/sberapi/DB/" client ".txt") str1 :append true)
+    (spit (str drive ":/DEV/output/" client ".txt") str1 :append true)
   )
 )
 
@@ -854,7 +854,13 @@
 
     result (map (fn [x] (let [
                              assettype (second (first (filter (fn [y] (if (= (first y) :security/assettype) true false))(ent [[(get-secid-by-isin (first x))]]) ) ))
-                             isrussian (if (= (compare (subs  (second (first (filter (fn [y] (if (= (first y) :security/isin) true false)) (ent [[(get-secid-by-isin (first x))]])) )) 0 2) "RU") 0 ) true false)
+                             isrussian (if (and 
+
+;; Check ISIN starts with RU
+(= (compare (subs  (second (first (filter (fn [y] (if (= (first y) :security/isin) true false)) (ent [[(get-secid-by-isin (first x))]])) )) 0 2) "RU") 0 ) 
+;; Check currency = RUB
+(= (compare (subs  (second (first (filter (fn [y] (if (= (first y) :security/isin) true false)) (ent [[(get-secid-by-isin (first x))]])) )) 0 2) "RU") 0 ) 
+)  true false)
                               ]
                           [(first x) {:amount (if (and (= assettype 5) (= isrussian true)) (* 1000 (:amount (second x))) (:amount (second x)))  :price (:price (second x)) }]
                           )) filterpos)
@@ -865,7 +871,7 @@
 
 
 (defn save-positions-bloomberg [client positions dt]
-  (spit (str drive ":/DEV/clojure/sberpb/sberapi/DB/" client ".txt")  ",,,,\n" :append true)
+  (spit (str drive ":/DEV/output/" client ".txt")  ",,,,\n" :append true)
   (doall (map (fn [x] (append-position-to-file client x dt)) positions))
 )
 
@@ -900,7 +906,7 @@
         secs (into [] (map (fn [position] [(first position)] ) positions))
         ]
     ;secs
-    (with-open [out-file (io/writer (str "C:/DEV/clojure/sberpb/sberapi/DB/" client ".csv") )] (csv/write-csv out-file secs))
+    (with-open [out-file (io/writer (str "C:/DEV/output/" client ".csv") )] (csv/write-csv out-file secs))
                                         ;(doall (map (fn [position] (append-position-to-excel position)) positions))
     )
 )
@@ -967,7 +973,7 @@
   (let [
 
     ;res1 (spit (str "C:/DEV/clojure/sberpb/sberapi/DB/" client ".txt")  ",,,,\n" :append false)
-    res1 (spit (str drive ":/DEV/clojure/sberpb/sberapi/DB/" client ".txt") (str "Portfolio Name,Security ID,Position/Quantity/Nominal,Cost Px asset Currency,Date\n")  :append false)
+    res1 (spit (str drive ":/DEV/output/" client ".txt") (str "Portfolio Name,Security ID,Position/Quantity/Nominal,Cost Px asset Currency,Date\n")  :append false)
     days (map (fn [x] (get-portf-by-num client x)) (range 0 2500 1))
     ]
     (doall days)
@@ -1017,9 +1023,9 @@
 
           filtertran (filter (fn [x] (if (nil? (:security x)) false true))  newtran)
           cnt (count filtertran )
-          t1 (spit (str drive ":/DEV/clojure/sberpb/sberapi/DB/" client ".clj")  "[\n" :append false)
+          t1 (spit (str drive ":/DEV/output/" client ".clj")  "[\n" :append false)
           t2 (doall (map append-tran-to-file  filtertran (range cnt)))
-          t3 (spit (str drive ":/DEV/clojure/sberpb/sberapi/DB/" client ".clj")  "]" :append true)
+          t3 (spit (str drive ":/DEV/output/" client ".clj")  "]" :append true)
     ]
 
     ;;(spit "c:/DEV/clojure/sberpb/sberapi/DB/cl.clj" "\n]\n" :append true)
@@ -1032,7 +1038,7 @@
   (let [
         t1 (println (str "in import-client-trans " client))
         conn (d/connect uri)
-        path (str drive ":/DEV/clojure/sberpb/sberapi/DB/" client ".clj")
+        path (str drive ":/DEV/output/" client ".clj")
         t2 (println path)
         data-tx (read-string (slurp path)) 
         ]
@@ -1055,7 +1061,7 @@
 
 
         t2 (doall (map (fn [x] (let [name (second (first (ent [x])))]
-                              (if (= (.exists (io/as-file (str drive ":/DEV/clojure/sberpb/sberapi/DB/" name ".clj"))) true) (import-client-trans name)))) clients))
+                              (if (= (.exists (io/as-file (str drive ":/DEV/output/" name ".clj"))) true) (import-client-trans name)))) clients))
 
         ;; t1 (spit (str drive ":/DEV/clojure/sberpb/sberapi/DB/cl.clj")  "[\n" :append false)
         ;; t2 (doall (map (fn [x] (spit (str drive ":/DEV/clojure/sberpb/sberapi/DB/cl.clj")  (str x) :append true)) (range 10)))
@@ -1094,7 +1100,7 @@
         newid (+ 100322 id)
         str1 (str  "{ :security/acode \"" (:acode sec)  "\", :security/isin \"" (:isin sec) "\", :security/bcode \"" (:bcode sec) "\", :security/exchange \"" (:exchange sec) "\", :security/currency \"" (:currency sec) "\",   :db/id #db/id[:db.part/user -" newid "]}\n" ) 
         ]
-    (spit (str drive ":/DEV/clojure/sberpb/sberapi/DB/" client ".txt") str1 :append true)
+    (spit (str drive ":/DEV/output/" client ".txt") str1 :append true)
   )
 )
 
@@ -1107,7 +1113,7 @@
     ;newsecs (filter (fn [x] (if (> (:isquote x) 0.0) true false)) secs)
     ;trans (map (fn [x] (import-price-for-sec (:code x)))  newsecs )
     ]
-   (spit (str drive ":/DEV/clojure/sberpb/sberapi/DB/" client ".txt") "[\n" :append false)
+   (spit (str drive ":/DEV/output/" client ".txt") "[\n" :append false)
    (doall (map (fn [x y] (append-sec-to-file client x y)) secs (range (count secs)))) 
    "Success"
   )

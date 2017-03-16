@@ -186,7 +186,9 @@
 
 { :security/acode "HGMLN",        :security/isin "GB0032360173", :security/bcode "HGM LN Equity",    :security/assettype  1,    :security/exchange "LONDON",     :security/currency "GBX", :db/id #db/id[:db.part/user -100103] }
 
-{ :security/acode "HHPA2AHLX",    :security/isin "LU0974284688", :security/bcode "LU0974284688 Equity",:security/exchange "LUXEMBURG",  :security/currency "RUB",    :db/id #db/id[:db.part/user -100104] }
+{ :security/acode "HHPA2AHLX",    :security/isin "LU0974284688", :security/bcode "LU0974284688 Equity", :security/assettype 1, :security/exchange "LUXEMBURG",  :security/currency "USD",    :db/id #db/id[:db.part/user -100104] }
+
+
 { :security/acode "HYGUS",        :security/isin "US4642885135", :security/bcode "US4642885135 Equity",:security/exchange "NYSE",       :security/currency "USD",    :db/id #db/id[:db.part/user -100105] }
 
 { :security/acode "KCELLI",       :security/isin "US48668G2057", :security/bcode "KCEL LI Equity",   :security/assettype   1,   :security/exchange "NYSE",       :security/currency "USD",    :db/id #db/id[:db.part/user -100106] }
@@ -719,8 +721,13 @@
 
 { :security/acode "SISTEMB1P5",        :security/assettype 5, :security/bcode "RU000A0JWZY6 Corp", :security/isin "RU000A0JWZY6", :security/exchange "MOSCOW", :security/currency "RUB",    :db/id #db/id[:db.part/user -100408] }
 
+{ :security/acode "EU26REGS",        :security/assettype 5, :security/bcode "RU000A0JWHA4 Corp", :security/isin "RU000A0JWHA4", :security/exchange "MOSCOW", :security/currency "USD",    :db/id #db/id[:db.part/user -100409] }
 
-;{ :security/bcode "SNGSP RX EQUITY", :security/isin "SNGSP ISIN", :security/assettype 1, :security/exchange "MOSCOW", :security/currency "RUB",    :db/id #db/id[:db.part/user -100017] }
+{ :security/acode "GAZP19",        :security/assettype 5, :security/bcode "XS0424860947 Corp", :security/isin "XS0424860947", :security/exchange "MOSCOW", :security/currency "USD",    :db/id #db/id[:db.part/user -100410] }
+
+{ :security/acode "VTB20" :security/bcode "XS0548633659 Corp", :security/isin "XS0548633659", :security/assettype 5, :security/exchange "MOSCOW", :security/currency "USD",    :db/id #db/id[:db.part/user -100017] }
+
+{ :security/acode "SBER22",        :security/assettype 5, :security/bcode "XS0743596040 Corp", :security/isin "XS0743596040", :security/exchange "MOSCOW", :security/currency "USD",    :db/id #db/id[:db.part/user -100411] }
 
 ;; ISSUERS
 { :issuer/code "Mail.Ru Group Ltd" :db/id #db/id[:db.part/user -101001] }
@@ -747,7 +754,7 @@
 { :client/code "AANDF",  :client/name "Клиент AANDF",  :db/id #db/id[:db.part/user -102005]}
 { :client/code "VADZF",  :client/name "Клиент VADZF",  :db/id #db/id[:db.part/user -102006]}
 { :client/code "ELLQF",  :client/name "Клиент ELLQF",  :db/id #db/id[:db.part/user -102007]}
-{ :client/code "XGZQF",  :client/name "Клиент XGZQF",  :db/id #db/id[:db.part/user -102008]}
+{ :client/code "ELLQF1",  :client/name "Клиент ELLQF1",  :db/id #db/id[:db.part/user -102008]}
 { :client/code "TADFF",  :client/name "Клиент TADFF",  :db/id #db/id[:db.part/user -102009]}
 { :client/code "RWVQF",  :client/name "Клиент RWVQF",  :db/id #db/id[:db.part/user -102010]}
 { :client/code "XFLQF",  :client/name "Клиент XFLQF",  :db/id #db/id[:db.part/user -102011]}
@@ -787,6 +794,7 @@
 { :client/code "KDERF",  :client/name "Клиент KDERF",  :db/id #db/id[:db.part/user -102045]}
 { :client/code "PYVCF",  :client/name "Клиент PYVCF",  :db/id #db/id[:db.part/user -102046]}
 { :client/code "PYUHF",  :client/name "Клиент PYUHF",  :db/id #db/id[:db.part/user -102047]}
+{ :client/code "XGZQF",  :client/name "Клиент XGZQF",  :db/id #db/id[:db.part/user -102048]}
 
 ;; TRANSACTIONS
 
@@ -1094,16 +1102,23 @@
 
 
 ;; PRICES
-{ :price/security #db/id[:db.part/user -100133],    :price/lastprice  1.0,     :price/valuedate #inst "2000-01-01T10:00:00.0000000Z", :price/comment "manual", :price/source "test data", :db/id #db/id[:db.part/user -200001] }
-{ :price/security #db/id[:db.part/user -100134],    :price/lastprice  1.0,     :price/valuedate #inst "2000-01-01T10:00:00.0000000Z", :price/comment "manual", :price/source "test data", :db/id #db/id[:db.part/user -200002] }
-{ :price/security #db/id[:db.part/user -100223],    :price/lastprice  8.1,     :price/valuedate #inst "2000-01-01T10:00:00.0000000Z", :price/comment "manual", :price/source "test data", :db/id #db/id[:db.part/user -200003] }
+{ :price/security #db/id[:db.part/user -100133],    :price/lastprice  1.0,     :price/valuedate #inst "2000-01-01T10:00:00.0000000Z", :price/analystrating 0.0, :price/targetprice 1.0, :price/comment "manual", :price/source "test data", :db/id #db/id[:db.part/user -200001] }
 
 
-{ :price/security #db/id[:db.part/user -100132],    :price/lastprice  30.0,    :price/valuedate #inst "2000-01-01T10:00:00.0000000Z", :price/comment "manual", :price/source "test data", :db/id #db/id[:db.part/user -200004] }
-{ :price/security #db/id[:db.part/user -100005],    :price/lastprice  50.0,    :price/valuedate #inst "2000-01-01T10:00:00.0000000Z", :price/comment "manual", :price/source "test data", :db/id #db/id[:db.part/user -200005] }
-{ :price/security #db/id[:db.part/user -100135],    :price/lastprice  30.0,    :price/valuedate #inst "2000-01-01T10:00:00.0000000Z", :price/comment "manual", :price/source "test data", :db/id #db/id[:db.part/user -200006] }
-{ :price/security #db/id[:db.part/user -100136],    :price/lastprice  3.01,    :price/valuedate #inst "2000-01-01T10:00:00.0000000Z", :price/comment "manual", :price/source "test data", :db/id #db/id[:db.part/user -200007] }
-{ :price/security #db/id[:db.part/user -100144],    :price/lastprice  20.0,    :price/valuedate #inst "2000-01-01T10:00:00.0000000Z", :price/comment "manual", :price/source "test data", :db/id #db/id[:db.part/user -200008] }
-{ :price/security #db/id[:db.part/user -100320],    :price/lastprice  3.01,    :price/valuedate #inst "2000-01-01T10:00:00.0000000Z", :price/comment "manual", :price/source "test data", :db/id #db/id[:db.part/user -200009] }
+{ :price/security #db/id[:db.part/user -100134],    :price/lastprice  1.0,     :price/valuedate #inst "2000-01-01T10:00:00.0000000Z", :price/analystrating 0.0, :price/targetprice 1.0, :price/comment "manual", :price/source "test data", :db/id #db/id[:db.part/user -200002] }
+{ :price/security #db/id[:db.part/user -100223],    :price/lastprice  8.1,     :price/valuedate #inst "2000-01-01T10:00:00.0000000Z", :price/analystrating 0.0, :price/targetprice 8.1, :price/comment "manual", :price/source "test data", :db/id #db/id[:db.part/user -200003] }
+
+
+{ :price/security #db/id[:db.part/user -100132],    :price/lastprice  30.0,    :price/valuedate #inst "2000-01-01T10:00:00.0000000Z", :price/analystrating 0.0, :price/targetprice 30.0, :price/comment "manual", :price/source "test data", :db/id #db/id[:db.part/user -200004] }
+
+{ :price/security #db/id[:db.part/user -100005],    :price/lastprice  50.0,    :price/valuedate #inst "2000-01-01T10:00:00.0000000Z", :price/analystrating 0.0, :price/targetprice 50.0, :price/comment "manual", :price/source "test data", :db/id #db/id[:db.part/user -200005] }
+
+{ :price/security #db/id[:db.part/user -100135],    :price/lastprice  30.0,    :price/valuedate #inst "2000-01-01T10:00:00.0000000Z", :price/analystrating 0.0, :price/targetprice 30.0, :price/comment "manual", :price/source "test data", :db/id #db/id[:db.part/user -200006] }
+
+{ :price/security #db/id[:db.part/user -100136],    :price/lastprice  3.01,    :price/valuedate #inst "2000-01-01T10:00:00.0000000Z", :price/analystrating 0.0, :price/targetprice 30.0, :price/comment "manual", :price/source "test data", :db/id #db/id[:db.part/user -200007] }
+
+{ :price/security #db/id[:db.part/user -100144],    :price/lastprice  20.0,    :price/valuedate #inst "2000-01-01T10:00:00.0000000Z", :price/analystrating 0.0, :price/targetprice 20.0, :price/comment "manual", :price/source "test data", :db/id #db/id[:db.part/user -200008] }
+
+{ :price/security #db/id[:db.part/user -100320],    :price/lastprice  3.01,    :price/valuedate #inst "2000-01-01T10:00:00.0000000Z", :price/analystrating 0.0, :price/targetprice 3.01, :price/comment "manual", :price/source "test data", :db/id #db/id[:db.part/user -200009] }
 
 ]
