@@ -110,7 +110,7 @@
         ;USD Value
         (dom/div {:className "col-xs-1 col-md-1" :style {:padding-left "0px" :padding-right "0px" :text-align "right" :font-size "18px"}}
           (sbercore/split-thousands 
-            (gstring/format "%.2f" (:usdvalue (reduce (fn [x y] {:usdvalue (+ (:usdvalue x) (:usdvalue y))} ) (:positions ((keyword (:selectedclient @sbercore/app-state)) @sbercore/app-state)  ) )))
+            (gstring/format "%.0f" (:usdvalue (reduce (fn [x y] {:usdvalue (+ (:usdvalue x) (:usdvalue y))} ) (:positions ((keyword (:selectedclient @sbercore/app-state)) @sbercore/app-state)  ) )))
           )
         )
 
@@ -160,7 +160,7 @@
 
               usdrate (:price (first (filter (fn [x] (if (= "USD" (:acode x)) true false)) (:securities @sbercore/app-state))))
 
-              fxrate (if (or (= "RUB" seccur) (= "RUR" seccur)) 1 (:price  (first (filter (fn[x] (if( = (:acode x) seccur) true false)) (:securities @sbercore/app-state)))))
+              fxrate (if (or (= "RUB" seccur) (= "RUR" seccur)) 1 (:price  (first (filter (fn[x] (if( = (:acode x) (if (= seccur "GBX") "GBP" seccur)) true false)) (:securities @sbercore/app-state)))))
               usdrate (:price (first (filter (fn [x] (if (= "USD" (:acode x)) true false)) (:securities @sbercore/app-state))))
 
               isrusbond (if (and (= 5 (:assettype sec))
@@ -189,6 +189,7 @@
             )
 
 
+            ;; WAP Price
             (dom/div {:className "col-xs-1 col-md-1" :style {:padding-left "0px" :padding-right "0px"}}
 
               (dom/a {:className "list-group-item" :style {:text-align "right"} :href (str  "#/postrans/" (:id (first (filter (fn [x] (if (= (compare (:code x) (:selectedclient @sbercore/app-state)) 0) true false)) (:clients @sbercore/app-state)))) "/" (:id item) ) }
@@ -197,7 +198,8 @@
 
             )
 
-
+            
+            ;; Last Price
             (dom/div {:className "col-xs-1 col-md-1" :style {:padding-left "0px" :padding-right "0px"}}
 
               (dom/a {:className "list-group-item" :style {:text-align "right"} :href (str  "#/postrans/" (:id (first (filter (fn [x] (if (= (compare (:code x) (:selectedclient @sbercore/app-state)) 0) true false)) (:clients @sbercore/app-state)))) "/" (:id item) ) }
@@ -205,22 +207,25 @@
               )
 
             )
+            
 
+            ;;Target price
             (dom/div {:className "col-xs-1 col-md-1" :style {:padding-left "0px" :padding-right "0px"}}
 
               (dom/a {:className "list-group-item" :style {:text-align "right"} :href (str  "#/postrans/" (:id (first (filter (fn [x] (if (= (compare (:code x) (:selectedclient @sbercore/app-state)) 0) true false)) (:clients @sbercore/app-state)))) "/" (:id item) ) }
-                (dom/h4 {:className "list-group-item-heading"} (if (> (:price item) 1) (gstring/format "%.2f" (if (nil? (:target sec)) 0.0 (:target sec)) )  (subs (str (if (nil? (:target sec)) 0.0 (:target sec))) 0 5)))
+                (dom/h4 {:className "list-group-item-heading"} (if (> (:price item) 1) (sbercore/split-thousands (gstring/format "%.0f" (if (nil? (:target sec)) 0.0 (:target sec))))  (subs (str (if (nil? (:target sec)) 0.0 (:target sec))) 0 5)))
               )            
             )
 
-
+            ;;USD Total Value
             (dom/div {:className "col-xs-1 col-md-1" :style {:padding-left "0px" :padding-right "0px"}}
 
               (dom/a {:className "list-group-item" :style {:text-align "right"} :href (str  "#/postrans/" (:id (first (filter (fn [x] (if (= (compare (:code x) (:selectedclient @sbercore/app-state)) 0) true false)) (:clients @sbercore/app-state)))) "/" (:id item) ) }
-                (dom/h4 {:className "list-group-item-heading"} (sbercore/split-thousands (gstring/format "%.2f" (if (nil? (:usdvalue item)) 0.0 (:usdvalue item))))
+                (dom/h4 {:className "list-group-item-heading"} (sbercore/split-thousands (gstring/format "%.0f" (:usdvalue item)))
                 )
-              )            
+              )
             )
+;;(* (:amount item) (if (= isrusbond true) (/ (* 100 (:price item) ) usdrate) (if (= true isbond) (/ (* newfxrate (:price item) ) (* 100.0 usdrate)) (/ (* newfxrate (:price item) ) (* 1.0 usdrate) ) ) ))
 
             (dom/div {:className "col-xs-1 col-md-1" :style {:padding-left "0px" :padding-right "0px"}}
 

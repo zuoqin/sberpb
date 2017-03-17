@@ -164,7 +164,8 @@
   (let [
      conn (d/connect uri)
      ]
-    (d/transact-async conn [{ :client/code "ELLQF1",  :client/name "Клиент ELLQF1",  :db/id #db/id[:db.part/user -102008]}]
+    (d/transact-async conn [{ :client/code "XKTQF",  :client/name "Клиент XKTQF",  :db/id #db/id[:db.part/user -102057]}
+]
     )
     ; To insert new entity:
     ;(d/transact conn [{ :transaction/client #db/id[:db.part/user 17592186045573] :transaction/security #db/id[:db.part/user 17592186065674], :transaction/nominal 108000.0 :transaction/price 100.0 :transaction/direction "S" :transaction/valuedate #inst "2014-04-22T00:00:00.0000000Z", :transaction/currency "RUB" :transaction/comment "", :db/id #db/id[:db.part/user -110002] }])
@@ -668,9 +669,9 @@
         x (parse f)
 	
         trancnt (- (count (:content (nth   (:content (nth (:content x) 4) )  0 ) ) ) 1)  
-        ;tr1 (println (nth (:content (nth   (:content (nth (:content x) 4) )  0 ) ) 50)) 
+        ;tr1 (println trancnt) 
         trans (loop [result [] num 0 ]
-          (let [item (if (<= num trancnt) (:content (nth (:content (nth   (:content (nth (:content x) 4) )  0 ) )  num)))  
+          (let [item (if (<= num trancnt) (:content (nth (:content (nth   (:content (nth (:content x) 4) )  0 ) )  num)))
             ]
             (if (<= num trancnt)            
               
@@ -680,6 +681,8 @@
                        (= 0 (compare "We Buy" (first (:content  (first (:content (nth item 9)  )  )))))
                    )
                    (not (str/includes? (str/lower-case (first (:content  (first (:content (nth item 4)  )  )))) "forts"))
+                   (if (> (count item) 23) (not (str/includes? (str/lower-case  (if (nil? (first (:content  (first (:content (nth item 24)  )  )))) "" (first (:content  (first (:content (nth item 24)  )  ))))  ) "call")) true) 
+                   (if (> (count item) 23) (not (str/includes? (str/lower-case  (if (nil? (first (:content  (first (:content (nth item 24)  )  )))) "" (first (:content  (first (:content (nth item 24)  )  ))))  ) "put")) true) 
                 )
                 (recur (conj result item ) (inc num))
                 (recur result (inc num))
@@ -693,7 +696,21 @@
         tranmap (map tran-to-map trans)
 	;tr2 (println (nth tranmap 25))
     ]
-    (filter (fn [x] (if (or (> (c/to-long (:valuedate x)) (c/to-long dt)) (not (str/includes? (str/lower-case (:status x)) "valid") ) (= "RUR" (:security x)) (= "GBP/RUR" (:security x)) (= "USD/RUR" (:security x)) (= "GBP/USD" (:security x)) (= "GBP/EUR" (:security x)) (= "EUR/USD" (:security x)) (= "EUR/RUR" (:security x)) (= "USD" (:security x)) (nil? (:client x)) (nil? (:currency x))  (= "R" (:direction x))) false true)) tranmap)
+    (filter (fn [x] (if (or 
+                         (> (c/to-long (:valuedate x)) (c/to-long dt)) 
+                         (not (str/includes? (str/lower-case (:status x)) "valid") ) 
+                         (= "RUR" (:security x))
+                         (= "GBP/RUR" (:security x))
+                         (= "USD/RUR" (:security x))
+                         (= "GBP/USD" (:security x))
+                         (= "GBP/EUR" (:security x))
+                         (= "EUR/USD" (:security x))
+                         (= "EUR/RUR" (:security x))
+                         (= "USD" (:security x))
+                         (nil? (:client x))
+                         (nil? (:currency x))
+                         (= "R" (:direction x))
+                         ) false true)) tranmap)
     ;tranmap
   )
 )
@@ -877,7 +894,7 @@
 
 (defn get-portf-by-num [client num]
   (let [
-    newnum (+ 1488412799000 (* num 86400000) ) ;;1325462399000 1488412799000 1488412799000 1325462399000 1488412799000  1487116799000  1451692799000  1325462399000
+    newnum (+ 1325462399000 (* num 86400000) ) ;;1487807999000 1325462399000 1488412799000 1488412799000 1325462399000 1488412799000  1487116799000  1451692799000  1325462399000
     newdate (java.util.Date. newnum)
     ;tr1 (println newdate)
     day-of-week (f/unparse day-of-week-formatter (c/from-long (c/to-long newdate)))
@@ -984,7 +1001,7 @@
 
 (defn save-transactions [client]
   (let [
-          t1 (println (str "in save-transactions " client))
+          ;t1 (println (str "in save-transactions " client))
           tranmap (get-transactions client (java.util.Date.))
 
           newtran (map (fn [x] (let [

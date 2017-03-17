@@ -103,7 +103,7 @@
                    )  true false)
     newfxrate (if (= 0 (compare "GBX" (:currency security))) (/ fxrate 100.) fxrate)
 
-    result {:id secid :currency (:currency security) :amount (:amount (nth position 1)) :wap posprice :price price :waprub (:rubprice (nth position 1)) :currubprice (* price newfxrate) :usdvalue (if (= isrusbond true) (/ (* 1000.0 (:wapusd (nth position 1)) (:amount (nth position 1)) ) 100.0 ) (if (= isbond true) (/ (* (:amount (nth position 1)) (:wapusd (nth position 1)) ) 100.0 ) (* (:amount (nth position 1)) (:wapusd (nth position 1))  )  )) }
+    result {:id secid :currency (:currency security) :amount (:amount (nth position 1)) :wap posprice :price price :waprub (:rubprice (nth position 1)) :currubprice (* price newfxrate) :usdvalue (/ (* (:amount (nth position 1)) (:price security)  (if (= isrusbond true) 10.0 (if (= isbond true) (/ newfxrate 100.0 ) newfxrate ) ) ) usdrate) }
 
 
 
@@ -148,8 +148,12 @@
 
 
 (defn OnGetPositions [response]
-   (swap! app-state assoc-in [(keyword (:selectedclient @app-state)) :positions] (map (fn [x] (map-position x)) response) )
+   (swap! app-state assoc-in [(keyword (:selectedclient @app-state)) :positions] (map (fn [x] (map-position x)) (filter (fn [x] (if (> (:amount (nth x 1)) 0) true false)) response) ) )
 )
+
+
+
+
 
 
 (defn error-handler [{:keys [status status-text]}]
