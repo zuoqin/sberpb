@@ -135,20 +135,58 @@
         ;; RUB P/L
         (dom/div {:className "col-xs-1 col-md-1" :style {:padding-left "0px" :padding-right "0px" :text-align "right" :font-size "18px"}}
           (sbercore/split-thousands 
-            (gstring/format "%.2f" (:usdvalue (reduce (fn [x y] {:usdvalue (+ (:usdvalue x) (:usdvalue y))} ) (:positions ((keyword (:selectedclient @sbercore/app-state)) @sbercore/app-state)  ) )))
+            (gstring/format "%.0f" (:sum (reduce (fn [x item] (let [
+
+              sec (first (filter (fn[x] (if (= (:id x) (:id item) ) true false)) (:securities @sbercore/app-state)))
+              seccur (:currency sec)
+              isbond (if (= 5 (:assettype sec)) true false)
+
+              isrusbond (if (and (= 5 (:assettype sec))
+                                 (= "RU" (subs (:isin sec) 0 2))
+                                 )  true false)
+
+              isbond (if (and (= 5 (:assettype sec))
+                                 ;(= "RU" (subs (:isin security) 0 2))
+                                 )  true false)
+              ]
+              {:sum (+ (if (= isrusbond true) (/ (* 1000.0 (-  (:currubprice item) (:waprub item)) (:amount item))  100.0)  (if (= isbond true) (/ (* (-  (:currubprice item) (:waprub item)) (:amount item))  100.0)  (* (-  (:currubprice item) (:waprub item)) (:amount item)))) (:sum x))}  
+            )  ) {:sum 0.0} (:positions ((keyword (:selectedclient @sbercore/app-state)) @sbercore/app-state)  ) )))
           )
         )
 
         ;; USD P/L
         (dom/div {:className "col-xs-1 col-md-1" :style {:padding-left "0px" :padding-right "0px" :text-align "right" :font-size "18px"}}
-          (sbercore/split-thousands 
-            (gstring/format "%.2f" (:usdvalue (reduce (fn [x y] {:usdvalue (+ (:usdvalue x) (:usdvalue y))} ) (:positions ((keyword (:selectedclient @sbercore/app-state)) @sbercore/app-state)  ) )))
+(sbercore/split-thousands 
+            (gstring/format "%.0f" (:sum (reduce (fn [x item] (let [
+
+              sec (first (filter (fn[x] (if (= (:id x) (:id item) ) true false)) (:securities @sbercore/app-state)))
+              seccur (:currency sec)
+              isbond (if (= 5 (:assettype sec)) true false)
+              usdrate (:price (first (filter (fn [x] (if (= "USD" (:acode x)) true false)) (:securities @sbercore/app-state))))
+
+              fxrate (if (or (= "RUB" seccur) (= "RUR" seccur)) 1 (:price  (first (filter (fn[x] (if( = (:acode x) (if (= seccur "GBX") "GBP" seccur)) true false)) (:securities @sbercore/app-state)))))
+              newfxrate (if (= 0 (compare "GBX" seccur)) (/ fxrate 100.) fxrate)
+              isrusbond (if (and (= 5 (:assettype sec))
+                                 (= "RU" (subs (:isin sec) 0 2))
+                                 )  true false)
+
+              isbond (if (and (= 5 (:assettype sec))
+                                 ;(= "RU" (subs (:isin security) 0 2))
+                                 )  true false)
+              ]
+              {:sum (+ (/ (* (if (= isrusbond true) 1000.0 1.0) (-  (:price item) (:wap item))  (:amount item) newfxrate) (* usdrate (if (= isbond true) 100.0 1.0)) )  (:sum x))}
+            )  ) {:sum 0.0} (:positions ((keyword (:selectedclient @sbercore/app-state)) @sbercore/app-state)  ) )))
           )
+
+          ;; (sbercore/split-thousands
+          ;;  (gstring/format "%.0f" (:usdvalue (reduce (fn [x y] {:usdvalue (+ (:usdvalue x) (:usdvalue y))} ) (:positions ((keyword (:selectedclient @sbercore/app-state)) @sbercore/app-state)  )  ) ) )
+          ;; )
         )
       )
     )
   )
 )
+
 (defcomponent showpositions-view [data owner]
   (render
     [_]
@@ -161,7 +199,6 @@
               usdrate (:price (first (filter (fn [x] (if (= "USD" (:acode x)) true false)) (:securities @sbercore/app-state))))
 
               fxrate (if (or (= "RUB" seccur) (= "RUR" seccur)) 1 (:price  (first (filter (fn[x] (if( = (:acode x) (if (= seccur "GBX") "GBP" seccur)) true false)) (:securities @sbercore/app-state)))))
-              usdrate (:price (first (filter (fn [x] (if (= "USD" (:acode x)) true false)) (:securities @sbercore/app-state))))
 
               isrusbond (if (and (= 5 (:assettype sec))
                                  (= "RU" (subs (:isin sec) 0 2))
@@ -227,6 +264,8 @@
             )
 ;;(* (:amount item) (if (= isrusbond true) (/ (* 100 (:price item) ) usdrate) (if (= true isbond) (/ (* newfxrate (:price item) ) (* 100.0 usdrate)) (/ (* newfxrate (:price item) ) (* 1.0 usdrate) ) ) ))
 
+
+            ;; Currency
             (dom/div {:className "col-xs-1 col-md-1" :style {:padding-left "0px" :padding-right "0px"}}
 
               (dom/a {:className "list-group-item" :style {:text-align "right"} :href (str  "#/postrans/" (:id (first (filter (fn [x] (if (= (compare (:code x) (:selectedclient @sbercore/app-state)) 0) true false)) (:clients @sbercore/app-state)))) "/" (:id item) ) }

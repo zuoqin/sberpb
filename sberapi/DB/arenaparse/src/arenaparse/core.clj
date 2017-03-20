@@ -332,6 +332,15 @@
     ;tr1 (println quote)
     ;tr2 (println secid)
     conn (d/connect uri)
+
+    tr1 (ffirst (d/q '[:find ?e
+                       :in $ ?sec
+                       :where
+                       [?e :price/security ?sec]
+                      ] (d/db conn) secid))
+
+    tr2 (if (not (nil? tr1)) (d/transact conn [[:db.fn/retractEntity tr1]])) 
+        
   ]
  (d/transact-async conn  [{ :price/security secid :price/lastprice price :price/valuedate dt :price/targetprice target :price/analystrating anr  :price/source "Excel import" :price/comment "Import from Bllomberg Excel output on 2017-03-10" :db/id #db/id[:db.part/user -100001 ]}]))
 )
@@ -894,7 +903,7 @@
 
 (defn get-portf-by-num [client num]
   (let [
-    newnum (+ 1325462399000 (* num 86400000) ) ;;1487807999000 1325462399000 1488412799000 1488412799000 1325462399000 1488412799000  1487116799000  1451692799000  1325462399000
+    newnum (+ 1325462399000 (* num 86400000) ) ;;1488412799000 1325462399000
     newdate (java.util.Date. newnum)
     ;tr1 (println newdate)
     day-of-week (f/unparse day-of-week-formatter (c/from-long (c/to-long newdate)))
