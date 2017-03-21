@@ -139,8 +139,7 @@
 
               sec (first (filter (fn[x] (if (= (:id x) (:id item) ) true false)) (:securities @sbercore/app-state)))
               seccur (:currency sec)
-              isbond (if (= 5 (:assettype sec)) true false)
-
+ 
               isrusbond (if (and (= 5 (:assettype sec))
                                  (= "RU" (subs (:isin sec) 0 2))
                                  )  true false)
@@ -207,7 +206,7 @@
               isbond (if (and (= 5 (:assettype sec))
                                  ;(= "RU" (subs (:isin security) 0 2))
                                  )  true false)
-              newfxrate (if (= 0 (compare "GBX" seccur)) (/ fxrate 100.) fxrate)    
+              newfxrate (if (= 0 (compare "GBX" seccur)) (/ fxrate 100.) fxrate)
               ;tr1 (.log js/console "currency: "  seccur " rate:" newfxrate)
           ]
 

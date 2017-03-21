@@ -42,7 +42,7 @@
 (defn security-to-map [security]
   (let [
     [price anr target] (get-last-fx (nth security 1))
-    newsec {:id (nth security 0) :acode (nth security 1) :exchange (nth security 2) :isin (nth security 3) :price price :anr anr :target target :currency (nth security 4) :assettype (nth security 5)}
+    newsec {:id (nth security 0) :acode (nth security 1) :exchange (nth security 2) :isin (nth security 3) :price price :anr anr :target target :currency (nth security 4) :assettype (nth security 5) :bcode (nth security 6)}
         
   ]
   newsec
@@ -51,7 +51,7 @@
 
 (defn get-securities []
   (let [
-        securities (d/q '[:find ?e ?a ?x ?i ?c ?t
+        securities (d/q '[:find ?e ?a ?x ?i ?c ?t ?b
                           :where
                           [?e :security/acode]
                           [?e :security/acode ?a]
@@ -59,6 +59,7 @@
                           [?e :security/isin ?i]
                           [?e :security/currency ?c]
                           [?e :security/assettype ?t]
+                          [?e :security/bcode ?b]
                           ]
                         (d/db conn)) 
 

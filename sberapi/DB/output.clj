@@ -737,6 +737,9 @@
 
 { :security/acode "MINTUS",        :security/assettype 1, :security/bcode "US72201R8337 Equity", :security/isin "US72201R8337", :security/exchange "MOSCOW", :security/currency "USD",    :db/id #db/id[:db.part/user -100415] }
 
+{ :security/acode "GAZCAP27",        :security/assettype 5, :security/bcode "RU000A0JXFS8 Corp", :security/isin "RU000A0JXFS8", :security/exchange "MOSCOW", :security/currency "RUB",    :db/id #db/id[:db.part/user -100416] }
+
+{ :security/acode "MTS-001P-1",        :security/assettype 5, :security/bcode "RU000A0JXEV5 Corp", :security/isin "RU000A0JXEV5", :security/exchange "MOSCOW", :security/currency "RUB",    :db/id #db/id[:db.part/user -100417] }
 
 ;; ISSUERS
 { :issuer/code "Mail.Ru Group Ltd" :db/id #db/id[:db.part/user -101001] }
@@ -1033,7 +1036,7 @@
 { :transaction/client #db/id[:db.part/user -102026], :transaction/security #db/id[:db.part/user -100140], :transaction/nominal 1580.0,     :transaction/price 15.8159,:transaction/direction "B",:transaction/valuedate #inst "2015-07-08T10:00:00.0000000Z", :transaction/currency "USD", :transaction/comment "Замена NILSY_OLD в NILSY",                          :db/id #db/id[:db.part/user -110118] }
 
 { :transaction/client #db/id[:db.part/user -102027], :transaction/security #db/id[:db.part/user -100098], :transaction/nominal 5060.0,     :transaction/price 3706.41,:transaction/direction "S",:transaction/valuedate #inst "2017-02-20T10:00:00.0000000Z", :transaction/currency "RUB", :transaction/comment "Оферта",                                            :db/id #db/id[:db.part/user -110119] }
-{ :transaction/client #db/id[:db.part/user -102027], :transaction/security #db/id[:db.part/user -100018], :transaction/nominal 53800.0,    :transaction/price 17.80,  :transaction/direction "S",:transaction/valuedate #inst "2015-02-28T10:00:00.0000000Z", :transaction/currency "RUB", :transaction/comment "Оферта",                                            :db/id #db/id[:db.part/user -110120] }
+
 
 
 { :transaction/client #db/id[:db.part/user -102028], :transaction/security #db/id[:db.part/user -100139], :transaction/nominal 1572.0,     :transaction/price 15.9,   :transaction/direction "S",:transaction/valuedate #inst "2015-07-10T10:00:00.0000000Z", :transaction/currency "USD", :transaction/comment "Замена NILSY_OLD в NILSY",                          :db/id #db/id[:db.part/user -110121] }
@@ -1130,6 +1133,9 @@
 { :transaction/client #db/id[:db.part/user -102056], :transaction/security #db/id[:db.part/user -100413], :transaction/nominal 200000.0,      :transaction/price 100.0, :transaction/direction "B", :transaction/valuedate #inst "2017-01-24T10:00:00.0000000Z", :transaction/currency "USD", :transaction/comment "Transfer",                                            :db/id #db/id[:db.part/user -110211] }
 
 { :transaction/client #db/id[:db.part/user -102056], :transaction/security #db/id[:db.part/user -100098], :transaction/nominal 1398.0,      :transaction/price 3706.41, :transaction/direction "S", :transaction/valuedate #inst "2017-02-20T10:00:00.0000000Z", :transaction/currency "RUB", :transaction/comment "Оферта",                                            :db/id #db/id[:db.part/user -110212] }
+
+
+;; { :transaction/client #db/id[:db.part/user -102027], :transaction/security #db/id[:db.part/user -100018], :transaction/nominal 53800.0,    :transaction/price 17.80,  :transaction/direction "S",:transaction/valuedate #inst "2015-02-28T10:00:00.0000000Z", :transaction/currency "RUB", :transaction/comment "Оферта",                                            :db/id #db/id[:db.part/user -110120] }
 
 ;; PRICES
 { :price/security #db/id[:db.part/user -100133],    :price/lastprice  1.0,     :price/valuedate #inst "2000-01-01T10:00:00.0000000Z", :price/analystrating 0.0, :price/targetprice 1.0, :price/comment "manual", :price/source "test data", :db/id #db/id[:db.part/user -200001] }

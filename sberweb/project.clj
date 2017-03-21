@@ -22,9 +22,10 @@
                  [org.omcljs/om "1.0.0-alpha41"]
                  [cljs-ajax "0.5.8"]
                  [com.andrewmcveigh/cljs-time "0.4.0"]    
-
+                 [incanter "1.5.7"]
                  [net.unit8/tower-cljs "0.1.0"]   ;;internalization technique
-		 
+		 [clj-http "2.3.0"]
+                 [org.clojure/data.json "0.2.6"]
                  ]
 
   :plugins [[lein-cljsbuild "1.1.3"]

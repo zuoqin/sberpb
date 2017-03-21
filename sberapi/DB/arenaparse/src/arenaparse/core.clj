@@ -29,6 +29,8 @@
 
 ;(def client "RWVQF" ) ;;"PYUMF" "ELLQF" "XGZQF" "TADFF"  "AANDF" "VADZF" "AANDF" "DACFF"
 
+
+
 (defn sort-tran-from-db [tran1 tran2]
   (let [
         ;tr1 (println tran1)
@@ -725,6 +727,23 @@
 )
 
 
+(defn build-excel-transactions [client]
+  (let [
+    transactions (sort (comp sort-tran-from-db) (get-transactions-from-db client (java.util.Date.)))
+
+    ;tr1 (println (first transactions))
+    securities (get-securities)
+
+    newtransactions (map (fn [x] (let [
+      isin (:isin (first (filter (fn [y] (if (= (:security x) (:acode y)) true false)) securities)))
+      ]
+      {:portfolio client :isin isin :quantity (:nominal x) :price (:price x) :date (f/unparse build-in-basicdate-formatter (c/from-long (c/to-long (:valuedate x))) ) :type (if (= "B" (:direction x)) "Buy Long" "Sell Long")}
+    )) transactions)
+    ]
+    (save-xls ["sheet1" (dataset [:portfolio :isin :quantity :price :date :type] newtransactions)] "c:/DEV/Java/yyy.xlsx")
+    "Success"
+  )
+)
 
 (defn build-excel-positions [client]
   (let [
@@ -896,7 +915,7 @@
 )
 
 
-(defn save-positions-bloomberg [client positions dt]
+(defn save-positions-bloomberg [client positions dt]Б
   (spit (str drive ":/DEV/output/" client ".txt")  ",,,,\n" :append true)
   (doall (map (fn [x] (append-position-to-file client x dt)) positions))
 )
@@ -1000,9 +1019,20 @@
 
     ;res1 (spit (str "C:/DEV/clojure/sberpb/sberapi/DB/" client ".txt")  ",,,,\n" :append false)
     res1 (spit (str drive ":/DEV/output/" client ".txt") (str "Portfolio Name,Security ID,Position/Quantity/Nominal,Cost Px asset Currency,Date\n")  :append false)
-    days (map (fn [x] (get-portf-by-num client x)) (range 0 2500 1))
+    days (doall (map (fn [x] (get-portf-by-num client x)) (range 0 2500 1))) 
+
+
+    cash (->> (load-workbook "C:/DEV/Java/Balances.xlsx")
+       (select-sheet "Balances-Currency")
+       (select-columns {:A :date, :B :account :C :currency :D :amount}))
+    t3 (doall (map (fn [x] (let [
+        str1 (str client "," (str (:currency x) "RUB" " Curncy")  "," (format "%.1f" (:amount x))  ","  "," (f/unparse build-in-basicdate-formatter (c/from-long (+  (* 3600000 6) (c/to-long (:date x))) )) "\n")
+        ]
+    ;;(println str1)
+    (spit (str drive ":/DEV/output/" client ".txt") str1 :append true)
+  )) (filter (fn [y] (if (= client (:account y)) true false)) cash)))
     ]
-    (doall days)
+    
     "Success"
   )
 )
@@ -1088,6 +1118,7 @@
 
         t2 (doall (map (fn [x] (let [name (second (first (ent [x])))]
                               (if (= (.exists (io/as-file (str drive ":/DEV/output/" name ".clj"))) true) (import-client-trans name)))) clients))
+
 
         ;; t1 (spit (str drive ":/DEV/clojure/sberpb/sberapi/DB/cl.clj")  "[\n" :append false)
         ;; t2 (doall (map (fn [x] (spit (str drive ":/DEV/clojure/sberpb/sberapi/DB/cl.clj")  (str x) :append true)) (range 10)))

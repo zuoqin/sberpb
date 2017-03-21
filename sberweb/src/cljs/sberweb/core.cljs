@@ -122,7 +122,7 @@
     posprice (get (nth item 1) "price")
     price (if (nil? (:price security)) posprice (:price security))
 
-
+        
     currency (if (= 0 (compare "GBX" (:currency security))) "GBP" (:currency security))
 
     usdrate (:price (first (filter (fn [x] (if (= "USD" (:acode x)) true false)) (:securities @app-state)))) 
@@ -131,9 +131,14 @@
 
     newfxrate (if (= 0 (compare "GBX" (:currency security))) (/ fxrate 100.) fxrate)
 
-    
+    isrusbond (if (and (= 5 (:assettype security)) 
+                       (= "RU" (subs (:isin security) 0 2))
+                       )  true false)
+    isbond (if (and (= 5 (:assettype security)) 
+                   ;(= "RU" (subs (:isin security) 0 2))
+                   )  true false)
 
-    result {:id (:id portfolio) :amount (:amount (nth item 1) ) :wapcur (:price (nth item 1) ) :wapusd (:price (nth item 1) ) :waprub (:rubprice (nth item 1) ) :currubprice (* price newfxrate) :usdvalue 1.0 }
+    result {:id (:id portfolio) :amount (:amount (nth item 1) ) :wapcur (:price (nth item 1) ) :wapusd (:price (nth item 1) ) :waprub (:rubprice (nth item 1) ) :currubprice (* price newfxrate) :usdvalue (/ (* (:amount (nth item 1)) (:price security)  (if (= isrusbond true) 10.0 (if (= isbond true) (/ newfxrate 100.0 ) newfxrate ) ) ) usdrate) }
 
     ]
     ;(.log js/console item)

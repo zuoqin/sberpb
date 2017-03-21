@@ -73,8 +73,23 @@
     [_]
     (dom/div {:className "list-group" :style {:display "block"}}
       (map (fn [item]
-        (let [price (:price (first (filter (fn[x] (if( = (:selectedsec @sbercore/app-state) (:id x)) true false)) (:securities @sbercore/app-state))) )
-              seccurrency (:currency (first (filter (fn[x] (if( = (:selectedsec @sbercore/app-state) (:id x)) true false)) (:securities @sbercore/app-state))) )
+        (let [
+
+              sec (first (filter (fn[x] (if( = (:selectedsec @sbercore/app-state) (:id x)) true false)) (:securities @sbercore/app-state)))
+
+              price (:price  sec)
+              seccurrency (:currency sec )
+
+              isrusbond (if (and (= 5 (:assettype sec))
+                                 (= "RU" (subs (:isin sec) 0 2))
+                                 )  true false)
+
+              isbond (if (and (= 5 (:assettype sec))
+                                 ;(= "RU" (subs (:isin security) 0 2))
+                                 )  true false)
+              usdrate (:price (first (filter (fn [x] (if (= "USD" (:acode x)) true false)) (:securities @sbercore/app-state))))
+              fxrate (if (or (= "RUB" seccurrency) (= "RUR" seccurrency)) 1 (:price (first (filter (fn[x] (if( = (:acode x) (if (= seccurrency "GBX") "GBP" seccurrency)) true false)) (:securities @sbercore/app-state)))))
+              newfxrate (if (= 0 (compare "GBX" seccurrency)) (/ fxrate 100.) fxrate)
              ]
 
 
@@ -106,12 +121,25 @@
               )            
             )
 
+
+
+            ;; Currency
             (dom/div {:className "col-xs-1 col-md-1" :style {:padding-left "0px" :padding-right "0px"}}
 
               (dom/a {:className "list-group-item" :style {:text-align "right"} :href (str  "#/postrans/" (:id item)  "/" (:selectedsec @sbercore/app-state)  ) }
                 (dom/h4 {:className "list-group-item-heading"}  (:currency (first (filter (fn [x] (if (= (:id x) (:selectedsec @sbercore/app-state)) true false)) (:securities @sbercore/app-state))) item)    )
               )
 
+           )
+
+
+            ;; USD value
+            (dom/div {:className "col-xs-1 col-md-1" :style {:padding-left "0px" :padding-right "0px" :padding-top "10px"}}
+              (dom/div
+                (dom/div 
+                  (dom/span {:style {:position "absolute" :padding-right "5px" :text-align "right" :display "block" :width "100%"}} (sbercore/split-thousands (str (.round js/Math (:usdvalue item)   ) )))
+                )
+              )
             )
 
 
@@ -140,7 +168,7 @@
             (dom/div {:className "col-xs-1 col-md-1" :style {:padding-left "0px" :padding-right "0px" :padding-top "10px"}}
               (dom/div
                 (dom/div 
-                  (dom/span {:style {:position "absolute" :padding-right "5px" :text-align "right" :display "block" :width "100%"}} (sbercore/split-thousands (str (.round js/Math (* (-  (:currubprice item) (:waprub item)) (:amount item))   ) )))
+                  (dom/span {:style {:position "absolute" :padding-right "5px" :text-align "right" :display "block" :width "100%"}} (sbercore/split-thousands (str (.round js/Math  (if (= isrusbond true) (/ (* 1000.0 (-  (:currubprice item) (:waprub item)) (:amount item))  100.0)  (if (= isbond true) (/ (* (-  (:currubprice item) (:waprub item)) (:amount item))  100.0)  (* (-  (:currubprice item) (:waprub item)) (:amount item))))   ))))
                 )
               )
             )
@@ -150,17 +178,8 @@
             (dom/div {:className "col-xs-1 col-md-1" :style {:padding-left "0px" :padding-right "0px" :padding-top "10px"}}
               (dom/div
                 (dom/div 
-                  (dom/span {:style {:position "absolute" :padding-right "5px" :text-align "right" :display "block" :width "100%"}} (sbercore/split-thousands (str (.round js/Math (* (-  price (:wapcur item)) (/ (:price (first (filter (fn[x] (if( = seccurrency (:acode x)) true false)) (:securities @sbercore/app-state))) )  (:price (first (filter (fn[x] (if( = "USD" (:acode x)) true false)) (:securities @sbercore/app-state))) )) (:amount item))))))
+                  (dom/span {:style {:position "absolute" :padding-right "5px" :text-align "right" :display "block" :width "100%"}} (sbercore/split-thousands (str (.round js/Math (/ (* (if (= isrusbond true) 1000.0 1.0) (- (/ (:currubprice item) usdrate) (:wapusd item) )  (:amount item) ) (if (= isbond true) 100.0 1.0) )))))
                 )
-              )
-            )
-
-
-            ;; YTD P/L, %%
-            (dom/div {:className "col-xs-1 col-md-1" :style {:padding-left "0px" :padding-right "0px" :padding-top "10px"}}
-              (dom/div {:className "progress"} "-10" 
-                ;; (dom/div {:className (str "progress-bar" (if (< (:currubprice item) (:waprub item)) " progress-bar-danger" ""))  :role "progresbar" :aria-valuenow (str (.round js/Math (.abs js/Math (* 100.0 (/ (-  (:currubprice item) (:waprub item)) (:waprub item)))))) :aria-valuemin "0" :aria-valuemax "100" :style {:color "black" :width (str (.round js/Math (.abs js/Math (* 100.0 (/ (-  (:currubprice item) (:waprub item)) (:waprub item))))) "%") }}
-                ;;   (dom/span {:style {:position "absolute" :display "block" :width "100%"}} (.round js/Math (* 100.0 (/ (-  (:currubprice item) (:waprub item)) () (:waprub item)))) ))
               )
             )
 
@@ -237,11 +256,11 @@
               (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "WAP price")
               (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "Last price")
               (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "Currency")
+              (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "USD Value")
               (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "P/L, %")
               (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "P/L RUB, %")
               (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "P/L, RUB")
               (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "P/L, USD")
-              (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "YTD P/L, %")
               (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "1Y P/L, %")
             )
           )

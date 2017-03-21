@@ -87,8 +87,9 @@
     ;result (map (fn [x] (let [y (name (first x))   z (if (< (second x) 0) 0 (second x)) ] [y z] ))  positions) 
     
     ]
-    ;;result
+    ;(filter (fn [x] (if (= (keyword "17592186045777")  (first x)) true false)) positions)
     positions
+    ;(first positions)
   )
 )
 
