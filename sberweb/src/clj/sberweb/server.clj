@@ -106,7 +106,15 @@
     {:status 200 :headers {"Content-Type" "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet; charset=utf-8"} :body (io/input-stream (str "C:/DEV/Java/" sec ".xlsx") )}
     )
   )
-  (resources "/"))
+  (GET "/clientexcel/:client" [client]
+    (let [
+          file (create-client-report client)
+    ]
+    {:status 200 :headers {"Content-Type" "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet; charset=utf-8"} :body (io/input-stream (str "C:/DEV/Java/" client ".xlsx") )}
+    )
+  )
+  (resources "/")
+)
 
 (def http-handler
   (-> routes

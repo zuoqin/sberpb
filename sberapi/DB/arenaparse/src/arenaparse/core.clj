@@ -53,6 +53,7 @@
 
 (def built-in-formatter (f/formatters :date-hour-minute-second-fraction))
 (def build-in-basicdate-formatter (f/formatters :basic-date))
+(def build-in-date-formatter (f/formatters :date))
 
 
 (defn append-position-to-file [client position dt]
@@ -125,10 +126,17 @@
                        [?e :security/acode ?sec]
                        ] (d/db conn) currency))
 
+    trid (ffirst (d/q '[:find ?e
+                        :in $ ?cur ?dt
+                        :where
+                        [?s :security/acode ?cur]
+                        [?e :price/security ?s]
+                        [?e :price/valuedate ?dt]
+                       ] (d/db conn) currency (:date rate)))
 
         ;tr1 (println rate)
     ]
-    (d/transact conn  [{ :price/security fxid, :price/lastprice (Double/parseDouble (str (:rate rate))),  :price/valuedate (:date rate), :price/targetprice (Double/parseDouble (str (:rate rate))), :price/analystrating 0.0, :price/source "CBR", :price/comment (str "Import from CBR web site " (f/unparse cbr-date-formatter (c/from-long (c/to-long (java.util.Date.))) )), :db/id #db/id[:db.part/user -100001 ]}] )
+    (if (nil? trid) (d/transact conn  [{ :price/security fxid, :price/lastprice (Double/parseDouble (str (:rate rate))),  :price/valuedate (:date rate), :price/targetprice (Double/parseDouble (str (:rate rate))), :price/analystrating 0.0, :price/source "CBR", :price/comment (str "Import from CBR web site " (f/unparse cbr-date-formatter (c/from-long (c/to-long (java.util.Date.))) )), :db/id #db/id[:db.part/user -100001 ]}] ))
   )
   ;(println rate)
 )
@@ -136,7 +144,7 @@
 (defn readcbrrates [currency]
   (let [
       ;tr1 (println "in cbr rates")
-      f (with-open [in-file (io/reader (str drive ":/dev/java/rates_" currency ".txt") )]
+      f (with-open [in-file (io/reader (str drive ":/DEV/clojure/sberpb/sberapi/DB/rates_" currency ".txt") )]
       (doall (csv/read-csv in-file)))
 
 
@@ -166,7 +174,9 @@
   (let [
      conn (d/connect uri)
      ]
-    (d/transact-async conn [{ :client/code "XKTQF",  :client/name "Клиент XKTQF",  :db/id #db/id[:db.part/user -102057]}
+    (d/transact-async conn [{ :client/code "XGAQF1",  :client/name "Клиент XGAQF1",  :db/id #db/id[:db.part/user -102058]}
+{ :client/code "XGAQF2",  :client/name "Клиент XGAQF2",  :db/id #db/id[:db.part/user -102059]}
+
 ]
     )
     ; To insert new entity:
@@ -915,14 +925,35 @@
 )
 
 
-(defn save-positions-bloomberg [client positions dt]Б
-  (spit (str drive ":/DEV/output/" client ".txt")  ",,,,\n" :append true)
-  (doall (map (fn [x] (append-position-to-file client x dt)) positions))
+(defn save-positions-bloomberg [client positions dt]
+  (let [
+    f (clojure.java.io/file "R:/MIS_PB/Advisory")
+    fs (file-seq f)
+    filename (str "Deals, Operations, Balances Advisory for Zorchenkov Alexey " (f/unparse build-in-date-formatter (c/from-long (+ (c/to-long dt) (* 3600000 24)) )))
+    
+    selectfile (first (filter (fn [x] (let [name (.getName x)] (if  (.contains name filename) true false))) fs))
+
+    t1 (if (not (nil? selectfile))(println (str "found filename: " filename " date: " dt)))
+    cash (if (not (nil? selectfile)) (->> (load-workbook (str "R:/MIS_PB/Advisory/" (.getName selectfile)))
+                 (select-sheet "Balances-Currency")
+                 (select-columns {:A :date, :B :account :C :currency :D :amount})) (println (str "file with cash balances not found for date: " (f/unparse build-in-date-formatter (c/from-long (+ (c/to-long dt) (* 3600000 24)) )))))
+
+
+    t2 (spit (str drive ":/DEV/output/" client ".txt")  ",,,,\n" :append true)
+    t3 (doall (map (fn [x] (append-position-to-file client x dt)) positions))
+    t4 (if (not (nil? selectfile)) (doall (map (fn [x] (let [
+                                               str1 (str client "," (str (if (= "RUR" (:currency x)) "RUB" (:currency x))  " Curncy")  "," (format "%.2f" (:amount x))  ","  "," (f/unparse build-in-basicdate-formatter (c/from-long (+  (* 3600000 6) (c/to-long (:date x))) )) "\n")
+                                               ]
+                                           ;;(println str1)
+                                           (spit (str drive ":/DEV/output/" client ".txt") str1 :append true)
+                                           )) (filter (fn [y] (if (= client (:account y)) true false)) cash))))
+    ]
+  )
 )
 
 (defn get-portf-by-num [client num]
   (let [
-    newnum (+ 1325462399000 (* num 86400000) ) ;;1488412799000 1325462399000
+    newnum (+ 1325462399000 (* num 86400000) ) ;;1488412799000
     newdate (java.util.Date. newnum)
     ;tr1 (println newdate)
     day-of-week (f/unparse day-of-week-formatter (c/from-long (c/to-long newdate)))
@@ -1020,17 +1051,6 @@
     ;res1 (spit (str "C:/DEV/clojure/sberpb/sberapi/DB/" client ".txt")  ",,,,\n" :append false)
     res1 (spit (str drive ":/DEV/output/" client ".txt") (str "Portfolio Name,Security ID,Position/Quantity/Nominal,Cost Px asset Currency,Date\n")  :append false)
     days (doall (map (fn [x] (get-portf-by-num client x)) (range 0 2500 1))) 
-
-
-    cash (->> (load-workbook "C:/DEV/Java/Balances.xlsx")
-       (select-sheet "Balances-Currency")
-       (select-columns {:A :date, :B :account :C :currency :D :amount}))
-    t3 (doall (map (fn [x] (let [
-        str1 (str client "," (str (:currency x) "RUB" " Curncy")  "," (format "%.1f" (:amount x))  ","  "," (f/unparse build-in-basicdate-formatter (c/from-long (+  (* 3600000 6) (c/to-long (:date x))) )) "\n")
-        ]
-    ;;(println str1)
-    (spit (str drive ":/DEV/output/" client ".txt") str1 :append true)
-  )) (filter (fn [y] (if (= client (:account y)) true false)) cash)))
     ]
     
     "Success"

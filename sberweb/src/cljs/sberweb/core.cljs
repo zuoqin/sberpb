@@ -420,7 +420,8 @@
               )
             )
             (dom/li {:style {:margin-left "5px"}}
-              (b/button {:className "btn btn-info"  :onClick (fn [e] (printMonth))  } "Print positions")
+              (dom/a {:href (str "/clientexcel/" (:selectedclient @app-state))}
+                (dom/span "Download positions"))
             )
           )
           (dom/ul {:className "nav navbar-nav navbar-right"}
