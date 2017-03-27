@@ -295,7 +295,7 @@
 
 (defn security-to-map [security]
   (let [
-    newsec {:id (nth security 0) :acode (nth security 1) :exchange (nth security 2) :isin (nth security 3) :currency (nth security 4) :bcode (nth security 5)}
+    newsec {:id (nth security 0) :acode (nth security 1) :exchange (nth security 2) :isin (nth security 3) :currency (nth security 4) :bcode (nth security 5) :assettype (nth security 6)}
         
   ]
 
@@ -308,14 +308,15 @@
 (defn get-securities []
   (let [
         conn (d/connect uri)
-        securities (d/q '[:find ?e ?c ?x ?i ?currency ?bcode
+        securities (d/q '[:find ?e ?c ?x ?i ?currency ?bcode ?assettype
                           :where
                           [?e :security/acode]
                           [?e :security/acode ?c]
                           [?e :security/exchange ?x]
                           [?e :security/isin ?i]
                           [?e :security/currency ?currency]
-                          (or [?e :security/bcode ?bcode] [?e :security/bcode ?bcode]) 
+                          (or [?e :security/bcode ?bcode] [?e :security/bcode ?bcode])
+                          [?e :security/assettype ?assettype]
                           ]
                         (d/db conn)) 
 
@@ -743,14 +744,26 @@
 
     ;tr1 (println (first transactions))
     securities (get-securities)
-
+    
     newtransactions (map (fn [x] (let [
-      isin (:isin (first (filter (fn [y] (if (= (:security x) (:acode y)) true false)) securities)))
+    isin (:isin (first (filter (fn [y] (if (= (:security x) (:acode y)) true false)) securities)))
+
+    currency (:currency (first (filter (fn [y] (if (= (:security x) (:acode y)) true false)) securities)))
+
+    assettype (:assettype (first (filter (fn [y] (if (= (:security x) (:acode y)) true false)) securities)))
+    isrussian (if (and 
+(= assettype 5)
+;; Check ISIN starts with RU
+(or (= (compare currency "RUB") 0 ) (= (compare currency "RUR") 0 )) 
+;; Check currency = RUB
+(= (compare (subs isin 0 2) "RU") 0 ) 
+)  true false)
+      
       ]
-      {:portfolio client :isin isin :quantity (:nominal x) :price (:price x) :date (f/unparse build-in-basicdate-formatter (c/from-long (c/to-long (:valuedate x))) ) :type (if (= "B" (:direction x)) "Buy Long" "Sell Long")}
+      {:portfolio client :isin isin :quantity (if (= isrussian true) (* 1000.0 (:nominal x)) (:nominal x))  :price (:price x) :date (f/unparse build-in-basicdate-formatter (c/from-long (c/to-long (:valuedate x))) ) :type (if (= "B" (:direction x)) "BUY LONG" "SELL LONG")}
     )) transactions)
     ]
-    (save-xls ["sheet1" (dataset [:portfolio :isin :quantity :price :date :type] newtransactions)] "c:/DEV/Java/yyy.xlsx")
+    (save-xls ["sheet1" (dataset [:portfolio :isin :quantity :price :date :type] newtransactions)] (str drive ":/DEV/Java/" client "_trans.xlsx") )
     "Success"
   )
 )

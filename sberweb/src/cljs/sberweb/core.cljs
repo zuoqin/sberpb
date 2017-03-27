@@ -377,6 +377,13 @@
   (.print js/window)
 )
 
+
+(defn downloadPortfolio [e]
+  (aset js/window "location" (str "/clientexcel/" (:selectedclient @app-state)))
+)
+
+
+
 (defcomponent positions-navigation-view [data owner]
   (render [_]
     (let [style {:style {:margin "10px" :padding-bottom "0px"}}
@@ -414,14 +421,11 @@
       (dom/input {:id "search" :type "text" :placeholder "Search" :style {:height "32px" :margin-top "1px"} :value  (:search @app-state) :onChange (fn [e] (handleChange e )) })  )
             )
 
-            (dom/li
-              (dom/label {:style {:font-weight 100 :margin-top "7px"} }
-                (dom/input {:id "ismonthly" :type "checkbox" :defaultChecked false :onChange (fn [e] (handleCheck e))}) "Select this month"
-              )
-            )
             (dom/li {:style {:margin-left "5px"}}
-              (dom/a {:href (str "/clientexcel/" (:selectedclient @app-state))}
-                (dom/span "Download positions"))
+              ;; (dom/a {:href (str "/clientexcel/" (:selectedclient @app-state)) :style {:padding-top "9px"}}
+              ;;   (dom/span "Download positions"))
+
+              (b/button {:className "btn btn-default" :onClick (fn [e] (downloadPortfolio e) )} "Download Excel")
             )
           )
           (dom/ul {:className "nav navbar-nav navbar-right"}
