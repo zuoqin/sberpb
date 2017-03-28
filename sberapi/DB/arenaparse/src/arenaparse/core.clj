@@ -43,7 +43,7 @@
         ]
     
     (if (or  (< dt1  dt2)
-	  (and (= dt1 dt2)(< (:id tran1) (:id tran2))))
+	  (and (= dt1 dt2) (< (compare (:direction tran1) (:direction tran2)) 0) ))
     true
     false)
   )
