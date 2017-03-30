@@ -174,8 +174,7 @@
   (let [
      conn (d/connect uri)
      ]
-    (d/transact-async conn [{ :client/code "XGAQF1",  :client/name "Клиент XGAQF1",  :db/id #db/id[:db.part/user -102058]}
-{ :client/code "XGAQF2",  :client/name "Клиент XGAQF2",  :db/id #db/id[:db.part/user -102059]}
+    (d/transact-async conn [{ :security/acode "EFGIF_1117A",  :security/assettype 5, :security/isin "CH0344437550", :security/bcode "CH0344437550 Corp", :security/exchange "XETRA",           :security/currency "USD",    :db/id #db/id[:db.part/user -100509] }
 
 ]
     )
