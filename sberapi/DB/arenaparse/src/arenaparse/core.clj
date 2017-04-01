@@ -17,7 +17,7 @@
   )
 )
 
-(def drive "c")
+(def drive "e")
 
 (def cbr-date-formatter (f/formatter "dd.MM.yyyy"))
 
@@ -883,8 +883,13 @@
                 (if (seq trans) 
                   (let [
                         tran (first trans)
+
+                        ;tr1 (println "transac: " tran)
                         sec (get-isin-by-seccode (str (:security tran))) 
-                        currency (:currency (first (filter (fn [x] (if (= (:security tran) (:id x)) true false)) securities)))
+                        currency (:currency (first (filter (fn [x] (if (= (:security tran) (:acode x)) true false)) securities)))
+
+
+                        
                         amnt (:amount ( (keyword sec) result ))
                         prevpr (if (nil? (:price ((keyword sec) result))) 0 (:price ((keyword sec) result)))
                         
@@ -913,7 +918,7 @@
                          (rest trans))
                   )                  
                   result)
-                ) 
+                )
     ;tr1 (println (first positions))
     newpositions (map (fn [x] [(name (first x)) {:amount (if (< (:amount (second x)) 0) 0 (:amount (second x))) :price (:price (second x))}]) positions)
 
@@ -1157,6 +1162,58 @@
         ;; t3 (spit (str drive ":/DEV/clojure/sberpb/sberapi/DB/cl.clj")  "]" :append true)
   ])
 )
+
+
+
+(defn build-total-portf []
+  (let [
+        conn (d/connect uri)
+        dbclients (d/q '[:find ?e
+                       :in $ 
+                       :where
+                       [?e :client/name]
+                       ] (d/db conn))
+
+        positions (loop [result {} clients (take 10 dbclients) ]
+          (if (seq clients)
+            (let [
+                  client (first clients)
+                  name (second (first (ent [client])))
+
+                  tr1 (println (str "client: " name))
+                  positions (get-positions name (java.util.Date.))
+
+                  ;tr2 (println (str "total positions: " (count positions)))
+
+
+                  ;tr3 (println result)
+                  newres (loop [theres result portf positions]
+                    (if (seq portf)
+                      (let [
+                        position (first portf)
+                            ]
+                        (recur (update theres (keyword (first position))  (fn [x y] (+ (if (nil? x) 0 x) (if (nil? y) 0 y))) (:amount (second position))) (rest portf))
+                      )                      
+                      theres
+                    )
+                  )
+
+                  ;tr5 (println newres)
+                  ]
+              (recur newres (rest clients))
+            )
+            result
+          )
+        )
+        t1 (spit (str drive ":/DEV/clojure/sberpb/sberapi/DB/total.txt")  "\n" :append false)
+        t2 (doall (map (fn [x] (spit (str drive ":/DEV/clojure/sberpb/sberapi/DB/total.txt")  (str "TOTAL," (name (first x)) ",0.0," (second x)) :append true)) positions))
+        ;t3 (spit (str drive ":/DEV/clojure/sberpb/sberapi/DB/total.clj")  "]" :append true)        
+  ]
+  ;;positions
+  "Success"
+  )
+)
+
 
 (defn checktransec [tran]
   (let [
