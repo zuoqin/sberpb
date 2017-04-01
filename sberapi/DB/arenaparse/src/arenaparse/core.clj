@@ -1206,7 +1206,7 @@
           )
         )
         t1 (spit (str drive ":/DEV/clojure/sberpb/sberapi/DB/total.txt")  "\n" :append false)
-        t2 (doall (map (fn [x] (spit (str drive ":/DEV/clojure/sberpb/sberapi/DB/total.txt")  (str "TOTAL," (name (first x)) ",0.0," (second x)) :append true)) positions))
+        t2 (doall (map (fn [x] (spit (str drive ":/DEV/clojure/sberpb/sberapi/DB/total.txt")  (str "TOTAL," (name (first x)) ",0.0," (second x) "\n") :append true)) positions))
         ;t3 (spit (str drive ":/DEV/clojure/sberpb/sberapi/DB/total.clj")  "]" :append true)        
   ]
   ;;positions
