@@ -167,8 +167,23 @@
     (OPTIONS "/client" []
       :summary  "Allows OPTIONS requests"
       (ok "")
-    )    
+    )
+  )
 
 
+  (context "/api" []
+    :tags ["calcshares"]
+
+    (POST "/calcshares" []
+      :header-params [authorization :- String]
+      :query-params [security :- Long]
+      :summary      "retrieve all clients"
+
+      (ok  (positionapi/calcPortfolios (nth (str/split authorization #" ") 1) security) ))
+
+    (OPTIONS "/calcshares" []
+      :summary  "Allows OPTIONS requests"
+      (ok "")
+    )
   )
 )

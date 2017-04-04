@@ -44,6 +44,11 @@
   (swap! app-state assoc-in [:view]   0 )
 )
 
+(defn goCalcPortfs [e]
+  (aset js/window "location" "#/calcportfs")
+  (swap! app-state assoc-in [:view] 4 )
+)
+
 (defn goPortfolios [e]
   (aset js/window "location" "#/portfolios")
   (swap! app-state assoc-in [:view] 2 )
@@ -382,6 +387,51 @@
   (aset js/window "location" (str "/clientexcel/" (:selectedclient @app-state)))
 )
 
+(defcomponent calcportfs-navigation-view [data owner]
+  (render [_]
+    (let [style {:style {:margin "10px" :padding-bottom "0px"}}
+      stylehome {:style {:margin-top "10px"} }
+      ]
+      (dom/nav {:className "navbar navbar-default navbar-fixed-top" :role "navigation"}
+        (dom/div {:className "navbar-header"}
+          (dom/button {:type "button" :className "navbar-toggle"
+            :data-toggle "collapse" :data-target ".navbar-ex1-collapse"}
+            (dom/span {:className "sr-only"} "Toggle navigation")
+            (dom/span {:className "icon-bar"})
+            (dom/span {:className "icon-bar"})
+            (dom/span {:className "icon-bar"})
+          )
+          (dom/a  (assoc stylehome :className "navbar-brand")
+            (dom/span {:id "pageTitle"} (:text (:current @data)) )
+          )
+        )
+        (dom/div {:className "collapse navbar-collapse navbar-ex1-collapse" :id "menu"}
+
+          (dom/ul {:className "nav navbar-nav navbar-right"}
+            (dom/li
+              (dom/a {:style {:margin "10px" :padding-bottom "0px"} :href "#/portfolios" :onClick (fn [e] (goPortfolios e))}
+                 (dom/span {:className "glyphicon glyphicon-cog"})
+                 "Portfolios"
+              )
+            )
+            (dom/li
+              (dom/a {:style {:margin "10px" :padding-bottom "0px"} :href "#/calcportfs" :onClick (fn [e] (goCalcPortfs e))}
+                 (dom/span {:className "glyphicon glyphicon-wrench"})
+                 "Calculation"
+              )
+            )
+            (dom/li
+              (dom/a (assoc style :href "#/login")
+                (dom/i {:className "fa fa-sign-out fa-fw"})
+                "Exit"
+              )
+            )
+          )
+        )
+      )
+    )
+  )
+)
 
 
 (defcomponent positions-navigation-view [data owner]
@@ -434,16 +484,13 @@
                  (dom/span {:className "glyphicon glyphicon-cog"})
                  "Portfolios"
               )
-            )         
-            ;; (dom/li {:style {:visibility 
-            ;;                                (if 
-            ;;                                  (or (= (:role (:user @app-state)) "admin")
-            ;;                                      (= (:role (:user @app-state)) "manager")) "visible" "hidden")}}
-            ;;   (dom/a (assoc style :href "#/users")
-            ;;     (dom/span {:className "glyphicon glyphicon-log-out"})
-            ;;     "Users"
-            ;;   )
-            ;; )
+            )
+            (dom/li
+              (dom/a {:style {:margin "10px" :padding-bottom "0px"} :href "#/calcportfs" :onClick (fn [e] (goCalcPortfs e))}
+                 (dom/span {:className "glyphicon glyphicon-wrench"})
+                 "Calculation"
+              )
+            )
             (dom/li
               (dom/a (assoc style :href "#/login")
                 (dom/i {:className "fa fa-sign-out fa-fw"})
@@ -507,16 +554,13 @@
                  (dom/span {:className "glyphicon glyphicon-cog"})
                  "Positions"
               )
-            )         
-            ;; (dom/li {:style {:visibility 
-            ;;                                (if 
-            ;;                                  (or (= (:role (:user @app-state)) "admin")
-            ;;                                      (= (:role (:user @app-state)) "manager")) "visible" "hidden")}}
-            ;;   (dom/a (assoc style :href "#/users")
-            ;;     (dom/span {:className "glyphicon glyphicon-log-out"})
-            ;;     "Users"
-            ;;   )
-            ;; )
+            )
+            (dom/li
+              (dom/a {:style {:margin "10px" :padding-bottom "0px"} :href "#/calcportfs" :onClick (fn [e] (goCalcPortfs e))}
+                 (dom/span {:className "glyphicon glyphicon-wrench"})
+                 "Calculation"
+              )
+            )
             (dom/li
               (dom/a (assoc style :href "#/login")
                 (dom/i {:className "fa fa-sign-out fa-fw"})
@@ -544,6 +588,7 @@
   (logout-view data owner)
 )
 
+
 (defmethod website-view 1
   [data owner] 
   ;(.log js/console "One is found in view")
@@ -561,4 +606,10 @@
   [data owner] 
   ;(.log js/console "Two is found in view")
   (users-navigation-view data owner)
+)
+
+(defmethod website-view 4
+  [data owner] 
+  ;(.log js/console "One is found in view")
+  (calcportfs-navigation-view data owner)
 )

@@ -162,3 +162,54 @@
     ;filter_portfs
   )
 )
+
+
+
+(defn calcPortfolios [token security]
+  (let [
+    ;usercode (:iss (-> token str->jwt :claims)  ) 
+    transactions (into [] (db/get-transactions-by-security security)   )
+
+    ;tr1 (println (first transactions))
+    securities (secs/get-securities)
+    portfolios (loop [result {} trans transactions]
+                (if (seq trans) 
+                  (let [
+                        tran (first trans)
+                        client (:client tran)
+                        
+                        currency (:currency (first (filter (fn [x] (if (= (:security tran) (:id x)) true false)) securities)))
+                        amnt (:amount ( (keyword client) result ))
+                        prevpr (:price ((keyword client) result))
+                        
+                        rubprice (* (:fx tran) (:price tran))
+
+                        prevrubprice (:rubprice ((keyword client) result))
+                        tranamnt (if (= "B" (:direction tran)) (:nominal tran) (- 0 (:nominal tran)))
+                        newamnt (if (nil? amnt ) tranamnt (+ amnt tranamnt) )
+                        wap (if (nil? amnt ) (:price tran) (if (> newamnt 0) (/ (+ (* prevpr amnt) (* (:price tran) tranamnt)) newamnt) 0))
+
+
+                        waprub (if (nil? amnt ) rubprice (if (> newamnt 0) (/ (+ (* prevrubprice amnt) (* rubprice tranamnt)) newamnt) 0))
+                        ]
+                    (recur (assoc-in result [(keyword client) ] {:amount newamnt :price wap :rubprice waprub} )
+                         (rest trans))
+                  )                  
+                  result)
+                ) 
+
+
+    filter_portfs (filter (fn [x] (if (> (:amount (second x)) 0) true false))  portfolios)
+    
+    ;; result (map (fn [x]
+    ;;               (let [
+    ;;                     y (name (first x))
+    ;;                     z (second x) 
+    ;;                     ;tr1 (println (str "y: " y " z: " z))
+    ;;                    ] {(keyword y) z}))  filter_portfs)
+
+    ]
+    (into {} result)
+    ;filter_portfs
+  )
+)

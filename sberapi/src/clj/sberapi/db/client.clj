@@ -26,11 +26,14 @@
 
 (defn get-clients []
   (let [
-         clients (d/q '[:find ?e ?c ?n
+         clients (d/q '[:find ?e ?c ?n ?curr
                           :where
                           [?e :client/code]
                           [?e :client/code ?c]
                           [?e :client/name ?n]
+                          [?e :client/currency ?curr]
+                          [?e :client/cash ?cash]
+                          [?e :client/ ?]
                           ]
                         (d/db conn)) 
 
