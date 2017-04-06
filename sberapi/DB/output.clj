@@ -1115,6 +1115,8 @@
 
 { :security/acode "29012", :security/isin "RU000A0JX0H6", :security/bcode "RU000A0JX0H6 Corp", :security/assettype 5,  :security/exchange "CBBT", :security/currency "RUB",   :db/id #db/id[:db.part/user -100546]}
 
+{ :security/acode "SCFRU23", :security/isin "XS1433454243", :security/bcode "XS1433454243 Corp", :security/assettype 5, :security/exchange "TRDB", :security/currency "USD",   :db/id #db/id[:db.part/user -100547]}
+
 ;; ISSUERS
 { :issuer/code "Mail.Ru Group Ltd" :db/id #db/id[:db.part/user -101001] }
 { :issuer/code "Magnit PJSC" :db/id #db/id[:db.part/user -101002] }
@@ -1204,6 +1206,7 @@
 { :client/code "GBCJF", :client/name "Клиент GBCJF", :client/currency "USD", :client/stockshare 50.0 :client/bondshare 50.0, :client/cash 1000000.0, :client/signedadvisory 5000000.0, :db/id #db/id[:db.part/user -102069]}
 { :client/code "NIKAO", :client/name "Клиент NIKAO", :client/currency "USD", :client/stockshare 50.0 :client/bondshare 50.0, :client/cash 1000000.0, :client/signedadvisory 5000000.0, :db/id #db/id[:db.part/user -102070]}
 { :client/code "AQLON", :client/name "Клиент AQLON", :client/currency "USD", :client/stockshare 50.0 :client/bondshare 50.0, :client/cash 1000000.0, :client/signedadvisory 5000000.0, :db/id #db/id[:db.part/user -102071]}
+{ :client/code "XIIQF", :client/name "Клиент XIIQF", :client/currency "USD", :client/stockshare 50.0 :client/bondshare 50.0, :client/cash 1000000.0, :client/signedadvisory 5000000.0, :db/id #db/id[:db.part/user -102072]}
 
 ;; TRANSACTIONS
 
@@ -1655,7 +1658,7 @@
 { :transaction/client #db/id[:db.part/user -102069], :transaction/security #db/id[:db.part/user -100084], :transaction/nominal 25000.0,   :transaction/price 97.00,  :transaction/direction "B", :transaction/valuedate #inst "2017-03-31T10:00:00.0000000Z", :transaction/currency "RUB", :transaction/comment "Transfer In", :db/id #db/id[:db.part/user -110273] }
 
 
-
+{ :transaction/client #db/id[:db.part/user -102072], :transaction/security #db/id[:db.part/user -100098], :transaction/nominal 5607.0,      :transaction/price 3706.41, :transaction/direction "S", :transaction/valuedate #inst "2017-02-20T10:00:00.0000000Z", :transaction/currency "RUB", :transaction/comment "Оферта",                                            :db/id #db/id[:db.part/user -110274] }
 
 ;; PRICES
 { :price/security #db/id[:db.part/user -100133],    :price/lastprice  1.0,     :price/valuedate #inst "2000-01-01T10:00:00.0000000Z", :price/analystrating 0.0, :price/targetprice 1.0, :price/comment "manual", :price/source "test data", :db/id #db/id[:db.part/user -200001] }

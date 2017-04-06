@@ -1078,7 +1078,7 @@
 (defn save-transactions [client]
   (let [
           ;t1 (println (str "in save-transactions " client))
-          tranmap (get-transactions client (java.util.Date.))
+          tranmap (get-transactions client (java.util.Date. (+ (* 1000 60 60 24) (.getTime (java.util.Date.)) )))
 
           newtran (map (fn [x] (let [
 
