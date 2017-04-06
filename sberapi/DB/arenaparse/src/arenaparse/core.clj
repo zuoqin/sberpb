@@ -174,7 +174,7 @@
   (let [
      conn (d/connect uri)
      ]
-    (d/transact-async conn [{ :security/acode "EFGIF_1117A",  :security/assettype 5, :security/isin "CH0344437550", :security/bcode "CH0344437550 Corp", :security/exchange "XETRA",           :security/currency "USD",    :db/id #db/id[:db.part/user -100509] }
+    (d/transact-async conn [{ :security/acode "ALFARUPERP", :security/isin "XS1513741311", :security/bcode "XS1513741311 Corp", :security/assettype 5, :security/exchange "TRDB", :security/currency "USD",   :db/id #db/id[:db.part/user -100548]}
 
 ]
     )
