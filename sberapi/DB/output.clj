@@ -1334,7 +1334,7 @@
 
 { :transaction/client #db/id[:db.part/user -102036], :transaction/security #db/id[:db.part/user -100044], :transaction/nominal 6250.0,      :transaction/price 4.01,     :transaction/direction "S", :transaction/valuedate #inst "2017-03-30T10:00:00.0000000Z", :transaction/currency "USD", :transaction/comment "Transfer out NKNCP",  :db/id #db/id[:db.part/user -110144] }
 
-{ :transaction/client #db/id[:db.part/user -102036], :transaction/security #db/id[:db.part/user -100549], :transaction/nominal 6250.0,  :transaction/price 4.01,     :transaction/direction "B", :transaction/valuedate #inst "2017-03-30T10:00:00.0000000Z", :transaction/currency "USD", :transaction/comment "Transfer out NKNCP",  :db/id #db/id[:db.part/user -110274] }
+{ :transaction/client #db/id[:db.part/user -102036], :transaction/security #db/id[:db.part/user -100549], :transaction/nominal 6250.0,  :transaction/price 4.01,     :transaction/direction "B", :transaction/valuedate #inst "2017-03-30T10:00:00.0000000Z", :transaction/currency "USD", :transaction/comment "Change VIP to VEON",  :db/id #db/id[:db.part/user -110274] }
 
 
 
@@ -1664,6 +1664,13 @@
 
 
 { :transaction/client #db/id[:db.part/user -102072], :transaction/security #db/id[:db.part/user -100098], :transaction/nominal 5607.0,      :transaction/price 3706.41, :transaction/direction "S", :transaction/valuedate #inst "2017-02-20T10:00:00.0000000Z", :transaction/currency "RUB", :transaction/comment "Оферта",                                            :db/id #db/id[:db.part/user -110275] }
+
+
+{ :transaction/client #db/id[:db.part/user -102021], :transaction/security #db/id[:db.part/user -100044], :transaction/nominal 12500.0,  :transaction/price 4.0,     :transaction/direction "S", :transaction/valuedate #inst "2017-03-13T19:00:00.0000000Z", :transaction/currency "USD", :transaction/comment "Change VIP to VEON",  :db/id #db/id[:db.part/user -110276] }
+
+{ :transaction/client #db/id[:db.part/user -102021], :transaction/security #db/id[:db.part/user -100549], :transaction/nominal 12500.0,  :transaction/price 4.0,     :transaction/direction "B", :transaction/valuedate #inst "2017-03-13T10:00:00.0000000Z", :transaction/currency "USD", :transaction/comment "Change VIP to VEON",  :db/id #db/id[:db.part/user -110277] }
+
+
 
 ;; PRICES
 { :price/security #db/id[:db.part/user -100133],    :price/lastprice  1.0,     :price/valuedate #inst "2000-01-01T10:00:00.0000000Z", :price/analystrating 0.0, :price/targetprice 1.0, :price/comment "manual", :price/source "test data", :db/id #db/id[:db.part/user -200001] }

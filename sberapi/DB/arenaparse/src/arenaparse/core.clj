@@ -267,22 +267,25 @@
 
 (defn client-to-map [client]
   (let [
-    newclient {:id (nth client 0) :code (nth client 1) :name (nth client 2)}        
+    newclient {:id (nth client 0) :code (nth client 1) :name (nth client 2) :currency (nth client 3) :cash (nth client 4) :stockshare (nth client 5) :bondshare (nth client 6) :signedadvisory (nth client 7)}
   ]
-
   newclient
   )
-
 )
 
 (defn get-clients []
   (let [
          conn (d/connect uri)
-         clients (d/q '[:find ?e ?c ?n
+         clients (d/q '[:find  ?e ?c ?n ?curr ?cash ?ss ?bs ?sa
                           :where
                           [?e :client/code]
                           [?e :client/code ?c]
                           [?e :client/name ?n]
+                          [?e :client/currency ?curr]
+                          [?e :client/cash ?cash]
+                          [?e :client/stockshare ?ss]
+                          [?e :client/bondshare ?bs]
+                          [?e :client/signedadvisory ?sa]
                           ]
                         (d/db conn)) 
 
@@ -941,6 +944,55 @@
   )
 )
 
+
+
+(defn update-client-cash [client cash]
+  (let [
+    conn (d/connect uri)
+    ]
+    (d/transact-async conn [
+      {:client/cash cash,
+       :client/code client ;; this finds the existing entity
+       :db/id #db/id [:db.part/user]  ;; will be replaced by exiting id
+      }
+    ]
+    )
+  )
+)
+
+(defn import-cash-positions []
+  (let [
+    dt (java.util.Date.)
+    f (clojure.java.io/file "R:/MIS_PB/Advisory")
+    fs (file-seq f)
+    filename (str "Deals, Operations, Balances Advisory for Zorchenkov Alexey " (f/unparse build-in-date-formatter (c/from-long (+ (c/to-long dt) (* 0 24)) )))
+    
+    selectfile (first (filter (fn [x] (let [name (.getName x)] (if  (.contains name filename) true false))) fs))
+
+    t1 (if (not (nil? selectfile))(println (str "found filename: " filename " date: " dt)))
+    cash (if (not (nil? selectfile)) (->> (load-workbook (str "R:/MIS_PB/Advisory/" (.getName selectfile)))
+                 (select-sheet "Balances-Currency")
+                 (select-columns {:A :date, :B :account :C :currency :D :amount :F :usd :G :rub})) (println (str "file with cash balances not found for date: " (f/unparse build-in-date-formatter (c/from-long (+ (c/to-long dt) (* 3600000 24)) )))))
+
+
+    ;result1 (reduce (fn [a b] {:usd (+ (:usd a) (:usd b))} ) (filter (fn [y] (if (= (:account y) "AAOHF") true false)) cash)   )
+
+
+    cashbyclient (map (fn [x] (let [
+      cashpos (filter (fn [y] (if (= (:account y) (:code x)) true false)) cash)
+      ;tr1 (println cashpos)
+     ]
+     {:code (:code x) :cash (if (= (count cashpos) 0) 0.0 (if (= (:currency x) "USD") (:usd (reduce (fn [a b] {:usd (+ (:usd a) (:usd b))} ) cashpos)) (:usd (reduce (fn [a b] {:rub (+ (:rub a) (:rub b))} ) cashpos)))     )}
+   ) ) (get-clients) )
+
+
+    cashbycurrency (if (not (nil? selectfile)) (doall (map (fn [x] (update-client-cash (:code x) (:cash x))) cashbyclient )))
+    ]
+    ;cashbyclient
+    ;result1
+    "Success"
+  )
+)
 
 (defn save-positions-bloomberg [client positions dt]
   (let [

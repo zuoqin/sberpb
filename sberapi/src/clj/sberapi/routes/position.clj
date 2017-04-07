@@ -14,6 +14,7 @@
 
             [sberapi.db.position :as db]
             [sberapi.db.security :as secs]
+            [sberapi.db.client :as clients]
 
             [clojure.string :as str]
 ))
@@ -169,9 +170,19 @@
   (let [
     ;usercode (:iss (-> token str->jwt :claims)  ) 
     transactions (into [] (db/get-transactions-by-security security)   )
+    clients (clients/get-clients)
+    
 
     ;tr1 (println (first transactions))
     securities (secs/get-securities)
+
+
+    sec (first (filter (fn [x] (if (= security (:id x)) true false)) securities))
+    secfxrate (db/get-fxrate-by-date (:currency sec) (java.util.Date.))
+    lastprice (db/get-fxrate-by-date (:acode sec) (java.util.Date.))
+
+    secrubprice (* secfxrate (if (nil? lastprice) 0 lastprice) )
+
     portfolios (loop [result {} trans transactions]
                 (if (seq trans) 
                   (let [
@@ -200,16 +211,32 @@
 
 
     filter_portfs (filter (fn [x] (if (> (:amount (second x)) 0) true false))  portfolios)
-    
-    ;; result (map (fn [x]
-    ;;               (let [
-    ;;                     y (name (first x))
-    ;;                     z (second x) 
-    ;;                     ;tr1 (println (str "y: " y " z: " z))
-    ;;                    ] {(keyword y) z}))  filter_portfs)
 
+
+    
+    calc_portfs (map (fn [client] (
+      let [
+
+         
+           usedlimit (second (first (filter (fn [x] (if (= (:code client) (name (first x))) true false)) filter_portfs)))
+
+           calcusedlimit (if (nil? usedlimit) 0 (* (:amount usedlimit) (:rubprice usedlimit)) )
+
+           fxrate (db/get-fxrate-by-date (:currency client) (java.util.Date.))
+
+           clienttotalrub (* (:cash client) fxrate)
+
+           seclimit (/ (* fxrate (:signedadvisory client)  (if (= (:assettype sec) 5) 10.0 5.0) ) 100.0 )  ;fxrate
+
+           
+           seclastrubprice (if (= secrubprice 0.0) (if (nil? usedlimit) 0.0 (:rubprice usedlimit) ) secrubprice)
+
+           ;tr1 (println (str "client: " (:code client) " sec last price: " seclastrubprice) " usedlimit: " usedlimit)
+     ]
+      {:client (:code client) :cash (:cash client) :currency (:currency client) :shares (if (nil? usedlimit) 0 (:amount usedlimit)) :freelimit (int (/ (- seclimit calcusedlimit) (if (= 0.0 seclastrubprice) 1.0 seclastrubprice))) :maxshares (int (/ (if (> (* fxrate (:cash client))  (- seclimit calcusedlimit)) (- seclimit calcusedlimit) (* fxrate (:cash client))) (if (= 0.0 seclastrubprice) 1.0 seclastrubprice) ) ) }
+      ))   clients)
     ]
-    (into {} result)
-    ;filter_portfs
+
+    calc_portfs
   )
 )
