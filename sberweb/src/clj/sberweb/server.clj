@@ -78,8 +78,6 @@
     ]
     (save-xls ["sheet1" (dataset [:security :price :wap :amount :usdvalue :rubvalue :usdcosts :rubcosts] newpositions)] (str "c:/DEV/Java/" client ".xlsx"))
     "Success"
-    ;(first securities)
-    ;(first newpositions)
   )
 )
 
@@ -99,6 +97,10 @@
 
 
 (defroutes routes
+  (GET "/" _
+    {:status 200
+     :headers {"Content-Type" "text/html; charset=utf-8"}
+     :body (io/input-stream (io/resource "public/index.html"))})
   (GET "/secexcel/:sec" [sec]
     (let [
           file (create-excel-report sec)
@@ -115,6 +117,7 @@
   )
   (resources "/")
 )
+
 
 (def http-handler
   (-> routes

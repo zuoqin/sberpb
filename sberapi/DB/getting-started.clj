@@ -10,7 +10,7 @@
 ;; store database uri
 (def uri "datomic:dev://localhost:4334/sberpb_dev")
 
-
+(def uri "datomic:dev://sberweb.com:4334/sberpb_dev")
 
 ;; delete database
 (d/delete-database uri)

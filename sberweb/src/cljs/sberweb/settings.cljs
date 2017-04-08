@@ -5,8 +5,6 @@
             [secretary.core :as sec :include-macros true]
             [goog.events :as events]
             [goog.history.EventType :as EventType]
-            [ajax.core :refer [GET POST]]
-            
   )
   (:import goog.History)
 )
@@ -14,7 +12,7 @@
 (enable-console-print!)
 
 ;;(def apipath "http://10.30.60.102:3000/")
-(def apipath "http://localhost:3000/")
-(def demouser "zuoqin")
-(def demopassword "Qwerty123")
+(def apipath "https://zh.beesdata.cn:8443/")
+(def demouser "")
+(def demopassword "")
 

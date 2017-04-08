@@ -11,9 +11,8 @@
                  [ring/ring-defaults "0.2.0"]
                  [bk/ring-gzip "0.1.1"]
                  [ring.middleware.logger "0.5.0"]
-                 [compojure "1.5.0"]
+                 [compojure "1.5.0"] 
                  [environ "1.0.3"]
-
 
                  [prismatic/om-tools "0.4.0"]
                  [secretary "1.2.3"]                 
@@ -24,9 +23,9 @@
                  [com.andrewmcveigh/cljs-time "0.4.0"]    
                  [incanter "1.5.7"]
                  [net.unit8/tower-cljs "0.1.0"]   ;;internalization technique
-		             [clj-http "2.3.0"]
-                 [org.clojure/data.json "0.2.6"]
-                 ]
+                 [clj-http "2.3.0"]
+                 [org.clojure/data.json "0.2.6"]                 
+                ]
 
   :plugins [[lein-cljsbuild "1.1.3"]
             [lein-environ "1.0.3"]]
@@ -60,10 +59,28 @@
                 :compiler {:main sberweb.login
                            :asset-path "js/compiled/out"
                            :output-to "resources/public/js/compiled/sberweb.js"
-                           :output-dir "resources/public/js/compiled/out"
+                           :output-dir "resources/public/js/compiled2/out"
+                           :source-map-timestamp true
                            :optimizations :none
-                           :pretty-print true
-                           :source-map-timestamp true}}
+                           :pretty-print true}}
+
+               {:id "max"
+                :source-paths ["src/cljs" "src/cljc"]
+                :jar true
+                :compiler {:main sberweb.login
+                           :asset-path "js/compiled/out"
+                           :output-to "resources/public/js/compiled/sberweb.js"
+                           :output-dir "resources/public/js/compiled/out"
+                           :source-map-timestamp true
+                           :optimizations :none
+                           :closure-warnings {:externs-validation :off}
+                           :externs [
+                             "cljsjs/common/bootstrap.ext.js"
+                             "cljsjs/common/jquery-timepicker.ext.js"
+                             "resources/public/javascript/bootstrap-datepicker.min.js"
+                             "cljsjs/common/jquery.ext.js"
+                           ]
+                           :pretty-print true}}
 
                {:id "test"
                 :source-paths ["src/cljs" "test/cljs" "src/cljc" "test/cljc"]
@@ -75,30 +92,19 @@
                 :source-paths ["src/cljs" "src/cljc"]
                 :jar true
                 :compiler {:main sberweb.login
-                           :output-to "resources/public/js/compiled2/sberweb.js"
+                           :output-to "resources/public/js/compiled1/sberweb.js"
                            :output-dir "target"
                            :source-map-timestamp true
                            :optimizations :advanced
-                           :pretty-print false}}
-
-               {:id "max"
-                :source-paths ["src/cljs" "src/cljc"]
-                :jar true
-                :compiler {:main sberweb.login
-                           :asset-path "js/compiled/out"
-                           :output-to "resources/public/js/compiled3/sberweb.js"
-			                     :output-dir "resources/public/js/compiled3/out"
-                           :source-map-timestamp true
-                           :optimizations :none
                            :closure-warnings {:externs-validation :off}
                            :externs [
                              "cljsjs/common/bootstrap.ext.js"
                              "cljsjs/common/jquery-timepicker.ext.js"
                              "resources/public/javascript/bootstrap-datepicker.min.js"
                              "cljsjs/common/jquery.ext.js"
-                           ]			   
-                           :pretty-print true}}
-            ]}
+                           ]
+                           :pretty-print false}}]}
+
 
   ;; When running figwheel from nREPL, figwheel will read this configuration
   ;; stanza, but it will read it without passing through leiningen's profile

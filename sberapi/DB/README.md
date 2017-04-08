@@ -1,17 +1,18 @@
 Linux setup:
 DB:
 export _JAVA_OPTIONS="-Xmx256m -Xms128m"
-sudo bin/transactor -Xms128m config/samples/dev-transactor-template.properties
+sudo nohup bin/transactor -Xms128m config/samples/dev-transactor-template.properties
 
 
 API:
-sudo java -Xmx256m -Xms32m -Ddatomic.objectCacheMax=32m -jar sberpb/sberapi.jar
+sudo nohup java -Xmx256m -Xms32m -Ddatomic.objectCacheMax=32m -jar sberapi.jar
 
 sudo nohup bin/transactor config/samples/dev-transactor-template.properties
 sudo nohup bin/console -p 8080 dev datomic:dev://localhost:4334/
 
 
-# t5pmobile
+Mobile:
+sudo nohup java -Xmx256m -Xms32m -jar sberweb.jar
 
 d:
 cd C:\datomic-pro-0.9.5544
