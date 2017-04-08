@@ -24,7 +24,7 @@
                  [com.andrewmcveigh/cljs-time "0.4.0"]    
                  [incanter "1.5.7"]
                  [net.unit8/tower-cljs "0.1.0"]   ;;internalization technique
-		 [clj-http "2.3.0"]
+		             [clj-http "2.3.0"]
                  [org.clojure/data.json "0.2.6"]
                  ]
 
@@ -86,8 +86,8 @@
                 :jar true
                 :compiler {:main sberweb.login
                            :asset-path "js/compiled/out"
-                           :output-to "resources/public/js/compiled/sberweb.js"
-			   :output-dir "resources/public/js/compiled/out"
+                           :output-to "resources/public/js/compiled3/sberweb.js"
+			                     :output-dir "resources/public/js/compiled3/out"
                            :source-map-timestamp true
                            :optimizations :none
                            :closure-warnings {:externs-validation :off}

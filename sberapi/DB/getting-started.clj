@@ -10,6 +10,8 @@
 ;; store database uri
 (def uri "datomic:dev://localhost:4334/sberpb_dev")
 
+
+
 ;; delete database
 (d/delete-database uri)
 
@@ -22,7 +24,7 @@
 ;; parse schema edn file
 (def schema-tx (read-string (slurp "C:/DEV/clojure/sberpb/sberapi/DB/sberpb-schema.edn")))
 (def schema-tx (read-string (slurp "E:/DEV/clojure/sberpb/sberapi/DB/sberpb-schema.edn")))
-;;(def schema-tx (read-string (slurp "/home/ec2-user/tripadv-schema.edn")))
+(def schema-tx (read-string (slurp "/home/ubuntu/sberpb/sberpb-schema.edn")))
 
 ;; display first statement
 (first schema-tx)
@@ -33,6 +35,7 @@
 ;; parse seed data edn file
 (def data-tx (read-string (slurp "C:/DEV/clojure/sberpb/sberapi/DB/output.clj")))
 (def data-tx (read-string (slurp "E:/DEV/clojure/sberpb/sberapi/DB/output.clj")))
+(def data-tx (read-string (slurp "/home/ubuntu/sberpb/output.clj")))
 
 (def data-tx (read-string (slurp "E:/DEV/clojure/sberpb/sberapi/DB/cl.clj")))
 (def data-tx (read-string (slurp "c:/DEV/clojure/sberpb/sberapi/DB/cl.clj")))
