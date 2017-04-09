@@ -2,5 +2,5 @@
  :port 3000
  ;; when :nrepl-port is set the application starts the nREPL server on load
  :nrepl-port 7000
- :database-url "datomic:dev://localhost:4334/sberpb_dev"
+ :database-url "datomic:dev://db.sberpb.com:4334/sberpb_dev"
 }

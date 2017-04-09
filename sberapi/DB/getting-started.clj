@@ -10,7 +10,9 @@
 ;; store database uri
 (def uri "datomic:dev://localhost:4334/sberpb_dev")
 
-(def uri "datomic:dev://sberweb.com:4334/sberpb_dev")
+(def uri "datomic:dev://db.sberpb.com:4334/sberpb_dev")
+
+(def uri "datomic:dev://db.sberpb.com:4334/sberpb_dev")
 
 ;; delete database
 (d/delete-database uri)
@@ -54,9 +56,9 @@
 ;@(d/transact-async conn data-tx)
 
 ;; find all communities, return entity ids
-(def results (q '[:find ?c :where [?c :community/name]] (db conn)))
+(def results (q '[:find ?c :where [?c :security/acode]] (db conn)))
 (count results)
-
+(pprint (first results))
 ;; get first entity id in results and make an entity map
 (def id (ffirst results))
 (def entity (-> conn db (d/entity id)))
@@ -65,7 +67,7 @@
 (keys entity)
 
 ;; display the value of the entity's community name
-(:community/name entity)
+(:security/isin entity)
 
 ;; Use a pull expression to get entities' attributes and values.
 (def pull-results (q '[:find (pull ?c [*]) :where [?c :community/name]] (db conn)))

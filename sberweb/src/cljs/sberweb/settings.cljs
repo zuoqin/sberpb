@@ -12,7 +12,7 @@
 (enable-console-print!)
 
 ;;(def apipath "http://10.30.60.102:3000/")
-(def apipath "https://zh.beesdata.cn:8443/")
+(def apipath "https://api.sberpb.com/")
 (def demouser "")
 (def demopassword "")
 
