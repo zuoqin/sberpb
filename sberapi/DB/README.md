@@ -1,5 +1,6 @@
 Linux setup:
 DB:
+cd /home/ubuntu/datomic-pro-0.9.5554
 export _JAVA_OPTIONS="-Xmx256m -Xms128m"
 sudo nohup bin/transactor -Xms128m config/samples/dev-transactor-template.properties
 
@@ -39,6 +40,8 @@ bin/repl
 d:
 cd D:\datomic-pro-0.9.5350
 bin\console -p 8080 dev datomic:dev://localhost:4334/
+bin/console -p 8080 dev datomic:dev://localhost:4334/
+
 
 then open in the browser: http://localhost:8080/browse
 
