@@ -20,7 +20,7 @@
 
 (enable-console-print!)
 
-(defonce app-state (atom {:selectedclient "KDBSF" :search ""  :user {:role "admin"} }))
+(defonce app-state (atom {:selectedclient "AAOHF" :search ""  :user {:role "admin"} }))
 
 
 
@@ -387,51 +387,7 @@
   (aset js/window "location" (str "/clientexcel/" (:selectedclient @app-state)))
 )
 
-(defcomponent calcportfs-navigation-view [data owner]
-  (render [_]
-    (let [style {:style {:margin "10px" :padding-bottom "0px"}}
-      stylehome {:style {:margin-top "10px"} }
-      ]
-      (dom/nav {:className "navbar navbar-default navbar-fixed-top" :role "navigation"}
-        (dom/div {:className "navbar-header"}
-          (dom/button {:type "button" :className "navbar-toggle"
-            :data-toggle "collapse" :data-target ".navbar-ex1-collapse"}
-            (dom/span {:className "sr-only"} "Toggle navigation")
-            (dom/span {:className "icon-bar"})
-            (dom/span {:className "icon-bar"})
-            (dom/span {:className "icon-bar"})
-          )
-          (dom/a  (assoc stylehome :className "navbar-brand")
-            (dom/span {:id "pageTitle"} (:text (:current @data)) )
-          )
-        )
-        (dom/div {:className "collapse navbar-collapse navbar-ex1-collapse" :id "menu"}
 
-          (dom/ul {:className "nav navbar-nav navbar-right"}
-            (dom/li
-              (dom/a {:style {:margin "10px" :padding-bottom "0px"} :href "#/portfolios" :onClick (fn [e] (goPortfolios e))}
-                 (dom/span {:className "glyphicon glyphicon-cog"})
-                 "Portfolios"
-              )
-            )
-            (dom/li
-              (dom/a {:style {:margin "10px" :padding-bottom "0px"} :href "#/calcportfs" :onClick (fn [e] (goCalcPortfs e))}
-                 (dom/span {:className "glyphicon glyphicon-wrench"})
-                 "Calculation"
-              )
-            )
-            (dom/li
-              (dom/a (assoc style :href "#/login")
-                (dom/i {:className "fa fa-sign-out fa-fw"})
-                "Exit"
-              )
-            )
-          )
-        )
-      )
-    )
-  )
-)
 
 
 (defcomponent positions-navigation-view [data owner]
@@ -573,6 +529,77 @@
     )
   )
 )
+
+
+(defcomponent calcportfs-navigation-view [data owner]
+  (render [_]
+    (let [style {:style {:margin "10px" :padding-bottom "0px"}}
+      stylehome {:style {:margin-top "10px"} }
+      ]
+      (dom/nav {:className "navbar navbar-default navbar-fixed-top" :role "navigation"}
+        (dom/div {:className "navbar-header"}
+          (dom/button {:type "button" :className "navbar-toggle"
+            :data-toggle "collapse" :data-target ".navbar-ex1-collapse"}
+            (dom/span {:className "sr-only"} "Toggle navigation")
+            (dom/span {:className "icon-bar"})
+            (dom/span {:className "icon-bar"})
+            (dom/span {:className "icon-bar"})
+          )
+          (dom/a  (assoc stylehome :className "navbar-brand")
+            (dom/span {:id "pageTitle"} (:text (:current @data)) )
+          )
+        )
+        (dom/div {:className "collapse navbar-collapse navbar-ex1-collapse" :id "menu"}
+          (dom/ul {:className "nav navbar-nav" :style {:padding-top "17px" :visibility (if (= (compare (:name (:current @app-state))  "Portfolios") 0) "visible" "hidden")}}
+            (dom/li
+              (dom/div {:style {:margin-right "10px" :visibility (if (and (= (compare (:name (:current @app-state)) "Portfolios") 0) (or (= (:role (:user @app-state)) "admin") (= (:role (:user @app-state)) "admin")) ) "visible" "hidden")}} 
+                (omdom/select #js {:id "securities"
+                                   :className "selectpicker"
+                                   :data-show-subtext "true"
+                                   :data-live-search "true"
+                                   :onChange #(handle-change % owner)
+                                   }                
+                  (buildSecsList data owner)
+                )
+              )
+            )
+            (dom/li
+              (dom/h5 {:style {:margin-left "5px" :margin-right "5px" :height "32px" :margin-top "1px"}} " "
+      (dom/input {:id "search" :type "text" :placeholder "Search" :style {:height "32px" :margin-top "1px"} :value  (:search @app-state) :onChange (fn [e] (handleChange e )) })  )
+            )
+
+            (dom/li {:style {:margin-left "5px"}}
+              (b/button {:className "btn btn-info"  :onClick (fn [e] (printMonth))  } "Print portfolios")
+            )
+          )
+
+
+          (dom/ul {:className "nav navbar-nav navbar-right"}
+            (dom/li
+              (dom/a {:style {:margin "10px" :padding-bottom "0px"} :href "#/positions" :onClick (fn [e] (goPositions e))}
+                 (dom/span {:className "glyphicon glyphicon-cog"})
+                 "Positions"
+              )
+            )
+            (dom/li
+              (dom/a {:style {:margin "10px" :padding-bottom "0px"} :href "#/calcportfs" :onClick (fn [e] (goCalcPortfs e))}
+                 (dom/span {:className "glyphicon glyphicon-wrench"})
+                 "Calculation"
+              )
+            )
+            (dom/li
+              (dom/a (assoc style :href "#/login")
+                (dom/i {:className "fa fa-sign-out fa-fw"})
+                "Exit"
+              )
+            )
+          )
+        )
+      )
+    )
+  )
+)
+
 
 (defmulti website-view
   (

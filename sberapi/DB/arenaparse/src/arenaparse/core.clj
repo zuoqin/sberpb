@@ -58,6 +58,8 @@
 
 (defn append-position-to-file [client position dt]
   (let [
+
+        ;tr1 (if (= (name (first position)) "RU000A0JP5V6") (println position)) 
         str1 (str client "," (name (first position)) "," (format "%.1f" (:amount (second position)))  "," (:price (second position)) "," (f/unparse build-in-basicdate-formatter (c/from-long (c/to-long dt)) ) "\n")
         ]
     ;;(println str1)
@@ -174,7 +176,7 @@
   (let [
      conn (d/connect uri)
      ]
-    (d/transact-async conn [{ :security/acode "ALFARUPERP", :security/isin "XS1513741311", :security/bcode "XS1513741311 Corp", :security/assettype 5, :security/exchange "TRDB", :security/currency "USD",   :db/id #db/id[:db.part/user -100548]}
+    (d/transact-async conn [{ :security/acode "PETBRA20", :security/isin "US71645WAP68", :security/bcode "US71645WAP68 Corp", :security/assettype 5, :security/exchange "NYSE", :security/currency "USD", :db/id #db/id[:db.part/user -100550] }
 
 ]
     )
@@ -340,6 +342,8 @@
 (defn excel-quote-to-db [quote]
   (let [
     dt (java.util.Date.)
+
+    tr1 (println quote)
     price (double (:price quote))
     target (double (:target quote))
     anr (double (:anr quote))
@@ -914,7 +918,9 @@
 
                         (if (> tranamnt 0) (/ (+ (* prevpr amnt) (* tranprice tranamnt)) newamnt)  prevpr)  0))
 
-                        ;tr5 (if (= (compare "XS0088543193" sec) 0) (println "tranprice: " tranprice " wap " wap))
+
+                        ;;tr5 (if (= wap 0.0) (println (str "prevpr: " prevpr " amnt: " amnt " tranprice: " tranprice " newamnt: " newamnt " tranamnt:" tranamnt)))
+                        ;;tr5 (if (= (compare "RU000A0JP5V6" sec) 0) (println "tranprice: " tranprice " wap " wap))
                         ;tr1 (println sec) 
                         ]
                     (recur (assoc-in result [(keyword sec) ] {:amount newamnt :price wap} )

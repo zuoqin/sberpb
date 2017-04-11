@@ -235,7 +235,7 @@
 
 (initqueue)
 
-(defcomponent calcportfs-view [data owner]
+(defcomponent portfolios-view [data owner]
   (will-mount [_]
     (onMount data)
   )
@@ -244,20 +244,31 @@
       stylerow {:style {:margin-left "0px" :margin-right "0px"}}
       styleprimary {:style {:margin-top "70px" :margin-left "0px" :margin-right "0px"}}
       ]
-      (dom/div {:className "container" :style {:width "100%" :padding-top "283px" :backgroundImage "url(/images/loginbackground.png)" :backgroundSize "cover"}  }
-        ;(om/build t5pcore/website-view data {})
-        ;(dom/h1 "Login Page")
-        ;(dom/img {:src "images/LogonBack.jpg" :className "img-responsive company-logo-logon"})
-        (dom/form {:className "form-signin"}
-          (dom/input #js {:type "text" :ref "txtUserName"
-             :defaultValue  settings/demouser  :className "form-control" :placeholder "User Name" } )
-          (dom/input {:className "form-control" :ref "txtPassword" :id "txtPassword" :defaultValue settings/demopassword :type "password"  :placeholder "Password"} )
-          (dom/button #js {
-            :className (if (= (:state @app-state) 0) "btn btn-lg btn-primary btn-block" "btn btn-lg btn-primary btn-block m-progress" )  :type "button" } "Login")
 
+      (dom/div
+        (om/build sbercore/website-view sbercore/app-state {})
+        (dom/div  (assoc styleprimary  :className "panel panel-primary")
+          (dom/div {:className "panel-heading"}
+
+            (dom/div (assoc stylerow  :className "row" )
+              (dom/div {:className "col-xs-2 col-md-2" :style {:text-align "center"}}  "Portfolio")
+              (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "Amount")
+              (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "WAP price")
+              (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "Last price")
+              (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "Currency")
+              (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "USD Value")
+              (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "P/L, %")
+              (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "P/L RUB, %")
+              (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "P/L, RUB")
+              (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "P/L, USD")
+              (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "1Y P/L, %")
+            )
+          )
+          (dom/div {:className "panel-body"}
+            (om/build showportfs-view  data {})
+          )
         )
-        (dom/div {:style {:margin-bottom "200px"}})
-      )
+      ) 
     )
   )
 )
@@ -266,6 +277,6 @@
 
 
 (sec/defroute portfolios-page "/calcportfs" []
-  (om/root calcportfs-view
+  (om/root portfolios-view
            sbercore/app-state
            {:target (. js/document (getElementById "app"))}))
