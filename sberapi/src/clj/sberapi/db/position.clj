@@ -19,7 +19,7 @@
   (let [
 
     ;tr1 (println (str "in get-fxrate-by-date " currency) )
-    newdate (java.util.Date. (c/to-long (f/parse custom-formatter (f/unparse custom-formatter (c/from-long (c/to-long dt))))))
+    newdate dt ;(java.util.Date. (c/to-long (f/parse custom-formatter (f/unparse custom-formatter (c/from-long (c/to-long dt))))))
 
 
     
@@ -29,6 +29,8 @@
                        [?e :security/acode ?sec]
                        ] (d/db conn) (if (= 0 (compare currency "GBX")) "GBP" currency))) 
 
+
+    tr1 (println (str "security: " security) )
     rate (first (sort-by first #(> (c/to-long %1) (c/to-long %2))
            (d/q '[:find ?d ?p
                   :in $ ?sec ?dt
@@ -38,7 +40,9 @@
                   [?e :price/lastprice ?p]
                   [(<= ?d ?dt)]
                   ]
-                (d/db conn) security newdate)))  
+                (d/db conn) security newdate)))
+
+
     newrate (if (= 0 (compare currency "GBX")) (/ (nth rate 1) 100.0) (nth rate 1))
     ]
     ;(nth rate 1) 

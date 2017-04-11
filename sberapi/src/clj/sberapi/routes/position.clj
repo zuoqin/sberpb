@@ -228,12 +228,12 @@
 
            seclimit (/ (* fxrate (:signedadvisory client)  (if (= (:assettype sec) 5) 10.0 5.0) ) 100.0 )  ;fxrate
 
-           
+           tr1 (println (str "fxrate: " fxrate " seclimit: " seclimit))
            seclastrubprice (if (= secrubprice 0.0) (if (nil? usedlimit) 0.0 (:rubprice usedlimit) ) secrubprice)
 
-           ;tr1 (println (str "client: " (:code client) " sec last price: " seclastrubprice) " usedlimit: " usedlimit)
+           tr1 (println (str "client: " (:code client) " sec last price: " seclastrubprice) " usedlimit: " usedlimit)
      ]
-      {:client (:code client) :cash (:cash client) :currency (:currency client) :shares (if (nil? usedlimit) 0 (:amount usedlimit)) :freelimit (int (/ (- seclimit calcusedlimit) (if (= 0.0 seclastrubprice) 1.0 seclastrubprice))) :maxshares (int (/ (if (> (* fxrate (:cash client))  (- seclimit calcusedlimit)) (- seclimit calcusedlimit) (* fxrate (:cash client))) (if (= 0.0 seclastrubprice) 1.0 seclastrubprice) ) ) }
+      {:client (:code client) :cash (:cash client) :currency (:currency client) :shares (if (nil? usedlimit) 0 (:amount usedlimit)) :freelimit (int (/ (- seclimit calcusedlimit) (if (= 0.0 seclastrubprice) 1.0 seclastrubprice))) :maxshares (int (/ (if (> (* fxrate (:cash client))  (- seclimit calcusedlimit)) (- seclimit calcusedlimit) (* fxrate (:cash client))) (if (= 0.0 seclastrubprice) 1.0 seclastrubprice))) }
       ))   clients)
     ]
 

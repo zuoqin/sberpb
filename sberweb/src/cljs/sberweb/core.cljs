@@ -152,10 +152,45 @@
 )
 
 
+(defn map-calc-portfolio [item]
+  (let [
+    portfid 1
+    ;; portfolio (first (filter (fn [x] (if (= (compare (:code x) portfid) 0) true false)) (:clients @app-state)))
+
+    ;; security (first (filter (fn [x] (if (= (:id x) (:selectedsec @app-state)) true false)) (:securities @app-state)))
+    ;; posprice (get (nth item 1) "price")
+    ;; price (if (nil? (:price security)) posprice (:price security))
+
+        
+    ;; currency (if (= 0 (compare "GBX" (:currency security))) "GBP" (:currency security))
+
+    ;; usdrate (:price (first (filter (fn [x] (if (= "USD" (:acode x)) true false)) (:securities @app-state)))) 
+
+    ;; fxrate (if (or (= "RUB" currency) (= "RUR" currency)) 1 (:price  (first (filter (fn[x] (if( = (:acode x) currency) true false)) (:securities @app-state)))))
+
+    ;; newfxrate (if (= 0 (compare "GBX" (:currency security))) (/ fxrate 100.) fxrate)
+    ;; isrusbond (if (and (= 5 (:assettype security)) 
+    ;;                    (= "RU" (subs (:isin security) 0 2))
+    ;;                    )  true false)
+    ;; isbond (if (and (= 5 (:assettype security)) 
+    ;;                ;(= "RU" (subs (:isin security) 0 2))
+    ;;                )  true false)
+
+    ;; result {:id (:id portfolio) :amount (:amount (nth item 1) ) :wapcur (:price (nth item 1) ) :wapusd (:price (nth item 1) ) :waprub (:rubprice (nth item 1) ) :currubprice (* price newfxrate) :usdvalue (/ (* (:amount (nth item 1)) (:price security)  (if (= isrusbond true) 10.0 (if (= isbond true) (/ newfxrate 100.0 ) newfxrate ) ) ) usdrate) }
+
+    ]
+    (.log js/console item)
+    item
+  )
+)
+
 (defn OnGetPortfolios [response]
    (swap! app-state assoc-in [ (keyword (str (:selectedsec @app-state)) ) :portfolios] (map (fn [x] (map-portfolio x)) response) )
 )
 
+(defn OnGetCalcPortfolios [response]
+   (swap! app-state assoc-in [ (keyword (str (:selectedsec @app-state)) ) :calcportfs] (map (fn [x] (map-calc-portfolio x)) response) )
+)
 
 (defn OnGetPositions [response]
    (swap! app-state assoc-in [(keyword (:selectedclient @app-state)) :positions] (map (fn [x] (map-position x)) (filter (fn [x] (if (> (:amount (nth x 1)) 0) true false)) response) ) )
@@ -193,6 +228,15 @@
   })
 )
 
+(defn getCalcPortfolios [] 
+  (POST (str settings/apipath "api/calcshares?security=" (:selectedsec @app-state) ) {
+    :handler OnGetCalcPortfolios
+    :error-handler error-handler
+    :headers {
+      :content-type "application/json"
+      :Authorization (str "Bearer "  (:token (:token @app-state))) }
+  })
+)
 
 (defn onSecsDropDownChange [id value]
   (let [
@@ -208,6 +252,19 @@
   ;;(.log js/console value)  
 )
 
+(defn onCalcSecsDropDownChange [id value]
+  (let [
+        code (:id (first (filter (fn[x] (if (= (:id x) (js/parseInt value) ) true false)) (:securities @app-state)))  )
+        ]
+
+    (swap! app-state assoc-in [:selectedsec] code)
+    (if (nil? (:calcportfs ((keyword value) @app-state)))
+      (getCalcPortfolios)
+    )
+  )
+  
+  ;;(.log js/console value)  
+)
 
 (defn onDropDownChange [id value]
   (let [
@@ -290,6 +347,29 @@
    )
 )
 
+(defn setCalcSecsDropDown []
+  (jquery
+     (fn []
+       (-> (jquery "#securities" )
+         (.selectpicker {})
+       )
+     )
+   )
+   (jquery
+     (fn []
+       (-> (jquery "#securities" )
+         (.selectpicker "val" (:id (first (filter (fn [x] (if (= (:id x) (:selectedsec @app-state)) true false )) (:securities @app-state)) )) )
+         (.on "change"
+           (fn [e]
+             (
+               onCalcSecsDropDownChange (.. e -target -id) (.. e -target -value)
+             )
+           )
+         )
+       )
+     )
+   )
+)
 
 (defn setClientsDropDown []
   (jquery

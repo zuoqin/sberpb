@@ -343,7 +343,7 @@
   (let [
     dt (java.util.Date.)
 
-    tr1 (println quote)
+    ;tr1 (println quote)
     price (double (:price quote))
     target (double (:target quote))
     anr (double (:anr quote))
