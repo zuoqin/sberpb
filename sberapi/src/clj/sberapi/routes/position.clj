@@ -166,7 +166,7 @@
 
 
 
-(defn calcPortfolios [token security]
+(defn calcPortfolios [token security currency percentage]
   (let [
     ;usercode (:iss (-> token str->jwt :claims)  ) 
     transactions (into [] (db/get-transactions-by-security security)   )
@@ -189,7 +189,11 @@
                         tran (first trans)
                         client (:client tran)
                         
+
+                        
                         currency (:currency (first (filter (fn [x] (if (= (:security tran) (:id x)) true false)) securities)))
+
+                        tr1 (println (str "client= " client " tran= " tran))
                         amnt (:amount ( (keyword client) result ))
                         prevpr (:price ((keyword client) result))
                         
@@ -201,6 +205,8 @@
                         wap (if (nil? amnt ) (:price tran) (if (> newamnt 0) (/ (+ (* prevpr amnt) (* (:price tran) tranamnt)) newamnt) 0))
 
 
+
+                        ;tr1 (if (= "VADAF" client) (println (str "fx tran: " (:fx tran) " price: " (:price tran) " rubprice: " rubprice)))
                         waprub (if (nil? amnt ) rubprice (if (> newamnt 0) (/ (+ (* prevrubprice amnt) (* rubprice tranamnt)) newamnt) 0))
                         ]
                     (recur (assoc-in result [(keyword client) ] {:amount newamnt :price wap :rubprice waprub} )
@@ -217,26 +223,27 @@
     calc_portfs (map (fn [client] (
       let [
 
-         
+           ;tr1 (println (filter (fn [x] (if (= :ZADNF (first x)) true false)) filter_portfs))
            usedlimit (second (first (filter (fn [x] (if (= (:code client) (name (first x))) true false)) filter_portfs)))
 
-           calcusedlimit (if (nil? usedlimit) 0 (* (:amount usedlimit) (:rubprice usedlimit)) )
+           calcusedlimit (if (nil? usedlimit) 0 (* (:amount usedlimit) (if (= (:rubprice usedlimit) 0.0) secrubprice (:rubprice usedlimit) ) ) )
 
-           fxrate (db/get-fxrate-by-date (:currency client) (java.util.Date.))
+           fxrate (db/get-fxrate-by-date (str/upper-case currency) (java.util.Date.))
 
-           clienttotalrub (* (:cash client) fxrate)
+           clienttotalrub (* ((keyword (str/lower-case currency)) client) fxrate)
 
-           seclimit (/ (* fxrate (:signedadvisory client)  (if (= (:assettype sec) 5) 10.0 5.0) ) 100.0 )  ;fxrate
+           seclimit (/ (* fxrate (:signedadvisory client)  (if (= (:assettype sec) 5) (* (:bondshare client) (if (> percentage 10.0) 10.0 percentage)) (* (:stockshare client) (if (> percentage 5.0) 5.0 percentage))) ) 10000.0 ) ;fxrate
 
-           tr1 (println (str "fxrate: " fxrate " seclimit: " seclimit))
+           ;tr1 (println (str "fxrate: " fxrate " seclimit: " seclimit))
            seclastrubprice (if (= secrubprice 0.0) (if (nil? usedlimit) 0.0 (:rubprice usedlimit) ) secrubprice)
 
-           tr1 (println (str "client: " (:code client) " sec last price: " seclastrubprice) " usedlimit: " usedlimit)
+           tr1 (println (str "client: " client " sec last price: " seclastrubprice) " usedlimit: " usedlimit)
      ]
-      {:client (:code client) :cash (:cash client) :currency (:currency client) :shares (if (nil? usedlimit) 0 (:amount usedlimit)) :freelimit (int (/ (- seclimit calcusedlimit) (if (= 0.0 seclastrubprice) 1.0 seclastrubprice))) :maxshares (int (/ (if (> (* fxrate (:cash client))  (- seclimit calcusedlimit)) (- seclimit calcusedlimit) (* fxrate (:cash client))) (if (= 0.0 seclastrubprice) 1.0 seclastrubprice))) }
+      {:client (:code client) :usd (:usd client) :rub (:rub client) :eur (:eur client) :gbp (:gbp client) :currency (:currency client) :shares (if (nil? usedlimit) 0 (:amount usedlimit)) :maxlimit (int (/ seclimit (if (= 0.0 seclastrubprice) 1.0 seclastrubprice))) :freelimit (int (/ (- seclimit calcusedlimit) (if (= 0.0 seclastrubprice) 1.0 seclastrubprice)))
+
+ :maxshares (int (/ (if (> (* fxrate ((keyword (str/lower-case currency))  client))  (- seclimit calcusedlimit)) (- seclimit calcusedlimit) (* fxrate ((keyword (str/lower-case currency)) client))) (if (= 0.0 seclastrubprice) 1.0 seclastrubprice))) }
       ))   clients)
     ]
-
     calc_portfs
   )
 )

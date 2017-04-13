@@ -176,8 +176,7 @@
   (let [
      conn (d/connect uri)
      ]
-    (d/transact-async conn [{ :security/acode "PETBRA20", :security/isin "US71645WAP68", :security/bcode "US71645WAP68 Corp", :security/assettype 5, :security/exchange "NYSE", :security/currency "USD", :db/id #db/id[:db.part/user -100550] }
-
+    (d/transact-async conn [{ :security/acode "IHYGLN", :security/isin "IE00B66F4759", :security/bcode "IE00B66F4759 Equity", :security/assettype 1, :security/exchange "NYSE", :security/currency "USD", :db/id #db/id[:db.part/user -100552] }
 ]
     )
     ; To insert new entity:
@@ -347,6 +346,9 @@
     price (double (:price quote))
     target (double (:target quote))
     anr (double (:anr quote))
+
+    tr1 (:yield quote)
+    yield (double (:yield quote))
     secid (get-secid-by-isin (:isin quote))
     ;tr1 (println quote)
     ;tr2 (println secid)
@@ -361,7 +363,7 @@
     tr2 (if (not (nil? tr1)) (d/transact conn [[:db.fn/retractEntity tr1]])) 
         
   ]
- (d/transact-async conn  [{ :price/security secid :price/lastprice price :price/valuedate dt :price/targetprice target :price/analystrating anr  :price/source "Excel import" :price/comment "Import from Bllomberg Excel output on 2017-03-10" :db/id #db/id[:db.part/user -100001 ]}]))
+ (d/transact-async conn  [{ :price/security secid :price/lastprice price :price/valuedate dt :price/targetprice target :price/analystrating anr :price/yield yield :price/source "Excel import" :price/comment "Import from Bllomberg Excel output on 2017-03-10" :db/id #db/id[:db.part/user -100001 ]}]))
 )
 
 (defn import-price-for-sec [bcode]
@@ -388,7 +390,7 @@
   (let [
     secs (drop 0 (->> (load-workbook (str drive ":/DEV/clojure/sberpb/sberapi/DB/quotes.xlsx") )
                    (select-sheet "Data")
-                   (select-columns {:A :isin :C :price :D :anr :E :target})))
+                   (select-columns {:A :isin :C :price :D :anr :E :target :F :yield})))
 
     ;newsecs (filter (fn [x] (if (= (compare (:isin x) "XS0493579238")  0) true false)) secs)
     trans (doall (map (fn [x] (excel-quote-to-db x))  secs )) 

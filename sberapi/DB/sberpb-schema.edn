@@ -104,10 +104,32 @@
   :db.install/_attribute :db.part/db}
 
 {:db/id #db/id[:db.part/db]
-  :db/ident :client/cash
+  :db/ident :client/usd
   :db/valueType :db.type/double
   :db/cardinality :db.cardinality/one
-  :db/doc "Client cash position"
+  :db/doc "Client cash position in USD"
+  :db.install/_attribute :db.part/db}
+
+{:db/id #db/id[:db.part/db]
+  :db/ident :client/rub
+  :db/valueType :db.type/double
+  :db/cardinality :db.cardinality/one
+  :db/doc "Client cash position in RUB"
+  :db.install/_attribute :db.part/db}
+
+
+{:db/id #db/id[:db.part/db]
+  :db/ident :client/eur
+  :db/valueType :db.type/double
+  :db/cardinality :db.cardinality/one
+  :db/doc "Client cash position in EUR"
+  :db.install/_attribute :db.part/db}
+
+{:db/id #db/id[:db.part/db]
+  :db/ident :client/gbp
+  :db/valueType :db.type/double
+  :db/cardinality :db.cardinality/one
+  :db/doc "Client cash position in GBP"
   :db.install/_attribute :db.part/db}
 
 {:db/id #db/id[:db.part/db]

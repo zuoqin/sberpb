@@ -20,7 +20,7 @@
 
 (enable-console-print!)
 
-(defonce app-state (atom {:selectedclient "AAOHF" :search ""  :user {:role "admin"} }))
+(defonce app-state (atom {:percentage "5.00" :onlynoholders false :selectedclient "AAOHF" :search ""  :user {:role "admin"} }))
 
 
 
@@ -77,6 +77,19 @@
   )
 )
 
+(defn handle-chkb-change [e]
+  ;(.log js/console (.. e -target -id) )  
+  ;(.log js/console "The change ....")
+  (.stopPropagation e)
+  (.stopImmediatePropagation (.. e -nativeEvent) )
+  (swap! app-state assoc-in [(keyword  (.. e -currentTarget -id) )] 
+    (if (= true (.. e -currentTarget -checked)  ) 1 0)
+  )
+  ;(CheckCalcLeave)
+  ;(set! (.-checked (.. e -currentTarget)) false)
+  ;(dominalib/remove-attr!  (.. e -currentTarget) :checked)
+  ;;(dominalib/set-attr!  (.. e -currentTarget) :checked true)
+)
 
 (defn handle-change [e owner]
   
@@ -179,7 +192,7 @@
     ;; result {:id (:id portfolio) :amount (:amount (nth item 1) ) :wapcur (:price (nth item 1) ) :wapusd (:price (nth item 1) ) :waprub (:rubprice (nth item 1) ) :currubprice (* price newfxrate) :usdvalue (/ (* (:amount (nth item 1)) (:price security)  (if (= isrusbond true) 10.0 (if (= isbond true) (/ newfxrate 100.0 ) newfxrate ) ) ) usdrate) }
 
     ]
-    (.log js/console item)
+    ;(.log js/console item)
     item
   )
 )
@@ -189,6 +202,7 @@
 )
 
 (defn OnGetCalcPortfolios [response]
+   (swap! app-state assoc )
    (swap! app-state assoc-in [ (keyword (str (:selectedsec @app-state)) ) :calcportfs] (map (fn [x] (map-calc-portfolio x)) response) )
 )
 
@@ -229,7 +243,7 @@
 )
 
 (defn getCalcPortfolios [] 
-  (POST (str settings/apipath "api/calcshares?security=" (:selectedsec @app-state) ) {
+  (POST (str settings/apipath "api/calcshares?security=" (:selectedsec @app-state) "&percentage=" (:percentage @app-state) ) {
     :handler OnGetCalcPortfolios
     :error-handler error-handler
     :headers {
@@ -258,9 +272,8 @@
         ]
 
     (swap! app-state assoc-in [:selectedsec] code)
-    (if (nil? (:calcportfs ((keyword value) @app-state)))
-      (getCalcPortfolios)
-    )
+    ;(if (nil? (:calcportfs ((keyword value) @app-state))))
+    (getCalcPortfolios)
   )
   
   ;;(.log js/console value)  
@@ -649,7 +662,19 @@
             )
 
             (dom/li {:style {:margin-left "5px"}}
-              (b/button {:className "btn btn-info"  :onClick (fn [e] (printMonth))  } "Print portfolios")
+              (dom/label {:for "noholders" :style {:font-weight 100 :padding-right "10px" :padding-top "7px"}} "Оставить только клиентов без этой бумаги: ")
+            )
+            (dom/li {:style {:margin-left "5px"}}
+              (dom/input {:id "noholders" :type "checkbox" :style {:height "32px" :width "70px" :margin-top "1px"} :defaultChecked false :label "Оставить только портфели без бумаги" :onChange (fn [e] (handle-chkb-change e ))})
+            )
+
+            (dom/li {:style {:margin-left "5px"}}
+              (dom/label {:for "percentage" :style {:font-weight 100 :padding-right "10px"}} "Процент для расчета кол-ва бумаг: ")
+
+              (dom/input {:id "percentage" :type "number" :step "0.01" :style {:height "32px" :width "70px" :margin-top "1px"} :value  (:percentage @app-state) :onChange (fn [e] (handleChange e ))})
+            )
+            (dom/li {:style {:margin-left "5px"}}
+              (b/button {:className "btn btn-info"  :onClick (fn [e] (getCalcPortfolios))  } "Обновить")
             )
           )
 

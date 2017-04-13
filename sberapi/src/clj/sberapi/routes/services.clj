@@ -176,10 +176,10 @@
 
     (POST "/calcshares" []
       :header-params [authorization :- String]
-      :query-params [security :- Long]
+      :query-params [security :- Long, currency :- String, percentage :- Double]
       :summary      "retrieve all clients"
 
-      (ok  (positionapi/calcPortfolios (nth (str/split authorization #" ") 1) security) ))
+      (ok  (positionapi/calcPortfolios (nth (str/split authorization #" ") 1) security currency percentage) ))
 
     (OPTIONS "/calcshares" []
       :summary  "Allows OPTIONS requests"

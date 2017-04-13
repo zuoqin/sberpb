@@ -48,7 +48,7 @@
 (defn getPortfolios [] 
   (if (> (count (:calcportfs ((keyword (:selectedsec @sbercore/app-state)) @sbercore/app-state)) 0))
     (sbercore/setCalcSecsDropDown)
-    (POST (str settings/apipath "api/calcshares?security=" (:selectedsec @sbercore/app-state) ) {
+    (POST (str settings/apipath "api/calcshares?security=" (:selectedsec @sbercore/app-state) "&percentage=" (:percentage @sbercore/app-state)) {
       :handler OnGetPortfolios
       :error-handler error-handler
       :headers {
@@ -61,7 +61,7 @@
 
 (defn comp-portfs
   [portf1 portf2]
-  (if (or (> (:amount portf1)  (:amount portf2))  (and (<= (:amount portf1)  (:amount portf2)) (> (compare (:name portf1)  (:name portf2)  ) 0) ) ) 
+  (if (or (> (:maxshares portf1)  (:maxshares portf2))  (and (= (:maxshares portf1)  (:maxshares portf2)) (> (:shares portf1)  (:shares portf2)   ) ) ) 
       true
       false
   )
@@ -95,7 +95,10 @@
           (dom/div {:className "row" :style {:margin-left "0px" :margin-right "0px"}} 
 
             ;;Client code
-            (dom/div {:className "col-xs-1 col-md-1" :style {:padding-left "0px" :padding-right "0px"}} (:client item)
+            (dom/div {:className "col-xs-1 col-md-1" :style {:padding-left "0px" :padding-right "0px"}}
+              (dom/a {:className "list-group-item" :style {:padding-left "3px" :padding-right "3px" :text-align "right"} :href (str  "#/postrans/" (:id item) "/" (:selectedsec @sbercore/app-state)) }
+                (dom/h4 {:className "list-group-item-heading"} (:client item))
+              )
               ;; (dom/a {:className "list-group-item" :href (str  "#/postrans/" (:id item) "/" (:selectedsec @sbercore/app-state)  )}
               ;;   (dom/h4  #js {:className "list-group-item-heading" :dangerouslySetInnerHTML #js {:__html (:name (first (filter (fn[x] (if (= (:id x) (:id item) ) true false)) (:clients @sbercore/app-state))))}} nil)
               ;; )
@@ -113,7 +116,7 @@
             (dom/div {:className "col-xs-1 col-md-1" :style {:padding-left "0px" :padding-right "0px"}}            
               (dom/a {:className "list-group-item" :style {:padding-left "3px" :padding-right "3px" :text-align "right"} :href (str  "#/postrans/" (:id item) "/" (:selectedsec @sbercore/app-state)) }
                 (dom/h4 {:className "list-group-item-heading"} (sbercore/split-thousands (str (:stockshare client)))   )
-              )            
+              )
             )
 
 
@@ -121,28 +124,39 @@
             (dom/div {:className "col-xs-1 col-md-1" :style {:padding-left "0px" :padding-right "0px"}}            
               (dom/a {:className "list-group-item" :style {:padding-left "3px" :padding-right "3px" :text-align "right"} :href (str  "#/postrans/" (:id item) "/" (:selectedsec @sbercore/app-state)) }
                 (dom/h4 {:className "list-group-item-heading"} (sbercore/split-thousands (str (:bondshare client)))   )
-              )            
+              )
             )
 
 
             ;; Cash amount
             (dom/div {:className "col-xs-1 col-md-1" :style {:padding-left "0px" :padding-right "0px"}}            
               (dom/a {:className "list-group-item" :style {:padding-left "3px" :padding-right "3px" :text-align "right"} :href (str  "#/postrans/" (:id item) "/" (:selectedsec @sbercore/app-state)) }
-                (dom/h4 {:className "list-group-item-heading"} (sbercore/split-thousands (str (:cash item)))   )
+                (dom/h4 {:className "list-group-item-heading"} (sbercore/split-thousands (gstring/format "%.0f" (:cash item)) )   )
               )            
             )
 
             ;; Client base currency
             (dom/div {:className "col-xs-1 col-md-1" :style {:padding-left "0px" :padding-right "0px"}}
-              (:currency item)
+              (dom/a {:className "list-group-item" :style {:padding-left "3px" :padding-right "3px" :text-align "right"} :href (str  "#/postrans/" (:id item) "/" (:selectedsec @sbercore/app-state)) }
+                (dom/h4 {:className "list-group-item-heading"} (:currency item)   )
+              )              
+            )
+
+
+            ;; Total Limit
+            (dom/div {:className "col-xs-1 col-md-1" :style {:padding-left "0px" :padding-right "0px"}}            
+              (dom/a {:className "list-group-item" :style {:padding-left "3px" :padding-right "3px" :text-align "right"} :href (str  "#/postrans/" (:id item) "/" (:selectedsec @sbercore/app-state)) }
+                (dom/h4 {:className "list-group-item-heading"} (sbercore/split-thousands (str (:maxlimit item))))
+              )
             )
 
             ;;Shares
-            (dom/div {:className "col-xs-2 col-md-2" :style {:padding-left "0px" :padding-right "0px"}}            
+            (dom/div {:className "col-xs-1 col-md-1" :style {:padding-left "0px" :padding-right "0px"}}            
               (dom/a {:className "list-group-item" :style {:padding-left "3px" :padding-right "3px" :text-align "right"} :href (str  "#/postrans/" (:id item) "/" (:selectedsec @sbercore/app-state)) }
                 (dom/h4 {:className "list-group-item-heading"} (sbercore/split-thousands (str (:shares item)))   )
               )            
             )
+
 
             ;; Free Limit
             (dom/div {:className "col-xs-2 col-md-2" :style {:padding-left "0px" :padding-right "0px"}}            
@@ -164,7 +178,7 @@
            (sort (comp comp-portfs) (filter (fn [x] (let [
                portfname (:client x)
                ]
-               (if (or (= false (str/includes? portfname (:search @sbercore/app-state))))  false true)) ) (:calcportfs ((keyword (str (:selectedsec @sbercore/app-state))) @sbercore/app-state))))
+               (if (or (= false (str/includes? portfname (:search @sbercore/app-state))) (and (= 1 (:noholders @sbercore/app-state)) (> (:shares x) 0.0)))  false true)) ) (:calcportfs ((keyword (str (:selectedsec @sbercore/app-state))) @sbercore/app-state))))
       )
     )
   )
@@ -180,6 +194,7 @@
 
 (defn setcontrols []
   (sbercore/setCalcSecsDropDown)
+  
   ;;(.log js/console "fieldcode"       )
 )
 
@@ -220,9 +235,10 @@
               (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "Доля Облигаций")
               (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "Cash")
               (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "Currency")
-              (dom/div {:className "col-xs-2 col-md-2" :style {:text-align "center"}} "Shares")
-              (dom/div {:className "col-xs-2 col-md-2" :style {:text-align "center"}} "Free Limit")
-              (dom/div {:className "col-xs-2 col-md-2" :style {:text-align "center"}} "Max Shares")
+              (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "Лимит клиента на бумагу, шт.")
+              (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "Куплено бумаг, шт.")
+              (dom/div {:className "col-xs-2 col-md-2" :style {:text-align "center"}} "Свободный лимит на бумагу, шт.")
+              (dom/div {:className "col-xs-2 col-md-2" :style {:text-align "center"}} "Макс кол-во к покупке")
             )
           )
           (dom/div {:className "panel-body"}

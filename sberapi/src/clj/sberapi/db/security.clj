@@ -23,7 +23,7 @@
                        ] (d/db conn) (if (= 0 (compare currency "GBX")) "GBP" currency))) 
 
     rate (first (sort-by first #(> (c/to-long %1) (c/to-long %2))
-           (d/q '[:find ?dt ?p ?a ?t
+           (d/q '[:find ?dt ?p ?a ?t ?y
                   :in $ ?sec
                   :where
                   [?e :price/security ?sec]
@@ -31,18 +31,19 @@
                   [?e :price/lastprice ?p]
                   [?e :price/analystrating ?a]
                   [?e :price/targetprice ?t]
+                  [?e :price/yield ?y]
                   ]    
        (d/db conn) security)))
     newrate (if (= 0 (compare currency "GBX")) (/ (nth rate 1) 100.0) (nth rate 1))
     ]
-    [newrate (nth rate 2) (nth rate 3)]
+    [newrate (nth rate 2) (nth rate 3) (nth rate 4)]
   )
 )
 
 (defn security-to-map [security]
   (let [
-    [price anr target] (get-last-fx (nth security 1))
-    newsec {:id (nth security 0) :acode (nth security 1) :exchange (nth security 2) :isin (nth security 3) :price price :anr anr :target target :currency (nth security 4) :assettype (nth security 5) :bcode (nth security 6)}
+    [price anr target yield] (get-last-fx (nth security 1))
+    newsec {:id (nth security 0) :acode (nth security 1) :exchange (nth security 2) :isin (nth security 3) :price price :anr anr :target target :yield yield :currency (nth security 4) :assettype (nth security 5) :bcode (nth security 6)}
         
   ]
   newsec
