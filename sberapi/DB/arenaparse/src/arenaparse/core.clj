@@ -268,7 +268,7 @@
 
 (defn client-to-map [client]
   (let [
-    newclient {:id (nth client 0) :code (nth client 1) :name (nth client 2) :currency (nth client 3) :cash (nth client 4) :stockshare (nth client 5) :bondshare (nth client 6) :signedadvisory (nth client 7)}
+    newclient {:id (nth client 0) :code (nth client 1) :name (nth client 2) :currency (nth client 3) :usd (nth client 4) :rub (nth client 5) :eur (nth client 6) :gbp (nth client 7) :stockshare (nth client 8) :bondshare (nth client 9) :signedadvisory (nth client 10)}
   ]
   newclient
   )
@@ -277,16 +277,19 @@
 (defn get-clients []
   (let [
          conn (d/connect uri)
-         clients (d/q '[:find  ?e ?c ?n ?curr ?cash ?ss ?bs ?sa
+         clients (d/q '[:find  ?e ?c ?n ?curr ?usd ?rub ?eur ?gbp ?ss ?bs ?sa
                           :where
                           [?e :client/code]
                           [?e :client/code ?c]
                           [?e :client/name ?n]
+                          [?e :client/signedadvisory ?sa]
                           [?e :client/currency ?curr]
-                          [?e :client/cash ?cash]
+                          [?e :client/usd ?usd]
+                          [?e :client/rub ?rub]
+                          [?e :client/eur ?eur]
+                          [?e :client/gbp ?gbp]
                           [?e :client/stockshare ?ss]
                           [?e :client/bondshare ?bs]
-                          [?e :client/signedadvisory ?sa]
                           ]
                         (d/db conn)) 
 
@@ -673,7 +676,7 @@
         trans (d/q '[:find ?e
                       :in $ ?client ?dt1 ?dt2
                       :where
-                      [?e :transaction/client ?c]
+                      [?e :transaction/client ?c]Б
                       [?c :client/code ?client]
                       [?e :transaction/currency ?currency]
                       [?e :transaction/direction ?direction]
@@ -766,9 +769,15 @@
 ;; Check currency = RUB
 (= (compare (subs isin 0 2) "RU") 0 ) 
 )  true false)
+
+    ;trancurrency (:currency x)
+    ;trancurrencyfxrate (get-fxrate-by-date trancurrency (:valuedate x))
+
+    ;tr1 (if (or (= isin "US92719A1060") (= isin "US91822M1062")) (println (str "fx = " (:fx x))))
+    seccurrencyfxrate (get-fxrate-by-date currency (:valuedate x))
       
       ]
-      {:portfolio client :isin isin :quantity (if (= isrussian true) (* 1000.0 (:nominal x)) (:nominal x))  :price (:price x) :date (f/unparse build-in-basicdate-formatter (c/from-long (c/to-long (:valuedate x))) ) :type (if (= "B" (:direction x)) "BUY LONG" "SELL LONG")}
+      {:portfolio client :isin isin :quantity (if (= isrussian true) (* 1000.0 (:nominal x)) (:nominal x))  :price (* (:price x) (:fx x))    :date (f/unparse build-in-basicdate-formatter (c/from-long (c/to-long (:valuedate x))) ) :type (if (= "B" (:direction x)) "BUY LONG" "SELL LONG")}
     )) transactions)
     ]
     (save-xls ["sheet1" (dataset [:portfolio :isin :quantity :price :date :type] newtransactions)] (str drive ":/DEV/Java/" client "_trans.xlsx") )
@@ -954,12 +963,12 @@
 
 
 
-(defn update-client-cash [client cash]
+(defn update-client-cash [client currency amount]
   (let [
     conn (d/connect uri)
     ]
     (d/transact-async conn [
-      {:client/cash cash,
+      {(keyword (str "client/" currency)) amount,
        :client/code client ;; this finds the existing entity
        :db/id #db/id [:db.part/user]  ;; will be replaced by exiting id
       }
@@ -978,23 +987,34 @@
     selectfile (first (filter (fn [x] (let [name (.getName x)] (if  (.contains name filename) true false))) fs))
 
     t1 (if (not (nil? selectfile))(println (str "found filename: " filename " date: " dt)))
-    cash (if (not (nil? selectfile)) (->> (load-workbook (str "R:/MIS_PB/Advisory/" (.getName selectfile)))
-                 (select-sheet "Balances-Currency")
-                 (select-columns {:A :date, :B :account :C :currency :D :amount :F :usd :G :rub})) (println (str "file with cash balances not found for date: " (f/unparse build-in-date-formatter (c/from-long (+ (c/to-long dt) (* 3600000 24)) )))))
+    cash (drop 2 (if (not (nil? selectfile)) (->> (load-workbook (str "R:/MIS_PB/Advisory/" (.getName selectfile)))
+                                             (select-sheet "Balances-Currency")
+                                             (select-columns {:A :date, :B :code :C :currency :D :amount :F :usd :G :rub})) (println (str "file with cash balances not found for date: " (f/unparse build-in-date-formatter (c/from-long (+ (c/to-long dt) (* 3600000 24)) )))))) 
 
+    ;t1 (println (nth cash 2))
 
+    ;t1 (println (str/lower-case (if (= (:currency (nth cash 2)) "RUR") "RUB" (:currency (nth cash 2)))))
     ;result1 (reduce (fn [a b] {:usd (+ (:usd a) (:usd b))} ) (filter (fn [y] (if (= (:account y) "AAOHF") true false)) cash)   )
 
 
-    cashbyclient (map (fn [x] (let [
-      cashpos (filter (fn [y] (if (= (:account y) (:code x)) true false)) cash)
-      ;tr1 (println cashpos)
-     ]
-     {:code (:code x) :cash (if (= (count cashpos) 0) 0.0 (if (= (:currency x) "USD") (:usd (reduce (fn [a b] {:usd (+ (:usd a) (:usd b))} ) cashpos)) (:usd (reduce (fn [a b] {:rub (+ (:rub a) (:rub b))} ) cashpos)))     )}
-   ) ) (get-clients) )
+   ;;  cashbyclient (map (fn [x] (let [
+   ;;    cashpos (filter (fn [y] (if (= (:account y) (:code x)) true false)) cash)
+   ;;    ;tr1 (println cashpos)
+   ;;   ]
+   ;;   {:code (:code x) :cash (if (= (count cashpos) 0) 0.0 (if (= (:currency x) "USD") (:usd (reduce (fn [a b] {:usd (+ (:usd a) (:usd b))} ) cashpos)) (:usd (reduce (fn [a b] {:rub (+ (:rub a) (:rub b))} ) cashpos)))     )}
+   ;; ) ) (get-clients) )
+
+    nullcash (doall (map (fn [x] (let [
+      tr1 (update-client-cash (:code x) "usd" 0.0)
+      tr1 (update-client-cash (:code x) "rub" 0.0)
+      tr1 (update-client-cash (:code x) "eur" 0.0)
+      tr1 (update-client-cash (:code x) "gbp" 0.0)
+])) (get-clients)))
 
 
-    cashbycurrency (if (not (nil? selectfile)) (doall (map (fn [x] (update-client-cash (:code x) (:cash x))) cashbyclient )))
+    cashbycurrency (if (not (nil? selectfile)) (doall (map (fn [x] (let [
+      ;tr1 (println (str "x= " x))
+] (if (not (nil? x)) (update-client-cash (:code x)  (str/lower-case (if (= (:currency x) "RUR") "RUB" (:currency x)))  (:amount x))) ) ) cash)))
     ]
     ;cashbyclient
     ;result1
@@ -1206,14 +1226,18 @@
                        :in $ 
                        :where
                        [?e :client/name]
-                       ] (d/db conn)) 
+                       ] (d/db conn))
 
-        t1 (doall (map (fn [x] (let [name (second (first (ent [x])))
+        t1 (doall (map (fn [x] (let [name (second (first (filter (fn [x] (if (= (first x) :client/code) true false)) (ent [x])) ))
+                                     tr1 (println name)
                                      ]
                               (if (= (.exists (io/as-file (str drive ":/DEV/Java/" name ".xml"))) true) (save-transactions name)))) clients))
 
+        ;t1 (println (first clients))
 
-        t2 (doall (map (fn [x] (let [name (second (first (ent [x])))]
+        t2 (doall (map (fn [x] (let [name (second (first (filter (fn [x] (if (= (first x) :client/code) true false)) (ent [x])) ))
+          ;t1 (println (str "name = " name) )
+          ]
                               (if (= (.exists (io/as-file (str drive ":/DEV/output/" name ".clj"))) true) (import-client-trans name)))) clients))
 
 

@@ -243,7 +243,7 @@
 )
 
 (defn getCalcPortfolios [] 
-  (POST (str settings/apipath "api/calcshares?security=" (:selectedsec @app-state) "&percentage=" (:percentage @app-state) ) {
+  (GET (str settings/apipath "api/calcshares?security=" (:selectedsec @app-state) "&percentage=" (:percentage @app-state) ) {
     :handler OnGetCalcPortfolios
     :error-handler error-handler
     :headers {

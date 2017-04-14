@@ -166,7 +166,7 @@
 
 
 
-(defn calcPortfolios [token security currency percentage]
+(defn calcPortfolios [token security percentage]
   (let [
     ;usercode (:iss (-> token str->jwt :claims)  ) 
     transactions (into [] (db/get-transactions-by-security security)   )
@@ -193,7 +193,7 @@
                         
                         currency (:currency (first (filter (fn [x] (if (= (:security tran) (:id x)) true false)) securities)))
 
-                        tr1 (println (str "client= " client " tran= " tran))
+                        ;tr1 (println (str "client= " client " tran= " tran))
                         amnt (:amount ( (keyword client) result ))
                         prevpr (:price ((keyword client) result))
                         
@@ -226,24 +226,43 @@
            ;tr1 (println (filter (fn [x] (if (= :ZADNF (first x)) true false)) filter_portfs))
            usedlimit (second (first (filter (fn [x] (if (= (:code client) (name (first x))) true false)) filter_portfs)))
 
-           calcusedlimit (if (nil? usedlimit) 0 (* (:amount usedlimit) (if (= (:rubprice usedlimit) 0.0) secrubprice (:rubprice usedlimit) ) ) )
-
-           fxrate (db/get-fxrate-by-date (str/upper-case currency) (java.util.Date.))
-
-           clienttotalrub (* ((keyword (str/lower-case currency)) client) fxrate)
-
-           seclimit (/ (* fxrate (:signedadvisory client)  (if (= (:assettype sec) 5) (* (:bondshare client) (if (> percentage 10.0) 10.0 percentage)) (* (:stockshare client) (if (> percentage 5.0) 5.0 percentage))) ) 10000.0 ) ;fxrate
-
-           ;tr1 (println (str "fxrate: " fxrate " seclimit: " seclimit))
            seclastrubprice (if (= secrubprice 0.0) (if (nil? usedlimit) 0.0 (:rubprice usedlimit) ) secrubprice)
 
-           tr1 (println (str "client: " client " sec last price: " seclastrubprice) " usedlimit: " usedlimit)
-     ]
-      {:client (:code client) :usd (:usd client) :rub (:rub client) :eur (:eur client) :gbp (:gbp client) :currency (:currency client) :shares (if (nil? usedlimit) 0 (:amount usedlimit)) :maxlimit (int (/ seclimit (if (= 0.0 seclastrubprice) 1.0 seclastrubprice))) :freelimit (int (/ (- seclimit calcusedlimit) (if (= 0.0 seclastrubprice) 1.0 seclastrubprice)))
+           calcusedlimit (if (nil? usedlimit) 0 (* (:amount usedlimit) seclastrubprice))
 
- :maxshares (int (/ (if (> (* fxrate ((keyword (str/lower-case currency))  client))  (- seclimit calcusedlimit)) (- seclimit calcusedlimit) (* fxrate ((keyword (str/lower-case currency)) client))) (if (= 0.0 seclastrubprice) 1.0 seclastrubprice))) }
+           usdrate (db/get-fxrate-by-date "USD" (java.util.Date.))
+           eurrate (db/get-fxrate-by-date "EUR" (java.util.Date.))
+           gbprate (db/get-fxrate-by-date "GBP" (java.util.Date.))
+
+           fxrate (db/get-fxrate-by-date (str/upper-case (:currency client)) (java.util.Date.))
+
+           clienttotalrub (+ (* (:usd client) usdrate) (* (:rub client) 1.0) (* (:eur client) eurrate) (* (:gbp client) gbprate))
+
+           seclimitinrub (/ (* fxrate (:signedadvisory client)  (if (= (:assettype sec) 5) (* (:bondshare client) percentage) (* (:stockshare client) percentage)) ) 10000.0 )
+
+           ;tr1 (println client)
+           ;tr1 (println (str "fxrate: " fxrate " seclimitinrub: " seclimitinrub))
+
+           ;tr1 (println (str "client: " client " sec last price: " seclastrubprice) " usedlimit: " usedlimit )
+     ]
+      {:client (:code client) :usd (:usd client) :rub (:rub client) :eur (:eur client) :gbp (:gbp client) :currency (:currency client) :shares (if (nil? usedlimit) 0 (:amount usedlimit)) :maxlimit (int (/ seclimitinrub (if (= 0.0 seclastrubprice) 1.0 seclastrubprice))) :freelimit (int (/ (- seclimitinrub calcusedlimit) (if (= 0.0 seclastrubprice) 1.0 seclastrubprice)))
+
+ :maxusdshares (int (/ (if (> (* usdrate (:usd client))  (- seclimitinrub calcusedlimit)) (- seclimitinrub calcusedlimit) (* usdrate (:usd client))) (if (= 0.0 seclastrubprice) 1.0 seclastrubprice)))
+
+ :maxrubshares (int (/ (if (> (* 1.0 (:rub client))  (- seclimitinrub calcusedlimit)) (- seclimitinrub calcusedlimit) (* 1.0 (:rub client))) (if (= 0.0 seclastrubprice) 1.0 seclastrubprice)))
+
+ :maxeurshares (int (/ (if (> (* eurrate (:eur client))  (- seclimitinrub calcusedlimit)) (- seclimitinrub calcusedlimit) (* eurrate (:eur client))) (if (= 0.0 seclastrubprice) 1.0 seclastrubprice)))
+
+ :maxgbpshares (int (/ (if (> (* gbprate (:gbp client))  (- seclimitinrub calcusedlimit)) (- seclimitinrub calcusedlimit) (* gbprate (:gbp client))) (if (= 0.0 seclastrubprice) 1.0 seclastrubprice)))
+      }
       ))   clients)
     ]
     calc_portfs
+  )
+)
+
+(defn sendLetters [token clients] 
+  (let []
+    (println (str clients))
   )
 )

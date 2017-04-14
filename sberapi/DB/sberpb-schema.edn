@@ -96,7 +96,7 @@
   :db/doc "Client internal code"
   :db.install/_attribute :db.part/db}
 
- {:db/id #db/id[:db.part/db]
+{:db/id #db/id[:db.part/db]
   :db/ident :client/name
   :db/valueType :db.type/string
   :db/cardinality :db.cardinality/one
@@ -158,6 +158,13 @@
   :db/valueType :db.type/double
   :db/cardinality :db.cardinality/one
   :db/doc "Client's stocks share"
+  :db.install/_attribute :db.part/db}
+
+{:db/id #db/id[:db.part/db]
+  :db/ident :client/advemail
+  :db/valueType :db.type/string
+  :db/cardinality :db.cardinality/one
+  :db/doc "Client Advisory email"
   :db.install/_attribute :db.part/db}
 
 ;; transactions
