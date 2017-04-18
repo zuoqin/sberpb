@@ -263,12 +263,19 @@
 
 (defn sendLetters [token clients] 
   (let []
-    (postal/send-message {:from "me@draines.com"
-                            :to ["mom@example.com" "dad@example.com"]
-                            :cc "bob@example.com"
+    (postal/send-message {:host "smtp.sberpb.com"
+                            :user "alexey@sberpb.com"
+                            :pass "password"}
+                           {:from "alexey@sberpb.com"
+                            :to "alexey_zorchenkov@sberbank-pb.ru"
                             :subject "Hi!"
-                            :body "Test."
-                            :X-Tra "Something else"})
+                            :body "Test."})
+    ;; (postal/send-message {:from "me@draines.com"
+    ;;                         :to ["mom@example.com" "dad@example.com"]
+    ;;                         :cc "bob@example.com"
+    ;;                         :subject "Hi!"
+    ;;                         :body "Test."
+    ;;                         :X-Tra "Something else"})
     (println (str clients))
   )
 )
