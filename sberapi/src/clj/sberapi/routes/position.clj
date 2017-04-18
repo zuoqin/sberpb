@@ -15,7 +15,7 @@
             [sberapi.db.position :as db]
             [sberapi.db.security :as secs]
             [sberapi.db.client :as clients]
-
+            [postal.core :as postal]
             [clojure.string :as str]
 ))
 
@@ -263,6 +263,12 @@
 
 (defn sendLetters [token clients] 
   (let []
+    (postal/send-message {:from "me@draines.com"
+                            :to ["mom@example.com" "dad@example.com"]
+                            :cc "bob@example.com"
+                            :subject "Hi!"
+                            :body "Test."
+                            :X-Tra "Something else"})
     (println (str clients))
   )
 )
