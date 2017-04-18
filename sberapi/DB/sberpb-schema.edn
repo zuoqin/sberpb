@@ -1,4 +1,24 @@
 [
+ ;; settings
+ {:db/id #db/id[:db.part/db]
+  :db/ident :settings/code
+  :db/valueType :db.type/string
+  :db/cardinality :db.cardinality/one
+  :db/unique :db.unique/identity  
+  :db/fulltext true
+  :db/doc "Settings identifier"
+  :db.install/_attribute :db.part/db}
+
+ {:db/id #db/id[:db.part/db]
+  :db/ident :settings/data
+  :db/valueType :db.type/string
+  :db/cardinality :db.cardinality/one
+  :db/unique :db.unique/identity  
+  :db/fulltext true
+  :db/doc "Settings data"
+  :db.install/_attribute :db.part/db}
+
+
  ;; user
  {:db/id #db/id[:db.part/db]
   :db/ident :user/code

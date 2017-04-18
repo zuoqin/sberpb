@@ -681,6 +681,12 @@
 
           (dom/ul {:className "nav navbar-nav navbar-right"}
             (dom/li
+              (dom/a {:style {:margin "10px" :padding-bottom "0px"} :href "#/syssettings" :onClick (fn [e] (goPositions e))}
+                 (dom/span {:className "glyphicon glyphicon-book"})
+                 "Settings"
+              )
+            )
+            (dom/li
               (dom/a {:style {:margin "10px" :padding-bottom "0px"} :href "#/positions" :onClick (fn [e] (goPositions e))}
                  (dom/span {:className "glyphicon glyphicon-cog"})
                  "Positions"

@@ -462,7 +462,7 @@
 
 { :security/acode "MAGN", :security/isin  "RU0009084396", :security/bcode "MAGN RM Equity", :security/assettype 1, :security/exchange "RX", :security/currency "RUB",   :db/id #db/id[:db.part/user -100227]}
 
-{ :security/acode "MOEX", :security/isin  "RU000A0JR4A1", :security/bcode "MOSX RM Equity", :security/assettype 1, :security/exchange "RU", :security/currency "USD",   :db/id #db/id[:db.part/user -100228]}
+{ :security/acode "MOEX", :security/isin  "RU000A0JR4A1", :security/bcode "MOSX RM Equity", :security/assettype 1, :security/exchange "RU", :security/currency "RUB",   :db/id #db/id[:db.part/user -100228]}
 
 { :security/acode "OGKE", :security/isin  "RU000A0F5UN3", :security/bcode "OGKE RM Equity", :security/assettype 1, :security/exchange "RX", :security/currency "RUB",   :db/id #db/id[:db.part/user -100229]}
 
@@ -1761,6 +1761,17 @@
 
 { :transaction/client #db/id[:db.part/user -102075], :transaction/security #db/id[:db.part/user -100554], :transaction/nominal 200000.0, :transaction/price 102.4, :transaction/direction "B", :transaction/valuedate #inst "2016-11-21T23:59:00.0000000Z", :transaction/currency "CHF", :transaction/comment "Transfer In", :db/id #db/id[:db.part/user -110301] }
 
+
+
+{ :transaction/client #db/id[:db.part/user -102015], :transaction/security #db/id[:db.part/user -100044], :transaction/nominal 26700.0, :transaction/price 3.97, :transaction/direction "S", :transaction/valuedate #inst "2016-10-04T23:58:00.0000000Z", :transaction/currency "RUB", :transaction/comment "Change VIP to VEON", :db/id #db/id[:db.part/user -110302] }
+
+
+{ :transaction/client #db/id[:db.part/user -102015], :transaction/security #db/id[:db.part/user -100549], :transaction/nominal 26700.0, :transaction/price 3.97, :transaction/direction "B", :transaction/valuedate #inst "2016-10-04T23:59:00.0000000Z", :transaction/currency "USD", :transaction/comment "Change VIP to VEON", :db/id #db/id[:db.part/user -110303] }
+
+{ :transaction/client #db/id[:db.part/user -102023], :transaction/security #db/id[:db.part/user -100044], :transaction/nominal 14380.0, :transaction/price 3.33, :transaction/direction "S", :transaction/valuedate #inst "2016-10-28T23:58:00.0000000Z", :transaction/currency "RUB", :transaction/comment "Change VIP to VEON", :db/id #db/id[:db.part/user -110304] }
+
+
+{ :transaction/client #db/id[:db.part/user -102023], :transaction/security #db/id[:db.part/user -100549], :transaction/nominal 14380.0, :transaction/price 3.33, :transaction/direction "B", :transaction/valuedate #inst "2016-10-28T23:59:00.0000000Z", :transaction/currency "USD", :transaction/comment "Change VIP to VEON", :db/id #db/id[:db.part/user -110305] }
 
 
 ;; PRICES
