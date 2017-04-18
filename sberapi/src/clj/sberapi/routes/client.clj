@@ -9,7 +9,6 @@
             [clj-time.core :refer [now plus days]]
 
             [sberapi.db.client :as db]
-
             [clojure.string :as str]
 ))
 
@@ -17,10 +16,7 @@
   (let [
     ;usercode (:iss (-> token str->jwt :claims)  ) 
     clients (into [] (db/get-clients)   )
-
-
     result clients
-    
     ]
     result
   )

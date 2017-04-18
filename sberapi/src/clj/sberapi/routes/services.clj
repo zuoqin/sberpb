@@ -174,12 +174,20 @@
   (context "/api" []
     :tags ["calcshares"]
 
-    (POST "/calcshares" []
+    (GET "/calcshares" []
       :header-params [authorization :- String]
-      :query-params [security :- Long]
+      :query-params [security :- Long, percentage :- Double]
       :summary      "retrieve all clients"
 
-      (ok  (positionapi/calcPortfolios (nth (str/split authorization #" ") 1) security) ))
+      (ok  (positionapi/calcPortfolios (nth (str/split authorization #" ") 1) security percentage)))
+
+    (POST "/calcshares" []
+      :header-params [authorization :- String]
+      :query-params [security :- Long, percentage :- Double]
+      :body [clients :- String]
+      :summary      "retrieve all clients"
+
+      (ok  (positionapi/sendLetters (nth (str/split authorization #" ") 1) clients)))
 
     (OPTIONS "/calcshares" []
       :summary  "Allows OPTIONS requests"

@@ -12,7 +12,7 @@
             [ring.adapter.jetty :refer [run-jetty]])
   (:gen-class))
 
-(def apipath "https://api.sberpb.com/")
+(def apipath "http://localhost:3000/")
 
 
 (defn sort-portfs-by-name [portf1 portf2] 
@@ -33,6 +33,8 @@
     url (str apipath "api/security")
     securities (json/read-str (:body (client/get url {:headers {"authorization" "Bearer TheBearer"}})))
 
+
+    ;tr1 (println (str "security = " (first (filter (fn [z] (if (= "RUB" (get z "acode")) true false)) securities) )  " acode=" (get (first securities) "acode")) ) 
     url (str apipath "api/position?client=" client )
     positions (filter (fn [x] (if (> (get (second x) "amount") 0) true false)) (json/read-str (:body (client/get url {:headers {"authorization" "Bearer TheBearer"}})))) 
 
@@ -55,11 +57,14 @@
       ;tr1 (println (str "secprice " secprice))
       
       fxrate (get (first (filter (fn [z] (if (= (if (= seccurrency "GBX") "GBP" seccurrency) (get z "acode")) true false)) securities) ) "price")
+
       ;tr1 (println (str "fxrate " fxrate))
       newfxrate (if (= 0 (compare "GBX" seccurrency)) (/ fxrate 100.) fxrate)
       waprub (get (second x) "rubprice")
       wapusd (get (second x) "wapusd")
 
+
+      ;tr1 (println (str "sec= " sec  "secprice= " secprice " newfxrate = " newfxrate " seccurrency=" seccurrency))
       currubprice (/ (* secprice newfxrate) 1.0)
       curusdprice (/ (* secprice newfxrate) usdrate)
       amount (get (second x) "amount")

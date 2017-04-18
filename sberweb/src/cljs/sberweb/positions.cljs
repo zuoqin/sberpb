@@ -323,7 +323,7 @@
 
                                                           ]
                                                       (if (or (<= (:amount x) 0) 
-                                        ;(= false (str/includes? seccode (:search @sbercore/app-state))) 
+                                        (= false (str/includes? seccode (:search @sbercore/app-state))) 
                                                               )  false true)
                                                       ) ) (:positions ((keyword (:selectedclient @sbercore/app-state)) @sbercore/app-state) ) ) )
 
