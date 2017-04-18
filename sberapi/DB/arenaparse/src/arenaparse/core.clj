@@ -176,7 +176,7 @@
   (let [
      conn (d/connect uri)
      ]
-    (d/transact-async conn [{ :security/acode "IHYGLN", :security/isin "IE00B66F4759", :security/bcode "IE00B66F4759 Equity", :security/assettype 1, :security/exchange "NYSE", :security/currency "USD", :db/id #db/id[:db.part/user -100552] }
+    (d/transact-async conn [{ :security/acode "KAZNMH23", :security/isin "XS0934609016", :security/bcode "XS0934609016 Corp", :security/assettype 5, :security/exchange "NYSE", :security/currency "USD", :db/id #db/id[:db.part/user -100553] }
 ]
     )
     ; To insert new entity:
@@ -673,10 +673,13 @@
         dt1 (java.util.Date. (c/to-long (f/parse custom-formatter (f/unparse custom-formatter (c/from-long (c/to-long #inst "2000-01-01T00:00:00.000-00:00" ))))))
         conn (d/connect uri)
         dt2 (java.util.Date. (c/to-long (f/parse custom-formatter (f/unparse custom-formatter (c/from-long (+ (c/to-long dt) (* 1000 24 3600)))))))
+
+
+        ;tr1 (println (str client " " dt))
         trans (d/q '[:find ?e
                       :in $ ?client ?dt1 ?dt2
                       :where
-                      [?e :transaction/client ?c]Б
+                      [?e :transaction/client ?c]
                       [?c :client/code ?client]
                       [?e :transaction/currency ?currency]
                       [?e :transaction/direction ?direction]
@@ -684,7 +687,11 @@
                       [(< ?dt ?dt2)]
                       [(> ?dt ?dt1)]
                      ] (d/db conn) client dt1 dt2)
+
+        ;tr2 (println (str client " " dt))
         newtrans  (map (fn [x] ( concat (ent [x]) [[:id (first x)]] ) ) trans)
+
+        ;tr3 (println (str client " " dt))
         newtrans2 (map (fn [x] (trans-to-map x)) newtrans)
 
 
