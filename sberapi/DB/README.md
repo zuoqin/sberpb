@@ -54,6 +54,12 @@ bin/console -p 8080 dev datomic:dev://localhost:4334/
 
 then open in the browser: http://localhost:8080/browse
 
+
+
+
+
+
+
 ## Starting shell
 d:
 cd D:\datomic-pro-0.9.5350

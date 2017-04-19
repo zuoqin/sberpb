@@ -10,7 +10,7 @@
 
             [clojure.string :as str]
             [datomic.api :as d]
-
+            [ajax.core :refer [GET POST]]
             [clojure.data.csv :as csv]
             [clojure.java.io :as io]
             [dk.ative.docjure.spreadsheet]
@@ -176,7 +176,7 @@
   (let [
      conn (d/connect uri)
      ]
-    (d/transact-async conn [{ :security/acode "KAZNMH23", :security/isin "XS0934609016", :security/bcode "XS0934609016 Corp", :security/assettype 5, :security/exchange "NYSE", :security/currency "USD", :db/id #db/id[:db.part/user -100553] }
+    (d/transact-async conn [{ :client/code "SBRDF", :client/name "Клиент SBRDF", :client/currency "USD", :client/stockshare 50.0 :client/bondshare 50.0, :client/usd 100000.0, :client/rub 100000.0, :client/eur 100000.0, :client/gbp 100000.0, :client/signedadvisory 5000000.0, :client/advemail "zuoqin@mail.ru", :client/email "zuoqin@mail.ru", :db/id #db/id[:db.part/user -102085]}
 ]
     )
     ; To insert new entity:
@@ -438,6 +438,8 @@
   (let [
         clients (get-clients)
         client (first (filter (fn [x] (if (= (:code x) code) true false)) clients)) 
+
+        tr1 (if (nil? client) (println (str "Client " code " not found")))
         ]
     (:id client)
   )
@@ -487,7 +489,7 @@
 (defn tran-to-map [tran]
   (let [
     tranmap (
-      loop [result {} num 0 ]Б
+      loop [result {} num 0 ]
         (if (< num 36)
 
           (case num
@@ -1358,6 +1360,14 @@
   )
 )
 
+(defn send-mail [data]
+  (POST (str "https://api.sberpb.com/" "token") {:handler OnLogin
+                                            :error-handler onLoginError
+                                            :headers {:content-type "application/x-www-form-urlencoded"}
+                                            :body (str "grant_type=password&username=" username "&password=" password) 
+                                            })
+)
+
 
 (defn get-recent-deals []
   (let [f (slurp (str drive ":/DEV/Java/" "todaydeals" ".xml"))
@@ -1390,9 +1400,9 @@
         ;filtertran  (filter (fn [x] (if (nil? (:security x)) false true)) trans)
         tranmap (map tran-to-map trans)
 	;tr2 (println (nth tranmap 25))
-    ]
-    (filter (fn [x] (if (or 
-                         (> (c/to-long (:valuedate x)) (c/to-long dt)) 
+
+        transactions (filter (fn [x] (if (or 
+                         ;(> (c/to-long (:valuedate x)) (c/to-long dt)) 
                          (not (str/includes? (str/lower-case (:status x)) "valid") ) 
                          (= "RUR" (:security x))
                          (= "GBP/RUR" (:security x))
@@ -1406,7 +1416,46 @@
                          (nil? (:currency x))
                          (= "R" (:direction x))
                          ) false true)) tranmap)
-    ;tranmap
+
+         selectedclients (distinct (map (fn [x] (:client x)) transactions)) 
+
+         res1 (loop [result {} clients selectedclients]
+                (if (seq clients) 
+                  (let [
+                        client (first clients)
+                        todaydeals (filter (fn [x] (if (= (:client x) client) true false)) transactions)
+
+                        selectedsecs (distinct (map (fn [x] (:security x)) todaydeals))
+
+
+                        respos (loop [result {} secs selectedsecs]
+                          (if (seq secs) 
+                            (let [ 
+                                  sec (first secs)
+                                  todaysecdeals (filter (fn [x] (if (and (= (:client x) client) (= (:security x) sec) )  true false)) transactions)
+
+
+                                  res3 (reduce (fn [x y] {:direction (:direction y) :price ( / (+  (* (:price x) (:amount x)) (* (:price y) (:nominal y) )  ) (+ (:amount x) (:nominal y))) :amount (+ (:amount x) (:nominal y))}) {:direction "B" :amount 0 :price 0} todaysecdeals)
+
+                                  ;tr5 (println (str "client= " client " security=" sec " res3= " res3))
+                                  ]
+                              (recur (assoc-in result [(keyword sec) ] {:amount (:amount res3) :price (:price res3) :direction (:direction res3) } ) (rest secs))
+                            )
+                            result)
+                          )
+                        
+                        ]
+                    (recur (assoc-in result [client] respos) (rest clients))
+                  )
+                  result)
+                )
+         sendmail (doall (map (fn [x] (send-mail res1)) res1))
+    ]
+    ;; (filter (fn [x] (if (and
+    ;;                      (nil? (:client x))
+    ;;                      )  true false)) tranmap)
+    ;transactions
+    res1
   )
 )
 
