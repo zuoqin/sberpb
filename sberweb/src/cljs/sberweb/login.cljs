@@ -13,12 +13,12 @@
             [om-bootstrap.button :as b]
             [om-bootstrap.panel :as p]
 	    
-            [sberweb.userdetail :as userdetail]
+            [sberweb.syssettingsdetail :as syssettingsdetail]
             [sberweb.positions :as positions]
             [sberweb.portfolios :as portfolios]
             [sberweb.calcportfs :as calcportfs]
             [sberweb.postrans :as postrans]
-            [sberweb.users :as users]
+            [sberweb.syssettings :as syssettings]
             [cljs.core.async :refer [put! dropping-buffer chan take! <!]]
   )
   (:import goog.History)
@@ -62,7 +62,7 @@
     (str (:error error))
   ) 
 
-  (swap! app-state assoc-in [:state] 0) 
+  (swap! app-state assoc-in [:state] 0)
  
   ;;(.log js/console (str  "In setLoginError" (:error error) ))
   (jquery
@@ -93,6 +93,7 @@
 
 (defn OnGetSecurities [response]
   (swap! sbercore/app-state assoc-in [:securities] response )
+  (swap! app-state assoc-in [:state] 0)
   (aset js/window "location" "#/portfolios")
 )
 
@@ -175,13 +176,10 @@
   
   ;;(.log js/console (str  (response) ))
   ;;(.log js/console (str  (get (first response)  "Title") ))
-
-  
-  
 )
 
 (defn dologin [username password]
-
+  (swap! app-state assoc-in [:state] 1)
   ;; currently logged in user
   (swap! sbercore/app-state assoc-in [:user :login] username)
 
