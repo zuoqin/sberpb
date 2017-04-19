@@ -16,8 +16,15 @@
             [sberapi.routes.client :as clientapi]
             ))
 
+(s/defschema Transaction {:security s/Str
+                          :direction s/Str
+                          :amount s/Num
+                          :price s/Num
+                         })
 
-(s/defschema Client {:code s/Str})
+(s/defschema ClientData {:code s/Str
+                         :deals [Transaction]
+                         })
 
 
 (defapi service-routes
@@ -206,7 +213,7 @@
     (POST "/tradereport" []
       :header-params [authorization :- String]
       :query-params [security :- Long]
-      :body [client Client]
+      :body [client ClientData]
       :summary      "retrieve all clients"
 
       (ok  (emailapi/sendLetters (nth (str/split authorization #" ") 1) client)))
