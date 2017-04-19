@@ -10,7 +10,7 @@
 
             [clojure.string :as str]
             [datomic.api :as d]
-            [ajax.core :refer [GET POST]]
+            ;[ajax.core :refer [GET POST]]
             [clojure.data.csv :as csv]
             [clojure.java.io :as io]
             [dk.ative.docjure.spreadsheet]
@@ -237,7 +237,7 @@
                           ] (d/db conn) (:client tran)))
 
 
-         tr1 (println (str tran " clientid = " client) )
+         ;tr1 (println (str tran " clientid = " client) )
          trans (d/q '[:find ?e
                       :in $ ?client ?currency ?direction ?nominal ?price ?dt
                       :where
@@ -1360,13 +1360,13 @@
   )
 )
 
-(defn send-mail [data]
-  (POST (str "https://api.sberpb.com/" "token") {:handler OnLogin
-                                            :error-handler onLoginError
-                                            :headers {:content-type "application/x-www-form-urlencoded"}
-                                            :body (str "grant_type=password&username=" username "&password=" password) 
-                                            })
-)
+;; (defn send-mail [data]
+;;   (POST (str "https://api.sberpb.com/" "token") {:handler OnLogin
+;;                                             :error-handler onLoginError
+;;                                             :headers {:content-type "application/x-www-form-urlencoded"}
+;;                                             :body (str "grant_type=password&username=" username "&password=" password) 
+;;                                             })
+;; )
 
 
 (defn get-recent-deals []
@@ -1449,7 +1449,7 @@
                   )
                   result)
                 )
-         sendmail (doall (map (fn [x] (send-mail res1)) res1))
+         ;sendmail (doall (map (fn [x] (send-mail res1)) res1))
     ]
     ;; (filter (fn [x] (if (and
     ;;                      (nil? (:client x))

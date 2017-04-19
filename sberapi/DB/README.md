@@ -58,7 +58,10 @@ then open in the browser: http://localhost:8080/browse
 
 
 
-
+1. (readallcbrrates)
+2. (create-tran-files)
+3. (import-cash-positions)
+4. (import-excel-quotes)
 
 ## Starting shell
 d:
