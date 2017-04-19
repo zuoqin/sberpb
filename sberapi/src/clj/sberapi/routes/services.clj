@@ -184,7 +184,7 @@
     (POST "/calcshares" []
       :header-params [authorization :- String]
       :query-params [security :- Long, percentage :- Double]
-      :body [clients :- String]
+      :body [clients]
       :summary      "retrieve all clients"
 
       (ok  (positionapi/sendLetters (nth (str/split authorization #" ") 1) clients)))

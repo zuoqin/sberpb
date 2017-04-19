@@ -12,7 +12,7 @@
             [ring.adapter.jetty :refer [run-jetty]])
   (:gen-class))
 
-(def apipath "http://localhost:3000/")
+(def apipath "https://api.sberpb.com/")
 
 
 (defn sort-portfs-by-name [portf1 portf2] 
