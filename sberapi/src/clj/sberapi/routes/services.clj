@@ -11,9 +11,14 @@
             [sberapi.routes.dbservices :as dbservices]
             [sberapi.routes.user :as userapi]
             [sberapi.routes.position :as positionapi]
+            [sberapi.routes.email :as emailapi]
             [sberapi.routes.security :as securityapi]
             [sberapi.routes.client :as clientapi]
             ))
+
+
+(s/defschema Client {:code s/Str})
+
 
 (defapi service-routes
   {:swagger {:ui "/swagger-ui"
@@ -183,13 +188,30 @@
 
     (POST "/calcshares" []
       :header-params [authorization :- String]
-      :query-params [security :- Long, percentage :- Double]
-      :body [clients :- String]
+      :query-params [security :- Long]
+      :body [clients]
       :summary      "retrieve all clients"
 
       (ok  (positionapi/sendLetters (nth (str/split authorization #" ") 1) clients)))
 
     (OPTIONS "/calcshares" []
+      :summary  "Allows OPTIONS requests"
+      (ok "")
+    )
+  )
+
+  (context "/api" []
+    :tags ["email"]
+
+    (POST "/tradereport" []
+      :header-params [authorization :- String]
+      :query-params [security :- Long]
+      :body [client Client]
+      :summary      "retrieve all clients"
+
+      (ok  (emailapi/sendLetters (nth (str/split authorization #" ") 1) client)))
+
+    (OPTIONS "/email" []
       :summary  "Allows OPTIONS requests"
       (ok "")
     )

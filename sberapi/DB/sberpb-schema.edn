@@ -187,6 +187,14 @@
   :db/doc "Client Advisory email"
   :db.install/_attribute :db.part/db}
 
+
+{:db/id #db/id[:db.part/db]
+  :db/ident :client/email
+  :db/valueType :db.type/string
+  :db/cardinality :db.cardinality/one
+  :db/doc "Client's email"
+  :db.install/_attribute :db.part/db}
+
 ;; transactions
 
  {:db/id #db/id[:db.part/db]

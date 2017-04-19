@@ -237,7 +237,7 @@
                           ] (d/db conn) (:client tran)))
 
 
-
+         tr1 (println (str tran " clientid = " client) )
          trans (d/q '[:find ?e
                       :in $ ?client ?currency ?direction ?nominal ?price ?dt
                       :where
@@ -256,14 +256,13 @@
                       [(> ?nominal1 ?n2)]
                       [(< ?price1 ?p1)]
                       [(> ?price1 ?p2)]
-                     ] (d/db conn) (second (first client))  (:currency tran) (str (:direction tran))  (:nominal tran) (:price tran) (:valuedate tran))
+                     ] (d/db conn) (second (first (filter (fn [x] (if (= (first x) :client/code) true false)) client)))  (:currency tran) (str (:direction tran))  (:nominal tran) (:price tran) (:valuedate tran))
         
 
     ]
     (count trans) 
     ;(ent client)
   )
-
 )
 
 (defn client-to-map [client]
@@ -488,7 +487,7 @@
 (defn tran-to-map [tran]
   (let [
     tranmap (
-      loop [result {} num 0 ]
+      loop [result {} num 0 ]Б
         (if (< num 36)
 
           (case num
@@ -523,7 +522,10 @@
   (let [
         name (get-client-name-by-id (:client tran))
         newid (- 0 110001 id)
+        ;tr1 (println (str id))
         str1 (str "{ :transaction/client #db/id[:db.part/user " (:client tran) "] :transaction/security #db/id[:db.part/user " (:security tran) "], :transaction/nominal " (str/replace (format "%.1f" (:nominal tran)) "," ".")  " :transaction/price " (:price tran) " :transaction/direction \"" (:direction tran) "\" :transaction/valuedate  #inst \"" (f/unparse built-in-formatter (c/from-long (c/to-long (:valuedate tran))) ) "0000Z\", :transaction/currency \"" (:currency tran) "\" :transaction/comment \"\", :db/id #db/id[:db.part/user " newid "]}\n")
+
+        ;tr2 (println (str str1))
         ]
     (if (= (find-transaction tran) 0)
       (spit (str drive ":/DEV/output/" name ".clj")  str1 :append true)
@@ -1353,6 +1355,58 @@
    (spit (str drive ":/DEV/output/" client ".txt") "[\n" :append false)
    (doall (map (fn [x y] (append-sec-to-file client x y)) secs (range (count secs)))) 
    "Success"
+  )
+)
+
+
+(defn get-recent-deals []
+  (let [f (slurp (str drive ":/DEV/Java/" "todaydeals" ".xml"))
+        x (parse f)
+	
+        trancnt (- (count (:content (nth   (:content (nth (:content x) 4) )  0 ) ) ) 1)  
+        ;tr1 (println trancnt) 
+        trans (loop [result [] num 0 ]
+          (let [item (if (<= num trancnt) (:content (nth (:content (nth   (:content (nth (:content x) 4) )  0 ) )  num)))
+            ]
+            (if (<= num trancnt)            
+              
+              (if (and
+                   (= (:ss:StyleID (:attrs (nth item 0))) "s72" )
+                   (or (= 0 (compare "We Sell" (first (:content  (first (:content (nth item 9)  )  ))))) 
+                       (= 0 (compare "We Buy" (first (:content  (first (:content (nth item 9)  )  )))))
+                   )
+                   (not (str/includes? (str/lower-case (first (:content  (first (:content (nth item 4)  )  )))) "forts"))
+                   (if (> (count item) 23) (not (str/includes? (str/lower-case  (if (nil? (first (:content  (first (:content (nth item 24)  )  )))) "" (first (:content  (first (:content (nth item 24)  )  ))))  ) "call")) true) 
+                   (if (> (count item) 23) (not (str/includes? (str/lower-case  (if (nil? (first (:content  (first (:content (nth item 24)  )  )))) "" (first (:content  (first (:content (nth item 24)  )  ))))  ) "put")) true) 
+                )
+                (recur (conj result item ) (inc num))
+                (recur result (inc num))
+              )
+              result
+            )
+          )
+        )
+        ;tr5 (println (first trans ) )
+        ;filtertran  (filter (fn [x] (if (nil? (:security x)) false true)) trans)
+        tranmap (map tran-to-map trans)
+	;tr2 (println (nth tranmap 25))
+    ]
+    (filter (fn [x] (if (or 
+                         (> (c/to-long (:valuedate x)) (c/to-long dt)) 
+                         (not (str/includes? (str/lower-case (:status x)) "valid") ) 
+                         (= "RUR" (:security x))
+                         (= "GBP/RUR" (:security x))
+                         (= "USD/RUR" (:security x))
+                         (= "GBP/USD" (:security x))
+                         (= "GBP/EUR" (:security x))
+                         (= "EUR/USD" (:security x))
+                         (= "EUR/RUR" (:security x))
+                         (= "USD" (:security x))
+                         (nil? (:client x))
+                         (nil? (:currency x))
+                         (= "R" (:direction x))
+                         ) false true)) tranmap)
+    ;tranmap
   )
 )
 
