@@ -11,7 +11,7 @@
             [clj-time.format :as f]
             [clj-time.coerce :as c]
             [clj-time.core :as t]
-
+            [sberapi.db.syssetting :as syssetting]
             [sberapi.db.position :as db]
             [sberapi.db.security :as secs]
             [sberapi.db.client :as clients]
@@ -261,15 +261,29 @@
   )
 )
 
-(defn sendLetters [token clients] 
-  (let []
+
+
+(defn sendLetter [clientcode txtdata]
+  (let [
+    email (:advmail (first (filter (fn [x] (if (= (:code x) clientcode) true false)) (clients/get-clients))))
+
+     
+    ]
     (postal/send-message {:host "smtp.sberpb.com"
                             :user "alexey@sberpb.com"
                             :pass "password"}
-                           {:from "alexey@sberpb.com"
-                            :to "alexey_zorchenkov@sberbank-pb.ru"
-                            :subject "Hi!"
-                            :body "Test."})
+                           {:from "tradeidea@sberpb.com"
+                            :to email
+                            :subject "Req: Trade idea"
+                            :body txtdata})
+  )
+)
+
+(defn sendLetters [token clients] 
+  (let [
+      recommendtext (:data (first (filter (fn [x] (if (= "GAZP_BUY" (:code x)) true false)) (syssetting/get-settings))))
+    ]
+    (doall (map (fn [x] (sendLetter x recommendtext)) clients))
     ;; (postal/send-message {:from "me@draines.com"
     ;;                         :to ["mom@example.com" "dad@example.com"]
     ;;                         :cc "bob@example.com"

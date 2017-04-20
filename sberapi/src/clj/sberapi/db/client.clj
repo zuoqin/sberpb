@@ -16,7 +16,7 @@
 
 (defn client-to-map [client]
   (let [
-    newclient {:id (nth client 0) :code (nth client 1) :name (nth client 2) :currency (nth client 3) :usd (nth client 4) :rub (nth client 5) :eur (nth client 6) :gbp (nth client 7) :stockshare (nth client 8) :bondshare (nth client 9) :signedadvisory (nth client 10) :email (nth client 11)}
+    newclient {:id (nth client 0) :code (nth client 1) :name (nth client 2) :currency (nth client 3) :usd (nth client 4) :rub (nth client 5) :eur (nth client 6) :gbp (nth client 7) :stockshare (nth client 8) :bondshare (nth client 9) :signedadvisory (nth client 10) :email (nth client 11) :advmail (nth client 12)}
   ]
   newclient
   )
@@ -24,7 +24,7 @@
 
 (defn get-clients []
   (let [
-         clients (d/q '[:find ?e ?c ?n ?curr ?usd ?rub ?eur ?gbp ?ss ?bs ?sa ?mail
+         clients (d/q '[:find ?e ?c ?n ?curr ?usd ?rub ?eur ?gbp ?ss ?bs ?sa ?mail ?advmail
                           :where
                           [?e :client/code]
                           [?e :client/code ?c]
@@ -38,6 +38,7 @@
                           [?e :client/bondshare ?bs]
                           [?e :client/signedadvisory ?sa]
                           [?e :client/email ?mail]
+                          [?e :client/advemail ?advmail]
                           ]
                         (d/db conn)) 
 

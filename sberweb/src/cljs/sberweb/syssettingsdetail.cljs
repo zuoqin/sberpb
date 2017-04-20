@@ -26,7 +26,7 @@
 (enable-console-print!)
 
 (def ch (chan (dropping-buffer 2)))
-(defonce app-state (atom  {:login "" :password "" :roles [{:name "admin"} {:name "manager"} {:name "user"}] :isinsert false :role "admin" :view 1 :current "User Detail"} ))
+(defonce app-state (atom  {:code "" :data "" :isinsert false :view 6 :current "System setting detail"} ))
 
 (defn handleChange [e]
   ;(.log js/console e  )  
@@ -46,23 +46,23 @@
 )
 
 
-(defn OnDeleteUserSuccess [response]
+(defn OnDeleteSettingSuccess [response]
   (let [
-      users (:users @sbercore/app-state    )  
-      newusers (remove (fn [user] (if (= (:login user) (:login @app-state) ) true false  )) users)
+      settings (:settings @sbercore/app-state)
+      newsettings (remove (fn [setting] (if (= (:code setting) (:code @app-state) ) true false  )) settings)
     ]
     ;(swap! sbercore/app-state assoc-in [:token] newdata )
-    (swap! sbercore/app-state assoc-in [:users] newusers)
+    (swap! sbercore/app-state assoc-in [:settings] newsettings)
   )
 
     (-> js/document
       .-location
-      (set! "#/settings"))
+      (set! "#/syssettings"))
 )
 
 (defn OnUpdateSettingError [response]
   (let [     
-      newdata {:tripid (get response (keyword "tripid") ) }
+      newdata {:settingid (get response (keyword "settingid") ) }
     ]
 
   )
@@ -73,11 +73,11 @@
 
 (defn OnUpdateSettingSuccess [response]
   (let [
-      users (:users @sbercore/app-state    )  
-      deluser (remove (fn [user] (if (= (:login user) (:login @app-state) ) true false  )) users)
-      adduser (into [] (conj deluser {:login (:login @app-state) :password (:password @app-state) :role (:role @app-state)}  )) 
+      settings (:settings @sbercore/app-state    )  
+      delsetting (remove (fn [setting] (if (= (:code setting) (:code @app-state) ) true false  )) settings)
+      addsetting (into [] (conj delsetting {:code (:code @app-state) :data (:data @app-state)})) 
     ]
-    (swap! sbercore/app-state assoc-in [:users] adduser)
+    (swap! sbercore/app-state assoc-in [:settings] addsetting)
 
     (-> js/document
       .-location
@@ -100,56 +100,56 @@
 
 
 (defn updateSetting []
-  (PUT (str settings/apipath  "api/setting") {
+  (PUT (str settings/apipath  "api/syssetting") {
     :handler OnUpdateSettingSuccess
     :error-handler OnUpdateSettingError
     :headers {
       :content-type "application/json" 
       :Authorization (str "Bearer "  (:token (:token @sbercore/app-state)))}
     :format :json
-    :params {:login (:login @app-state) :password (:password @app-state) :role (:role @app-state) }})
+    :params {:code (:code @app-state) :data (:data @app-state)}})
 )
 
 
-;; (defn OnCreateUserError [response]
-;;   (let [     
-;;       newdata {:tripid (get response (keyword "tripid") ) }
-;;     ]
+(defn OnCreateSettingError [response]
+  (let [     
+      
+    ]
 
-;;   )
-;;   ;; TO-DO: Delete Trip from Core
-;;   ;;(.log js/console (str  (get (first response)  "Title") ))
-;; )
-
-
-;; (defn OnCreateUserSuccess [response]
-;;   (let [
-;;       users (:users @sbercore/app-state    )  
-;;       adduser (into [] (conj users {:login (:login @app-state) :password (:password @app-state) :role (:role @app-state)} )) 
-;;     ]
-;;     (swap! sbercore/app-state assoc-in [:users] adduser)
-
-;;     (-> js/document
-;;       .-location
-;;       (set! "#/users"))
-
-;;   )
-;; )
-
-;; (defn createUser []
-;;   (POST (str settings/apipath  "api/user") {
-;;     :handler OnCreateUserSuccess
-;;     :error-handler OnCreateUserError
-;;     :headers {
-;;       :content-type "application/json" 
-;;       :Authorization (str "Bearer "  (:token (:token @sbercore/app-state)))}
-;;     :format :json
-;;     :params { :login (:login @app-state) :password (:password @app-state) :role (:role @app-state) }})
-;; )
+  )
+  ;; TO-DO: Delete Trip from Core
+  ;;(.log js/console (str  (get (first response)  "Title") ))
+)
 
 
+(defn OnCreateSettingSuccess [response]
+  (let [
+      settings (:settings @sbercore/app-state)
+      addsetting (into [] (conj settings {:code (:code @app-state) :data (:data @app-state)} )) 
+    ]
+    (swap! sbercore/app-state assoc-in [:settings] addsetting)
 
-(defn setNewUserValue [key val]
+    (-> js/document
+      .-location
+      (set! "#/syssettings"))
+
+  )
+)
+
+(defn createSetting []
+  (POST (str settings/apipath  "api/user") {
+    :handler OnCreateSettingSuccess
+    :error-handler OnCreateSettingError
+    :headers {
+      :content-type "application/json" 
+      :Authorization (str "Bearer "  (:token (:token @sbercore/app-state)))}
+    :format :json
+    :params { :login (:login @app-state) :password (:password @app-state) :role (:role @app-state) }})
+)
+
+
+
+(defn setNewSettingValue [key val]
   (swap! app-state assoc-in [(keyword key)] val)
 )
 
@@ -182,22 +182,13 @@
 
 (initqueue)
 
-(defn array-to-string [element]
+(defn setSetting []
   (let [
-      newdata {:empname (get element "empname") } 
-    ]
-    (:empname newdata)
-  )
-)
-
-(defn setUser []
-  (let [
-        users (:users @sbercore/app-state)
-        user (first (filter (fn [user] (if (= (:login @app-state) (:login user)  )  true false)) (:users @sbercore/app-state )))
+        settings (:settings @sbercore/app-state)
+        setting (first (filter (fn [setting] (if (= (:code @app-state) (:code setting)) true false)) (:settings @sbercore/app-state )))
         ]
-    (swap! app-state assoc-in [:login ]  (:login user) ) 
-    (swap! app-state assoc-in [:role ]  (:role user) ) 
-    (swap! app-state assoc-in [:password] (:password user) )
+    (swap! app-state assoc-in [:code ]  (:code setting)) 
+    (swap! app-state assoc-in [:data ]  (:data setting))
   )
 )
 
@@ -216,15 +207,14 @@
 )
 
 
-(defn getUserDetail []
+(defn getSettingDetail []
   ;(.log js/console (str "token: " " " (:token  (first (:token @t5pcore/app-state)))       ))
   (if
     (and 
-      (not= (:login @app-state) nil)
-      (not= (:login @app-state) "")
+      (not= (:code @app-state) nil)
+      (not= (:data @app-state) "")
     )
-    (setUser)
-  
+    (setSetting)
   )
 )
 
@@ -236,10 +226,8 @@
 
 
 (defn onMount [data]
-  (swap! app-state assoc-in [:current] 
-    "User Detail"
-  )
-  (getUserDetail)
+  (swap! sbercore/app-state assoc-in [:current] {:name "Setting Detail" :text "System settings"} )
+  (getSettingDetail)
   (setcontrols 46)
 )
 
@@ -274,29 +262,26 @@
             (dom/div  (assoc styleprimary  :className "panel panel-default"  :id "divUserInfo")
               
               (dom/div {:className "panel-heading"}
-                (dom/h5 "Login: " 
-                  (dom/input {:id "login" :type "text" :disabled (if (= (:isinsert @app-state) true) false true)  :onChange (fn [e] (handleChange e)) :value (:login @app-state)} )
+                (dom/h5 "Code: " 
+                  (dom/input {:id "code" :type "text" :disabled (if (= (:isinsert @app-state) true) false true)  :onChange (fn [e] (handleChange e)) :value (:code @app-state)} )
 
                 )
                 
-                (dom/h5 "Password: "
-                  (dom/input {:id "password" :type "password" :onChange (fn [e] (handleChange e)) :value (:password @app-state)})
+                (dom/h5 "Data: "
+                  (dom/textarea {:id "data"  :style {:width "100%" :height "300px"} :onChange (fn [e] (handleChange e)) :value (:data @app-state)})
                 )
-                ;; (dom/h5 "Role: "
-                ;;   (dom/input {:id "role" :type "text" :value (:role @app-state)})
-                ;; )
               )              
             )
           )
         )
         (dom/nav {:className "navbar navbar-default" :role "navigation"}
           (dom/div {:className "navbar-header"}
-            ;; (b/button {:className "btn btn-default" :onClick (fn [e] (if (= (:isinsert @app-state) 0) (createUser) (updateUser)) )} (if (= (:isinsert @app-state) true) "Insert" "Update"))
+            (b/button {:className "btn btn-default" :onClick (fn [e] (if (= (:isinsert @app-state) 0) (createSetting) (updateSetting)) )} (if (= (:isinsert @app-state) true) "Insert" "Update"))
             ;; (b/button {:className "btn btn-danger" :style {:visibility (if (= (:isinsert @app-state) true) "hidden" "visible")} :onClick (fn [e] (deleteUser (:login @app-state)))} "Delete")
 
             (b/button {:className "btn btn-info"  :onClick (fn [e] (-> js/document
       .-location
-      (set! "#/users")))  } "Cancel")
+      (set! "#/syssettings")))  } "Cancel")
           )
         )
       )
@@ -307,7 +292,7 @@
 
 
 
-(sec/defroute settingdetail-page "/settingdetail/:code" {code :code}
+(sec/defroute settingdetail-page "/syssettingdetail/:code" {code :code}
   (
     (swap! app-state assoc-in [:code]  code ) 
     (swap! app-state assoc-in [:isinsert]  false )

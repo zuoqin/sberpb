@@ -63,6 +63,8 @@ then open in the browser: http://localhost:8080/browse
 3. (import-cash-positions)
 4. (import-excel-quotes)
 
+SMTP server: psmtp.sberbank-cib.ru
+
 ## Starting shell
 d:
 cd D:\datomic-pro-0.9.5350

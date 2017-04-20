@@ -1367,6 +1367,87 @@
 ;;                                             :body (str "grant_type=password&username=" username "&password=" password) 
 ;;                                             })
 ;; )
+(defn insert-new-tran-to-db [tran index]
+  (let [
+     conn (d/connect uri)
+
+
+     security (first (filter (fn [x] (if (= (:acode x) (:security tran)) true false)) (get-securities)))
+
+
+     ;tr1 (println (str security))
+
+      ;tr1 (println (str "Found: " (find-transaction tran) " in database with security: " security))  
+     ]
+
+    (if (and (= (find-transaction tran) 0) (not (nil? security)))
+      ; To insert new entity:
+      (d/transact conn [{ :transaction/client #db/id[:db.part/user (:client tran)] :transaction/security #db/id[:db.part/user (:id security)], :transaction/nominal (:nominal tran) :transaction/price (:price tran) :transaction/direction (:direction tran) :transaction/valuedate (:valuedate tran), :transaction/currency (:currency tran) :transaction/comment "", :db/id #db/id[:db.part/user (- -110002 index) ] }])
+      (println (str "Transaction already existed: " tran))
+    )
+  )
+)
+
+(defn recent-deals-to-db []
+  (let [f (slurp (str drive ":/DEV/Java/" "todaydeals" ".xml"))
+        x (parse f)
+	
+        trancnt (- (count (:content (nth   (:content (nth (:content x) 4) )  0 ) ) ) 1)  
+        ;tr1 (println trancnt) 
+        trans (loop [result [] num 0 ]
+          (let [item (if (<= num trancnt) (:content (nth (:content (nth   (:content (nth (:content x) 4) )  0 ) )  num)))
+            ]
+            (if (<= num trancnt)            
+              
+              (if (and
+                   (= (:ss:StyleID (:attrs (nth item 0))) "s72" )
+                   (or (= 0 (compare "We Sell" (first (:content  (first (:content (nth item 9)  )  ))))) 
+                       (= 0 (compare "We Buy" (first (:content  (first (:content (nth item 9)  )  )))))
+                   )
+                   (not (str/includes? (str/lower-case (first (:content  (first (:content (nth item 4)  )  )))) "forts"))
+                   (if (> (count item) 23) (not (str/includes? (str/lower-case  (if (nil? (first (:content  (first (:content (nth item 24)  )  )))) "" (first (:content  (first (:content (nth item 24)  )  ))))  ) "call")) true) 
+                   (if (> (count item) 23) (not (str/includes? (str/lower-case  (if (nil? (first (:content  (first (:content (nth item 24)  )  )))) "" (first (:content  (first (:content (nth item 24)  )  ))))  ) "put")) true) 
+                )
+                (recur (conj result item ) (inc num))
+                (recur result (inc num))
+              )
+              result
+            )
+          )
+        )
+        ;tr5 (println (first trans ) )
+        ;filtertran  (filter (fn [x] (if (nil? (:security x)) false true)) trans)
+        tranmap (map tran-to-map trans)
+	;tr2 (println (nth tranmap 25))
+
+        transactions (filter (fn [x] (if (or 
+                         ;(> (c/to-long (:valuedate x)) (c/to-long dt)) 
+                         (not (str/includes? (str/lower-case (:status x)) "valid") ) 
+                         (= "RUR" (:security x))
+                         (= "GBP/RUR" (:security x))
+                         (= "USD/RUR" (:security x))
+                         (= "GBP/USD" (:security x))
+                         (= "GBP/EUR" (:security x))
+                         (= "EUR/USD" (:security x))
+                         (= "EUR/RUR" (:security x))
+                         (= "USD" (:security x))
+                         (nil? (:client x))
+                         (nil? (:currency x))
+                         (= "R" (:direction x))
+                         ) false true)) tranmap)
+
+        filtertran transactions
+        cnt (count filtertran )
+        t2 (doall (map insert-new-tran-to-db  filtertran (range cnt)))
+        
+    ]
+    ;; (filter (fn [x] (if (and
+    ;;                      (nil? (:client x))
+    ;;                      )  true false)) tranmap)
+    (count transactions) 
+    ;res1
+  )
+)
 
 
 (defn get-recent-deals []

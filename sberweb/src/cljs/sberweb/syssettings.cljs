@@ -16,13 +16,12 @@
 
 (enable-console-print!)
 
-(defonce app-state (atom  {:users [] :trips [] }))
+(defonce app-state (atom  {:view 5}))
 
 
 (defn OnGetSettings [response]
-   (swap! app-state assoc :settings  (get response "Settings")  )
-   (.log js/console (:settings @app-state)) 
-
+   (swap! sbercore/app-state assoc :settings  response )
+   (.log js/console (:settings @sbercore/app-state)) 
 )
 
 (defn error-handler [{:keys [status status-text]}]
@@ -30,13 +29,13 @@
 )
 
 
-(defn getSettings [data] 
-  (GET (str settings/apipath "api/settings") {
+(defn getSettings [] 
+  (GET (str settings/apipath "api/syssetting") {
     :handler OnGetSettings
     :error-handler error-handler
     :headers {
       :content-type "application/json"
-      :Authorization (str "Bearer "  (:token  (first (:token @sbercore/app-state)))) }
+      :Authorization (str "Bearer "  (:token  (:token @sbercore/app-state))) }
   })
 )
 
@@ -56,12 +55,12 @@
     (dom/div {:className "list-group" :style {:display "block"}}
       (map (fn [item]
         (dom/span
-          (dom/a {:className "list-group-item" :href (str  "#/syssettingdetail/" (:login item ) ) }
-            (dom/h4  #js {:className "list-group-item-heading" :dangerouslySetInnerHTML #js {:__html (:login item)}} nil)
+          (dom/a {:className "list-group-item" :href (str  "#/syssettingdetail/" (:code item ) ) }
+            (dom/h4  #js {:className "list-group-item-heading" :dangerouslySetInnerHTML #js {:__html (:code item)}} nil)
             ;(dom/h4 {:className "list-group-item-heading"} (get item "subject"))
-            (dom/h6 {:className "paddingleft2"} (get item "senddate"))
+            (dom/h6 {:className "paddingleft2"} (:data item))
             ;(dom/p  #js {:className "list-group-item-text paddingleft2" :dangerouslySetInnerHTML #js {:__html (get item "body")}} nil)
-          ) 
+          )
         )                  
         )(sort (comp comp-settings) (:settings @sbercore/app-state ))
       )
@@ -73,9 +72,9 @@
 
 (defn onMount [data]
   ; (getUsers data)
-  (swap! sbercore/app-state assoc-in [:current] 
-    "Settings"
-  )
+  (swap! sbercore/app-state assoc-in [:current] {:name "Settings" :text "System settings"} )
+
+  (if (= (count (:settings @sbercore/app-state)) 0) (getSettings))
 )
 
 

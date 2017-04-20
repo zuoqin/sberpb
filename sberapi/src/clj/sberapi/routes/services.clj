@@ -12,6 +12,7 @@
             [sberapi.routes.user :as userapi]
             [sberapi.routes.position :as positionapi]
             [sberapi.routes.email :as emailapi]
+            [sberapi.routes.syssetting :as syssettingapi]
             [sberapi.routes.security :as securityapi]
             [sberapi.routes.client :as clientapi]
             ))
@@ -25,6 +26,8 @@
 (s/defschema ClientData {:code s/Str
                          :deals [Transaction]
                          })
+
+(s/defschema ClientCode {:code s/Str})
 
 
 (defapi service-routes
@@ -88,6 +91,49 @@
 
 
     (OPTIONS "/user" []
+      :summary  "Allows OPTIONS requests"
+      (ok "")
+    )    
+  )
+
+  (context "/api" []
+    :tags ["syssetting"]
+
+    (GET "/syssetting" []
+      :header-params [authorization :- String]
+      ;;:query-params [{messageid :- Long -1} ]
+      :summary      "retrieve all system settings"
+
+      (ok  (syssettingapi/getSettings (nth (str/split authorization #" ") 1))) 
+    )
+
+    (POST "/syssetting" []
+        :header-params [authorization :- String]
+        :body-params [code :- String, data :- String]
+        :summary     "Create new system setting"
+
+      (let [result (syssettingapi/createSetting (nth (str/split authorization #" ") 1) code data )]
+        ;;:return      Long
+        (if (nil? (:error result)) (ok result) (bad-request result))
+      )
+    )
+
+    (DELETE "/syssetting" []
+      ;;:return      Long
+      :header-params [authorization :- String]
+      :query-params [code :- String]
+      :summary     "Delete system setting"
+      (ok (syssettingapi/deleteSetting (nth (str/split authorization #" ") 1) code )))
+
+    (PUT "/syssetting" []
+      ;;:return      Long
+      :header-params [authorization :- String]
+      :body-params [code :- String, data :- String]
+      :summary     "Update system setting"
+      (ok (syssettingapi/updateSetting (nth (str/split authorization #" ") 1) code data)))
+
+
+    (OPTIONS "/syssetting" []
       :summary  "Allows OPTIONS requests"
       (ok "")
     )    
@@ -196,7 +242,7 @@
     (POST "/calcshares" []
       :header-params [authorization :- String]
       :query-params [security :- Long]
-      :body [clients]
+      :body [clients [ClientCode]]
       :summary      "retrieve all clients"
 
       (ok  (positionapi/sendLetters (nth (str/split authorization #" ") 1) clients)))

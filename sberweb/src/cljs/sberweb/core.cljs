@@ -60,7 +60,11 @@
 )
 
 (defn goUsers [data]
-  (swap! app-state assoc-in [:view] 1 )
+  (swap! app-state assoc-in [:view] 3 )
+)
+
+(defn goSettings [data]
+  (swap! app-state assoc-in [:view] 5 )
 )
 
 
@@ -681,6 +685,65 @@
 
           (dom/ul {:className "nav navbar-nav navbar-right"}
             (dom/li
+              (dom/a {:style {:margin "10px" :padding-bottom "0px"} :href "#/syssettings" :onClick (fn [e] (goSettings e))}
+                 (dom/span {:className "glyphicon glyphicon-book"})
+                 "Settings"
+              )
+            )
+            (dom/li
+              (dom/a {:style {:margin "10px" :padding-bottom "0px"} :href "#/positions" :onClick (fn [e] (goPositions e))}
+                 (dom/span {:className "glyphicon glyphicon-cog"})
+                 "Positions"
+              )
+            )
+            (dom/li
+              (dom/a {:style {:margin "10px" :padding-bottom "0px"} :href "#/calcportfs" :onClick (fn [e] (goCalcPortfs e))}
+                 (dom/span {:className "glyphicon glyphicon-wrench"})
+                 "Calculation"
+              )
+            )
+            (dom/li
+              (dom/a (assoc style :href "#/login")
+                (dom/i {:className "fa fa-sign-out fa-fw"})
+                "Exit"
+              )
+            )
+          )
+        )
+      )
+    )
+  )
+)
+
+(defcomponent settings-navigation-view [data owner]
+  (render [_]
+    (let [style {:style {:margin "10px" :padding-bottom "0px"}}
+      stylehome {:style {:margin-top "10px"} }
+      ]
+      (dom/nav {:className "navbar navbar-default navbar-fixed-top" :role "navigation"}
+        (dom/div {:className "navbar-header"}
+          (dom/button {:type "button" :className "navbar-toggle"
+            :data-toggle "collapse" :data-target ".navbar-ex1-collapse"}
+            (dom/span {:className "sr-only"} "Toggle navigation")
+            (dom/span {:className "icon-bar"})
+            (dom/span {:className "icon-bar"})
+            (dom/span {:className "icon-bar"})
+          )
+          (dom/a  (assoc stylehome :className "navbar-brand")
+            (dom/span {:id "pageTitle"} (:text (:current @data)) )
+          )
+        )
+        (dom/div {:className "collapse navbar-collapse navbar-ex1-collapse" :id "menu"}
+          (dom/ul {:className "nav navbar-nav" :style {:padding-top "17px" :visibility (if (= (compare (:name (:current @app-state))  "Settings") 0) "visible" "hidden")}}
+            (dom/li
+              (dom/h5 {:style {:margin-left "5px" :margin-right "5px" :height "32px" :margin-top "1px"}} " "
+      (dom/input {:id "search" :type "text" :placeholder "Search" :style {:height "32px" :margin-top "1px"} :value  (:search @app-state) :onChange (fn [e] (handleChange e )) })  )
+            )
+          )
+
+
+          (dom/ul {:className "nav navbar-nav navbar-right"}
+            (dom/li
               (dom/a {:style {:margin "10px" :padding-bottom "0px"} :href "#/syssettings" :onClick (fn [e] (goPositions e))}
                  (dom/span {:className "glyphicon glyphicon-book"})
                  "Settings"
@@ -750,4 +813,10 @@
   [data owner] 
   ;(.log js/console "One is found in view")
   (calcportfs-navigation-view data owner)
+)
+
+(defmethod website-view 5
+  [data owner] 
+  ;(.log js/console "One is found in view")
+  (settings-navigation-view data owner)
 )
