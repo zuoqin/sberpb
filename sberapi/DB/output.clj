@@ -4,7 +4,7 @@
 { :user/code "alexey", :user/password "Qwerty123", :user/role "user", :db/id #db/id[:db.part/user -100003] }
 
 ;;SETTINGS
-{ :setting/code "GAZP_BUY" :setting/data "Gazprom is great buyt and hold for our portfolios", :db/id #db/id[:db.part/user -103001] }
+{ :setting/code "TRADE_IDEA" :setting/data "Gazprom is great buyt and hold for our portfolios", :db/id #db/id[:db.part/user -103001] }
 
 
 

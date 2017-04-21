@@ -37,7 +37,7 @@
   ;;(.log js/console (:client @app-state)) 
 )
 
-(defn OnSendLetter [response]  
+(defn OnSendLetter [response]
   (.log js/console "Successfully sent letters") 
 )
 
@@ -47,14 +47,51 @@
 )
 
 
+
+(defn handle-sharebuy-change [e]
+  (let [
+        code (str/join (drop 9 (.. e -currentTarget -id)))
+        letters (:letters @app-state)
+        letter (first (filter (fn [x] (if (= code (:code x)) true false)) letters))
+
+        amount (js/parseInt (.. e -currentTarget -value))  
+
+        issend (if (nil? letter) false (:issend letter))
+        delletter (remove (fn [letter] (if (= (:code letter) code ) true false  )) letters)
+        addletter (into [] (conj delletter {:code code :amount amount :issend issend})) 
+    ]
+    (.stopPropagation e)
+    (.stopImmediatePropagation (.. e -nativeEvent) )
+    (swap! app-state assoc-in [:letters] addletter)
+  )
+
+  ;; (.log js/console (.. e -target -id) )  
+  ;; (.log js/console "The change ....")
+  ;; (swap! app-state assoc-in [:letter (keyword  (str/join (drop 9 (.. e -currentTarget -id)))   )] 
+  ;;   (if (= true (.. e -currentTarget -checked)  ) 1 0)
+  ;; )
+)
+
+
 (defn handle-chkbsend-change [e]
+  (let [
+        code (str/join (drop 9 (.. e -currentTarget -id)))
+        letters (:letters @app-state)
+        letter (first (filter (fn [x] (if (= code (:code x)) true false)) letters))
+
+        amount (if (nil? letter) 0 (:amount letter))
+        delletter (remove (fn [letter] (if (= (:code letter) code ) true false  )) letters)
+        addletter (into [] (conj delletter {:code code :amount amount :issend (.. e -currentTarget -checked) }  )) 
+    ]
+    (.stopPropagation e)
+    (.stopImmediatePropagation (.. e -nativeEvent) )
+    (swap! app-state assoc-in [:letters] addletter)
+  )
+  ;;(if (= true (.. e -currentTarget -checked)  ) 1 0)
   ;(.log js/console (.. e -target -id) )  
   ;(.log js/console "The change ....")
-  (.stopPropagation e)
-  (.stopImmediatePropagation (.. e -nativeEvent) )
-  (swap! app-state assoc-in [:letter (keyword  (str/join (drop 9 (.. e -currentTarget -id)))   )] 
-    (if (= true (.. e -currentTarget -checked)  ) 1 0)
-  )
+
+
   ;(CheckCalcLeave)
   ;(set! (.-checked (.. e -currentTarget)) false)
   ;(dominalib/remove-attr!  (.. e -currentTarget) :checked)
@@ -76,7 +113,7 @@
 
 (defn sendLetter []
   (let [
-      clients (reduce (fn [x y] (if (= 1 (:second y)) (str (if (= 0 (count x)) x (str x ",")) (name (first y))))) "" (:letter @app-state))
+      clients (filter (fn [x] (if (= (:issend x) true) true false)) (:letters @app-state))
     ]
 
     (POST (str settings/apipath "api/calcshares") {
@@ -137,11 +174,11 @@
             )
 
             ;; Всего в управлении
-            (dom/div {:className "col-xs-1 col-md-1" :style {:padding-left "0px" :padding-right "0px"}}            
-              (dom/a {:className "list-group-item" :style {:padding-left "3px" :padding-right "3px" :text-align "right"} :href (str  "#/postrans/" (:id item) "/" (:selectedsec @sbercore/app-state)) }
-                (dom/h4 {:className "list-group-item-heading"} (str (sbercore/split-thousands (str (:signedadvisory client))) " " (:currency item)))
-              )
-            )
+            ;; (dom/div {:className "col-xs-1 col-md-1" :style {:padding-left "0px" :padding-right "0px"}}            
+            ;;   (dom/a {:className "list-group-item" :style {:padding-left "3px" :padding-right "3px" :text-align "right"} :href (str  "#/postrans/" (:id item) "/" (:selectedsec @sbercore/app-state)) }
+            ;;     (dom/h4 {:className "list-group-item-heading"} (str (sbercore/split-thousands (str (:signedadvisory client))) " " (:currency item)))
+            ;;   )
+            ;; )
 
             ;;Доля акций в портфеле
             ;; (dom/div {:className "col-xs-1 col-md-1" :style {:padding-left "0px" :padding-right "0px"}}            
@@ -240,6 +277,12 @@
               )
             )
 
+            ;;Купить бумаг
+            (dom/div {:className "col-xs-1 col-md-1" :style {:padding-left "0px" :padding-right "0px"}}
+              (dom/input {:type "text" :id (str "sharesbuy" (:client item)) :style {:height "40px" :width "100%" :font-size "14px" :font-weight 500 :margin-top "2px"} :onChange (fn [e] (handle-sharebuy-change e ))
+})
+            )
+
             ;;Отправить письмо
             (dom/div {:className "col-xs-1 col-md-1" :style {:padding-left "0px" :padding-right "0px"}}
               (dom/input {:id (str "checksend" (:client item))  :type "checkbox" :style {:height "32px" :width "70px" :margin-top "1px"} :defaultChecked false :onChange (fn [e] (handle-chkbsend-change e ))})
@@ -302,7 +345,7 @@
 
             (dom/div (assoc stylerow  :className "row" )
               (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "Portfolio")
-              (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "Всего в управлении")
+              ;; (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "Всего в управлении")
               ;(dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "Доля акций")
               ;(dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "Доля Облигаций")
               (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} (b/button {:className "btn btn-primary" :onClick (fn [e] (swap! app-state assoc-in [:sort-list] "usd"))} "USD"))
@@ -325,6 +368,8 @@
               (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} (b/button {:className "btn btn-primary" :onClick (fn [e] (swap! app-state assoc-in [:sort-list] "maxeurshares"))} "Кол-во на EUR"))
 
               (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} (b/button {:className "btn btn-primary" :onClick (fn [e] (swap! app-state assoc-in [:sort-list] "maxgbpshares"))} "Кол-во на GBP"))
+
+              (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "Купить кол-во")
 
               (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} (b/button {:className "btn btn-primary" :onClick (fn [e] (sendLetter))} "Отправить письмо"))
             )

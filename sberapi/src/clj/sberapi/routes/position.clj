@@ -265,31 +265,35 @@
 
 (defn sendLetter [clientcode txtdata]
   (let [
+    tr1 (println clientcode)
     email (:advmail (first (filter (fn [x] (if (= (:code x) clientcode) true false)) (clients/get-clients))))
 
      
     ]
-    (postal/send-message {:host "smtp.sberpb.com"
-                            :user "alexey@sberpb.com"
-                            :pass "password"}
-                           {:from "tradeidea@sberpb.com"
-                            :to email
-                            :subject "Req: Trade idea"
-                            :body txtdata})
+    ;; (postal/send-message ;{:host "smtp.sberpb.com" :user "alexey@sberpb.com" :pass "password"}
+    ;;   {:from "tradeidea@sberpb.com"
+    ;;    :to email
+    ;;    :cc ["Rustam_Nazimanov@sberbank-pb.ru" "Alexey_Koshkin@sberbank-pb.ru"]
+    ;;    :subject "Req: Trade idea"
+    ;;    :body txtdata}
+    ;; )
+    ;;email
   )
 )
 
 (defn sendLetters [token clients] 
   (let [
-      recommendtext (:data (first (filter (fn [x] (if (= "GAZP_BUY" (:code x)) true false)) (syssetting/get-settings))))
+      recommendtext (:data (first (filter (fn [x] (if (= "TRADE_IDEA" (:code x)) true false)) (syssetting/get-settings))))
+
+      tr1 (println clients)
     ]
-    (doall (map (fn [x] (sendLetter x recommendtext)) clients))
+    (doall (map (fn [x] (sendLetter (:code x) recommendtext)) clients))
     ;; (postal/send-message {:from "me@draines.com"
     ;;                         :to ["mom@example.com" "dad@example.com"]
     ;;                         :cc "bob@example.com"
     ;;                         :subject "Hi!"
     ;;                         :body "Test."
     ;;                         :X-Tra "Something else"})
-    (println (str clients))
+    ;(println (str clients))
   )
 )
