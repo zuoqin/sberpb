@@ -98,31 +98,31 @@
   ;;(dominalib/set-attr!  (.. e -currentTarget) :checked true)
 )
 
-(defn getPortfolios [] 
-  (if (> (count (:calcportfs ((keyword (:selectedsec @sbercore/app-state)) @sbercore/app-state)) 0))
-    (sbercore/setCalcSecsDropDown)
-    (POST (str settings/apipath "api/calcshares?security=" (:selectedsec @sbercore/app-state) "&percentage=" (:percentage @sbercore/app-state)) {
-      :handler OnGetPortfolios
-      :error-handler error-handler
-      :headers {
-        :content-type "application/json"
-        :Authorization (str "Bearer "  (:token (:token @sbercore/app-state))) }
-    })
-  )
-)
+;; (defn getPortfolios [] 
+;;   (if (> (count (:calcportfs ((keyword (:selectedsec @sbercore/app-state)) @sbercore/app-state)) 0))
+;;     (sbercore/setCalcSecsDropDown)
+;;     (POST (str settings/apipath "api/calcshares?security=" (:selectedsec @sbercore/app-state) "&percentage=" (:percentage @sbercore/app-state)) {
+;;       :handler OnGetPortfolios
+;;       :error-handler error-handler
+;;       :headers {
+;;         :content-type "application/json"
+;;         :Authorization (str "Bearer "  (:token (:token @sbercore/app-state))) }
+;;     })
+;;   )
+;; )
 
 (defn sendLetter []
   (let [
       clients (filter (fn [x] (if (= (:issend x) true) true false)) (:letters @app-state))
     ]
 
-    (POST (str settings/apipath "api/calcshares") {
+    (POST (str settings/apipath "api/calcshares?security=" (:selectedsec @sbercore/app-state)) {
       :handler OnSendLetter
       :error-handler error-handler
       :headers {
         :content-type "application/json"
         :Authorization (str "Bearer "  (:token (:token @sbercore/app-state))) }
-      :body clients
+      :body (.stringify js/JSON (clj->js (map (fn [x] {:code (:code x) :amount (:amount x)}) clients)))
     })
   )
 )
@@ -279,13 +279,13 @@
 
             ;;Купить бумаг
             (dom/div {:className "col-xs-1 col-md-1" :style {:padding-left "0px" :padding-right "0px"}}
-              (dom/input {:type "text" :id (str "sharesbuy" (:client item)) :style {:height "40px" :width "100%" :font-size "14px" :font-weight 500 :margin-top "2px"} :onChange (fn [e] (handle-sharebuy-change e ))
+              (dom/input {:type "text" :id (str "sharesbuy" (:client item)) :style {:height "40px" :width "100%" :font-size "14px" :font-weight 500 :margin-top "2px"} :defaultValue (:amount (first (filter (fn [x] (if (= (:code x) (:client item)) true false)) (:letters @app-state)))) :onChange (fn [e] (handle-sharebuy-change e ))
 })
             )
 
             ;;Отправить письмо
             (dom/div {:className "col-xs-1 col-md-1" :style {:padding-left "0px" :padding-right "0px"}}
-              (dom/input {:id (str "checksend" (:client item))  :type "checkbox" :style {:height "32px" :width "70px" :margin-top "1px"} :defaultChecked false :onChange (fn [e] (handle-chkbsend-change e ))})
+              (dom/input {:id (str "checksend" (:client item))  :type "checkbox" :style {:height "32px" :width "70px" :margin-top "1px"} :defaultChecked (:issend (first (filter (fn [x] (if (= (:code x) (:client item)) true false)) (:letters @app-state)))) :onChange (fn [e] (handle-chkbsend-change e ))})
             )
           )
         )
@@ -293,7 +293,7 @@
            (sort (comp comp-portfs) (filter (fn [x] (let [
                portfname (:client x)
                ]
-               (if (or (= false (str/includes? portfname (:search @sbercore/app-state))) (and (= 1 (:noholders @sbercore/app-state)) (> (:shares x) 0.0)))  false true)) ) (:calcportfs ((keyword (str (:selectedsec @sbercore/app-state))) @sbercore/app-state))))
+               (if (or (= false (str/includes? portfname (str/upper-case (:search @sbercore/app-state)))) (and (= 1 (:noholders @sbercore/app-state)) (> (:shares x) 0.0)))  false true)) ) (:calcportfs ((keyword (str (:selectedsec @sbercore/app-state))) @sbercore/app-state))))
       )
     )
   )
@@ -301,9 +301,9 @@
 
 
 (defn onMount [data]
-  (getPortfolios)
+  ;(getPortfolios)
   (put! ch 42)
-  (swap! sbercore/app-state assoc-in [:current] {:name "Portfolios" :text "Portfolios with this security: "} )
+  (swap! sbercore/app-state assoc-in [:current] {:name "Portfolios" :text "Portfolios "} )
 )
 
 

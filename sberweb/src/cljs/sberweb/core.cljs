@@ -662,18 +662,18 @@
             )
             (dom/li
               (dom/h5 {:style {:margin-left "5px" :margin-right "5px" :height "32px" :margin-top "1px"}} " "
-      (dom/input {:id "search" :type "text" :placeholder "Search" :style {:height "32px" :margin-top "1px"} :value  (:search @app-state) :onChange (fn [e] (handleChange e )) })  )
+      (dom/input {:id "search" :type "text" :placeholder "Search" :style {:height "32px" :width "100px" :margin-top "1px"} :value  (:search @app-state) :onChange (fn [e] (handleChange e )) })  )
             )
 
-            (dom/li {:style {:margin-left "5px"}}
-              (dom/label {:for "noholders" :style {:font-weight 100 :padding-right "10px" :padding-top "7px"}} "Оставить только клиентов без этой бумаги: ")
+            (dom/li {:style {:margin-left "3px"}}
+              (dom/label {:for "noholders" :style {:font-weight 100 :padding-right "1px" :padding-top "7px"}} "Оставить без бумаги:")
             )
-            (dom/li {:style {:margin-left "5px"}}
-              (dom/input {:id "noholders" :type "checkbox" :style {:height "32px" :width "70px" :margin-top "1px"} :defaultChecked false :label "Оставить только портфели без бумаги" :onChange (fn [e] (handle-chkb-change e ))})
+            (dom/li {:style {:margin-left "1px"}}
+              (dom/input {:id "noholders" :type "checkbox" :style {:height "32px" :width "70px" :margin-top "1px"} :defaultChecked (if (= 0 (:noholders @app-state)) false true) :label "Оставить без бумаги" :onChange (fn [e] (handle-chkb-change e ))})
             )
 
-            (dom/li {:style {:margin-left "5px"}}
-              (dom/label {:for "percentage" :style {:font-weight 100 :padding-right "10px"}} "Процент для расчета кол-ва бумаг: ")
+            (dom/li {:style {:margin-left "1px"}}
+              (dom/label {:for "percentage" :style {:font-weight 100 :padding-right "10px"}} "Процент: ")
 
               (dom/input {:id "percentage" :type "number" :step "0.01" :style {:height "32px" :width "70px" :margin-top "1px"} :value  (:percentage @app-state) :onChange (fn [e] (handleChange e ))})
             )

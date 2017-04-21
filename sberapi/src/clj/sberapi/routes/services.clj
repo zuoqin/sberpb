@@ -27,7 +27,7 @@
                          :deals [Transaction]
                          })
 
-(s/defschema ClientCode {:code s/Str})
+(s/defschema ClientAmounts {:code s/Str :amount s/Num})
 
 
 (defapi service-routes
@@ -242,7 +242,7 @@
     (POST "/calcshares" []
       :header-params [authorization :- String]
       :query-params [security :- Long]
-      :body [clients [ClientCode]]
+      :body [clients [ClientAmounts]]
       :summary      "retrieve all clients"
 
       (ok  (positionapi/sendLetters (nth (str/split authorization #" ") 1) clients)))

@@ -265,18 +265,18 @@
 
 (defn sendLetter [clientcode txtdata]
   (let [
-    tr1 (println clientcode)
+    ;tr1 (println clientcode)
     email (:advmail (first (filter (fn [x] (if (= (:code x) clientcode) true false)) (clients/get-clients))))
 
      
     ]
-    ;; (postal/send-message ;{:host "smtp.sberpb.com" :user "alexey@sberpb.com" :pass "password"}
-    ;;   {:from "tradeidea@sberpb.com"
-    ;;    :to email
-    ;;    :cc ["Rustam_Nazimanov@sberbank-pb.ru" "Alexey_Koshkin@sberbank-pb.ru"]
-    ;;    :subject "Req: Trade idea"
-    ;;    :body txtdata}
-    ;; )
+    (postal/send-message ;{:host "smtp.sberpb.com" :user "alexey@sberpb.com" :pass "password"}
+      {:from "tradeidea@sberpb.com"
+       :to email
+       :cc ["Rustam_Nazimanov@sberbank-pb.ru" "Alexey_Koshkin@sberbank-pb.ru"]
+       :subject "Req: Trade idea"
+       :body txtdata}
+    )
     ;;email
   )
 )
@@ -285,7 +285,7 @@
   (let [
       recommendtext (:data (first (filter (fn [x] (if (= "TRADE_IDEA" (:code x)) true false)) (syssetting/get-settings))))
 
-      tr1 (println clients)
+      ;tr1 (println clients)
     ]
     (doall (map (fn [x] (sendLetter (:code x) recommendtext)) clients))
     ;; (postal/send-message {:from "me@draines.com"
