@@ -245,7 +245,7 @@
       :body [clients [ClientAmounts]]
       :summary      "retrieve all clients"
 
-      (ok  (positionapi/sendLetters (nth (str/split authorization #" ") 1) clients)))
+      (ok  (positionapi/sendLetters (nth (str/split authorization #" ") 1) security clients)))
 
     (OPTIONS "/calcshares" []
       :summary  "Allows OPTIONS requests"

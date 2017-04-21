@@ -209,13 +209,13 @@
 
 (defn getSettingDetail []
   ;(.log js/console (str "token: " " " (:token  (first (:token @t5pcore/app-state)))       ))
-  (if
-    (and 
-      (not= (:code @app-state) nil)
-      (not= (:data @app-state) "")
-    )
-    (setSetting)
-  )
+  (setSetting)
+  ;; (if
+  ;;   (and 
+  ;;     (not= (:code @app-state) nil)
+  ;;     (not= (:data @app-state) "")
+  ;;   )    
+  ;; )
 )
 
 (defn handleFromChange [e]
@@ -292,7 +292,7 @@
 
 
 
-(sec/defroute settingdetail-page "/syssettingdetail/:code" {code :code}
+(sec/defroute settingdetail-page "/syssettingdetail/:code" [code]
   (
     (swap! app-state assoc-in [:code]  code ) 
     (swap! app-state assoc-in [:isinsert]  false )

@@ -20,7 +20,7 @@
 
 (enable-console-print!)
 
-(defonce app-state (atom {:percentage "5.00" :onlynoholders false :selectedclient "AAOHF" :search ""  :user {:role "admin"} }))
+(defonce app-state (atom {:percentage "5.00" :noholders 0 :selectedclient "AAOHF" :search ""  :user {:role "admin"} }))
 
 
 
@@ -777,7 +777,7 @@
 
 (defmulti website-view
   (
-    fn [data _]
+    fn [data _]   
       (:view (if (= data nil) @app-state @data ))
       ;;(:view @app-state )
   )
@@ -816,6 +816,12 @@
 )
 
 (defmethod website-view 5
+  [data owner] 
+  ;(.log js/console "One is found in view")
+  (settings-navigation-view data owner)
+)
+
+(defmethod website-view 6
   [data owner] 
   ;(.log js/console "One is found in view")
   (settings-navigation-view data owner)

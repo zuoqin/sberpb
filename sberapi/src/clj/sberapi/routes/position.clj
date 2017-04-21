@@ -263,31 +263,30 @@
 
 
 
-(defn sendLetter [clientcode txtdata]
+(defn sendLetter [security clientcode txtdata]
   (let [
-    ;tr1 (println clientcode)
     email (:advmail (first (filter (fn [x] (if (= (:code x) clientcode) true false)) (clients/get-clients))))
-
-     
+    ;tr1 (println (str "sending email to: ") email)
     ]
-    (postal/send-message ;{:host "smtp.sberpb.com" :user "alexey@sberpb.com" :pass "password"}
+    (postal/send-message {:host "psmtp.sberbank-cib.ru"} ;:user "alexey@sberpb.com" :pass "password"
       {:from "tradeidea@sberpb.com"
        :to email
-       :cc ["Rustam_Nazimanov@sberbank-pb.ru" "Alexey_Koshkin@sberbank-pb.ru"]
-       :subject "Req: Trade idea"
+       :cc ["Alexey_Zorchenkov@sberbank-pb.ru" "Rustam_Nazimanov@sberbank-pb.ru" "Alexey_Koshkin@sberbank-pb.ru"]
+       :subject (str "Trade idea: " security) 
        :body txtdata}
     )
     ;;email
   )
 )
 
-(defn sendLetters [token clients] 
+(defn sendLetters [token security clients] 
   (let [
       recommendtext (:data (first (filter (fn [x] (if (= "TRADE_IDEA" (:code x)) true false)) (syssetting/get-settings))))
 
+      security (:acode (first (filter (fn [x] (if (= (:id x) security) true false)) (secs/get-securities))))
       ;tr1 (println clients)
     ]
-    (doall (map (fn [x] (sendLetter (:code x) recommendtext)) clients))
+    (doall (map (fn [x] (sendLetter security (:code x) recommendtext)) clients))
     ;; (postal/send-message {:from "me@draines.com"
     ;;                         :to ["mom@example.com" "dad@example.com"]
     ;;                         :cc "bob@example.com"

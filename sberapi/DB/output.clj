@@ -1,7 +1,7 @@
 [
 { :user/code "zuoqin", :user/password "Qwerty123", :user/role "admin", :db/id #db/id[:db.part/user -100001] }
-{ :user/code "rustam", :user/password "Qwerty123", :user/role "manager", :db/id #db/id[:db.part/user -100002] }
-{ :user/code "alexey", :user/password "Qwerty123", :user/role "user", :db/id #db/id[:db.part/user -100003] }
+{ :user/code "rustam", :user/password "Qwerty123", :user/role "admin", :db/id #db/id[:db.part/user -100002] }
+{ :user/code "alexey", :user/password "Qwerty123", :user/role "admin", :db/id #db/id[:db.part/user -100003] }
 
 ;;SETTINGS
 { :setting/code "TRADE_IDEA" :setting/data "Gazprom is great buyt and hold for our portfolios", :db/id #db/id[:db.part/user -103001] }
@@ -1137,6 +1137,44 @@
 
 { :security/acode "RURAIL21CHF", :security/isin "CH0205819441", :security/bcode "CH0205819441 Corp", :security/assettype 5, :security/exchange "NYSE", :security/currency "CHF", :db/id #db/id[:db.part/user -100554] }
 
+
+{ :security/acode "RURAIL21CHF", :security/isin "CH0205819441", :security/bcode "CH0205819441 Corp", :security/assettype 5, :security/exchange "NYSE", :security/currency "CHF", :db/id #db/id[:db.part/user -100554] }
+
+{ :security/acode "EURONAT19N", :security/isin "XS1513280757", :security/bcode "XS1513280757 Corp", :security/assettype 5, :security/exchange "NYSE", :security/currency "USD", :db/id #db/id[:db.part/user -100555] }
+
+{ :security/acode "AMMO", :security/isin "RU0006571882", :security/bcode "RU0006571882 Equity", :security/assettype 1, :security/exchange "NYSE", :security/currency "RUB", :db/id #db/id[:db.part/user -100556] }
+
+{ :security/acode "AUUSISE", :security/isin "CH0106027193", :security/bcode "CH0106027193 Equity", :security/assettype 1, :security/exchange "NYSE", :security/currency "CHF", :db/id #db/id[:db.part/user -100557] }
+
+{ :security/acode "BACLI", :security/isin "US0605051046", :security/bcode "US0605051046 Equity", :security/assettype 1, :security/exchange "NYSE", :security/currency "USD", :db/id #db/id[:db.part/user -100558] }
+
+{ :security/acode "BLNG", :security/isin "RU000A0J2QG8", :security/bcode "RU000A0J2QG8 Equity", :security/assettype 1, :security/exchange "NYSE", :security/currency "RUB", :db/id #db/id[:db.part/user -100559] }
+
+{ :security/acode "CHMK", :security/isin "RU0007665170", :security/bcode "RU0007665170 Equity", :security/assettype 1, :security/exchange "NYSE", :security/currency "RUB", :db/id #db/id[:db.part/user -100560] }
+
+{ :security/acode "GMST", :security/isin "RU000A0HNHD1", :security/bcode "RU000A0HNHD1 Equity", :security/assettype 1, :security/exchange "NYSE", :security/currency "RUB", :db/id #db/id[:db.part/user -100561] }
+
+{ :security/acode "GOOGLUS", :security/isin "US02079K3059", :security/bcode "US02079K3059 Equity", :security/assettype 1, :security/exchange "NYSE", :security/currency "USD", :db/id #db/id[:db.part/user -100562] }
+
+{ :security/acode "IDTPLN", :security/isin "IE00B1FZSC47", :security/bcode "IE00B1FZSC47 Equity", :security/assettype 1, :security/exchange "NYSE", :security/currency "USD", :db/id #db/id[:db.part/user -100563] }
+
+{ :security/acode "KOGK", :security/isin "RU0002155359", :security/bcode "RU0002155359 Equity", :security/assettype 1, :security/exchange "NYSE", :security/currency "RUB", :db/id #db/id[:db.part/user -100564] }
+
+{ :security/acode "LQDUS", :security/isin "US4642872422", :security/bcode "US4642872422 Equity", :security/assettype 1, :security/exchange "NYSE", :security/currency "USD", :db/id #db/id[:db.part/user -100565] }
+
+{ :security/acode "MTLR", :security/isin "RU000A0DKXV5", :security/bcode "RU000A0DKXV5 Equity", :security/assettype 1, :security/exchange "NYSE", :security/currency "RUB", :db/id #db/id[:db.part/user -100566] }
+
+{ :security/acode "OGKB", :security/isin "RU000A0JNG55", :security/bcode "RU000A0JNG55 Equity", :security/assettype 1, :security/exchange "NYSE", :security/currency "RUB", :db/id #db/id[:db.part/user -100567] }
+
+{ :security/acode "OGKF", :security/isin "RU000A0JNG63", :security/bcode "RU000A0JNG63 Equity", :security/assettype 1, :security/exchange "NYSE", :security/currency "RUB", :db/id #db/id[:db.part/user -100568] }
+
+{ :security/acode "RASP", :security/isin "RU000A0B90N8", :security/bcode "RU000A0B90N8 Equity", :security/assettype 1, :security/exchange "NYSE", :security/currency "RUB", :db/id #db/id[:db.part/user -100569] }
+
+{ :security/acode "SILV", :security/isin "RU0009018469", :security/bcode "RU0009018469 Equity", :security/assettype 1, :security/exchange "NYSE", :security/currency "RUB", :db/id #db/id[:db.part/user -100570] }
+
+{ :security/acode "UKUZ", :security/isin "RU0005294775", :security/bcode "RU0005294775 Equity", :security/assettype 1, :security/exchange "NYSE", :security/currency "RUB", :db/id #db/id[:db.part/user -100571] }
+
+
 ;; ISSUERS
 { :issuer/code "Mail.Ru Group Ltd" :db/id #db/id[:db.part/user -101001] }
 { :issuer/code "Magnit PJSC" :db/id #db/id[:db.part/user -101002] }
@@ -1321,7 +1359,7 @@
 
 { :client/code "SATQF", :client/name "Клиент SATQF", :client/currency "USD", :client/stockshare 50.0 :client/bondshare 50.0, :client/usd 100000.0, :client/rub 100000.0, :client/eur 100000.0, :client/gbp 100000.0, :client/signedadvisory 5000000.0, :client/advemail "zuoqin@mail.ru", :client/email "zuoqin@mail.ru", :db/id #db/id[:db.part/user -102087]}
 
-;; { :client/code "SATQF", :client/name "Клиент SATQF", :client/currency "USD", :client/stockshare 50.0 :client/bondshare 50.0, :client/usd 100000.0, :client/rub 100000.0, :client/eur 100000.0, :client/gbp 100000.0, :client/signedadvisory 5000000.0, :client/advemail "zuoqin@mail.ru", :client/email "zuoqin@mail.ru", :db/id #db/id[:db.part/user -102087]}
+{ :client/code "IVNPF", :client/name "Клиент IVNPF", :client/currency "USD", :client/stockshare 50.0 :client/bondshare 50.0, :client/usd 100000.0, :client/rub 100000.0, :client/eur 100000.0, :client/gbp 100000.0, :client/signedadvisory 5000000.0, :client/advemail "elena_slobodina@sberbank-pb.ru", :client/email "Ivanova25@inbox.ru", :db/id #db/id[:db.part/user -102088]}
 
 
 ;; TRANSACTIONS

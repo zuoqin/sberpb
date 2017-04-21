@@ -8,7 +8,7 @@
 
 
             [om-bootstrap.button :as b]
-
+            [clojure.string :as str]
             [sberweb.settings :as settings]
   )
   (:import goog.History)
@@ -62,7 +62,10 @@
             ;(dom/p  #js {:className "list-group-item-text paddingleft2" :dangerouslySetInnerHTML #js {:__html (get item "body")}} nil)
           )
         )                  
-        )(sort (comp comp-settings) (:settings @sbercore/app-state ))
+        )(sort (comp comp-settings) (filter (fn [x] (let [
+               code (:code x)
+               ]
+               (if (or (= false (str/includes? code (str/upper-case (:search @sbercore/app-state)))))  false true)) ) (:settings @sbercore/app-state)))
       )
     )
   )
@@ -108,9 +111,7 @@
           ; )
           (om/build showsettings-view  data {})
         )
-      ) 
-
-
+      )
     )
   )
 )
@@ -120,7 +121,7 @@
 
 (sec/defroute syssettings-page "/syssettings" []
   (om/root settings-view
-           app-state
+           sbercore/app-state
            {:target (. js/document (getElementById "app"))}))
 
 
