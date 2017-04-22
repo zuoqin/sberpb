@@ -12,8 +12,8 @@
             [ring.adapter.jetty :refer [run-jetty]])
   (:gen-class))
 
-(def apipath "https://api.sberpb.com/")
-
+(def apipath "http://10.20.35.21:3000/")
+(def xlsdir "c:/DEV/Java/")
 
 (defn sort-portfs-by-name [portf1 portf2] 
   (let [
@@ -81,7 +81,7 @@
     ;positions (sort (comp sort-portfs-by-name) portfs)
     ;newpositions (into [] (map (fn [x] [(first x)   (get (second x) "amount") (get (second x) "price") (get (second x) "rubprice")]) positions))
     ]
-    (save-xls ["sheet1" (dataset [:security :price :wap :amount :usdvalue :rubvalue :usdcosts :rubcosts] newpositions)] (str "c:/DEV/Java/" client ".xlsx"))
+    (save-xls ["sheet1" (dataset [:security :price :wap :amount :usdvalue :rubvalue :usdcosts :rubcosts] newpositions)] (str xlsdir client ".xlsx"))
     "Success"
   )
 )
@@ -94,7 +94,7 @@
     positions (sort (comp sort-portfs-by-name) portfs)
     newpositions (into [] (map (fn [x] [(first x)   (get (second x) "amount") (get (second x) "price") (get (second x) "rubprice")]) positions))
     ]
-    (save-xls ["sheet1" (dataset [:portf :amount :price :rubprice] newpositions)] (str "c:/DEV/Java/" sec ".xlsx"))
+    (save-xls ["sheet1" (dataset [:portf :amount :price :rubprice] newpositions)] (str xlsdir sec ".xlsx"))
     "Success"
     ;(first newpositions)
   )
@@ -110,14 +110,14 @@
     (let [
           file (create-excel-report sec)
     ]
-    {:status 200 :headers {"Content-Type" "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet; charset=utf-8"} :body (io/input-stream (str "C:/DEV/Java/" sec ".xlsx") )}
+    {:status 200 :headers {"Content-Type" "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet; charset=utf-8"} :body (io/input-stream (str xlsdir sec ".xlsx") )}
     )
   )
   (GET "/clientexcel/:client" [client]
     (let [
           file (create-client-report client)
     ]
-    {:status 200 :headers {"Content-Type" "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet; charset=utf-8"} :body (io/input-stream (str "C:/DEV/Java/" client ".xlsx") )}
+    {:status 200 :headers {"Content-Type" "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet; charset=utf-8"} :body (io/input-stream (str xlsdir client ".xlsx") )}
     )
   )
   (resources "/")
