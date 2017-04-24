@@ -13,6 +13,7 @@
   (:gen-class))
 
 (def apipath "http://10.20.35.21:3000/")
+;(def apipath "http://localhost:3000/")
 (def xlsdir "c:/DEV/Java/")
 
 (defn sort-portfs-by-name [portf1 portf2] 

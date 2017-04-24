@@ -439,7 +439,7 @@
         clients (get-clients)
         client (first (filter (fn [x] (if (= (:code x) code) true false)) clients)) 
 
-        tr1 (if (nil? client) (println (str "Client " code " not found")))
+        ;tr1 (if (nil? client) (println (str "Client " code " not found")))
         ]
     (:id client)
   )
@@ -1367,29 +1367,42 @@
 ;;                                             :body (str "grant_type=password&username=" username "&password=" password) 
 ;;                                             })
 ;; )
-(defn insert-new-tran-to-db [tran index]
+
+(defn insert-new-transaction [client security nominal price direction valuedate currency comment]
   (let [
-     conn (d/connect uri)
+        conn (d/connect uri)
+    ]
 
+    ;(println (str "Insert new transaction. Client: " client " security: " security " nominal: " nominal " price: " price " direction: " direction " valuedate: " valuedate " currency: " currency " comment: " comment) )
+    (d/transact conn [{ :transaction/client client :transaction/security security, :transaction/nominal (Double/parseDouble (str nominal)) :transaction/price (Double/parseDouble (str price)) :transaction/direction direction :transaction/valuedate valuedate, :transaction/currency currency :transaction/comment comment, :db/id #db/id[:db.part/user -110002] }])
+  )
+)
 
+(defn insert-new-tran-to-db [tran]
+  (let [
+     ;tr2 (println "HHH")
      security (first (filter (fn [x] (if (= (:acode x) (:security tran)) true false)) (get-securities)))
 
-
+     
      ;tr1 (println (str security))
-
-      ;tr1 (println (str "Found: " (find-transaction tran) " in database with security: " security))  
+     ;newindex (- -110002 index)
+     ;tr1 (println (str "Found: " (find-transaction tran) " in database with security: " security))
      ]
 
     (if (and (= (find-transaction tran) 0) (not (nil? security)))
       ; To insert new entity:
-      (d/transact conn [{ :transaction/client #db/id[:db.part/user (:client tran)] :transaction/security #db/id[:db.part/user (:id security)], :transaction/nominal (:nominal tran) :transaction/price (:price tran) :transaction/direction (:direction tran) :transaction/valuedate (:valuedate tran), :transaction/currency (:currency tran) :transaction/comment "", :db/id #db/id[:db.part/user (- -110002 index) ] }])
-      (println (str "Transaction already existed: " tran))
+      (insert-new-transaction (:client tran) (:id security) (:nominal tran) (:price tran) (:direction tran) (:valuedate tran) (:currency tran) "" )
+
+      (if (and (nil? security))
+        (println (str "Security does not exist: " (:security tran)))
+        (println (str "Transaction already existed: " tran))        
+      )            
     )
   )
 )
 
 (defn recent-deals-to-db []
-  (let [f (slurp (str drive ":/DEV/Java/" "todaydeals" ".xml"))
+  (let [f (slurp (str drive ":/DEV/Java/" "recentdeals" ".xml"))
         x (parse f)
 	
         trancnt (- (count (:content (nth   (:content (nth (:content x) 4) )  0 ) ) ) 1)  
@@ -1438,14 +1451,17 @@
 
         filtertran transactions
         cnt (count filtertran )
-        t2 (doall (map insert-new-tran-to-db  filtertran (range cnt)))
+        ;t2 (doall (map insert-new-tran-to-db  filtertran (range cnt)))
         
     ]
     ;; (filter (fn [x] (if (and
     ;;                      (nil? (:client x))
     ;;                      )  true false)) tranmap)
-    (count transactions) 
+    ;(count transactions) 
     ;res1
+    ;transactions
+    (doseq [trans filtertran] (insert-new-tran-to-db trans))
+    ;(insert-new-tran-to-db (nth filtertran 15))
   )
 )
 
@@ -1474,7 +1490,7 @@
                 (recur result (inc num))
               )
               result
-            )
+            )Б
           )
         )
         ;tr5 (println (first trans ) )

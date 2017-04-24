@@ -348,26 +348,26 @@
               ;; (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "Всего в управлении")
               ;(dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "Доля акций")
               ;(dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "Доля Облигаций")
-              (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} (b/button {:className "btn btn-primary" :onClick (fn [e] (swap! app-state assoc-in [:sort-list] "usd"))} "USD"))
+              (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} (b/button {:className "btn btn-primary" :onClick (fn [e] ((swap! app-state assoc-in [:sort-list] "usd") (swap! sbercore/app-state assoc-in [:percentage] (+ (:percentage @sbercore/app-state) 0.0))))} "USD"))
 
-              (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} (b/button {:className "btn btn-primary" :onClick (fn [e] (swap! app-state assoc-in [:sort-list] "rub"))} "RUB"))
+              (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} (b/button {:className "btn btn-primary" :onClick (fn [e] ((swap! app-state assoc-in [:sort-list] "rub") (swap! sbercore/app-state assoc-in [:percentage] (+ (:percentage @sbercore/app-state) 0.0))))} "RUB"))
 
-              (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} (b/button {:className "btn btn-primary" :onClick (fn [e] (swap! app-state assoc-in [:sort-list] "eur"))} "EUR"))
+              (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} (b/button {:className "btn btn-primary" :onClick (fn [e] ((swap! app-state assoc-in [:sort-list] "eur") (swap! sbercore/app-state assoc-in [:percentage] (+ (:percentage @sbercore/app-state) 0.0))))} "EUR"))
 
-              (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} (b/button {:className "btn btn-primary" :onClick (fn [e] (swap! app-state assoc-in [:sort-list] "gbp"))} "GBP"))
+              (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} (b/button {:className "btn btn-primary" :onClick (fn [e] ((swap! app-state assoc-in [:sort-list] "gbp") (swap! sbercore/app-state assoc-in [:percentage] (+ (:percentage @sbercore/app-state) 0.0))))} "GBP"))
 
               ;(dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "Лимит клиента на бумагу, шт.")
 
               (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "Куплено бумаг, шт.")
               ;(dom/div {:className "col-xs-2 col-md-2" :style {:text-align "center"}} "Свободный лимит на бумагу, шт.")
 
-              (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} (b/button {:className "btn btn-primary" :onClick (fn [e] (swap! app-state assoc-in [:sort-list] "maxusdshares"))} "Кол-во на USD"))
+              (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} (b/button {:className "btn btn-primary" :onClick (fn [e] ((swap! app-state assoc-in [:sort-list] "maxusdshares") (swap! sbercore/app-state assoc-in [:percentage] (+ (:percentage @sbercore/app-state) 0.0))))} "Кол-во на USD"))
 
-              (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} (b/button {:className "btn btn-primary" :onClick (fn [e] (swap! app-state assoc-in [:sort-list] "maxrubshares"))} "Кол-во на RUB"))
+              (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} (b/button {:className "btn btn-primary" :onClick (fn [e] ((swap! app-state assoc-in [:sort-list] "maxrubshares") (swap! sbercore/app-state assoc-in [:percentage] (+ (:percentage @sbercore/app-state) 0.0))))} "Кол-во на RUB"))
 
-              (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} (b/button {:className "btn btn-primary" :onClick (fn [e] (swap! app-state assoc-in [:sort-list] "maxeurshares"))} "Кол-во на EUR"))
+              (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} (b/button {:className "btn btn-primary" :onClick (fn [e] ((swap! app-state assoc-in [:sort-list] "maxeurshares") (swap! sbercore/app-state assoc-in [:percentage] (+ (:percentage @sbercore/app-state) 0.0))))} "Кол-во на EUR"))
 
-              (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} (b/button {:className "btn btn-primary" :onClick (fn [e] (swap! app-state assoc-in [:sort-list] "maxgbpshares"))} "Кол-во на GBP"))
+              (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} (b/button {:className "btn btn-primary" :onClick (fn [e] ((swap! app-state assoc-in [:sort-list] "maxgbpshares") (swap! sbercore/app-state assoc-in [:percentage] (+ (:percentage @sbercore/app-state) 0.0))) )} "Кол-во на GBP"))
 
               (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "Купить кол-во")
 
