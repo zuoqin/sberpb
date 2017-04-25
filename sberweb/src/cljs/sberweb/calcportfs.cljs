@@ -139,162 +139,182 @@
 (defcomponent showportfs-view [data owner]
   (render
     [_]
-    (dom/div {:className "list-group" :style {:display "block"}}
-      (map (fn [item]
-        (let [
-              client (first (filter (fn [x] (if (= (:code x) (:client item)) true false)) (:clients @sbercore/app-state)))
-              sec (first (filter (fn[x] (if( = (:selectedsec @sbercore/app-state) (:id x)) true false)) (:securities @sbercore/app-state)))
+    (if (nil? (:selectedsec @data))
 
-              price (:price  sec)
-              seccurrency (:currency sec )
-
-              isrusbond (if (and (= 5 (:assettype sec))
-                                 (= "RU" (subs (:isin sec) 0 2))
-                                 )  true false)
-
-              isbond (if (and (= 5 (:assettype sec))
-                                 ;(= "RU" (subs (:isin security) 0 2))
-                                 )  true false)
-              usdrate (:price (first (filter (fn [x] (if (= "USD" (:acode x)) true false)) (:securities @sbercore/app-state))))
-              fxrate (if (or (= "RUB" seccurrency) (= "RUR" seccurrency)) 1 (:price (first (filter (fn[x] (if( = (:acode x) (if (= seccurrency "GBX") "GBP" seccurrency)) true false)) (:securities @sbercore/app-state)))))
-              newfxrate (if (= 0 (compare "GBX" seccurrency)) (/ fxrate 100.) fxrate)
-             ]
+      (dom/div
+        (dom/p {:style {:text-align "center"}}
+          ;(dom/img {:src "images/loader.gif"})
+        )
+      )
 
 
-          (dom/div {:className "row" :style {:margin-left "0px" :margin-right "0px"}} 
 
-            ;;Client code
-            (dom/div {:className "col-xs-1 col-md-1" :style {:padding-left "0px" :padding-right "0px"}}
-              (dom/a {:className "list-group-item" :style {:padding-left "3px" :padding-right "3px" :text-align "right"} :href (str  "#/postrans/" (:id item) "/" (:selectedsec @sbercore/app-state)) }
-                (dom/h4 {:className "list-group-item-heading"} (:client item))
+    (if (> (count (:calcportfs ((keyword (str (:selectedsec @sbercore/app-state))) @sbercore/app-state))) 0)
+      (dom/div {:className "list-group" :style {:display "block"}}
+        (map (fn [item]
+          (let [
+                client (first (filter (fn [x] (if (= (:code x) (:client item)) true false)) (:clients @sbercore/app-state)))
+                sec (first (filter (fn[x] (if( = (:selectedsec @sbercore/app-state) (:id x)) true false)) (:securities @sbercore/app-state)))
+
+                price (:price  sec)
+                seccurrency (:currency sec )
+
+                isrusbond (if (and (= 5 (:assettype sec))
+                                   (= "RU" (subs (:isin sec) 0 2))
+                                   )  true false)
+
+                isbond (if (and (= 5 (:assettype sec))
+                                   ;(= "RU" (subs (:isin security) 0 2))
+                                   )  true false)
+                usdrate (:price (first (filter (fn [x] (if (= "USD" (:acode x)) true false)) (:securities @sbercore/app-state))))
+                fxrate (if (or (= "RUB" seccurrency) (= "RUR" seccurrency)) 1 (:price (first (filter (fn[x] (if( = (:acode x) (if (= seccurrency "GBX") "GBP" seccurrency)) true false)) (:securities @sbercore/app-state)))))
+                newfxrate (if (= 0 (compare "GBX" seccurrency)) (/ fxrate 100.) fxrate)
+               ]
+
+          
+            (dom/div {:className "row" :style {:margin-left "0px" :margin-right "0px"}} 
+
+              ;;Client code
+              (dom/div {:className "col-xs-1 col-md-1" :style {:padding-left "0px" :padding-right "0px"}}
+                (dom/a {:className "list-group-item" :style {:padding-left "3px" :padding-right "3px" :text-align "right"} :href (str  "#/postrans/" (:id item) "/" (:selectedsec @sbercore/app-state)) }
+                  (dom/h4 {:className "list-group-item-heading"} (:client item))
+                )
+                ;; (dom/a {:className "list-group-item" :href (str  "#/postrans/" (:id item) "/" (:selectedsec @sbercore/app-state)  )}
+                ;;   (dom/h4  #js {:className "list-group-item-heading" :dangerouslySetInnerHTML #js {:__html (:name (first (filter (fn[x] (if (= (:id x) (:id item) ) true false)) (:clients @sbercore/app-state))))}} nil)
+                ;; )
               )
-              ;; (dom/a {:className "list-group-item" :href (str  "#/postrans/" (:id item) "/" (:selectedsec @sbercore/app-state)  )}
-              ;;   (dom/h4  #js {:className "list-group-item-heading" :dangerouslySetInnerHTML #js {:__html (:name (first (filter (fn[x] (if (= (:id x) (:id item) ) true false)) (:clients @sbercore/app-state))))}} nil)
+
+              ;; Всего в управлении
+              ;; (dom/div {:className "col-xs-1 col-md-1" :style {:padding-left "0px" :padding-right "0px"}}            
+              ;;   (dom/a {:className "list-group-item" :style {:padding-left "3px" :padding-right "3px" :text-align "right"} :href (str  "#/postrans/" (:id item) "/" (:selectedsec @sbercore/app-state)) }
+              ;;     (dom/h4 {:className "list-group-item-heading"} (str (sbercore/split-thousands (str (:signedadvisory client))) " " (:currency item)))
+              ;;   )
               ;; )
-            )
 
-            ;; Всего в управлении
-            ;; (dom/div {:className "col-xs-1 col-md-1" :style {:padding-left "0px" :padding-right "0px"}}            
-            ;;   (dom/a {:className "list-group-item" :style {:padding-left "3px" :padding-right "3px" :text-align "right"} :href (str  "#/postrans/" (:id item) "/" (:selectedsec @sbercore/app-state)) }
-            ;;     (dom/h4 {:className "list-group-item-heading"} (str (sbercore/split-thousands (str (:signedadvisory client))) " " (:currency item)))
-            ;;   )
-            ;; )
-
-            ;;Доля акций в портфеле
-            ;; (dom/div {:className "col-xs-1 col-md-1" :style {:padding-left "0px" :padding-right "0px"}}            
-            ;;   (dom/a {:className "list-group-item" :style {:padding-left "3px" :padding-right "3px" :text-align "right"} :href (str  "#/postrans/" (:id item) "/" (:selectedsec @sbercore/app-state)) }
-            ;;     (dom/h4 {:className "list-group-item-heading"} (sbercore/split-thousands (str (:stockshare client)))   )
-            ;;   )
-            ;; )
+              ;;Доля акций в портфеле
+              ;; (dom/div {:className "col-xs-1 col-md-1" :style {:padding-left "0px" :padding-right "0px"}}            
+              ;;   (dom/a {:className "list-group-item" :style {:padding-left "3px" :padding-right "3px" :text-align "right"} :href (str  "#/postrans/" (:id item) "/" (:selectedsec @sbercore/app-state)) }
+              ;;     (dom/h4 {:className "list-group-item-heading"} (sbercore/split-thousands (str (:stockshare client)))   )
+              ;;   )
+              ;; )
 
 
-            ;;Доля облигаций в портфеле
-            ;; (dom/div {:className "col-xs-1 col-md-1" :style {:padding-left "0px" :padding-right "0px"}}            
-            ;;   (dom/a {:className "list-group-item" :style {:padding-left "3px" :padding-right "3px" :text-align "right"} :href (str  "#/postrans/" (:id item) "/" (:selectedsec @sbercore/app-state)) }
-            ;;     (dom/h4 {:className "list-group-item-heading"} (sbercore/split-thousands (str (:bondshare client)))   )
-            ;;   )
-            ;; )
+              ;;Доля облигаций в портфеле
+              ;; (dom/div {:className "col-xs-1 col-md-1" :style {:padding-left "0px" :padding-right "0px"}}            
+              ;;   (dom/a {:className "list-group-item" :style {:padding-left "3px" :padding-right "3px" :text-align "right"} :href (str  "#/postrans/" (:id item) "/" (:selectedsec @sbercore/app-state)) }
+              ;;     (dom/h4 {:className "list-group-item-heading"} (sbercore/split-thousands (str (:bondshare client)))   )
+              ;;   )
+              ;; )
 
 
-            ;;USD amount
-            (dom/div {:className "col-xs-1 col-md-1" :style {:padding-left "0px" :padding-right "0px"}}            
-              (dom/a {:className "list-group-item" :style {:padding-left "3px" :padding-right "3px" :text-align "right"} :href (str  "#/postrans/" (:id item) "/" (:selectedsec @sbercore/app-state)) }
-                (dom/h4 {:className "list-group-item-heading"} (sbercore/split-thousands (gstring/format "%.0f" (:usd item))))
-              )            
-            )
-
-            ;;RUB amount
-            (dom/div {:className "col-xs-1 col-md-1" :style {:padding-left "0px" :padding-right "0px"}}            
-              (dom/a {:className "list-group-item" :style {:padding-left "3px" :padding-right "3px" :text-align "right"} :href (str  "#/postrans/" (:id item) "/" (:selectedsec @sbercore/app-state)) }
-                (dom/h4 {:className "list-group-item-heading"} (sbercore/split-thousands (gstring/format "%.0f" (:rub item))))
-              )            
-            )
-
-
-            ;;EUR amount
-            (dom/div {:className "col-xs-1 col-md-1" :style {:padding-left "0px" :padding-right "0px"}}            
-              (dom/a {:className "list-group-item" :style {:padding-left "3px" :padding-right "3px" :text-align "right"} :href (str  "#/postrans/" (:id item) "/" (:selectedsec @sbercore/app-state)) }
-                (dom/h4 {:className "list-group-item-heading"} (sbercore/split-thousands (gstring/format "%.0f" (:eur item))))
-              )            
-            )
-
-            ;;GBP amount
-            (dom/div {:className "col-xs-1 col-md-1" :style {:padding-left "0px" :padding-right "0px"}}            
-              (dom/a {:className "list-group-item" :style {:padding-left "3px" :padding-right "3px" :text-align "right"} :href (str  "#/postrans/" (:id item) "/" (:selectedsec @sbercore/app-state)) }
-                (dom/h4 {:className "list-group-item-heading"} (sbercore/split-thousands (gstring/format "%.0f" (:gbp item))))
-              )            
-            )
-
-            ;; Total Limit
-            ;; (dom/div {:className "col-xs-1 col-md-1" :style {:padding-left "0px" :padding-right "0px"}}            
-            ;;   (dom/a {:className "list-group-item" :style {:padding-left "3px" :padding-right "3px" :text-align "right"} :href (str  "#/postrans/" (:id item) "/" (:selectedsec @sbercore/app-state)) }
-            ;;     (dom/h4 {:className "list-group-item-heading"} (sbercore/split-thousands (str (:maxlimit item))))
-            ;;   )
-            ;; )
-
-            ;;Bought Shares
-            (dom/div {:className "col-xs-1 col-md-1" :style {:padding-left "0px" :padding-right "0px"}}            
-              (dom/a {:className "list-group-item" :style {:padding-left "3px" :padding-right "3px" :text-align "right"} :href (str  "#/postrans/" (:id item) "/" (:selectedsec @sbercore/app-state)) }
-                (dom/h4 {:className "list-group-item-heading"} (sbercore/split-thousands (str (:shares item)))   )
-              )            
-            )
-
-
-            ;; Free Limit
-            ;; (dom/div {:className "col-xs-2 col-md-2" :style {:padding-left "0px" :padding-right "0px"}}            
-            ;;   (dom/a {:className "list-group-item" :style {:padding-left "3px" :padding-right "3px" :text-align "right"} :href (str  "#/postrans/" (:id item) "/" (:selectedsec @sbercore/app-state)) }
-            ;;     (dom/h4 {:className "list-group-item-heading"} (sbercore/split-thousands (str (:freelimit item))))
-            ;;   )
-            ;; )
-
-
-            ;;Shares can buy in USD
-            (dom/div {:className "col-xs-1 col-md-1" :style {:padding-left "0px" :padding-right "0px"}}            
-              (dom/a {:className "list-group-item" :style {:padding-left "3px" :padding-right "3px" :text-align "right"} :href (str  "#/postrans/" (:id item) "/" (:selectedsec @sbercore/app-state)) }
-                (dom/h4 {:className "list-group-item-heading"} (sbercore/split-thousands (str (:maxusdshares item))))
+              ;;USD amount
+              (dom/div {:className "col-xs-1 col-md-1" :style {:padding-left "0px" :padding-right "0px"}}            
+                (dom/a {:className "list-group-item" :style {:padding-left "3px" :padding-right "3px" :text-align "right"} :href (str  "#/postrans/" (:id item) "/" (:selectedsec @sbercore/app-state)) }
+                  (dom/h4 {:className "list-group-item-heading"} (sbercore/split-thousands (gstring/format "%.0f" (:usd item))))
+                )            
               )
-            )
 
-
-            ;;Shares can buy in RUB
-            (dom/div {:className "col-xs-1 col-md-1" :style {:padding-left "0px" :padding-right "0px"}}            
-              (dom/a {:className "list-group-item" :style {:padding-left "3px" :padding-right "3px" :text-align "right"} :href (str  "#/postrans/" (:id item) "/" (:selectedsec @sbercore/app-state)) }
-                (dom/h4 {:className "list-group-item-heading"} (sbercore/split-thousands (str (:maxrubshares item))))
+              ;;RUB amount
+              (dom/div {:className "col-xs-1 col-md-1" :style {:padding-left "0px" :padding-right "0px"}}            
+                (dom/a {:className "list-group-item" :style {:padding-left "3px" :padding-right "3px" :text-align "right"} :href (str  "#/postrans/" (:id item) "/" (:selectedsec @sbercore/app-state)) }
+                  (dom/h4 {:className "list-group-item-heading"} (sbercore/split-thousands (gstring/format "%.0f" (:rub item))))
+                )            
               )
-            )
 
-            ;;Shares can buy in EUR
-            (dom/div {:className "col-xs-1 col-md-1" :style {:padding-left "0px" :padding-right "0px"}}            
-              (dom/a {:className "list-group-item" :style {:padding-left "3px" :padding-right "3px" :text-align "right"} :href (str  "#/postrans/" (:id item) "/" (:selectedsec @sbercore/app-state)) }
-                (dom/h4 {:className "list-group-item-heading"} (sbercore/split-thousands (str (:maxeurshares item))))
+
+              ;;EUR amount
+              (dom/div {:className "col-xs-1 col-md-1" :style {:padding-left "0px" :padding-right "0px"}}            
+                (dom/a {:className "list-group-item" :style {:padding-left "3px" :padding-right "3px" :text-align "right"} :href (str  "#/postrans/" (:id item) "/" (:selectedsec @sbercore/app-state)) }
+                  (dom/h4 {:className "list-group-item-heading"} (sbercore/split-thousands (gstring/format "%.0f" (:eur item))))
+                )            
               )
-            )
 
-            ;;Shares can buy in GBP
-            (dom/div {:className "col-xs-1 col-md-1" :style {:padding-left "0px" :padding-right "0px"}}            
-              (dom/a {:className "list-group-item" :style {:padding-left "3px" :padding-right "3px" :text-align "right"} :href (str  "#/postrans/" (:id item) "/" (:selectedsec @sbercore/app-state)) }
-                (dom/h4 {:className "list-group-item-heading"} (sbercore/split-thousands (str (:maxgbpshares item))))
+              ;;GBP amount
+              (dom/div {:className "col-xs-1 col-md-1" :style {:padding-left "0px" :padding-right "0px"}}            
+                (dom/a {:className "list-group-item" :style {:padding-left "3px" :padding-right "3px" :text-align "right"} :href (str  "#/postrans/" (:id item) "/" (:selectedsec @sbercore/app-state)) }
+                  (dom/h4 {:className "list-group-item-heading"} (sbercore/split-thousands (gstring/format "%.0f" (:gbp item))))
+                )            
               )
-            )
 
-            ;;Купить бумаг
-            (dom/div {:className "col-xs-1 col-md-1" :style {:padding-left "0px" :padding-right "0px"}}
-              (dom/input {:type "text" :id (str "sharesbuy" (:client item)) :style {:height "40px" :width "100%" :font-size "14px" :font-weight 500 :margin-top "2px"} :defaultValue (:amount (first (filter (fn [x] (if (= (:code x) (:client item)) true false)) (:letters @app-state)))) :onChange (fn [e] (handle-sharebuy-change e ))
-})
-            )
+              ;; Total Limit
+              ;; (dom/div {:className "col-xs-1 col-md-1" :style {:padding-left "0px" :padding-right "0px"}}            
+              ;;   (dom/a {:className "list-group-item" :style {:padding-left "3px" :padding-right "3px" :text-align "right"} :href (str  "#/postrans/" (:id item) "/" (:selectedsec @sbercore/app-state)) }
+              ;;     (dom/h4 {:className "list-group-item-heading"} (sbercore/split-thousands (str (:maxlimit item))))
+              ;;   )
+              ;; )
 
-            ;;Отправить письмо
-            (dom/div {:className "col-xs-1 col-md-1" :style {:padding-left "0px" :padding-right "0px"}}
-              (dom/input {:id (str "checksend" (:client item))  :type "checkbox" :style {:height "32px" :width "70px" :margin-top "1px"} :defaultChecked (:issend (first (filter (fn [x] (if (= (:code x) (:client item)) true false)) (:letters @app-state)))) :onChange (fn [e] (handle-chkbsend-change e ))})
+              ;;Bought Shares
+              (dom/div {:className "col-xs-1 col-md-1" :style {:padding-left "0px" :padding-right "0px"}}            
+                (dom/a {:className "list-group-item" :style {:padding-left "3px" :padding-right "3px" :text-align "right"} :href (str  "#/postrans/" (:id item) "/" (:selectedsec @sbercore/app-state)) }
+                  (dom/h4 {:className "list-group-item-heading"} (sbercore/split-thousands (str (:shares item)))   )
+                )            
+              )
+
+
+              ;; Free Limit
+              ;; (dom/div {:className "col-xs-2 col-md-2" :style {:padding-left "0px" :padding-right "0px"}}            
+              ;;   (dom/a {:className "list-group-item" :style {:padding-left "3px" :padding-right "3px" :text-align "right"} :href (str  "#/postrans/" (:id item) "/" (:selectedsec @sbercore/app-state)) }
+              ;;     (dom/h4 {:className "list-group-item-heading"} (sbercore/split-thousands (str (:freelimit item))))
+              ;;   )
+              ;; )
+
+
+              ;;Shares can buy in USD
+              (dom/div {:className "col-xs-1 col-md-1" :style {:padding-left "0px" :padding-right "0px"}}            
+                (dom/a {:className "list-group-item" :style {:padding-left "3px" :padding-right "3px" :text-align "right"} :href (str  "#/postrans/" (:id item) "/" (:selectedsec @sbercore/app-state)) }
+                  (dom/h4 {:className "list-group-item-heading"} (sbercore/split-thousands (str (:maxusdshares item))))
+                )
+              )
+
+
+              ;;Shares can buy in RUB
+              (dom/div {:className "col-xs-1 col-md-1" :style {:padding-left "0px" :padding-right "0px"}}            
+                (dom/a {:className "list-group-item" :style {:padding-left "3px" :padding-right "3px" :text-align "right"} :href (str  "#/postrans/" (:id item) "/" (:selectedsec @sbercore/app-state)) }
+                  (dom/h4 {:className "list-group-item-heading"} (sbercore/split-thousands (str (:maxrubshares item))))
+                )
+              )
+
+              ;;Shares can buy in EUR
+              (dom/div {:className "col-xs-1 col-md-1" :style {:padding-left "0px" :padding-right "0px"}}            
+                (dom/a {:className "list-group-item" :style {:padding-left "3px" :padding-right "3px" :text-align "right"} :href (str  "#/postrans/" (:id item) "/" (:selectedsec @sbercore/app-state)) }
+                  (dom/h4 {:className "list-group-item-heading"} (sbercore/split-thousands (str (:maxeurshares item))))
+                )
+              )
+
+              ;;Shares can buy in GBP
+              (dom/div {:className "col-xs-1 col-md-1" :style {:padding-left "0px" :padding-right "0px"}}            
+                (dom/a {:className "list-group-item" :style {:padding-left "3px" :padding-right "3px" :text-align "right"} :href (str  "#/postrans/" (:id item) "/" (:selectedsec @sbercore/app-state)) }
+                  (dom/h4 {:className "list-group-item-heading"} (sbercore/split-thousands (str (:maxgbpshares item))))
+                )
+              )
+
+              ;;Купить бумаг
+              (dom/div {:className "col-xs-1 col-md-1" :style {:padding-left "0px" :padding-right "0px"}}
+                (dom/input {:type "text" :id (str "sharesbuy" (:client item)) :style {:height "40px" :width "100%" :font-size "14px" :font-weight 500 :margin-top "2px"} :defaultValue (:amount (first (filter (fn [x] (if (= (:code x) (:client item)) true false)) (:letters @app-state)))) :onChange (fn [e] (handle-sharebuy-change e ))
+  })
+              )
+
+              ;;Отправить письмо
+              (dom/div {:className "col-xs-1 col-md-1" :style {:padding-left "0px" :padding-right "0px"}}
+                (dom/input {:id (str "checksend" (:client item))  :type "checkbox" :style {:height "32px" :width "70px" :margin-top "1px"} :defaultChecked (:issend (first (filter (fn [x] (if (= (:code x) (:client item)) true false)) (:letters @app-state)))) :onChange (fn [e] (handle-chkbsend-change e ))})
+              )
             )
           )
         )
-        )
+
            (sort (comp comp-portfs) (filter (fn [x] (let [
                portfname (:client x)
                ]
                (if (or (= false (str/includes? portfname (str/upper-case (:search @sbercore/app-state)))) (and (= 1 (:noholders @sbercore/app-state)) (> (:shares x) 0.0)))  false true)) ) (:calcportfs ((keyword (str (:selectedsec @sbercore/app-state))) @sbercore/app-state))))
+        )
       )
+
+      (dom/div
+        (dom/p {:style {:text-align "center"}}
+          (dom/img {:src "images/loader.gif"})
+        )
+      )
+    )
     )
   )
 )
@@ -339,7 +359,7 @@
       ]
 
       (dom/div
-        (om/build sbercore/website-view sbercore/app-state {})
+        (om/build sbercore/website-view data {})
         (dom/div  (assoc styleprimary  :className "panel panel-primary")
           (dom/div {:className "panel-heading"}
 

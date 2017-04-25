@@ -176,7 +176,7 @@
   (let [
      conn (d/connect uri)
      ]
-    (d/transact-async conn [{ :client/code "IVNPF", :client/name "Клиент IVNPF", :client/currency "USD", :client/stockshare 50.0 :client/bondshare 50.0, :client/usd 100000.0, :client/rub 100000.0, :client/eur 100000.0, :client/gbp 100000.0, :client/signedadvisory 5000000.0, :client/advemail "elena_slobodina@sberbank-pb.ru", :client/email "Ivanova25@inbox.ru", :db/id #db/id[:db.part/user -102088]}
+    (d/transact-async conn [{ :security/acode "SOAF25", :security/isin "US836205AR58", :security/bcode "US836205AR58 Corp", :security/assettype 5, :security/exchange "NYSE", :security/currency "USD", :db/id #db/id[:db.part/user -100572] }
 ]
     )
     ; To insert new entity:
@@ -1490,7 +1490,7 @@
                 (recur result (inc num))
               )
               result
-            )Б
+            )
           )
         )
         ;tr5 (println (first trans ) )

@@ -20,7 +20,7 @@
 
 (enable-console-print!)
 
-(defonce app-state (atom {:percentage "5.00" :noholders 0 :selectedclient "AAOHF" :search ""  :user {:role "admin"} }))
+(defonce app-state (atom {:state 0 :percentage "5.00" :noholders 0 :selectedclient "AAOHF" :search ""  :user {:role "admin"} }))
 
 
 
@@ -202,12 +202,14 @@
 )
 
 (defn OnGetPortfolios [response]
-   (swap! app-state assoc-in [ (keyword (str (:selectedsec @app-state)) ) :portfolios] (map (fn [x] (map-portfolio x)) response) )
+  (swap! app-state assoc :state 1 )
+  (swap! app-state assoc-in [ (keyword (str (:selectedsec @app-state)) ) :portfolios] (map (fn [x] (map-portfolio x)) response) )
 )
 
 (defn OnGetCalcPortfolios [response]
-   (swap! app-state assoc )
-   (swap! app-state assoc-in [ (keyword (str (:selectedsec @app-state)) ) :calcportfs] (map (fn [x] (map-calc-portfolio x)) response) )
+  ;(set! ( . (.getElementById js/document "btnrefresh") -disabled) false)
+  (swap! app-state assoc :state 1 )
+  (swap! app-state assoc-in [ (keyword (str (:selectedsec @app-state)) ) :calcportfs] (map (fn [x] (map-calc-portfolio x)) response) )
 )
 
 (defn OnGetPositions [response]
@@ -247,6 +249,8 @@
 )
 
 (defn getCalcPortfolios [] 
+  (swap! app-state assoc :state 2 )
+  ;(set! ( . (.getElementById js/document "btnrefresh") -disabled) true)
   (GET (str settings/apipath "api/calcshares?security=" (:selectedsec @app-state) "&percentage=" (:percentage @app-state) ) {
     :handler OnGetCalcPortfolios
     :error-handler error-handler
@@ -365,6 +369,8 @@
 )
 
 (defn setCalcSecsDropDown []
+  (swap! app-state assoc :state 0)
+  ;(set! ( . (.getElementById js/document "btnrefresh") -disabled) true)
   (jquery
      (fn []
        (-> (jquery "#securities" )
@@ -388,7 +394,7 @@
    )
 )
 
-(defn setClientsDropDown []
+(defn setClientsDropDown []  
   (jquery
      (fn []
        (-> (jquery "#clients" )
@@ -647,9 +653,9 @@
           )
         )
         (dom/div {:className "collapse navbar-collapse navbar-ex1-collapse" :id "menu"}
-          (dom/ul {:className "nav navbar-nav" :style {:padding-top "17px" :visibility (if (= (compare (:name (:current @app-state))  "Portfolios") 0) "visible" "hidden")}}
+          (dom/ul {:className "nav navbar-nav" :style {:padding-top "17px" :visibility (if (= (compare (:name (:current @data))  "Portfolios") 0) "visible" "hidden")}}
             (dom/li
-              (dom/div {:style {:margin-right "10px" :visibility (if (and (= (compare (:name (:current @app-state)) "Portfolios") 0) (or (= (:role (:user @app-state)) "admin") (= (:role (:user @app-state)) "admin")) ) "visible" "hidden")}} 
+              (dom/div {:style {:margin-right "10px" :visibility (if (and (= (compare (:name (:current @data)) "Portfolios") 0) (or (= (:role (:user @data)) "admin") (= (:role (:user @data)) "admin")) ) "visible" "hidden")}} 
                 (omdom/select #js {:id "securities"
                                    :className "selectpicker"
                                    :data-show-subtext "true"
@@ -662,23 +668,23 @@
             )
             (dom/li
               (dom/h5 {:style {:margin-left "5px" :margin-right "5px" :height "32px" :margin-top "1px"}} " "
-      (dom/input {:id "search" :type "text" :placeholder "Search" :style {:height "32px" :width "100px" :margin-top "1px"} :value  (:search @app-state) :onChange (fn [e] (handleChange e )) })  )
+      (dom/input {:id "search" :type "text" :placeholder "Search" :style {:height "32px" :width "100px" :margin-top "1px"} :value  (:search @data) :onChange (fn [e] (handleChange e )) })  )
             )
 
             (dom/li {:style {:margin-left "3px"}}
               (dom/label {:for "noholders" :style {:font-weight 100 :padding-right "1px" :padding-top "7px"}} "Оставить без бумаги:")
             )
             (dom/li {:style {:margin-left "1px"}}
-              (dom/input {:id "noholders" :type "checkbox" :style {:height "32px" :width "70px" :margin-top "1px"} :defaultChecked (if (= 0 (:noholders @app-state)) false true) :label "Оставить без бумаги" :onChange (fn [e] (handle-chkb-change e ))})
+              (dom/input {:id "noholders" :type "checkbox" :style {:height "32px" :width "70px" :margin-top "1px"} :defaultChecked (if (= 0 (:noholders @data)) false true) :label "Оставить без бумаги" :onChange (fn [e] (handle-chkb-change e ))})
             )
 
             (dom/li {:style {:margin-left "1px"}}
               (dom/label {:for "percentage" :style {:font-weight 100 :padding-right "10px"}} "Процент: ")
 
-              (dom/input {:id "percentage" :type "number" :step "0.01" :style {:height "32px" :width "70px" :margin-top "1px"} :value  (:percentage @app-state) :onChange (fn [e] (handleChange e ))})
+              (dom/input {:id "percentage" :type "number" :step "0.01" :style {:height "32px" :width "70px" :margin-top "1px"} :value  (:percentage @data) :onChange (fn [e] (handleChange e ))})
             )
             (dom/li {:style {:margin-left "5px"}}
-              (b/button {:className "btn btn-info"  :onClick (fn [e] (getCalcPortfolios))  } "Обновить")
+              (dom/button #js {:id "btnrefresh" :disabled (if (= 1 (:state @data)) false true) :className (if (= 2 (:state @data)) "btn btn-info m-progress" "btn btn-info")  :type "button" :onClick (fn [e] (getCalcPortfolios))} "Обновить")
             )
           )
 
@@ -812,7 +818,7 @@
 (defmethod website-view 4
   [data owner] 
   ;(.log js/console "One is found in view")
-  (calcportfs-navigation-view data owner)
+  (calcportfs-navigation-view app-state owner)
 )
 
 (defmethod website-view 5

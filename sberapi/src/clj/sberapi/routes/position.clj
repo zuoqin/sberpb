@@ -263,17 +263,19 @@
 
 
 
-(defn sendLetter [security clientcode txtdata]
+(defn sendLetter [security clientdata txtdata]
   (let [
     email (:advmail (first (filter (fn [x] (if (= (:code x) clientcode) true false)) (clients/get-clients))))
     ;tr1 (println (str "sending email to: ") email)
+
+    texttosend (str ("Прошу согласовать покупку " security " для клиента " (:code clientdata) " в количестве " (:amount clientdata) " штук" "\n" txtdata))
     ]
     (postal/send-message {:host "psmtp.sberbank-cib.ru"} ;:user "alexey@sberpb.com" :pass "password"
       {:from "tradeidea@sberpb.com"
        :to email
        :cc ["Alexey_Zorchenkov@sberbank-pb.ru" "Rustam_Nazimanov@sberbank-pb.ru" "Alexey_Koshkin@sberbank-pb.ru"]
        :subject (str "Trade idea: " security) 
-       :body txtdata}
+       :body texttosend}
     )
     ;;email
   )
@@ -286,7 +288,7 @@
       security (:acode (first (filter (fn [x] (if (= (:id x) security) true false)) (secs/get-securities))))
       ;tr1 (println clients)
     ]
-    (doall (map (fn [x] (sendLetter security (:code x) recommendtext)) clients))
+    (doall (map (fn [x] (sendLetter security x recommendtext)) clients))
     ;; (postal/send-message {:from "me@draines.com"
     ;;                         :to ["mom@example.com" "dad@example.com"]
     ;;                         :cc "bob@example.com"
