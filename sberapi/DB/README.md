@@ -62,6 +62,7 @@ then open in the browser: http://localhost:8080/browse
 2. (create-tran-files)
 3. (import-cash-positions)
 4. (import-excel-quotes)
+5. (recent-deals-to-db)
 
 SMTP server: psmtp.sberbank-cib.ru
 

@@ -98,15 +98,19 @@
           )
 
           (dom/div {:className "col-xs-3 col-md-3"} 
-            (dom/h4 {:className "list-group-item-heading"} (if (= (:direction item) "B") "Buy" "Sell"))
+            (dom/h4 {:className "list-group-item-heading" :style {:text-align "center"}} (if (= (:direction item) "B") "Buy" "Sell"))
           )
 
           (dom/div {:className "col-xs-3 col-md-3"} 
             (dom/h4 {:className "list-group-item-heading" :style {:text-align "right"}} (sbercore/split-thousands (str (:nominal item)) )  )
           )
 
-          (dom/div {:className "col-xs-3 col-md-3" :style {:text-align "right"}}
+          (dom/div {:className "col-xs-2 col-md-2" :style {:text-align "right"}}
             (dom/h4 {:className "list-group-item-heading"} (if (> (:price item) 1) (gstring/format "%.2f" (:price item))  (subs (str (:price item)) 0 5) ))
+          )
+
+          (dom/div {:className "col-xs-1 col-md-1"} 
+            (dom/h4 {:className "list-group-item-heading" :style {:text-align "center"}} (:currency item))
           )
         )
 
@@ -163,7 +167,8 @@
               (dom/div {:className "col-xs-3 col-md-3" :style {:text-align "center"}} "Date")
               (dom/div {:className "col-xs-3 col-md-3" :style {:text-align "center"}} "Buy/Sell")
               (dom/div {:className "col-xs-3 col-md-3" :style {:text-align "center"}} "Amount")
-              (dom/div {:className "col-xs-3 col-md-3" :style {:text-align "center"}} "Price")
+              (dom/div {:className "col-xs-2 col-md-2" :style {:text-align "center"}} "Price")
+              (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "Currency")
             )
           )
           (dom/div {:className "panel-body"}

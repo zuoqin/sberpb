@@ -243,7 +243,7 @@
                       :where
                       [?e :transaction/client ?c]
                       [?c :client/code ?client]
-                      [?e :transaction/currency ?currency]
+                      ;[?e :transaction/currency ?currency]
                       [?e :transaction/direction ?direction]
                       [?e :transaction/nominal ?nominal1]
                       [?e :transaction/price ?price1]
@@ -1201,7 +1201,9 @@
 
           ;tr1 (println "rate1: " ratetranscurrency " rate2: " newrate)
           ]
-          {:client (:client x) :valuedate (:valuedate x) :direction (:direction x) :price (* newrate (:price x))  :nominal (:nominal x) :currency seccurrency :security (get-sec-by-acode (:security x)) }
+          ;{:client (:client x) :valuedate (:valuedate x) :direction (:direction x) :price (* newrate (:price x))  :nominal (:nominal x) :currency seccurrency :security (get-sec-by-acode (:security x)) }
+
+          {:client (:client x) :valuedate (:valuedate x) :direction (:direction x) :price (:price x)  :nominal (:nominal x) :currency (:currency x) :security (get-sec-by-acode (:security x)) }
 
           ))  (filter (fn [x] (if (or (nil? (:security x)) (= 0 (compare "TNBP" (:security x))) (= 0 (compare "TNBPP" (:security x))))  false true))  tranmap))
 
@@ -1383,7 +1385,6 @@
      ;tr2 (println "HHH")
      security (first (filter (fn [x] (if (= (:acode x) (:security tran)) true false)) (get-securities)))
 
-     
      ;tr1 (println (str security))
      ;newindex (- -110002 index)
      ;tr1 (println (str "Found: " (find-transaction tran) " in database with security: " security))
@@ -1406,11 +1407,11 @@
         x (parse f)
 	
         trancnt (- (count (:content (nth   (:content (nth (:content x) 4) )  0 ) ) ) 1)  
-        ;tr1 (println trancnt) 
+        ;tr1 (println trancnt)
         trans (loop [result [] num 0 ]
-          (let [item (if (<= num trancnt) (:content (nth (:content (nth   (:content (nth (:content x) 4) )  0 ) )  num)))
+          (let [item (if (<= num trancnt) (:content (nth (:content (nth (:content (nth (:content x) 4) )  0 ) )  num)))
             ]
-            (if (<= num trancnt)            
+            (if (<= num trancnt)
               
               (if (and
                    (= (:ss:StyleID (:attrs (nth item 0))) "s72" )

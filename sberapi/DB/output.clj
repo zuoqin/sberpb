@@ -1933,10 +1933,13 @@
 { :transaction/client #db/id[:db.part/user -102049], :transaction/security #db/id[:db.part/user -100048], :transaction/nominal 200000.0,      :transaction/price 107.00, :transaction/direction "S", :transaction/valuedate #inst "2017-04-21T10:00:00.0000000Z", :transaction/currency "USD", :transaction/comment "Оферта KOKS18",                                            :db/id #db/id[:db.part/user -110309] }
 
 
+{ :transaction/client #db/id[:db.part/user -102021], :transaction/security #db/id[:db.part/user -100048], :transaction/nominal 200000.0,      :transaction/price 107.00, :transaction/direction "S", :transaction/valuedate #inst "2017-04-21T10:00:00.0000000Z", :transaction/currency "USD", :transaction/comment "Оферта KOKS18",                                            :db/id #db/id[:db.part/user -110311] }
+
+
 { :transaction/client #db/id[:db.part/user -102049], :transaction/security #db/id[:db.part/user -100549], :transaction/nominal 12350.0, :transaction/price 4.05, :transaction/direction "B", :transaction/valuedate #inst "2017-03-24T23:59:00.0000000Z", :transaction/currency "USD", :transaction/comment "Change VIP to VEON", :db/id #db/id[:db.part/user -110310] }
 
 
-{ :transaction/client #db/id[:db.part/user -102049], :transaction/security #db/id[:db.part/user -100044], :transaction/nominal 12350.0, :transaction/price 4.05, :transaction/direction "S", :transaction/valuedate #inst "2017-03-24T23:58:00.0000000Z", :transaction/currency "USD", :transaction/comment "Change VIP to VEON", :db/id #db/id[:db.part/user -110311] }
+{ :transaction/client #db/id[:db.part/user -102049], :transaction/security #db/id[:db.part/user -100044], :transaction/nominal 12350.0, :transaction/price 4.05, :transaction/direction "S", :transaction/valuedate #inst "2017-03-24T23:58:00.0000000Z", :transaction/currency "USD", :transaction/comment "Change VIP to VEON", :db/id #db/id[:db.part/user -110312] }
 
 
 ;; PRICES

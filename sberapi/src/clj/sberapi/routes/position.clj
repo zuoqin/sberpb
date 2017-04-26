@@ -59,6 +59,7 @@
                         rubprice (* (:fx tran) (:price tran))
 
                         usdrate (db/get-fxrate-by-date "USD" (:valuedate tran))
+                        seccurfxrate (db/get-fxrate-by-date currency (:valuedate tran))
                         usdprice (/ rubprice usdrate)
 
                         prevrubprice (:rubprice ((keyword sec) result))
@@ -67,11 +68,7 @@
                         
                         prevusdprice (:wapusd ((keyword sec) result))
 
-                        wap (if (nil? amnt ) (:price tran) (if (> newamnt 0) 
-                                                           
-
-
-                        (if (> tranamnt 0) (/ (+ (* prevpr amnt) (* (:price tran) tranamnt)) newamnt)  prevpr)  0))
+                        wap (if (nil? amnt ) (/ (:price tran) seccurfxrate)  (if (> newamnt 0) (if (> tranamnt 0) (/ (+ (* prevpr amnt) (* (/ (:price tran) seccurfxrate) tranamnt)) newamnt)  prevpr)  0))
 
 
                         waprub (if (nil? amnt ) rubprice (if (> newamnt 0) (/ (+ (* prevrubprice amnt) (* rubprice tranamnt)) newamnt) 0))
@@ -265,7 +262,7 @@
 
 (defn sendLetter [security clientdata txtdata]
   (let [
-    email (:advmail (first (filter (fn [x] (if (= (:code x) clientcode) true false)) (clients/get-clients))))
+    email (:advmail (first (filter (fn [x] (if (= (:code x) (:code clientdata)) true false)) (clients/get-clients))))
     ;tr1 (println (str "sending email to: ") email)
 
     texttosend (str ("Прошу согласовать покупку " security " для клиента " (:code clientdata) " в количестве " (:amount clientdata) " штук" "\n" txtdata))
