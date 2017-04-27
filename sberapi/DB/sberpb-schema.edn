@@ -304,6 +304,27 @@
   :db/doc "Price date"
   :db.install/_attribute :db.part/db}
 
+ {:db/id #db/id[:db.part/db]
+  :db/ident :price/dvddate
+  :db/valueType :db.type/instant
+  :db/cardinality :db.cardinality/one
+  :db/doc "Ex didivdend date"
+  :db.install/_attribute :db.part/db}
+
+{:db/id #db/id[:db.part/db]
+  :db/ident :price/duration
+  :db/valueType :db.type/double
+  :db/cardinality :db.cardinality/one
+  :db/doc "Current duration for bonds"
+  :db.install/_attribute :db.part/db}
+
+ {:db/id #db/id[:db.part/db]
+  :db/ident :price/putdate
+  :db/valueType :db.type/instant
+  :db/cardinality :db.cardinality/one
+  :db/doc "Put date for bonds or Next didivdend declaration for stocks"
+  :db.install/_attribute :db.part/db}
+
 {:db/id #db/id[:db.part/db]
   :db/ident :price/source
   :db/valueType :db.type/string

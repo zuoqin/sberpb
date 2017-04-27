@@ -1943,23 +1943,21 @@
 
 
 ;; PRICES
-{ :price/security #db/id[:db.part/user -100133],    :price/lastprice  1.0,     :price/valuedate #inst "2000-01-01T10:00:00.0000000Z", :price/analystrating 0.0, :price/targetprice 1.0, :price/yield 0.0 :price/comment "manual", :price/source "test data", :db/id #db/id[:db.part/user -200001] }
+{ :price/security #db/id[:db.part/user -100133],    :price/lastprice  1.0,     :price/valuedate #inst "2000-01-01T10:00:00.0000000Z", :price/analystrating 0.0, :price/targetprice 1.0, :price/yield 0.0, :price/dvddate #inst "1900-01-01T00:00:00.0000000Z", :price/duration 0.0, :price/comment "manual", :price/source "test data", :db/id #db/id[:db.part/user -200001] }
 
+{ :price/security #db/id[:db.part/user -100134],    :price/lastprice  1.0,     :price/valuedate #inst "2000-01-01T10:00:00.0000000Z", :price/analystrating 0.0, :price/targetprice 1.0, :price/yield 0.0, :price/dvddate #inst "1900-01-01T00:00:00.0000000Z", :price/duration 0.0, :price/putdate #inst "1900-01-01T00:00:00.0000000Z", :price/comment "manual", :price/source "test data", :db/id #db/id[:db.part/user -200002] }
 
-{ :price/security #db/id[:db.part/user -100134],    :price/lastprice  1.0,     :price/valuedate #inst "2000-01-01T10:00:00.0000000Z", :price/analystrating 0.0, :price/targetprice 1.0, :price/yield 0.0, :price/comment "manual", :price/source "test data", :db/id #db/id[:db.part/user -200002] }
+{ :price/security #db/id[:db.part/user -100223],    :price/lastprice  8.1,     :price/valuedate #inst "2000-01-01T10:00:00.0000000Z", :price/analystrating 0.0, :price/targetprice 8.1, :price/yield 0.0, :price/dvddate #inst "1900-01-01T00:00:00.0000000Z", :price/duration 0.0, :price/putdate #inst "1900-01-01T00:00:00.0000000Z", :price/comment "manual", :price/source "test data", :db/id #db/id[:db.part/user -200003] }
 
-{ :price/security #db/id[:db.part/user -100223],    :price/lastprice  8.1,     :price/valuedate #inst "2000-01-01T10:00:00.0000000Z", :price/analystrating 0.0, :price/targetprice 8.1, :price/yield 0.0, :price/comment "manual", :price/source "test data", :db/id #db/id[:db.part/user -200003] }
+{ :price/security #db/id[:db.part/user -100132],    :price/lastprice  30.0,    :price/valuedate #inst "2000-01-01T10:00:00.0000000Z", :price/analystrating 0.0, :price/targetprice 30.0, :price/yield 0.0, :price/dvddate #inst "1900-01-01T00:00:00.0000000Z", :price/duration 0.0, :price/putdate #inst "1900-01-01T00:00:00.0000000Z", :price/comment "manual", :price/source "test data", :db/id #db/id[:db.part/user -200004] }
 
+{ :price/security #db/id[:db.part/user -100005],    :price/lastprice  50.0,    :price/valuedate #inst "2000-01-01T10:00:00.0000000Z", :price/analystrating 0.0, :price/targetprice 50.0, :price/yield 0.0, :price/dvddate #inst "1900-01-01T00:00:00.0000000Z", :price/duration 0.0, :price/putdate #inst "1900-01-01T00:00:00.0000000Z", :price/comment "manual", :price/source "test data", :db/id #db/id[:db.part/user -200005] }
 
-{ :price/security #db/id[:db.part/user -100132],    :price/lastprice  30.0,    :price/valuedate #inst "2000-01-01T10:00:00.0000000Z", :price/analystrating 0.0, :price/targetprice 30.0, :price/yield 0.0, :price/comment "manual", :price/source "test data", :db/id #db/id[:db.part/user -200004] }
+{ :price/security #db/id[:db.part/user -100135],    :price/lastprice  30.0,    :price/valuedate #inst "2000-01-01T10:00:00.0000000Z", :price/analystrating 0.0, :price/targetprice 30.0, :price/yield 0.0, :price/dvddate #inst "1900-01-01T00:00:00.0000000Z", :price/duration 0.0, :price/putdate #inst "1900-01-01T00:00:00.0000000Z", :price/comment "manual", :price/source "test data", :db/id #db/id[:db.part/user -200006] }
 
-{ :price/security #db/id[:db.part/user -100005],    :price/lastprice  50.0,    :price/valuedate #inst "2000-01-01T10:00:00.0000000Z", :price/analystrating 0.0, :price/targetprice 50.0, :price/yield 0.0, :price/comment "manual", :price/source "test data", :db/id #db/id[:db.part/user -200005] }
+{ :price/security #db/id[:db.part/user -100136],    :price/lastprice  3.01,    :price/valuedate #inst "2000-01-01T10:00:00.0000000Z", :price/analystrating 0.0, :price/targetprice 30.0, :price/yield 0.0, :price/dvddate #inst "1900-01-01T00:00:00.0000000Z", :price/duration 0.0, :price/putdate #inst "1900-01-01T00:00:00.0000000Z", :price/comment "manual", :price/source "test data", :db/id #db/id[:db.part/user -200007] }
 
-{ :price/security #db/id[:db.part/user -100135],    :price/lastprice  30.0,    :price/valuedate #inst "2000-01-01T10:00:00.0000000Z", :price/analystrating 0.0, :price/targetprice 30.0, :price/yield 0.0, :price/comment "manual", :price/source "test data", :db/id #db/id[:db.part/user -200006] }
+{ :price/security #db/id[:db.part/user -100144],    :price/lastprice  20.0,    :price/valuedate #inst "2000-01-01T10:00:00.0000000Z", :price/analystrating 0.0, :price/targetprice 20.0, :price/yield 0.0, :price/dvddate #inst "1900-01-01T00:00:00.0000000Z", :price/duration 0.0, :price/putdate #inst "1900-01-01T00:00:00.0000000Z", :price/comment "manual", :price/source "test data", :db/id #db/id[:db.part/user -200008] }
 
-{ :price/security #db/id[:db.part/user -100136],    :price/lastprice  3.01,    :price/valuedate #inst "2000-01-01T10:00:00.0000000Z", :price/analystrating 0.0, :price/targetprice 30.0, :price/comment "manual", :price/source "test data", :db/id #db/id[:db.part/user -200007] }
-
-{ :price/security #db/id[:db.part/user -100144],    :price/lastprice  20.0,    :price/valuedate #inst "2000-01-01T10:00:00.0000000Z", :price/analystrating 0.0, :price/targetprice 20.0, :price/yield 0.0, :price/comment "manual", :price/source "test data", :db/id #db/id[:db.part/user -200008] }
-
-{ :price/security #db/id[:db.part/user -100320],    :price/lastprice  3.01,    :price/valuedate #inst "2000-01-01T10:00:00.0000000Z", :price/analystrating 0.0, :price/targetprice 3.01, :price/yield 0.0, :price/comment "manual", :price/source "test data", :db/id #db/id[:db.part/user -200009] }
+{ :price/security #db/id[:db.part/user -100320],    :price/lastprice  3.01,    :price/valuedate #inst "2000-01-01T10:00:00.0000000Z", :price/analystrating 0.0, :price/targetprice 3.01, :price/yield 0.0, :price/dvddate #inst "1900-01-01T00:00:00.0000000Z", :price/duration 0.0, :price/putdate #inst "1900-01-01T00:00:00.0000000Z", :price/comment "manual", :price/source "test data", :db/id #db/id[:db.part/user -200009] }
 ]

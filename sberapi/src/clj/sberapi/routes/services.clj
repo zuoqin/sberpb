@@ -34,7 +34,7 @@
   {:swagger {:ui "/swagger-ui"
              :spec "/swagger.json"
              :data {:info {:version "1.0.0"
-                           :title "Trip Advisor API"
+                           :title "Sberbank Private Bank API"
                            :description "Core Services"}}}}
   
 

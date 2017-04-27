@@ -52,7 +52,8 @@
                   (let [
                         tran (first trans)
                         sec (str (:security tran))
-                        currency (:currency (first (filter (fn [x] (if (= (:security tran) (:id x)) true false)) securities)))
+                        security (first (filter (fn [x] (if (= (:security tran) (:id x)) true false)) securities))
+                        currency (:currency security)
                         amnt (:amount ( (keyword sec) result ))
                         prevpr (if (nil? (:price ((keyword sec) result))) 0 (:price ((keyword sec) result)))
                         
@@ -60,6 +61,7 @@
 
                         usdrate (db/get-fxrate-by-date "USD" (:valuedate tran))
                         seccurfxrate (db/get-fxrate-by-date currency (:valuedate tran))
+                        trancurfxrate (db/get-fxrate-by-date (:currency tran) (:valuedate tran))
                         usdprice (/ rubprice usdrate)
 
                         prevrubprice (:rubprice ((keyword sec) result))
@@ -68,7 +70,7 @@
                         
                         prevusdprice (:wapusd ((keyword sec) result))
 
-                        wap (if (nil? amnt ) (/ (:price tran) seccurfxrate)  (if (> newamnt 0) (if (> tranamnt 0) (/ (+ (* prevpr amnt) (* (/ (:price tran) seccurfxrate) tranamnt)) newamnt)  prevpr)  0))
+                        wap (if (nil? amnt ) (* (:price tran) (if (= 5 (:assettype security)) 1.0 (/ trancurfxrate seccurfxrate)))  (if (> newamnt 0) (if (> tranamnt 0) (/ (+ (* prevpr amnt) (* (:price tran) (if (= 5 (:assettype security)) 1.0 (/ trancurfxrate seccurfxrate)) tranamnt)) newamnt)  prevpr)  0))
 
 
                         waprub (if (nil? amnt ) rubprice (if (> newamnt 0) (/ (+ (* prevrubprice amnt) (* rubprice tranamnt)) newamnt) 0))
@@ -262,27 +264,33 @@
 
 (defn sendLetter [security clientdata txtdata]
   (let [
+    ;tr1 (println (str "sending text1: ") txtdata)
+    ;tr1 (println (str clientdata))
     email (:advmail (first (filter (fn [x] (if (= (:code x) (:code clientdata)) true false)) (clients/get-clients))))
-    ;tr1 (println (str "sending email to: ") email)
 
-    texttosend (str ("Прошу согласовать покупку " security " для клиента " (:code clientdata) " в количестве " (:amount clientdata) " штук" "\n" txtdata))
+    sec (first (filter (fn [x] (if (= (:id x) security) true false)) (secs/get-securities)))
+    seccode (:acode sec)
+    isin (:isin sec)
+    assettype (:assettype sec)
+    texttosend (str "Прошу согласовать покупку " (if (= (:assettype sec) 1) "акций " "облигаций ") seccode " (ISIN: " isin ") для клиента " (:code clientdata) " в количестве " (:amount clientdata) " штук." "\r\n\r\n" txtdata)
+    ;tr1 (println (str "sending email to: ") email)
+    ;tr1 (println (str "sending text: ") texttosend)
     ]
     (postal/send-message {:host "psmtp.sberbank-cib.ru"} ;:user "alexey@sberpb.com" :pass "password"
       {:from "tradeidea@sberpb.com"
        :to email
-       :cc ["Alexey_Zorchenkov@sberbank-pb.ru" "Rustam_Nazimanov@sberbank-pb.ru" "Alexey_Koshkin@sberbank-pb.ru"]
-       :subject (str "Trade idea: " security) 
+       :cc ["Alexey_Zorchenkov@sberbank-pb.ru" "Rustam_Nazimanov@sberbank-pb.ru" "Alexey_Koshkin@sberbank-pb.ru"
+         ]
+       :subject (str "Trade idea: " seccode) 
        :body texttosend}
     )
-    ;;email
+    ;email
   )
 )
 
 (defn sendLetters [token security clients] 
   (let [
       recommendtext (:data (first (filter (fn [x] (if (= "TRADE_IDEA" (:code x)) true false)) (syssetting/get-settings))))
-
-      security (:acode (first (filter (fn [x] (if (= (:id x) security) true false)) (secs/get-securities))))
       ;tr1 (println clients)
     ]
     (doall (map (fn [x] (sendLetter security x recommendtext)) clients))
