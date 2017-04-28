@@ -189,9 +189,24 @@
     (OPTIONS "/postran" []
       :summary  "Allows OPTIONS requests"
       (ok "")
-    )    
+    )
+  )
 
 
+  (context "/api" []
+    :tags ["deals"]
+
+    (GET "/deals" []
+      :header-params [authorization :- String]
+      :query-params [client :- String]
+      :summary      "retrieve all transactions for given client"
+
+      (ok  (positionapi/getDeals (nth (str/split authorization #" ") 1) client)))
+
+    (OPTIONS "/deals" []
+      :summary  "Allows OPTIONS requests"
+      (ok "")
+    )
   )
 
 

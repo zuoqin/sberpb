@@ -138,7 +138,7 @@
 
         ;tr1 (println rate)
     ]
-    (if (nil? trid) (d/transact conn  [{ :price/security fxid, :price/lastprice (Double/parseDouble (str (:rate rate))),  :price/valuedate (:date rate), :price/targetprice (Double/parseDouble (str (:rate rate))), :price/analystrating 0.0, :price/source "CBR", :price/comment (str "Import from CBR web site " (f/unparse cbr-date-formatter (c/from-long (c/to-long (java.util.Date.))) )), :db/id #db/id[:db.part/user -100001 ]}] ))
+    (if (nil? trid) (d/transact conn  [{ :price/security fxid, :price/lastprice (Double/parseDouble (str (:rate rate))),  :price/valuedate (:date rate), :price/targetprice (Double/parseDouble (str (:rate rate))), :price/analystrating 0.0, :price/yield 0.0, :price/dvddate #inst "1900-01-01T00:00:00.0000000Z", :price/duration 0.0, :price/putdate #inst "1900-01-01T00:00:00.0000000Z", :price/source "CBR", :price/comment (str "Import from CBR web site " (f/unparse cbr-date-formatter (c/from-long (c/to-long (java.util.Date.))) )), :db/id #db/id[:db.part/user -100001 ]}] ))
   )
   ;(println rate)
 )
@@ -176,7 +176,7 @@
   (let [
      conn (d/connect uri)
      ]
-    (d/transact-async conn [{ :security/acode "SOAF25", :security/isin "US836205AR58", :security/bcode "US836205AR58 Corp", :security/assettype 5, :security/exchange "NYSE", :security/currency "USD", :db/id #db/id[:db.part/user -100572] }
+    (d/transact-async conn [{ :user/code "natalya", :user/password "Qwerty123", :user/role "admin", :db/id #db/id[:db.part/user -100005] }
 ]
     )
     ; To insert new entity:
@@ -795,7 +795,7 @@
     seccurrencyfxrate (get-fxrate-by-date currency (:valuedate x))
       
       ]
-      {:portfolio client :isin isin :quantity (if (= isrussian true) (* 1000.0 (:nominal x)) (:nominal x))  :price (* (:price x) (:fx x))    :date (f/unparse build-in-basicdate-formatter (c/from-long (c/to-long (:valuedate x))) ) :type (if (= "B" (:direction x)) "BUY LONG" "SELL LONG")}
+      {:portfolio client :isin isin :quantity (if (= isrussian true) (* 1000.0 (:nominal x)) (:nominal x))  :price (* (:price x) (if (= 5 assettype) 1.0 (:fx x)) )    :date (f/unparse build-in-basicdate-formatter (c/from-long (c/to-long (:valuedate x))) ) :type (if (= "B" (:direction x)) "BUY LONG" "SELL LONG")}
     )) transactions)
     ]
     (save-xls ["sheet1" (dataset [:portfolio :isin :quantity :price :date :type] newtransactions)] (str drive ":/DEV/Java/" client "_trans.xlsx") )
@@ -919,17 +919,16 @@
                 (if (seq trans) 
                   (let [
                         tran (first trans)
-
+                        thesecurity (first (filter (fn [x] (if (= (:security tran) (:acode x)) true false)) securities))
                         ;tr1 (println "transac: " tran)
                         sec (get-isin-by-seccode (str (:security tran))) 
-                        currency (:currency (first (filter (fn [x] (if (= (:security tran) (:acode x)) true false)) securities)))
-
+                        currency (:currency thesecurity)
 
                         
                         amnt (:amount ( (keyword sec) result ))
                         prevpr (if (nil? (:price ((keyword sec) result))) 0 (:price ((keyword sec) result)))
                         
-                        tranprice (* (:price tran) (:fx tran) )
+                        tranprice (* (:price tran) (if (= 5 (:assettype thesecurity)) 1.0 (:fx tran))  )
                         
                         ;prevrubprice (:rubprice ((keyword sec) result))
                         tranamnt (if (= "B" (:direction tran)) (:nominal tran) (- 0 (:nominal tran)))

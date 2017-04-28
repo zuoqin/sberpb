@@ -41,6 +41,7 @@
   (let [
     ;usercode (:iss (-> token str->jwt :claims)  ) 
     transactions (sort (comp sort-tran-from-db) (db/get-transactions client))
+    ;tr1 (println (first transactions))
     newtrans (filter (fn [x] (if (or (nil? (:security x)) (= 0 (compare "MSTT" (:security x))) )  false true)) transactions)
 
         ;(into [] (db/get-transactions client)   )
@@ -54,34 +55,37 @@
                         sec (str (:security tran))
                         security (first (filter (fn [x] (if (= (:security tran) (:id x)) true false)) securities))
                         currency (:currency security)
-                        amnt (:amount ( (keyword sec) result ))
-                        prevpr (if (nil? (:price ((keyword sec) result))) 0 (:price ((keyword sec) result)))
-                        
-                        rubprice (* (:fx tran) (:price tran))
+
+                        ;tr1 (println "step 1")
+                        amnt (if (nil? (:amount ( (keyword sec) result ))) 0 (:amount ( (keyword sec) result ))) 
+                        prevpr (if (nil? (:price ((keyword sec) result))) 0 (:price ((keyword sec) result)))                       
 
                         usdrate (db/get-fxrate-by-date "USD" (:valuedate tran))
                         seccurfxrate (db/get-fxrate-by-date currency (:valuedate tran))
                         trancurfxrate (db/get-fxrate-by-date (:currency tran) (:valuedate tran))
+                        
+                        rubprice (* (if (= 5 (:assettype security)) seccurfxrate (:fx tran) ) (:price tran)) 
                         usdprice (/ rubprice usdrate)
-
                         prevrubprice (:rubprice ((keyword sec) result))
                         tranamnt (if (= "B" (:direction tran)) (:nominal tran) (- 0 (:nominal tran)))
                         newamnt (if (nil? amnt ) tranamnt (+ amnt tranamnt) )
-                        
+                        ;tr1 (println "step 3")
                         prevusdprice (:wapusd ((keyword sec) result))
 
-                        wap (if (nil? amnt ) (* (:price tran) (if (= 5 (:assettype security)) 1.0 (/ trancurfxrate seccurfxrate)))  (if (> newamnt 0) (if (> tranamnt 0) (/ (+ (* prevpr amnt) (* (:price tran) (if (= 5 (:assettype security)) 1.0 (/ trancurfxrate seccurfxrate)) tranamnt)) newamnt)  prevpr)  0))
+                        wap (if (= 0 amnt ) (* (:price tran) (if (= 5 (:assettype security)) 1.0 (/ trancurfxrate seccurfxrate)))  (if (> newamnt 0) (if (> tranamnt 0) (/ (+ (* prevpr amnt) (* (:price tran) (if (= 5 (:assettype security)) 1.0 (/ trancurfxrate seccurfxrate)) tranamnt)) newamnt)  prevpr)  0))
 
+                        
+                        waprub (if (= amnt 0) rubprice (if (> newamnt 0) (/ (+ (* prevrubprice amnt) (* rubprice tranamnt)) newamnt) 0))
+                        ;tr1 (println "step 5")
+                        wapusd (if (= amnt 0) usdprice (if (> newamnt 0) (/ (+ (* prevusdprice amnt) (* usdprice tranamnt)) newamnt) 0))
 
-                        waprub (if (nil? amnt ) rubprice (if (> newamnt 0) (/ (+ (* prevrubprice amnt) (* rubprice tranamnt)) newamnt) 0))
-
-                        wapusd (if (nil? amnt ) usdprice (if (> newamnt 0) (/ (+ (* prevusdprice amnt) (* usdprice tranamnt)) newamnt) 0))
+                        ;tr1 (println "step 6")
                         ]
                     (recur (assoc-in result [(keyword sec) ] {:amount newamnt :price wap :rubprice waprub :wapusd wapusd} )
                          (rest trans))
-                  )                  
+                  )
                   result)
-                ) 
+                )
 
 
     ;result (map (fn [x] (let [y (name (first x))   z (if (< (second x) 0) 0 (second x)) ] [y z] ))  positions) 
@@ -93,25 +97,68 @@
   )
 )
 
+(defn yyy [x y]
+  {:nominal (+ (:nominal x) (:nominal y)) }
+)
 
-(defn getPostrans [token client security]
+(defn getDeals [token client]
   (let [
     ;usercode (:iss (-> token str->jwt :claims)  ) 
-    transactions (into [] (db/get-transactions-by-client-security client security)   )
+    transactions (into [] (db/get-transactions-by-client client))
 
+    securities (distinct (map (fn [x] (:security x)) transactions))
 
-    result transactions
-    
+    tr1 (println (str "Total securities: " (count securities)))
+    transbysecs (loop [result [] secs securities]
+      (if (seq secs)
+        (let [
+              sec (first secs)
+
+              thetrans (filter (fn [x] (if (and (= (:security x) sec)) true false)) transactions)
+
+              thedates (distinct (map (fn [x] (f/unparse db/custom-formatter (c/from-long (c/to-long (:valuedate x))))) thetrans))
+
+              transbydates (loop [bydates [] dates thedates]
+                (if (seq dates)
+                  (let [
+                        date (first dates)
+
+                        trans (filter (fn [x] (if (and (= (f/unparse db/custom-formatter (c/from-long (c/to-long (:valuedate x)))) date)) true false)) thetrans)
+                        ;tr1 (println (str (first trans)))
+
+                        theres (reduce (fn [x y] {:nominal (+ (:nominal x) (:nominal y)) :price (/ (+ (* (:nominal x) (:price x)) (* (:nominal y) (:price y))) (+ (:nominal x) (:nominal y)))} ) {:nominal 0 :price 0.0} trans)
+
+                        direction (:direction (first trans))
+                        ]
+                    (recur (conj bydates {:date (f/parse db/custom-formatter date)  :direction direction :nominal (:nominal theres) :price (:price theres)})
+                         (rest dates))
+                  )                  
+                  bydates)
+                )
+              ]
+          (recur (conj result {:security sec :transactions transbydates})
+               (rest secs))
+        )                  
+        result)
+      )
+
+    result transbysecs
     ]
     result
   )
- 
 )
 
 
+(defn getPostrans [token client security]
+  (let [
+    ;usercode (:iss (-> token str->jwt :claims))
+    transactions (into [] (db/get-transactions-by-client-security client security))
 
-
-
+    result transactions    
+    ]
+    result
+  )
+)
 
 
 (defn getPortfolios [token security]

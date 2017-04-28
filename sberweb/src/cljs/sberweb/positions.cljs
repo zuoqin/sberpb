@@ -74,6 +74,18 @@
   )
 )
 
+(defn comp-deals
+  [deal1 deal2]
+
+  (if (or
+       (> (:security deal1) (:security deal2))
+       (and (= (:security deal1) (:security deal2)) (> (tc/to-long (:tradedate deal1)) (tc/to-long (:tradedate deal2))))
+    ) 
+      true
+      false
+  )
+)
+
 (defcomponent showpositions-total-view [data owner]
   (render
     [_]
@@ -283,11 +295,11 @@
               )
 
 
-              ;; Sec Currency P/L, %%
+              ;; USD Currency P/L, %%
               (dom/div {:className "col-xs-1 col-md-1" :style {:padding-left "0px" :padding-right "0px" :padding-top "10px"}}
                 (dom/div {:className "progress"}
-                  (dom/div {:className (str "progress-bar" (if (< (:price item) (:wap item)) " progress-bar-danger" ""))  :role "progresbar" :aria-valuenow (str (.round js/Math (.abs js/Math (* 100.0 (/ (-  (:price item) (:wap item)) (:waprub item)))))) :aria-valuemin "0" :aria-valuemax "100" :style {:color "black" :width (str (.round js/Math (.abs js/Math (* 100.0 (/ (-  (:price item) (:wap item)) (:wap item))))) "%") }}
-                    (dom/span {:style {:position "absolute" :display "block" :width "100%"}} (.round js/Math (* 100.0 (/ (-  (:price item) (:wap item)) (:wap item)))) )                
+                  (dom/div {:className (str "progress-bar" (if (< (:usdvalue item) (* (:amount item) (:wapusd item))) " progress-bar-danger" ""))  :role "progresbar" :aria-valuenow (str (.round js/Math (.abs js/Math (* 100.0 (/ (- (:usdvalue item) (* (:amount item) (:wapusd item))) (* (:amount item) (:wapusd item))))))) :aria-valuemin "0" :aria-valuemax "100" :style {:color "black" :width (str (.round js/Math (.abs js/Math (* 100.0 (/ (- (:usdvalue item) (* (:amount item) (:wapusd item) ) ) (* (:amount item) (:wapusd item) ))))) "%") }}
+                    (dom/span {:style {:position "absolute" :display "block" :width "100%"}} (.round js/Math (* 100.0 (/ (- (:usdvalue item) (* (:amount item) (:wapusd item) ) ) (* (:amount item) (:wapusd item) ))  )) )                
                   )
                 )
               )
@@ -384,13 +396,16 @@
                                    (= "RU" (subs (:isin sec) 0 2))
                                    )  true false)
 
+                usdcosts (* (if (= isrusbond true) 1.0 0.01) (:amount item) (:wapusd item))
+
+                ;tr1 (if (= false isrusbond) (println (str (:acode sec) " не российский бонд: " (:usdvalue item) " costs: " usdcosts " usdvalue: "  " wapusd: " (:wapusd item) )))
                 isbond (if (and (= 5 (:assettype sec))
                                    ;(= "RU" (subs (:isin security) 0 2))
                                    )  true false)
                 newfxrate (if (= 0 (compare "GBX" seccur)) (/ fxrate 100.) fxrate)
                 ;tr1 (.log js/console "currency: "  seccur " rate:" newfxrate)
                 putdate (if (nil? (:putdate sec)) #inst "1900-01-01T00:00:00.000-00:00" (:putdate sec))
-
+                dvddate (if (nil? (:dvddate sec)) #inst "1900-01-01T00:00:00.000-00:00" (:dvddate sec))
                 ;;tr1 (println putdate)
                 portfusdvalue (:usdvalue (reduce (fn [x y] {:usdvalue (+ (:usdvalue x) (:usdvalue y))}) (:positions ((keyword (:selectedclient @sbercore/app-state)) @sbercore/app-state))))
             ]
@@ -459,15 +474,15 @@
                 )            
               )
 
-
-              ;; Sec Currency P/L, %%
+              ;; USD P/L, %%
               (dom/div {:className "col-xs-1 col-md-1" :style {:padding-left "0px" :padding-right "0px" :padding-top "10px"}}
                 (dom/div {:className "progress"}
-                  (dom/div {:className (str "progress-bar" (if (< (:price item) (:wap item)) " progress-bar-danger" ""))  :role "progresbar" :aria-valuenow (str (.round js/Math (.abs js/Math (* 100.0 (/ (-  (:price item) (:wap item)) (:waprub item)))))) :aria-valuemin "0" :aria-valuemax "100" :style {:color "black" :width (str (.round js/Math (.abs js/Math (* 100.0 (/ (-  (:price item) (:wap item)) (:wap item))))) "%") }}
-                    (dom/span {:style {:position "absolute" :display "block" :width "100%"}} (.round js/Math (* 100.0 (/ (-  (:price item) (:wap item)) (:wap item)))) )                
+                  (dom/div {:className (str "progress-bar" (if (< (:usdvalue item) usdcosts) " progress-bar-danger" ""))  :role "progresbar" :aria-valuenow (gstring/format "%.2f" (* 100.0 (/ (- (:usdvalue item) usdcosts) usdcosts))) :aria-valuemin "0" :aria-valuemax "100" :style {:color "black" :width (gstring/format "%.2f" (* 100.0 (/ (- (:usdvalue item) usdcosts) usdcosts))) }}
+                    (dom/span {:style {:position "absolute" :display "block" :width "100%"}} (gstring/format "%.2f" (* 100.0 (/ (- (:usdvalue item) usdcosts) usdcosts))))                
                   )
                 )
               )
+
 
 
               ;; RUB %% P/L
@@ -500,9 +515,9 @@
               ;; )
 
               ;;Coupon date
-              (dom/div {:className "col-xs-1 col-md-1" :style {:padding-left "0px" :padding-right "0px" :visibility (if (> (.indexOf (tf/unparse custom-formatter (tc/from-long (tc/to-long (:dvddate sec)))) "1900") 0)  "hidden" "visible")} }
+              (dom/div {:className "col-xs-1 col-md-1" :style {:padding-left "0px" :padding-right "0px" :visibility (if (> (.indexOf (tf/unparse custom-formatter (tc/from-long (tc/to-long dvddate))) "1900") 0)  "hidden" "visible")} }
                 (dom/a {:className "list-group-item" :style {:text-align "right"} :href (str  "#/postrans/" (:id (first (filter (fn [x] (if (= (compare (:code x) (:selectedclient @sbercore/app-state)) 0) true false)) (:clients @sbercore/app-state)))) "/" (:id item) ) }
-                  (dom/h4 {:className "list-group-item-heading"} (tf/unparse custom-formatter (tc/from-long (tc/to-long (if (nil? (:dvddate sec)) #inst "1900-01-01T00:00:00.000-00:00" (:dvddate sec)))))
+                  (dom/h4 {:className "list-group-item-heading"} (tf/unparse custom-formatter (tc/from-long (tc/to-long (if (nil? (:dvddate sec)) #inst "1900-01-01T00:00:00.000-00:00" dvddate))))
                   )
                 )
               )
@@ -534,6 +549,100 @@
     )
   )
 )
+
+
+
+
+
+(defcomponent showdeals-view [data owner]
+  (render
+    [_]
+    (if (> (count (:deals ((keyword (:selectedclient @sbercore/app-state)) @sbercore/app-state) )) 0)
+
+      (dom/div {:className "list-group" :style {:display "block"}}
+        (map (fn [item]
+          (let [sec (first (filter (fn[x] (if (= (:id x) (:security item) ) true false)) (:securities @sbercore/app-state)))
+
+                ;tr1 (println sec)
+                seccur (:currency sec)
+                isbond (if (= 5 (:assettype sec)) true false)
+
+                usdrate (:price (first (filter (fn [x] (if (= "USD" (:acode x)) true false)) (:securities @sbercore/app-state))))
+
+                fxrate (if (or (= "RUB" seccur) (= "RUR" seccur)) 1 (:price  (first (filter (fn[x] (if( = (:acode x) (if (= seccur "GBX") "GBP" seccur)) true false)) (:securities @sbercore/app-state)))))
+
+                isrusbond (if (and (= 5 (:assettype sec))
+                                   (= "RU" (subs (:isin sec) 0 2))
+                                   )  true false)
+
+
+                ;tr1 (if (= false isrusbond) (println (str (:acode sec) " не российский бонд: " (:usdvalue item) " costs: " usdcosts " usdvalue: "  " wapusd: " (:wapusd item) )))
+                isbond (if (and (= 5 (:assettype sec))
+                                   ;(= "RU" (subs (:isin security) 0 2))
+                                   )  true false)
+                newfxrate (if (= 0 (compare "GBX" seccur)) (/ fxrate 100.) fxrate)
+                ;tr1 (.log js/console "currency: "  seccur " rate:" newfxrate)                
+            ]
+
+            (dom/div {:className "row" :style {:margin-left "0px" :margin-right "0px"}}
+              ;; Инструмент
+              (dom/div {:className "col-xs-2 col-md-2" :style {:padding-left "0px" :padding-right "0px"}}
+                (dom/h4  {:className "list-group-item-heading"} (:acode sec))
+              )
+
+              ;; Покупка / Продажа
+              (dom/div {:className "col-xs-1 col-md-1" :style {:padding-left "0px" :padding-right "0px"}}
+                (dom/h4 {:className "list-group-item-heading"} (if (= (:direction item) "B") "Покупка" "Продажа"))
+              )
+
+              ;;Номинал
+              (dom/div {:className "col-xs-2 col-md-2" :style {:padding-left "0px" :padding-right "0px"}}
+                (dom/h4 {:className "list-group-item-heading"} (sbercore/split-thousands (str (:nominal item))))
+              )
+
+              ;; Currency
+              (dom/div {:className "col-xs-1 col-md-1" :style {:padding-left "0px" :padding-right "0px"}}
+                  (dom/h4 {:className "list-group-item-heading"} (:currency item))
+              )
+
+
+              ;; Цена
+              (dom/div {:className "col-xs-1 col-md-1" :style {:padding-left "0px" :padding-right "0px"}}
+                (dom/h4 {:className "list-group-item-heading"} (if (> (:price item) 1) (gstring/format "%.2f" (:price item))  (subs (str (:price item)) 0 5)))
+              )
+
+              ;; Стоимость в валюте бумаги
+              (dom/div {:className "col-xs-1 col-md-1" :style {:padding-left "0px" :padding-right "0px"}}
+                (dom/h4 {:className "list-group-item-heading"} (gstring/format "%.2f" (:price item)))
+              )
+
+
+              ;; Стоимость в долларах США
+              (dom/div {:className "col-xs-1 col-md-1" :style {:padding-left "0px" :padding-right "0px"}}
+                (dom/h4 {:className "list-group-item-heading"} (gstring/format "%.2f" (:price item)))
+              )
+
+              ;; Стоимость в рублях РФ
+              (dom/div {:className "col-xs-1 col-md-1" :style {:padding-left "0px" :padding-right "0px"}}
+                (dom/h4 {:className "list-group-item-heading"} (gstring/format "%.2f" (:price item)))
+              )
+
+              ;; Дата сделки
+              (dom/div {:className "col-xs-2 col-md-2" :style {:padding-left "0px" :padding-right "0px"}}
+                (dom/h4 {:className "list-group-item-heading"} (tf/unparse custom-formatter (tc/from-long (tc/to-long (:valuedate item)))) )
+              )
+            )
+          )
+          )
+          (sort (comp comp-deals) (filter (fn [x] (let [
+            a 1]
+            (if (= 1 1)  true true) ) ) (:deals ((keyword (:selectedclient @sbercore/app-state)) @sbercore/app-state))))
+        )
+      )
+    )
+  )
+)
+
 
 (defn onMount [data]
   (getPositions)
@@ -596,7 +705,7 @@
                   (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "Target price")
                   (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "ANR")
                   (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "Currency")
-                  (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "P/L, %")
+                  (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "P/L USD, %")
                   (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "P/L RUB, %")
                   (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "Yield")
                   (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "Ex-div date")
@@ -626,7 +735,7 @@
                   (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "Дюрация")
                   (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "Put Date")
                   (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "Currency")
-                  (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "P/L, %")
+                  (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "P/L USD, %")
                   (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "P/L RUB, %")
                   (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "Yield")
                   (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "Coupon date")
@@ -641,26 +750,26 @@
             (dom/div {:style {:margin-top "30px"} :className "panel panel-info"}
               (dom/div {:className "panel-heading"}
                 (dom/div (assoc stylerow  :className "row" )
-                  (dom/div {:className "col-xs-12 col-md-12" :style {:text-align "center"}} "Закрытые позиции")
+                  (dom/div {:className "col-xs-12 col-md-12" :style {:text-align "center"}} "История сделок")
                 )
               )
             )
             (dom/div  {:className "panel panel-primary"}
               (dom/div {:className "panel-heading"}
                 (dom/div (assoc stylerow  :className "row" )
-                  (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}}  "Security Name")
-                  (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "Share, %")
-                  (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "Amount")
-                  (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "WAP price")
-                  (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "Last price")
-                  (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "Target price")
-                  (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "ANR")
+                  (dom/div {:className "col-xs-2 col-md-2" :style {:text-align "center"}}  "Security Name")
+                  (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "Direction")
+                  (dom/div {:className "col-xs-2 col-md-2" :style {:text-align "center"}} "Nominal")
                   (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "Currency")
-                  (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "P/L, %")
-                  (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "P/L RUB, %")
-                  (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "Yield")
-                  (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "Ex-div date")
+                  (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "Price")
+                  (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "Value")
+                  (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "USD Value")
+                  (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "RUB Value")
+                  (dom/div {:className "col-xs-2 col-md-2" :style {:text-align "center"}} "Date")
                 )
+              )
+              (dom/div {:className "panel-body"}
+                (om/build showdeals-view data {})
               )
             )
           )

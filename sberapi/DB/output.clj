@@ -2,6 +2,8 @@
 { :user/code "zuoqin", :user/password "Qwerty123", :user/role "admin", :db/id #db/id[:db.part/user -100001] }
 { :user/code "rustam", :user/password "Qwerty123", :user/role "admin", :db/id #db/id[:db.part/user -100002] }
 { :user/code "alexey", :user/password "Qwerty123", :user/role "admin", :db/id #db/id[:db.part/user -100003] }
+{ :user/code "vladimir", :user/password "Qwerty123", :user/role "admin", :db/id #db/id[:db.part/user -100004] }
+{ :user/code "natalya", :user/password "Qwerty123", :user/role "admin", :db/id #db/id[:db.part/user -100005] }
 
 ;;SETTINGS
 { :setting/code "TRADE_IDEA" :setting/data "Gazprom is great buyt and hold for our portfolios", :db/id #db/id[:db.part/user -103001] }
@@ -1041,7 +1043,7 @@
 
 { :security/acode "VEDLN23",  :security/assettype 5, :security/isin "USG9328DAJ93", :security/bcode "USG9328DAJ93 Corp", :security/exchange "XETRA",           :security/currency "USD",    :db/id #db/id[:db.part/user -100507] }
 
-{ :security/acode "ALFABO-18",  :security/assettype 5, :security/isin "RU000A0JX5W4", :security/bcode "RU000A0JX5W4 Corp", :security/exchange "XETRA",           :security/currency "USD",    :db/id #db/id[:db.part/user -100508] }
+{ :security/acode "ALFABO-18",  :security/assettype 5, :security/isin "RU000A0JX5W4", :security/bcode "RU000A0JX5W4 Corp", :security/exchange "XETRA",           :security/currency "RUB",    :db/id #db/id[:db.part/user -100508] }
 
 { :security/acode "EFGIF_1117A",  :security/assettype 5, :security/isin "CH0344437550", :security/bcode "CH0344437550 Corp", :security/exchange "XETRA",           :security/currency "USD",    :db/id #db/id[:db.part/user -100509] }
 
@@ -1880,7 +1882,7 @@
 { :transaction/client #db/id[:db.part/user -102023], :transaction/security #db/id[:db.part/user -100044], :transaction/nominal 14380.0, :transaction/price 201.6, :transaction/direction "S", :transaction/valuedate #inst "2016-10-28T23:59:00.0000000Z", :transaction/currency "RUB", :transaction/comment "Change VIP to VEON", :db/id #db/id[:db.part/user -110290] }
 
 
-{ :transaction/client #db/id[:db.part/user -102073], :transaction/security #db/id[:db.part/user -100549], :transaction/nominal 14380.0, :transaction/price 201.6, :transaction/direction "B", :transaction/valuedate #inst "2016-10-28T23:59:00.0000000Z", :transaction/currency "RUB", :transaction/comment "Change VIP to VEON", :db/id #db/id[:db.part/user -110291] }
+{ :transaction/client #db/id[:db.part/user -102023], :transaction/security #db/id[:db.part/user -100549], :transaction/nominal 14380.0, :transaction/price 201.6, :transaction/direction "B", :transaction/valuedate #inst "2016-10-28T23:59:00.0000000Z", :transaction/currency "RUB", :transaction/comment "Change VIP to VEON", :db/id #db/id[:db.part/user -110291] }
 
 
 { :transaction/client #db/id[:db.part/user -102023], :transaction/security #db/id[:db.part/user -100550], :transaction/nominal 100000.0, :transaction/price 101.88, :transaction/direction "S", :transaction/valuedate #inst "2017-02-08T23:59:00.0000000Z", :transaction/currency "USD", :transaction/comment "доп. оферта Petrobras, 5.750% 20jan2020", :db/id #db/id[:db.part/user -110292] }
@@ -1940,6 +1942,15 @@
 
 
 { :transaction/client #db/id[:db.part/user -102049], :transaction/security #db/id[:db.part/user -100044], :transaction/nominal 12350.0, :transaction/price 4.05, :transaction/direction "S", :transaction/valuedate #inst "2017-03-24T23:58:00.0000000Z", :transaction/currency "USD", :transaction/comment "Change VIP to VEON", :db/id #db/id[:db.part/user -110312] }
+
+
+{ :transaction/client #db/id[:db.part/user -102037], :transaction/security #db/id[:db.part/user -100549], :transaction/nominal 4500.0, :transaction/price 4.05, :transaction/direction "B", :transaction/valuedate #inst "2017-01-12T23:59:00.0000000Z", :transaction/currency "USD", :transaction/comment "Change VIP to VEON", :db/id #db/id[:db.part/user -110313] }
+
+
+{ :transaction/client #db/id[:db.part/user -102037], :transaction/security #db/id[:db.part/user -100044], :transaction/nominal 4500.0, :transaction/price 4.05, :transaction/direction "S", :transaction/valuedate #inst "2017-01-12T23:58:00.0000000Z", :transaction/currency "USD", :transaction/comment "Change VIP to VEON", :db/id #db/id[:db.part/user -110314] }
+
+
+{ :transaction/client #db/id[:db.part/user -102073], :transaction/security #db/id[:db.part/user -100550], :transaction/nominal 100000.0, :transaction/price 101.88, :transaction/direction "S", :transaction/valuedate #inst "2017-02-08T23:59:00.0000000Z", :transaction/currency "USD", :transaction/comment "доп. оферта Petrobras, 5.750% 20jan2020", :db/id #db/id[:db.part/user -110315] }
 
 
 ;; PRICES

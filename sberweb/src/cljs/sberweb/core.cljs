@@ -1,3 +1,4 @@
+
 (ns sberweb.core
   (:require [om.core :as om :include-macros true]
             [om-tools.dom :as dom :include-macros true]
@@ -20,7 +21,7 @@
 
 (enable-console-print!)
 
-(defonce app-state (atom {:state 0 :percentage "5.00" :noholders 0 :selectedclient "AAOHF" :search ""  :user {:role "admin"} }))
+(defonce app-state (atom {:state 0 :percentage "5.00" :noholders 0 :selectedclient "AAOHF" :GBCJF {:deals [{:security 17592186045951 :tradedate #inst "2016-12-13T10:00:00.0000000Z" :direction "B" :amount 456 :price 3.56 :currency "RUB"} {:security 17592186045951 :tradedate #inst "2016-12-14T10:00:00.0000000Z" :direction "S" :amount 4 :price 13.56 :currency "RUB"}]} :search ""  :user {:role "admin"} }))
 
 
 
@@ -102,6 +103,39 @@
   ) 
 )
 
+(defn map-deal [deal]
+  (let [
+    tr1 (println deal)
+
+    ;; secid (js/parseInt (name (nth position 0)))
+    ;; security (first (filter (fn [x] (if (= (:id x) secid) true false)) (:securities @app-state)))
+    
+    ;; posprice (:price (nth position 1))
+    ;; price (if (nil? (:price security)) posprice (:price security))
+
+
+    ;; currency (if (= 0 (compare "GBX" (:currency security))) "GBP" (:currency security))
+
+    
+    ;; fxrate (if (or (= "RUB" currency) (= "RUR" currency)) 1 (:price  (first (filter (fn[x] (if( = (:acode x) currency) true false)) (:securities @app-state)))))
+    ;; usdrate (:price (first (filter (fn [x] (if (= "USD" (:acode x)) true false)) (:securities @app-state))))
+
+    ;; isrusbond (if (and (= 5 (:assettype security)) 
+    ;;                    (= "RU" (subs (:isin security) 0 2))
+    ;;                    )  true false)
+    ;; isbond (if (and (= 5 (:assettype security)) 
+    ;;                ;(= "RU" (subs (:isin security) 0 2))
+    ;;                )  true false)
+    ;; newfxrate (if (= 0 (compare "GBX" (:currency security))) (/ fxrate 100.) fxrate)
+
+    result deal
+    ]
+    ;(.log js/console (str "price: " price " fxrate:" fxrate))
+    result
+  )
+)
+
+
 (defn map-position [position]
   (let [
     secid (js/parseInt (name (nth position 0)))
@@ -125,7 +159,7 @@
                    )  true false)
     newfxrate (if (= 0 (compare "GBX" (:currency security))) (/ fxrate 100.) fxrate)
 
-    result {:id secid :currency (:currency security) :amount (:amount (nth position 1)) :wap posprice :price price :waprub (:rubprice (nth position 1)) :currubprice (* price newfxrate) :wapusd (:wapusd (nth position 1)) :usdvalue (/ (* (:amount (nth position 1)) (:price security)  (if (= isrusbond true) 10.0 (if (= isbond true) (/ newfxrate 100.0 ) newfxrate ) ) ) usdrate) }
+    result {:id secid :currency (:currency security) :amount (:amount (nth position 1)) :wap posprice :price price :waprub (:rubprice (nth position 1)) :currubprice (* price newfxrate) :wapusd (:wapusd (nth position 1)) :usdvalue (/ (* (:amount (nth position 1)) (:price security)  (if (= isrusbond true) 1.0 (if (= isbond true) (/ newfxrate 100.0 ) newfxrate ) ) ) usdrate) }
 
 
 
@@ -216,6 +250,10 @@
    (swap! app-state assoc-in [(keyword (:selectedclient @app-state)) :positions] (map (fn [x] (map-position x)) (filter (fn [x] (if (> (:amount (nth x 1)) 0) true false)) response) ) )
 )
 
+(defn OnGetDeals [response]
+   (swap! app-state assoc-in [(keyword (:selectedclient @app-state)) :deals] (map (fn [x] (map-deal x)) (filter (fn [x] (if (> 1 1) true true)) response) ) )
+)
+
 
 
 
@@ -230,6 +268,16 @@
 (defn getPositions [] 
   (GET (str settings/apipath "api/position?client=" (:selectedclient @app-state) ) {
     :handler OnGetPositions
+    :error-handler error-handler
+    :headers {
+      :content-type "application/json"
+      :Authorization (str "Bearer "  (:token (:token @app-state))) }
+  })
+)
+
+(defn getDeals [] 
+  (GET (str settings/apipath "api/deals?client=" (:selectedclient @app-state) ) {
+    :handler OnGetDeals
     :error-handler error-handler
     :headers {
       :content-type "application/json"
@@ -295,6 +343,10 @@
     (swap! app-state assoc-in [:selectedclient] code)
     (if (nil? (:positions ((keyword value) @app-state)))
       (getPositions)
+    )
+
+    (if (nil? (:deals ((keyword value) @app-state)))
+      (getDeals)
     )
   )
   
