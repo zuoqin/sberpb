@@ -105,7 +105,7 @@
 
 (defn map-deal [deal]
   (let [
-    tr1 (println deal)
+    ;;tr1 (println deal)
 
     ;; secid (js/parseInt (name (nth position 0)))
     ;; security (first (filter (fn [x] (if (= (:id x) secid) true false)) (:securities @app-state)))
@@ -281,7 +281,7 @@
     :error-handler error-handler
     :headers {
       :content-type "application/json"
-      :Authorization (str "Bearer "  (:token (:token @app-state))) }
+      :Authorization (str "Bearer "  (:token (:token @app-state)))}
   })
 )
 

@@ -97,10 +97,6 @@
   )
 )
 
-(defn yyy [x y]
-  {:nominal (+ (:nominal x) (:nominal y)) }
-)
-
 (defn getDeals [token client]
   (let [
     ;usercode (:iss (-> token str->jwt :claims)  ) 
@@ -108,7 +104,7 @@
 
     securities (distinct (map (fn [x] (:security x)) transactions))
 
-    tr1 (println (str "Total securities: " (count securities)))
+    ;;tr1 (println (str "Total securities: " (count securities)))
     transbysecs (loop [result [] secs securities]
       (if (seq secs)
         (let [
@@ -130,7 +126,7 @@
 
                         direction (:direction (first trans))
                         ]
-                    (recur (conj bydates {:date (f/parse db/custom-formatter date)  :direction direction :nominal (:nominal theres) :price (:price theres)})
+                    (recur (conj bydates {:date date  :direction direction :nominal (:nominal theres) :price (:price theres)})
                          (rest dates))
                   )                  
                   bydates)
@@ -142,7 +138,10 @@
         result)
       )
 
-    result transbysecs
+    ;tr1 (println (str "Total deals: " (count transbysecs)))
+
+    result (into [] transbysecs)
+    ;tr1 (println (str "deal1  " (first result)))
     ]
     result
   )

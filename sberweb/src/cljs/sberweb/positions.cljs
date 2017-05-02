@@ -74,6 +74,17 @@
   )
 )
 
+(defn comp-trans
+  [tran1 tran2]
+  (if (or
+       (> (:date tran1) (:date tran2))
+       (and (= (:date tran1) (:date tran2)) (> (:amount tran1) (:amount tran2)))
+    )
+      true
+      false
+  )
+)
+
 (defn comp-deals
   [deal1 deal2]
 
@@ -551,7 +562,82 @@
 )
 
 
+(defn showtrans [security trans]
+  (map (fn [item]
+    (let [sec (first (filter (fn[x] (if (= (:id x) security ) true false)) (:securities @sbercore/app-state)))
+      ]
+      (dom/div {:className "row" :style {:margin-left "0px" :margin-right "0px"}}
+        ;; Инструмент
+        (dom/div {:className "col-xs-2 col-md-2" :style {:padding-left "0px" :padding-right "0px"}}
+          (dom/a {:className "list-group-item" :href (str  "#") }
+            (dom/h4  #js {:className "list-group-item-heading" :dangerouslySetInnerHTML #js {:__html (:acode sec)}} nil)
+          )
+        )
 
+        ;; Покупка / Продажа
+        (dom/div {:className "col-xs-1 col-md-1" :style {:padding-left "0px" :padding-right "0px"}}
+          (dom/a {:className "list-group-item" :href (str  "#") }
+            (dom/h4 {:className "list-group-item-heading"} (if (= (:direction item) "B") "Покупка" "Продажа"))
+          )
+        )
+
+        ;;Номинал
+        (dom/div {:className "col-xs-2 col-md-2" :style {:padding-left "0px" :padding-right "0px"}}
+          (dom/a {:className "list-group-item" :href (str  "#") }
+            (dom/h4 {:className "list-group-item-heading" :style {:text-align "right"}} (sbercore/split-thousands (str (:nominal item))))
+          )
+        )
+
+        ;; Currency
+        (dom/div {:className "col-xs-1 col-md-1" :style {:padding-left "0px" :padding-right "0px"}}
+          (dom/a {:className "list-group-item" :href (str  "#") }
+            (dom/h4 {:className "list-group-item-heading"} (:currency sec))
+          )
+        )
+
+        ;; Цена
+        (dom/div {:className "col-xs-1 col-md-1" :style {:padding-left "0px" :padding-right "0px"}}
+          (dom/a {:className "list-group-item" :href (str  "#") }
+            (dom/h4 {:className "list-group-item-heading" :style {:text-align "right"}} (if (> (:price item) 1) (gstring/format "%.2f" (:price item))  (subs (str (:price item)) 0 5)))
+          )
+        )
+
+        ;; Стоимость в валюте бумаги
+        (dom/div {:className "col-xs-1 col-md-1" :style {:padding-left "0px" :padding-right "0px"}}
+          (dom/a {:className "list-group-item" :href (str  "#") }
+            (dom/h4 {:className "list-group-item-heading" :style {:text-align "right"}} (gstring/format "%.2f" (:price item)))
+          )
+        )
+
+
+        ;; Стоимость в долларах США
+        (dom/div {:className "col-xs-1 col-md-1" :style {:padding-left "0px" :padding-right "0px"}}
+          (dom/a {:className "list-group-item" :href (str  "#") }
+            (dom/h4 {:className "list-group-item-heading" :style {:text-align "right"}} (gstring/format "%.2f" (:price item)))
+          )
+        )
+
+        ;; Стоимость в рублях РФ
+        (dom/div {:className "col-xs-1 col-md-1" :style {:padding-left "0px" :padding-right "0px"}}
+          (dom/a {:className "list-group-item" :href (str  "#") }
+            (dom/h4 {:className "list-group-item-heading" :style {:text-align "right"}} (gstring/format "%.2f" (:price item)))
+          )
+        )
+
+        ;; Дата сделки
+        (dom/div {:className "col-xs-2 col-md-2" :style {:padding-left "0px" :padding-right "0px"}}
+          (dom/a {:className "list-group-item" :href (str  "#") }
+            (dom/h4 {:className "list-group-item-heading" :style {:text-align "right"}} (tf/unparse custom-formatter (tc/from-long (tc/to-long (tf/parse custom-formatter (:date item))))) )
+          )          
+        )
+      )
+    )
+    )
+    (sort (comp comp-trans) (filter (fn [x] (let [
+      a 1]
+      (if (= 1 1)  true true) ) ) trans))
+  )
+)
 
 
 (defcomponent showdeals-view [data owner]
@@ -583,60 +669,14 @@
                 newfxrate (if (= 0 (compare "GBX" seccur)) (/ fxrate 100.) fxrate)
                 ;tr1 (.log js/console "currency: "  seccur " rate:" newfxrate)                
             ]
-
-            (dom/div {:className "row" :style {:margin-left "0px" :margin-right "0px"}}
-              ;; Инструмент
-              (dom/div {:className "col-xs-2 col-md-2" :style {:padding-left "0px" :padding-right "0px"}}
-                (dom/h4  {:className "list-group-item-heading"} (:acode sec))
-              )
-
-              ;; Покупка / Продажа
-              (dom/div {:className "col-xs-1 col-md-1" :style {:padding-left "0px" :padding-right "0px"}}
-                (dom/h4 {:className "list-group-item-heading"} (if (= (:direction item) "B") "Покупка" "Продажа"))
-              )
-
-              ;;Номинал
-              (dom/div {:className "col-xs-2 col-md-2" :style {:padding-left "0px" :padding-right "0px"}}
-                (dom/h4 {:className "list-group-item-heading"} (sbercore/split-thousands (str (:nominal item))))
-              )
-
-              ;; Currency
-              (dom/div {:className "col-xs-1 col-md-1" :style {:padding-left "0px" :padding-right "0px"}}
-                  (dom/h4 {:className "list-group-item-heading"} (:currency item))
-              )
-
-
-              ;; Цена
-              (dom/div {:className "col-xs-1 col-md-1" :style {:padding-left "0px" :padding-right "0px"}}
-                (dom/h4 {:className "list-group-item-heading"} (if (> (:price item) 1) (gstring/format "%.2f" (:price item))  (subs (str (:price item)) 0 5)))
-              )
-
-              ;; Стоимость в валюте бумаги
-              (dom/div {:className "col-xs-1 col-md-1" :style {:padding-left "0px" :padding-right "0px"}}
-                (dom/h4 {:className "list-group-item-heading"} (gstring/format "%.2f" (:price item)))
-              )
-
-
-              ;; Стоимость в долларах США
-              (dom/div {:className "col-xs-1 col-md-1" :style {:padding-left "0px" :padding-right "0px"}}
-                (dom/h4 {:className "list-group-item-heading"} (gstring/format "%.2f" (:price item)))
-              )
-
-              ;; Стоимость в рублях РФ
-              (dom/div {:className "col-xs-1 col-md-1" :style {:padding-left "0px" :padding-right "0px"}}
-                (dom/h4 {:className "list-group-item-heading"} (gstring/format "%.2f" (:price item)))
-              )
-
-              ;; Дата сделки
-              (dom/div {:className "col-xs-2 col-md-2" :style {:padding-left "0px" :padding-right "0px"}}
-                (dom/h4 {:className "list-group-item-heading"} (tf/unparse custom-formatter (tc/from-long (tc/to-long (:valuedate item)))) )
-              )
-            )
+            (showtrans (:security item) (:transactions item))
           )
           )
           (sort (comp comp-deals) (filter (fn [x] (let [
-            a 1]
-            (if (= 1 1)  true true) ) ) (:deals ((keyword (:selectedclient @sbercore/app-state)) @sbercore/app-state))))
+            sec (first (filter (fn[y] (if (= (:security x) (:id y) ) true false)) (:securities @sbercore/app-state)))
+             seccode (:acode sec)
+            ]
+            (if (and (= true (str/includes? seccode (str/upper-case (:search @sbercore/app-state)) )) (= 1 1))   true false) ) ) (:deals ((keyword (:selectedclient @sbercore/app-state)) @sbercore/app-state))))
         )
       )
     )
