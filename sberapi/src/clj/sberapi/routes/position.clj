@@ -97,6 +97,47 @@
   )
 )
 
+(defn getDealsDayRes [transactions]
+  (let [
+        ;tr1 (println (str "first transaction: " (first transactions)))
+        usdrate (db/get-fxrate-by-date "USD" (:valuedate (first transactions)))
+        sec (first (filter (fn [x] (if (= (:security (first transactions)) (:id x)) true false)) (secs/get-securities)))
+
+        seccurrate (db/get-fxrate-by-date (:currency sec) (:valuedate (first transactions)))
+        result (loop [result {} trans transactions]
+          (if (seq trans)
+            (let [
+                  tran (first trans)
+                  trancurrrate (db/get-fxrate-by-date (str/upper-case (:currency tran)) (:valuedate tran))
+                  
+                  ;tr1 (println (str (first trans)))
+
+                  waprub (if (nil? (:waprub result)) 0 (:waprub result))
+                  wapusd (if (nil? (:wapusd result)) 0 (:wapusd result))
+                  wap (if (nil? (:wap result)) 0 (:wap result))
+
+                  amnt (if (nil? (:nominal result )) 0 (:nominal result )) 
+
+                  rubprice (* trancurrrate (:price tran)) 
+                  usdprice (/ rubprice usdrate)
+                  seccurprice (/ rubprice seccurrate)
+
+
+                  
+                  theres {:nominal (+ (:nominal tran) amnt) :wap (/ (+ (* (:nominal tran) seccurprice) (* amnt wap)) (+ (:nominal tran) amnt)) :wapusd (/ (+ (* (:nominal tran) usdprice) (* amnt wapusd)) (+ (:nominal tran) amnt)) :waprub (/ (+ (* (:nominal tran) rubprice) (* amnt waprub)) (+ (:nominal tran) amnt))}
+                  
+
+                  direction (:direction tran)
+                  ]
+              (recur (conj result {:date (:valuedate tran)  :direction direction :nominal (:nominal theres) :waprub (:waprub theres) :wapusd (:wapusd theres) :wap (:wap theres)}) (rest trans))
+            )
+            result)
+          )
+    ]
+    result
+  )
+)
+
 (defn getDeals [token client]
   (let [
     ;usercode (:iss (-> token str->jwt :claims)  ) 
@@ -122,13 +163,12 @@
                         trans (filter (fn [x] (if (and (= (f/unparse db/custom-formatter (c/from-long (c/to-long (:valuedate x)))) date)) true false)) thetrans)
                         ;tr1 (println (str (first trans)))
 
-                        theres (reduce (fn [x y] {:nominal (+ (:nominal x) (:nominal y)) :price (/ (+ (* (:nominal x) (:price x)) (* (:nominal y) (:price y))) (+ (:nominal x) (:nominal y)))} ) {:nominal 0 :price 0.0} trans)
+                        theres (getDealsDayRes trans) ;(reduce (fn [x y] {:nominal (+ (:nominal x) (:nominal y)) :price (/ (+ (* (:nominal x) (:price x)) (* (:nominal y) (:price y))) (+ (:nominal x) (:nominal y)))} ) {:nominal 0 :price 0.0} trans)
 
                         direction (:direction (first trans))
                         ]
-                    (recur (conj bydates {:date date  :direction direction :nominal (:nominal theres) :price (:price theres)})
-                         (rest dates))
-                  )                  
+                    (recur (conj bydates {:date date  :direction direction :nominal (:nominal theres) :wap (:wap theres) :wapusd (:wapusd theres) :waprub (:waprub theres)}) (rest dates))
+                  )
                   bydates)
                 )
               ]

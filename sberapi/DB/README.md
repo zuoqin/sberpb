@@ -24,7 +24,6 @@ bin\datomic restore-db file:///C://backup//20170410 "datomic:dev://localhost:433
 
 
 
-d:
 cd C:\datomic-pro-0.9.5544
 cd D:\datomic-pro-0.9.5350
 

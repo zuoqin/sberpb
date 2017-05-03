@@ -565,68 +565,74 @@
 (defn showtrans [security trans]
   (map (fn [item]
     (let [sec (first (filter (fn[x] (if (= (:id x) security ) true false)) (:securities @sbercore/app-state)))
+          isrusbond (if (and (= 5 (:assettype sec))
+                                   (= "RU" (subs (:isin sec) 0 2))
+                                   )  true false)
+          isbond (if (and (= 5 (:assettype sec))
+                                   ;(= "RU" (subs (:isin security) 0 2))
+                                   )  true false)
       ]
       (dom/div {:className "row" :style {:margin-left "0px" :margin-right "0px"}}
         ;; Инструмент
         (dom/div {:className "col-xs-2 col-md-2" :style {:padding-left "0px" :padding-right "0px"}}
-          (dom/a {:className "list-group-item" :href (str  "#") }
+          (dom/a {:className "list-group-item" :href (str  "#/postrans/" (:id (first (filter (fn [x] (if (= (compare (:code x) (:selectedclient @sbercore/app-state)) 0) true false)) (:clients @sbercore/app-state)))) "/" (:id sec)) }
             (dom/h4  #js {:className "list-group-item-heading" :dangerouslySetInnerHTML #js {:__html (:acode sec)}} nil)
           )
         )
 
         ;; Покупка / Продажа
         (dom/div {:className "col-xs-1 col-md-1" :style {:padding-left "0px" :padding-right "0px"}}
-          (dom/a {:className "list-group-item" :href (str  "#") }
+          (dom/a {:className "list-group-item" :href (str  "#/postrans/" (:id (first (filter (fn [x] (if (= (compare (:code x) (:selectedclient @sbercore/app-state)) 0) true false)) (:clients @sbercore/app-state)))) "/" (:id sec)) :style {:background-color (if (= (:direction item) "B") "lightgreen" "lightpink")}}
             (dom/h4 {:className "list-group-item-heading"} (if (= (:direction item) "B") "Покупка" "Продажа"))
           )
         )
 
         ;;Номинал
         (dom/div {:className "col-xs-2 col-md-2" :style {:padding-left "0px" :padding-right "0px"}}
-          (dom/a {:className "list-group-item" :href (str  "#") }
+          (dom/a {:className "list-group-item" :href (str  "#/postrans/" (:id (first (filter (fn [x] (if (= (compare (:code x) (:selectedclient @sbercore/app-state)) 0) true false)) (:clients @sbercore/app-state)))) "/" (:id sec)) }
             (dom/h4 {:className "list-group-item-heading" :style {:text-align "right"}} (sbercore/split-thousands (str (:nominal item))))
           )
         )
 
         ;; Currency
         (dom/div {:className "col-xs-1 col-md-1" :style {:padding-left "0px" :padding-right "0px"}}
-          (dom/a {:className "list-group-item" :href (str  "#") }
+          (dom/a {:className "list-group-item" :href (str  "#/postrans/" (:id (first (filter (fn [x] (if (= (compare (:code x) (:selectedclient @sbercore/app-state)) 0) true false)) (:clients @sbercore/app-state)))) "/" (:id sec)) }
             (dom/h4 {:className "list-group-item-heading"} (:currency sec))
           )
         )
 
         ;; Цена
         (dom/div {:className "col-xs-1 col-md-1" :style {:padding-left "0px" :padding-right "0px"}}
-          (dom/a {:className "list-group-item" :href (str  "#") }
-            (dom/h4 {:className "list-group-item-heading" :style {:text-align "right"}} (if (> (:price item) 1) (gstring/format "%.2f" (:price item))  (subs (str (:price item)) 0 5)))
+          (dom/a {:className "list-group-item" :href (str  "#/postrans/" (:id (first (filter (fn [x] (if (= (compare (:code x) (:selectedclient @sbercore/app-state)) 0) true false)) (:clients @sbercore/app-state)))) "/" (:id sec))}
+            (dom/h4 {:className "list-group-item-heading" :style {:text-align "right"}} (if (> (:wap item) 1) (sbercore/split-thousands (gstring/format "%.2f" (:wap item)))  (subs (str (:wap item)) 0 5)))
           )
         )
 
         ;; Стоимость в валюте бумаги
         (dom/div {:className "col-xs-1 col-md-1" :style {:padding-left "0px" :padding-right "0px"}}
-          (dom/a {:className "list-group-item" :href (str  "#") }
-            (dom/h4 {:className "list-group-item-heading" :style {:text-align "right"}} (gstring/format "%.2f" (:price item)))
+          (dom/a {:className "list-group-item" :href (str  "#/postrans/" (:id (first (filter (fn [x] (if (= (compare (:code x) (:selectedclient @sbercore/app-state)) 0) true false)) (:clients @sbercore/app-state)))) "/" (:id sec))}
+            (dom/h4 {:className "list-group-item-heading" :style {:text-align "right"}} (sbercore/split-thousands (gstring/format "%.2f"  (* (:nominal item) (:wap item) (if (= true isbond) 0.01 1.0)))))
           )
         )
 
 
         ;; Стоимость в долларах США
         (dom/div {:className "col-xs-1 col-md-1" :style {:padding-left "0px" :padding-right "0px"}}
-          (dom/a {:className "list-group-item" :href (str  "#") }
-            (dom/h4 {:className "list-group-item-heading" :style {:text-align "right"}} (gstring/format "%.2f" (:price item)))
+          (dom/a {:className "list-group-item" :href (str  "#/postrans/" (:id (first (filter (fn [x] (if (= (compare (:code x) (:selectedclient @sbercore/app-state)) 0) true false)) (:clients @sbercore/app-state)))) "/" (:id sec))}
+            (dom/h4 {:className "list-group-item-heading" :style {:text-align "right"}} (sbercore/split-thousands (gstring/format "%.2f" (* (:nominal item) (:wapusd item)))))
           )
         )
 
         ;; Стоимость в рублях РФ
         (dom/div {:className "col-xs-1 col-md-1" :style {:padding-left "0px" :padding-right "0px"}}
-          (dom/a {:className "list-group-item" :href (str  "#") }
-            (dom/h4 {:className "list-group-item-heading" :style {:text-align "right"}} (gstring/format "%.2f" (:price item)))
+          (dom/a {:className "list-group-item" :href (str  "#/postrans/" (:id (first (filter (fn [x] (if (= (compare (:code x) (:selectedclient @sbercore/app-state)) 0) true false)) (:clients @sbercore/app-state)))) "/" (:id sec)) }
+            (dom/h4 {:className "list-group-item-heading" :style {:text-align "right"}} (sbercore/split-thousands (gstring/format "%.2f" (* (:nominal item) (:waprub item)))))
           )
         )
 
         ;; Дата сделки
         (dom/div {:className "col-xs-2 col-md-2" :style {:padding-left "0px" :padding-right "0px"}}
-          (dom/a {:className "list-group-item" :href (str  "#") }
+          (dom/a {:className "list-group-item" :href (str  "#/postrans/" (:id (first (filter (fn [x] (if (= (compare (:code x) (:selectedclient @sbercore/app-state)) 0) true false)) (:clients @sbercore/app-state)))) "/" (:id sec))}
             (dom/h4 {:className "list-group-item-heading" :style {:text-align "right"}} (tf/unparse custom-formatter (tc/from-long (tc/to-long (tf/parse custom-formatter (:date item))))) )
           )          
         )
@@ -644,7 +650,6 @@
   (render
     [_]
     (if (> (count (:deals ((keyword (:selectedclient @sbercore/app-state)) @sbercore/app-state) )) 0)
-
       (dom/div {:className "list-group" :style {:display "block"}}
         (map (fn [item]
           (let [sec (first (filter (fn[x] (if (= (:id x) (:security item) ) true false)) (:securities @sbercore/app-state)))
@@ -686,6 +691,9 @@
 
 (defn onMount [data]
   (getPositions)
+  (if (nil? (:deals ((keyword (:selectedclient @sbercore/app-state)) @sbercore/app-state)))
+    (sbercore/getDeals)
+  )
   (put! ch 42)
   (swap! sbercore/app-state assoc-in [:current] {:name "Positions" :text "Positions with this security"} )
 )

@@ -197,11 +197,11 @@
     :tags ["deals"]
 
     (GET "/deals" []
-      ;;:header-params [authorization :- String]
+      :header-params [authorization :- String]
       :query-params [client :- String]
       :summary      "retrieve all transactions for given client"
 
-      (ok  (positionapi/getDeals (nth (str/split "Bearer thebearer" #" ") 1) client)))
+      (ok  (positionapi/getDeals (nth (str/split authorization #" ") 1) client)))
 
     (OPTIONS "/deals" []
       :summary  "Allows OPTIONS requests"
