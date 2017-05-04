@@ -30,15 +30,21 @@
 (def jquery (js* "$"))
 
 
-(defn split-thousands
-  [n-str]
-  (->> n-str
-       reverse
-       (partition 3 3 [])
-       (map reverse)
-       reverse
-       (map #(apply str %))
-       (str/join " ")))
+(defn split-thousands [n-str]
+  (let [index (str/index-of n-str ".")
+        lstr (subs n-str 0 (if (nil? index) (count n-str) index))
+        rstr (if (nil? index) "" (subs n-str index)) 
+        splitstr (->> lstr
+          reverse
+          (partition 3 3 [])
+          (map reverse)
+          reverse
+          (map #(apply str %))
+          (str/join " "))
+    ]
+    (str splitstr rstr)
+  )
+)
 
 
 (defn doLogout [data]
@@ -159,7 +165,7 @@
                    )  true false)
     newfxrate (if (= 0 (compare "GBX" (:currency security))) (/ fxrate 100.) fxrate)
 
-    result {:id secid :currency (:currency security) :amount (:amount (nth position 1)) :wap posprice :price price :waprub (:rubprice (nth position 1)) :currubprice (* price newfxrate) :wapusd (:wapusd (nth position 1)) :usdvalue (/ (* (:amount (nth position 1)) (:price security)  (if (= isrusbond true) 1.0 (if (= isbond true) (/ newfxrate 100.0 ) newfxrate ) ) ) usdrate) }
+    result {:id secid :currency (:currency security) :amount (:amount (nth position 1)) :wap posprice :price price :waprub (:rubprice (nth position 1)) :currubprice (* price newfxrate) :wapusd (:wapusd (nth position 1)) :usdvalue (/ (* (:amount (nth position 1)) (:price security)  (if (= isrusbond true) 10.0 (if (= isbond true) (/ newfxrate 100.0 ) newfxrate ) ) ) usdrate) }
 
 
 

@@ -77,8 +77,8 @@
 (defn comp-trans
   [tran1 tran2]
   (if (or
-       (> (:date tran1) (:date tran2))
-       (and (= (:date tran1) (:date tran2)) (> (:amount tran1) (:amount tran2)))
+       (> (tc/to-long (tf/parse custom-formatter (:date tran1))) (tc/to-long (tf/parse custom-formatter (:date tran2))))
+       (and (= (tc/to-long (tf/parse custom-formatter (:date tran1))) (tc/to-long (tf/parse custom-formatter (:date tran2)))) (> (:amount tran1) (:amount tran2)))
     )
       true
       false
@@ -211,6 +211,40 @@
   )
 )
 
+(defcomponent showcash-view [data owner]
+  (render
+    [_]
+    (if (> (count (:clients @sbercore/app-state)) 0)
+      (dom/div {:className "row" :style {:margin-left "0px" :margin-right "0px"}}
+        (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "")
+        (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "")
+        (dom/div {:className "col-xs-1 col-md-1" :style {:padding-left "0px" :padding-right "0px" :background-color (if (< (:usd (first (filter (fn [x] (if (= (:code x) (:selectedclient @sbercore/app-state)) true false)) (:clients @sbercore/app-state)))) 0) "lightpink" "white")} }
+          (dom/h4 {:className "list-group-item-heading" :style {:text-align "right"}} (sbercore/split-thousands (str (:usd (first (filter (fn [x] (if (= (:code x) (:selectedclient @sbercore/app-state)) true false)) (:clients @sbercore/app-state))))))
+          )
+        )
+        (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "")
+        (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "")
+        (dom/div {:className "col-xs-1 col-md-1" :style {:padding-left "0px" :padding-right "0px" :background-color (if (< (:rub (first (filter (fn [x] (if (= (:code x) (:selectedclient @sbercore/app-state)) true false)) (:clients @sbercore/app-state)))) 0) "lightpink" "white")}}
+          (dom/h4 {:className "list-group-item-heading" :style {:text-align "right"}} (sbercore/split-thousands (str (:rub (first (filter (fn [x] (if (= (:code x) (:selectedclient @sbercore/app-state)) true false)) (:clients @sbercore/app-state))))))
+          )
+        )
+        (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "")
+        (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "")
+        (dom/div {:className "col-xs-1 col-md-1" :style {:padding-left "0px" :padding-right "0px" :background-color (if (< (:eur (first (filter (fn [x] (if (= (:code x) (:selectedclient @sbercore/app-state)) true false)) (:clients @sbercore/app-state)))) 0) "lightpink" "white")}}
+          (dom/h4 {:className "list-group-item-heading" :style {:text-align "right"}} (sbercore/split-thousands (str (:eur (first (filter (fn [x] (if (= (:code x) (:selectedclient @sbercore/app-state)) true false)) (:clients @sbercore/app-state))))))
+          )
+        )
+        (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "")
+        (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "")
+        (dom/div {:className "col-xs-1 col-md-1" :style {:padding-left "0px" :padding-right "0px" :background-color (if (< (:gbp (first (filter (fn [x] (if (= (:code x) (:selectedclient @sbercore/app-state)) true false)) (:clients @sbercore/app-state)))) 0) "lightpink" "white")}}
+          (dom/h4 {:className "list-group-item-heading" :style {:text-align "right"}} (sbercore/split-thousands (str (:gbp (first (filter (fn [x] (if (= (:code x) (:selectedclient @sbercore/app-state)) true false)) (:clients @sbercore/app-state))))))
+          )
+        )
+      )
+    )
+  )
+)
+
 (defcomponent showstocks-view [data owner]
   (render
     [_]
@@ -237,6 +271,8 @@
                 putdate (if (nil? (:putdate item)) #inst "1900-01-01T00:00:00.000-00:00" (:putdate item))
                 ;tr1 (.log js/console "currency: "  seccur " rate:" newfxrate)
                 portfusdvalue (:usdvalue (reduce (fn [x y] {:usdvalue (+ (:usdvalue x) (:usdvalue y))}) (:positions ((keyword (:selectedclient @sbercore/app-state)) @sbercore/app-state))))
+
+                ;;tr1 (.log js/console "portfolio usd value: "  portfusdvalue)
             ]
 
             (dom/div {:className "row" :style {:margin-left "0px" :margin-right "0px"}} 
@@ -264,24 +300,20 @@
 
               ;; Цена покупки
               (dom/div {:className "col-xs-1 col-md-1" :style {:padding-left "0px" :padding-right "0px"}}
-
                 (dom/a {:className "list-group-item" :style {:text-align "right"} :href (str  "#/postrans/" (:id (first (filter (fn [x] (if (= (compare (:code x) (:selectedclient @sbercore/app-state)) 0) true false)) (:clients @sbercore/app-state)))) "/" (:id item) ) }
-                  (dom/h4 {:className "list-group-item-heading"} (if (> (:wap item) 1) (gstring/format "%.2f" (:wap item))  (subs (str (:wap item)) 0 5) )    )
+                  (dom/h4 {:className "list-group-item-heading"} (sbercore/split-thousands  (if (> (:wap item) 1) (gstring/format "%.2f" (:wap item))  (subs (str (:usdvalue item)) 0 5))))
                 )
-
               )
 
               ;; Last Price
               (dom/div {:className "col-xs-1 col-md-1" :style {:padding-left "0px" :padding-right "0px"}}
-
                 (dom/a {:className "list-group-item" :style {:text-align "right"} :href (str  "#/postrans/" (:id (first (filter (fn [x] (if (= (compare (:code x) (:selectedclient @sbercore/app-state)) 0) true false)) (:clients @sbercore/app-state)))) "/" (:id item) ) }
-                  (dom/h4 {:className "list-group-item-heading"} (if (> (:price item) 1) (gstring/format "%.2f" (:price item))  (subs (str (:price item)) 0 5)))
+                  (dom/h4 {:className "list-group-item-heading"} (sbercore/split-thousands (if (> (:price item) 1) (gstring/format "%.2f" (:price item))  (subs (str (:price item)) 0 5))) )
                 )
               )
 
               ;;Target price
               (dom/div {:className "col-xs-1 col-md-1" :style {:padding-left "0px" :padding-right "0px" :visibility (if (> (:target sec) 0) "visible" "hidden")}}
-
                 (dom/a {:className "list-group-item" :style {:text-align "right"} :href (str  "#/postrans/" (:id (first (filter (fn [x] (if (= (compare (:code x) (:selectedclient @sbercore/app-state)) 0) true false)) (:clients @sbercore/app-state)))) "/" (:id item) ) }
                   (dom/h4 {:className "list-group-item-heading"} (if (and (> (:target sec) 0) )  (if (> (:price item) 1) (sbercore/split-thousands (gstring/format "%.0f" (if (nil? (:target sec)) 0.0 (:target sec))))  (subs (str (if (nil? (:target sec)) 0.0 (:target sec))) 0 5)) ""))
                 )            
@@ -289,7 +321,6 @@
 
               ;;Рейтинг аналитиков
               (dom/div {:className "col-xs-1 col-md-1" :style {:padding-left "0px" :padding-right "0px"}}
-
                 (dom/a {:className "list-group-item" :style {:text-align "right"} :href (str  "#/postrans/" (:id (first (filter (fn [x] (if (= (compare (:code x) (:selectedclient @sbercore/app-state)) 0) true false)) (:clients @sbercore/app-state)))) "/" (:id item) ) }
                   (dom/h4 {:className "list-group-item-heading"} (gstring/format "%.2f" (if (nil? (:anr sec)) 0.0 (:anr sec)))
                   )
@@ -299,10 +330,9 @@
 
               ;; Currency
               (dom/div {:className "col-xs-1 col-md-1" :style {:padding-left "0px" :padding-right "0px"}}
-
                 (dom/a {:className "list-group-item" :style {:text-align "right"} :href (str  "#/postrans/" (:id (first (filter (fn [x] (if (= (compare (:code x) (:selectedclient @sbercore/app-state)) 0) true false)) (:clients @sbercore/app-state)))) "/" (:id item) ) }
-                  (dom/h4 {:className "list-group-item-heading"} (:currency item)    )
-                )            
+                  (dom/h4 {:className "list-group-item-heading"} (:currency item))
+                )
               )
 
 
@@ -407,7 +437,7 @@
                                    (= "RU" (subs (:isin sec) 0 2))
                                    )  true false)
 
-                usdcosts (* (if (= isrusbond true) 1.0 0.01) (:amount item) (:wapusd item))
+                usdcosts (* (if (= isrusbond true) 10.0 0.01) (:amount item) (:wapusd item))
 
                 ;tr1 (if (= false isrusbond) (println (str (:acode sec) " не российский бонд: " (:usdvalue item) " costs: " usdcosts " usdvalue: "  " wapusd: " (:wapusd item) )))
                 isbond (if (and (= 5 (:assettype sec))
@@ -452,14 +482,12 @@
                 )
               )
 
-
               ;; Last Price
               (dom/div {:className "col-xs-1 col-md-1" :style {:padding-left "0px" :padding-right "0px"}}
                 (dom/a {:className "list-group-item" :style {:text-align "right"} :href (str  "#/postrans/" (:id (first (filter (fn [x] (if (= (compare (:code x) (:selectedclient @sbercore/app-state)) 0) true false)) (:clients @sbercore/app-state)))) "/" (:id item) ) }
-                  (dom/h4 {:className "list-group-item-heading"} (if (> (:price item) 1) (gstring/format "%.2f" (:price item))  (subs (str (:price item)) 0 5) )    )
+                  (dom/h4 {:className "list-group-item-heading"} (if (> (:price item) 1) (gstring/format "%.2f" (:price item))  (subs (str (:price item)) 0 5) ))
                 )
               )
-
 
               ;;Дюрация
               (dom/div {:className "col-xs-1 col-md-1" :style {:padding-left "0px" :padding-right "0px"}}
@@ -684,6 +712,11 @@
             (if (and (= true (str/includes? seccode (str/upper-case (:search @sbercore/app-state)) )) (= 1 1))   true false) ) ) (:deals ((keyword (:selectedclient @sbercore/app-state)) @sbercore/app-state))))
         )
       )
+      (dom/div {:style {:background "white"}}
+        (dom/p {:style {:text-align "center"}}
+          (dom/img {:src "images/loader.gif"})
+        )        
+      )
     )
   )
 )
@@ -736,6 +769,40 @@
         (if (> (count (:positions ((keyword (:selectedclient @sbercore/app-state)) @sbercore/app-state) )) 0)
           (dom/div
             (dom/div {:style {:margin-top "70px"} :className "panel panel-info"}
+              (dom/div {:className "panel-heading"}
+                (dom/div (assoc stylerow  :className "row" )
+                  (dom/div {:className "col-xs-12 col-md-12" :style {:text-align "center"}} "Cash позиция")
+                )
+              )
+            )
+
+            (dom/div  {:className "panel panel-primary"}
+              (dom/div {:className "panel-heading"}
+                (dom/div (assoc stylerow  :className "row" )
+                  (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "")
+                  (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "")
+                  (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "Доллар США")
+                  (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "")
+                  (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "")
+                  (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "Рубль")
+                  (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "")
+                  (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "")
+                  (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "Евро")
+                  (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "")
+                  (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "")
+                  (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "Фунт")
+                )
+              )
+              (dom/div {:className "panel-body"}
+                (om/build showcash-view  data {})
+                ;(om/build showpositions-total-view  data {})
+              )
+            )
+
+
+
+           
+            (dom/div {:className "panel panel-info"}
               (dom/div {:className "panel-heading"}
                 (dom/div (assoc stylerow  :className "row" )
                   (dom/div {:className "col-xs-12 col-md-12" :style {:text-align "center"} } "Акции")
@@ -822,7 +889,6 @@
             )
           )
           (if (nil? (:selectedclient @sbercore/app-state))
-            (dom/div)
             (dom/div {:style {:background "white"}}
               (dom/p {:style {:text-align "center"}}
                 (dom/img {:src "images/loader.gif"})

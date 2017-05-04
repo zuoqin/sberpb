@@ -298,6 +298,10 @@
 )
 
 
+(defn clients-to-excel []
+  (save-xls ["sheet1" (dataset [:code :name :signedadvisory :currency :stockshare :bondshare :usd :rub :eur "gbp"] (get-clients))] (str drive ":/DEV/Java/allclients.xlsx") )
+)
+
 (defn security-to-map [security]
   (let [
     newsec {:id (nth security 0) :acode (nth security 1) :exchange (nth security 2) :isin (nth security 3) :currency (nth security 4) :bcode (nth security 5) :assettype (nth security 6)}

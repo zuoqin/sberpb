@@ -104,11 +104,14 @@
         sec (first (filter (fn [x] (if (= (:security (first transactions)) (:id x)) true false)) (secs/get-securities)))
 
         seccurrate (db/get-fxrate-by-date (:currency sec) (:valuedate (first transactions)))
+        trancurrrates {(keyword (:currency (first transactions))) (db/get-fxrate-by-date (str/upper-case (:currency (first transactions))) (:valuedate (first transactions)))}
+        
         result (loop [result {} trans transactions]
           (if (seq trans)
             (let [
                   tran (first trans)
-                  trancurrrate (db/get-fxrate-by-date (str/upper-case (:currency tran)) (:valuedate tran))
+                  trancurrrate (if (nil? ((keyword (:currency (first transactions))) trancurrrates)) (db/get-fxrate-by-date (str/upper-case (:currency tran)) (:valuedate tran)) ((keyword (:currency (first transactions))) trancurrrates))
+                  tr1 (assoc trancurrrates (keyword (:currency tran)) trancurrrate)
                   
                   ;tr1 (println (str (first trans)))
 
@@ -118,13 +121,16 @@
 
                   amnt (if (nil? (:nominal result )) 0 (:nominal result )) 
 
+                  trannominal (if (= "B" (:direction tran)) (:nominal tran) (- 0 (:nominal tran)))
+                  newnominal (+ trannominal amnt)
                   rubprice (* trancurrrate (:price tran)) 
                   usdprice (/ rubprice usdrate)
                   seccurprice (/ rubprice seccurrate)
-
-
                   
-                  theres {:nominal (+ (:nominal tran) amnt) :wap (/ (+ (* (:nominal tran) seccurprice) (* amnt wap)) (+ (:nominal tran) amnt)) :wapusd (/ (+ (* (:nominal tran) usdprice) (* amnt wapusd)) (+ (:nominal tran) amnt)) :waprub (/ (+ (* (:nominal tran) rubprice) (* amnt waprub)) (+ (:nominal tran) amnt))}
+                  
+
+                  ;tr1 (println (str "newnominal= " newnominal))
+                  theres {:nominal newnominal :wap (if (= 0.0 newnominal) 0.0 (/ (+ (* trannominal seccurprice) (* amnt wap)) newnominal))  :wapusd (if (= 0.0 newnominal) 0.0 (/ (+ (* trannominal usdprice) (* amnt wapusd)) newnominal))  :waprub (if (= 0.0 newnominal) 0.0 (/ (+ (* trannominal rubprice) (* amnt waprub)) newnominal)) }
                   
 
                   direction (:direction tran)

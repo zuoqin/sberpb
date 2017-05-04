@@ -92,24 +92,13 @@
       ]
       (dom/div
         (om/build sbercore/website-view sbercore/app-state {})
-        (dom/div  (assoc styleprimary  :className "panel panel-primary" ;;:onClick (fn [e](println e))
-        )
-          (dom/div
-            (b/button {:className "btn btn-primary" :onClick (fn [e] (-> js/document
-          .-location
-          (set! "#/syssettingdetail")))} "Add New")
-          )
-          ; (dom/div {:className "panel-heading"}
-          ;   (dom/div {:className "row"}
-          ;     ; (dom/div {:className "col-md-10"}
-          ;     ;   (dom/span {:style {:padding-left "5px"}} "我的消息")
-          ;     ; )
-          ;     ; (dom/div {:className "col-md-2"}
-          ;     ;   (dom/span {:className "badge" :style {:float "right" }} (str (:msgcount data))  )
-          ;     ; )
-          ;   )
-          ; )
+        (dom/div  (assoc styleprimary  :className "panel panel-primary")
           (om/build showsettings-view  data {})
+        )
+        (dom/div
+          (dom/a {:className "list-group-item" :href "/templates/CLIENT_WEB.xlsx" }
+            (dom/h4  #js {:className "list-group-item-heading"} "Download Excel template")
+          )
         )
       )
     )
