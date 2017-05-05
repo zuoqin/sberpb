@@ -73,14 +73,14 @@
     conn (d/connect uri)
     ;tr1 (println (str "in get-fxrate-by-date " currency " for date: " dt) )
     newdate (java.util.Date. (c/to-long (f/parse custom-formatter (f/unparse custom-formatter (c/from-long (c/to-long dt))))))
-
+    newcurrency (if (= currency "GBX") "GBP" (if (= "PTS" currency) "RUB" currency))
 
  
     security (ffirst (d/q '[:find ?e
                        :in $ ?sec
                        :where
                        [?e :security/acode ?sec]
-                       ] (d/db conn) (if (= 0 (compare currency "GBX")) "GBP" currency)))
+                       ] (d/db conn) newcurrency))
 
     ;tr2 (println security)
 
@@ -97,7 +97,7 @@
 
 
     ;tr3 (println rate)
-    newrate (if (= 0 (compare currency "GBX")) (/ (nth rate 1) 100.0) (nth rate 1))
+    newrate (if (= currency "GBX") (/ (nth rate 1) 100.0) (nth rate 1))
     ]
     newrate 
     ;rate
@@ -718,14 +718,18 @@
   )
 )
 
+(defn set-future-tran [item parent]
+  (let [newitem (map-indexed (fn [idx itm] (if (= 23 idx) {:content [ {:content [parent]}]} itm)) item)]
+    newitem
+  )
+)
 
 (defn get-transactions [client dt]
   (let [f (slurp (str drive ":/DEV/Java/" client ".xml"))
         x (parse f)
-	
         trancnt (- (count (:content (nth   (:content (nth (:content x) 4) )  0 ) ) ) 1)  
-        ;tr1 (println trancnt) 
-        trans (loop [result [] num 0 ]
+        ;tr1 (println (str "count= " trancnt))
+        trans (loop [result [] num 0 parent "" ]
           (let [item (if (<= num trancnt) (:content (nth (:content (nth   (:content (nth (:content x) 4) )  0 ) )  num)))
             ]
             (if (<= num trancnt)            
@@ -739,8 +743,24 @@
                    (if (> (count item) 23) (not (str/includes? (str/lower-case  (if (nil? (first (:content  (first (:content (nth item 24)  )  )))) "" (first (:content  (first (:content (nth item 24)  )  ))))  ) "call")) true) 
                    (if (> (count item) 23) (not (str/includes? (str/lower-case  (if (nil? (first (:content  (first (:content (nth item 24)  )  )))) "" (first (:content  (first (:content (nth item 24)  )  ))))  ) "put")) true) 
                 )
-                (recur (conj result item ) (inc num))
-                (recur result (inc num))
+                (recur (conj result item ) (inc num) parent)
+                (if (and
+                   (= (:ss:StyleID (:attrs (nth item 0))) "s68" )
+                   (or (= true (.contains (first (:content  (first (:content (nth item 0))))) "Instrument:")))
+                )
+                  (recur result (inc num) (subs (first (:content  (first (:content (nth item 0))))) 16))
+
+                  (if (and
+                    (= (:ss:StyleID (:attrs (nth item 0))) "s72" )
+                    (or (= 0 (compare "We Sell" (first (:content  (first (:content (nth item 9)  )  ))))) 
+                       (= 0 (compare "We Buy" (first (:content  (first (:content (nth item 9)  )  )))))
+                    )
+                    (str/includes? (str/lower-case (first (:content  (first (:content (nth item 4)  )  )))) "forts")
+                    )
+                    (recur (conj result (set-future-tran item parent)) (inc num) parent)
+                    (recur result (inc num) parent)
+                  )
+                )
               )
               result
             )
@@ -1071,7 +1091,7 @@
 
 (defn get-portf-by-num [client num]
   (let [
-    newnum (+ 1325462399000 (* num 86400000) ) ;;1488412799000
+    newnum (+ 1451606399000 (* num 86400000) ) ;;1488412799000 1325462399000
     newdate (java.util.Date. newnum)
     ;tr1 (println newdate)
     day-of-week (f/unparse day-of-week-formatter (c/from-long (c/to-long newdate)))
@@ -1191,7 +1211,7 @@
           secisin (second (first (filter (fn [security] (if (= (keyword "security/isin") (first security)) x)) sec)))
 
 
-          ;tr2 (println (str (:security x) " isin = " secisin " seccurrency = " seccurrency " trancurrency = " (:currency x)) )
+          ;;tr2 (println (str (:security x) " isin = " secisin " seccurrency = " seccurrency " trancurrency = " (:currency x)) )
           
 
 

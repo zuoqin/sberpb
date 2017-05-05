@@ -1,12 +1,12 @@
 [
-{ :user/code "zuoqin", :user/password "Qwerty123", :user/role "admin", :db/id #db/id[:db.part/user -100001] }
-{ :user/code "rustam", :user/password "Qwerty123", :user/role "admin", :db/id #db/id[:db.part/user -100002] }
-{ :user/code "alexey", :user/password "Qwerty123", :user/role "admin", :db/id #db/id[:db.part/user -100003] }
-{ :user/code "vladimir", :user/password "Qwerty123", :user/role "admin", :db/id #db/id[:db.part/user -100004] }
-{ :user/code "natalya", :user/password "Qwerty123", :user/role "admin", :db/id #db/id[:db.part/user -100005] }
-{ :user/code "regina", :user/password "Qwerty123", :user/role "admin", :db/id #db/id[:db.part/user -100006] }
-{ :user/code "alexander", :user/password "Qwerty123", :user/role "admin", :db/id #db/id[:db.part/user -100007] }
-{ :user/code "guillaume", :user/password "Qwerty123", :user/role "admin", :db/id #db/id[:db.part/user -100008] }
+{ :user/code "zuoqin", :user/password "Qwerty123", :user/role "admin", :db/id #db/id[:db.part/user -105001] }
+{ :user/code "rustam", :user/password "Qwerty123", :user/role "admin", :db/id #db/id[:db.part/user -105002] }
+{ :user/code "alexey", :user/password "Qwerty123", :user/role "admin", :db/id #db/id[:db.part/user -105003] }
+{ :user/code "vladimir", :user/password "Qwerty123", :user/role "admin", :db/id #db/id[:db.part/user -105004] }
+{ :user/code "natalya", :user/password "Qwerty123", :user/role "admin", :db/id #db/id[:db.part/user -105005] }
+{ :user/code "regina", :user/password "Qwerty123", :user/role "admin", :db/id #db/id[:db.part/user -105006] }
+{ :user/code "alexander", :user/password "Qwerty123", :user/role "admin", :db/id #db/id[:db.part/user -105007] }
+{ :user/code "guillaume", :user/password "Qwerty123", :user/role "admin", :db/id #db/id[:db.part/user -105008] }
 
 
 
@@ -17,7 +17,9 @@
 
 ;; SECURITIES
 { :security/bcode "RU000A0JTG59 Corp", :security/acode "26210" :security/isin "RU000A0JTG59", :security/exchange "MICEX", :security/currency "RUB", :security/assettype 5, :security/name "ОФЗ 26210"   :db/id #db/id[:db.part/user -100016] }
-;;{ :security/bcode "XS0359381331 Corp", :security/isin "XS0359381331", :security/assettype 5, :security/name "Yandex NV", :security/exchange "OTC", :security/currency "RUB",    :db/id #db/id[:db.part/user -100013] }
+
+{ :security/bcode "RU000A0JXQ85 Corp", :security/acode "TINKOFF1R" :security/isin "RU000A0JXQ85", :security/assettype 5, :security/name "Тинькофф Банк, 001P-01R", :security/exchange "MICEX", :security/currency "RUB",    :db/id #db/id[:db.part/user -100013] }
+
 ;{ :security/bcode "XS0925043100 Corp", :security/isin "VOSTOK 7 05/04/20", :security/exchange "OTC", :security/currency "RUB",    :db/id #db/id[:db.part/user -100010] }
 ;{ :security/acode "ALOC20", :security/isin "XS0925043100", :security/bcode "XS0925043100 CBBT Corp", :security/exchange "CBBT", :security/currency "USD",   :db/id #db/id[:db.part/user -100324]}
 
@@ -656,7 +658,7 @@
 
 { :security/acode "TBCBLI", :security/isin "US87217U2087", :security/bcode "TBCB S1 Equity", :security/assettype 1, :security/name "Yandex NV", :security/exchange "S1", :security/currency "USD",   :db/id #db/id[:db.part/user -100315]}
 
-{ :security/acode "TBTUS", :security/isin "US74347B2016", :security/bcode "TBT US Equity", :security/assettype 1, :security/name "Yandex NV", :security/exchange "PO", :security/currency "EUR",   :db/id #db/id[:db.part/user -100316]}
+{ :security/acode "TBTUS", :security/isin "US74347B2016", :security/bcode "TBT US Equity", :security/assettype 1, :security/name "ProShares UltraShort 20+ Year", :security/exchange "PO", :security/currency "USD",   :db/id #db/id[:db.part/user -100316]}
 
 { :security/acode "TURUS", :security/isin "US4642867158", :security/bcode "ISVZ GR Equity", :security/assettype 1, :security/name "Yandex NV", :security/exchange "GR", :security/currency "EUR",   :db/id #db/id[:db.part/user -100317]}
 
@@ -1184,23 +1186,48 @@
 { :security/acode "SOAF25", :security/isin "US836205AR58", :security/bcode "US836205AR58 Corp", :security/assettype 5, :security/name "Yandex NV", :security/exchange "NYSE", :security/currency "USD", :db/id #db/id[:db.part/user -100572] }
 
 
+;;FORTS contracts
+
+
+{ :security/acode "SI-6.17", :security/isin "URM7 Curncy", :security/bcode "URM7 Curncy", :security/assettype 15, :security/name "Futures on USD/RUB Exchange Rate", :security/exchange "RTS", :security/currency "RUB", :db/id #db/id[:db.part/user -101001] }
+
+{ :security/acode "BR-4.17", :security/isin "B5J7 Comdty", :security/bcode "B5J7 Comdty", :security/assettype 15, :security/name "Brent Crude Futs  Apr17", :security/multiple 10.0, :security/exchange "RTS", :security/currency "USD", :db/id #db/id[:db.part/user -101002] }
+
+{ :security/acode "BR-5.17", :security/isin "B5K7 Comdty", :security/bcode "B5K7 Comdty", :security/assettype 15, :security/name "Brent Crude Futs  May17", :security/multiple 10.0, :security/exchange "RTS", :security/currency "USD", :db/id #db/id[:db.part/user -101003] }
+
+{ :security/acode "BR-6.17", :security/isin "B5M7 Comdty", :security/bcode "B5M7 Comdty", :security/assettype 15, :security/name "Brent Crude Futs  June17", :security/multiple 10.0, :security/exchange "RTS", :security/currency "USD", :db/id #db/id[:db.part/user -101004] }
+
+{ :security/acode "ROSN-6.17", :security/isin "ROSM7 Index", :security/bcode "ROSM7 Index", :security/assettype 15, :security/name "ROSN Future Jun17", :security/multiple 10.0, :security/exchange "RTS", :security/currency "USD", :db/id #db/id[:db.part/user -101005] }
+
+{ :security/acode "LKOH-6.17", :security/isin "LKOH=M7 RU Equity", :security/bcode "LKOH=M7 RU Equity", :security/assettype 15, :security/name "LUKOIL Jun17", :security/multiple 10.0, :security/exchange "RTS", :security/currency "RUB", :db/id #db/id[:db.part/user -101007] }
+
+{ :security/acode "RTS-9.14", :security/isin "VEU14 Index", :security/bcode "VEU14 Index", :security/assettype 15, :security/name "RTS INDEX FUTURE  Sep14", :security/multiple 10.0, :security/exchange "RTS", :security/currency "USD", :db/id #db/id[:db.part/user -101006] }
+
+{ :security/acode "VTBR-9.14", :security/isin "VTBU14 Index", :security/bcode "VTBU14 Index", :security/assettype 15, :security/name "VTBR Future Sep14", :security/multiple 10.0, :security/exchange "RTS", :security/currency "RUB", :db/id #db/id[:db.part/user -101008] }
+
+{ :security/acode "SI-6.17/C F59000 ACR 15JUN17", :security/isin "URM7C 59000 Curncy", :security/bcode "URM7C 59000 Curncy", :security/assettype 15, :security/name "SI-6.17/C F59000 ACR 15JUN17", :security/multiple 10.0, :security/exchange "RTS", :security/currency "RUB", :db/id #db/id[:db.part/user -101009] }
+
+{ :security/acode "SI-6.17/C F60000 ACR 15JUN17", :security/isin "URM7C 60000 Curncy", :security/bcode "URM7C 60000 Curncy", :security/assettype 15, :security/name "URM7C 60000.00 Curncy	USD/RUB Fut Opt   Jun17C", :security/multiple 10.0, :security/exchange "RTS", :security/currency "RUB", :db/id #db/id[:db.part/user -101010] }
+
+{ :security/acode "RTS-3.17/P O110000 ACU 16MAR17", :security/isin "VEH7C 11000 Index", :security/bcode "VEH7C 11000 Index", :security/assettype 15, :security/name "VEH7C 110000.00 Index	RTS INDEX OPTIONS Mar17C", :security/multiple 10.0, :security/exchange "RTS", :security/currency "USD", :db/id #db/id[:db.part/user -101011] }
+
 ;; ISSUERS
-{ :issuer/code "Mail.Ru Group Ltd" :db/id #db/id[:db.part/user -101001] }
-{ :issuer/code "Magnit PJSC" :db/id #db/id[:db.part/user -101002] }
-{ :issuer/code "Novatek PJSC" :db/id #db/id[:db.part/user -101003]}
-{ :issuer/code "Yandex NV" :db/id #db/id[:db.part/user -101004]}
-{ :issuer/code "United Co RUSAL PLC" :db/id #db/id[:db.part/user -101005]}
-{ :issuer/code "VimpelCom Ltd" :db/id #db/id[:db.part/user -101006]}
-{ :issuer/code "VOSTOK 7 05/04/20" :db/id #db/id[:db.part/user -101007]}
-{ :issuer/code "ALRSRU 7 3/4 11/03/20" :db/id #db/id[:db.part/user -101008]}
-{ :issuer/code "EDCLLI 4 7/8 04/17/20" :db/id #db/id[:db.part/user -101009]}
-{ :issuer/code "EVRAZ 9 1/2 04/24/18" :db/id #db/id[:db.part/user -101010]}
-{ :issuer/code "NVTKRM 6.604 02/03/21" :db/id #db/id[:db.part/user -101011]}
-{ :issuer/code "SBERRU 5 1/2 02/26/24" :db/id #db/id[:db.part/user -101012]}
-{ :issuer/code "VEBBNK 6.902 07/09/20" :db/id #db/id[:db.part/user -101013]}
-{ :issuer/code "Surgutneftegas OJSC" :db/id #db/id[:db.part/user -101014]}
-{ :issuer/code "IMHRUS 10 3/4 12/28/18" :db/id #db/id[:db.part/user -101015]}
-{ :issuer/code "Polymetal International PLC" :db/id #db/id[:db.part/user -101016]}
+;; { :issuer/code "Mail.Ru Group Ltd" :db/id #db/id[:db.part/user -101001] }
+;; { :issuer/code "Magnit PJSC" :db/id #db/id[:db.part/user -101002] }
+;; { :issuer/code "Novatek PJSC" :db/id #db/id[:db.part/user -101003]}
+;; { :issuer/code "Yandex NV" :db/id #db/id[:db.part/user -101004]}
+;; { :issuer/code "United Co RUSAL PLC" :db/id #db/id[:db.part/user -101005]}
+;; { :issuer/code "VimpelCom Ltd" :db/id #db/id[:db.part/user -101006]}
+;; { :issuer/code "VOSTOK 7 05/04/20" :db/id #db/id[:db.part/user -101007]}
+;; { :issuer/code "ALRSRU 7 3/4 11/03/20" :db/id #db/id[:db.part/user -101008]}
+;; { :issuer/code "EDCLLI 4 7/8 04/17/20" :db/id #db/id[:db.part/user -101009]}
+;; { :issuer/code "EVRAZ 9 1/2 04/24/18" :db/id #db/id[:db.part/user -101010]}
+;; { :issuer/code "NVTKRM 6.604 02/03/21" :db/id #db/id[:db.part/user -101011]}
+;; { :issuer/code "SBERRU 5 1/2 02/26/24" :db/id #db/id[:db.part/user -101012]}
+;; { :issuer/code "VEBBNK 6.902 07/09/20" :db/id #db/id[:db.part/user -101013]}
+;; { :issuer/code "Surgutneftegas OJSC" :db/id #db/id[:db.part/user -101014]}
+;; { :issuer/code "IMHRUS 10 3/4 12/28/18" :db/id #db/id[:db.part/user -101015]}
+;; { :issuer/code "Polymetal International PLC" :db/id #db/id[:db.part/user -101016]}
 
 
 ;; CLIENTS
@@ -1386,7 +1413,7 @@
 
 { :transaction/client #db/id[:db.part/user -102003], :transaction/security #db/id[:db.part/user -100098], :transaction/nominal 1957.0,      :transaction/price 3706.41, :transaction/direction "S", :transaction/valuedate #inst "2017-02-20T10:00:00.0000000Z", :transaction/currency "RUB", :transaction/comment "Оферта",                                            :db/id #db/id[:db.part/user -110151] }
 
-{ :transaction/client #db/id[:db.part/user -102003], :transaction/security #db/id[:db.part/user -100048], :transaction/nominal 200000.0,      :transaction/price 107.00, :transaction/direction "S", :transaction/valuedate #inst "2017-04-21T10:00:00.0000000Z", :transaction/currency "USD", :transaction/comment "Оферта KOKS18",                                            :db/id #db/id[:db.part/user -110153] }
+{ :transaction/client #db/id[:db.part/user -102003], :transaction/security #db/id[:db.part/user -100048], :transaction/nominal 200000.0,      :transaction/price 107.00, :transaction/direction "S", :transaction/valuedate #inst "2017-05-04T10:00:00.0000000Z", :transaction/currency "USD", :transaction/comment "Оферта KOKS18",                                            :db/id #db/id[:db.part/user -110153] }
 
 { :transaction/client #db/id[:db.part/user -102003], :transaction/security #db/id[:db.part/user -100130], :transaction/nominal 200000.0,      :transaction/price 100.00, :transaction/direction "S", :transaction/valuedate #inst "2017-01-30T10:00:00.0000000Z", :transaction/currency "USD", :transaction/comment "Auto Call",                                            :db/id #db/id[:db.part/user -110152] }
 
@@ -1660,7 +1687,7 @@
 
 
 
-{ :transaction/client #db/id[:db.part/user -102037], :transaction/security #db/id[:db.part/user -100098], :transaction/nominal 2387.0,      :transaction/price 3706.41, :transaction/direction "S", :transaction/valuedate #inst "2017-02-20T10:00:00.0000000Z", :transaction/currency "RUB", :transaction/comment "Оферта",                                            :db/id #db/id[:db.part/user -110183] }
+{ :transaction/client #db/id[:db.part/user -102037], :transaction/security #db/id[:db.part/user -100098], :transaction/nominal 2387.0,      :transaction/price 3706.41, :transaction/direction "S", :transaction/valuedate #inst "2017-02-20T10:00:00.0000000Z", :transaction/currency "RUB", :transaction/comment "Оферта", :db/id #db/id[:db.part/user -110183] }
 
 { :transaction/client #db/id[:db.part/user -102038], :transaction/security #db/id[:db.part/user -100390], :transaction/nominal 4000.0,      :transaction/price 98.0, :transaction/direction "B", :transaction/valuedate #inst "2017-02-10T10:00:00.0000000Z", :transaction/currency "RUB", :transaction/comment "Transfer In",                                            :db/id #db/id[:db.part/user -110184] }
 
@@ -1935,11 +1962,11 @@
 
 { :transaction/client #db/id[:db.part/user -102003], :transaction/security #db/id[:db.part/user -100549], :transaction/nominal 38500.0, :transaction/price 3.27, :transaction/direction "B", :transaction/valuedate #inst "2016-10-20T23:59:00.0000000Z", :transaction/currency "USD", :transaction/comment "Change VIP to VEON", :db/id #db/id[:db.part/user -110307] }
 
-{ :transaction/client #db/id[:db.part/user -102004], :transaction/security #db/id[:db.part/user -100048], :transaction/nominal 300000.0,      :transaction/price 107.00, :transaction/direction "S", :transaction/valuedate #inst "2017-04-21T10:00:00.0000000Z", :transaction/currency "USD", :transaction/comment "Оферта KOKS18",                                            :db/id #db/id[:db.part/user -110308] }
+{ :transaction/client #db/id[:db.part/user -102004], :transaction/security #db/id[:db.part/user -100048], :transaction/nominal 300000.0,      :transaction/price 107.00, :transaction/direction "S", :transaction/valuedate #inst "2017-05-04T10:00:00.0000000Z", :transaction/currency "USD", :transaction/comment "Оферта KOKS18",                                            :db/id #db/id[:db.part/user -110308] }
 
-{ :transaction/client #db/id[:db.part/user -102049], :transaction/security #db/id[:db.part/user -100048], :transaction/nominal 200000.0,      :transaction/price 107.00, :transaction/direction "S", :transaction/valuedate #inst "2017-04-21T10:00:00.0000000Z", :transaction/currency "USD", :transaction/comment "Оферта KOKS18",                                            :db/id #db/id[:db.part/user -110309] }
+{ :transaction/client #db/id[:db.part/user -102049], :transaction/security #db/id[:db.part/user -100048], :transaction/nominal 200000.0,      :transaction/price 107.00, :transaction/direction "S", :transaction/valuedate #inst "2017-05-04T10:00:00.0000000Z", :transaction/currency "USD", :transaction/comment "Оферта KOKS18", :db/id #db/id[:db.part/user -110309] }
 
-{ :transaction/client #db/id[:db.part/user -102021], :transaction/security #db/id[:db.part/user -100048], :transaction/nominal 200000.0,      :transaction/price 107.00, :transaction/direction "S", :transaction/valuedate #inst "2017-04-21T10:00:00.0000000Z", :transaction/currency "USD", :transaction/comment "Оферта KOKS18",                                            :db/id #db/id[:db.part/user -110311] }
+{ :transaction/client #db/id[:db.part/user -102021], :transaction/security #db/id[:db.part/user -100048], :transaction/nominal 200000.0,      :transaction/price 107.00, :transaction/direction "S", :transaction/valuedate #inst "2017-05-04T10:00:00.0000000Z", :transaction/currency "USD", :transaction/comment "Оферта KOKS18", :db/id #db/id[:db.part/user -110311] }
 
 { :transaction/client #db/id[:db.part/user -102049], :transaction/security #db/id[:db.part/user -100549], :transaction/nominal 12350.0, :transaction/price 4.05, :transaction/direction "B", :transaction/valuedate #inst "2017-03-24T23:59:00.0000000Z", :transaction/currency "USD", :transaction/comment "Change VIP to VEON", :db/id #db/id[:db.part/user -110310] }
 
@@ -1956,6 +1983,23 @@
 { :transaction/client #db/id[:db.part/user -102090], :transaction/security #db/id[:db.part/user -100407], :transaction/nominal 428.0, :transaction/price 104.87, :transaction/direction "B", :transaction/valuedate #inst "2017-03-30T10:00:00.0000000Z", :transaction/currency "RUB", :transaction/comment "Сделка отсутствует в арене", :db/id #db/id[:db.part/user -110318] }
 
 { :transaction/client #db/id[:db.part/user -102090], :transaction/security #db/id[:db.part/user -100407], :transaction/nominal 3772.0, :transaction/price 104.8964, :transaction/direction "B", :transaction/valuedate #inst "2017-03-30T10:00:00.0000000Z", :transaction/currency "RUB", :transaction/comment "Сделка отсутствует в арене", :db/id #db/id[:db.part/user -110319] }
+
+{ :transaction/client #db/id[:db.part/user -102031], :transaction/security #db/id[:db.part/user -100048], :transaction/nominal 200000.0,      :transaction/price 107.00, :transaction/direction "S", :transaction/valuedate #inst "2017-05-04T10:00:00.0000000Z", :transaction/currency "USD", :transaction/comment "Оферта KOKS18", :db/id #db/id[:db.part/user -110320] }
+
+{ :transaction/client #db/id[:db.part/user -102031], :transaction/security #db/id[:db.part/user -101008], :transaction/nominal 789.0,      :transaction/price 4420.00, :transaction/direction "S", :transaction/valuedate #inst "2014-06-20T10:00:00.0000000Z", :transaction/currency "USD", :transaction/comment "Offset buy in Arena", :db/id #db/id[:db.part/user -110321] }
+
+{ :transaction/client #db/id[:db.part/user -102055], :transaction/security #db/id[:db.part/user -100048], :transaction/nominal 200000.0,      :transaction/price 107.00, :transaction/direction "S", :transaction/valuedate #inst "2017-05-04T10:00:00.0000000Z", :transaction/currency "USD", :transaction/comment "Оферта KOKS18", :db/id #db/id[:db.part/user -110322] }
+
+
+{ :transaction/client #db/id[:db.part/user -102056], :transaction/security #db/id[:db.part/user -100044], :transaction/nominal 9925.0, :transaction/price 3.787793, :transaction/direction "S", :transaction/valuedate #inst "2017-03-15T10:00:00.0000000Z", :transaction/currency "EUR", :transaction/comment "Change VIP to VEON",  :db/id #db/id[:db.part/user -110323] }
+
+{ :transaction/client #db/id[:db.part/user -102056], :transaction/security #db/id[:db.part/user -100549], :transaction/nominal 9925.0,  :transaction/price 3.787793, :transaction/direction "B", :transaction/valuedate #inst "2017-03-15T10:00:00.0000000Z", :transaction/currency "EUR", :transaction/comment "Change VIP to VEON",  :db/id #db/id[:db.part/user -110324] }
+
+{ :transaction/client #db/id[:db.part/user -102051], :transaction/security #db/id[:db.part/user -100044], :transaction/nominal 18678.0, :transaction/price 4.0195, :transaction/direction "S", :transaction/valuedate #inst "2017-03-14T10:00:00.0000000Z", :transaction/currency "USD", :transaction/comment "Change VIP to VEON",  :db/id #db/id[:db.part/user -110325] }
+
+{ :transaction/client #db/id[:db.part/user -102051], :transaction/security #db/id[:db.part/user -100549], :transaction/nominal 18678.0,  :transaction/price 4.0195, :transaction/direction "B", :transaction/valuedate #inst "2017-03-14T10:00:00.0000000Z", :transaction/currency "USD", :transaction/comment "Change VIP to VEON",  :db/id #db/id[:db.part/user -110326] }
+
+{ :transaction/client #db/id[:db.part/user -102051], :transaction/security #db/id[:db.part/user -100048], :transaction/nominal 200000.0,      :transaction/price 107.00, :transaction/direction "S", :transaction/valuedate #inst "2017-05-04T10:00:00.0000000Z", :transaction/currency "USD", :transaction/comment "Оферта KOKS18", :db/id #db/id[:db.part/user -110327] }
 
 
 ;; PRICES

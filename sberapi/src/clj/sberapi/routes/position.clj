@@ -123,7 +123,7 @@
 
                   trannominal (if (= "B" (:direction tran)) (:nominal tran) (- 0 (:nominal tran)))
                   newnominal (+ trannominal amnt)
-                  rubprice (* trancurrrate (:price tran)) 
+                  rubprice (if (= 5 (:assettype sec)) (* seccurrate (:price tran)) (* trancurrrate (:price tran)))  
                   usdprice (/ rubprice usdrate)
                   seccurprice (/ rubprice seccurrate)
                   
