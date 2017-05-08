@@ -1,23 +1,26 @@
-Haskell in Sberbank Private Bank
+Clojure in Sberbank Private Bank
 ====================================
 
 Themes
 ====================================
 ### Language tools help us make better software
+* Swagger API: APIs becoming self-describing
+* Ubiquitous, lightweight, asynchronous logging
+* Cross platform, distributed job scheduling.
 
-### Type systems for:
-* Maintainable softwrae
+### Priorities
+* Maintainable software
 * Composable/modular/reusable software
 * Cheaper software
 
-### Structures and approaches taht are useful in "enterprisely" software to:
+### Structures and approaches that are useful in "enterprisely" software to:
 * Reduce latency
 * Make code faster
 * Make code safer/more robust
 
 ### Keeping things simple: functions, data types
 
-### Haskell code everywhere: real time pricing, risk management, data analysis, regulatory systems, desktop and WEB GUIs, web services, algo pricing, plugins to C++, Java, C#, Excel
+### Clojure code everywhere: real time pricing, risk management, data analysis, regulatory systems, desktop and WEB GUIs, web services, algo pricing, plugins to C++, Java, C#, Excel
 
 ### Unusual mandate
 1. Fast delivey
@@ -31,3 +34,21 @@ Themes
 3. Automate everything
 * No resources to do things manually so automate everything. Integration: releases, monitoring, reporting.
 * Turn banking processes into API
+
+4. Invent new things
+* Build things that weren't seen as possible or hadn't been thought before.
+* What can we build if we have typed Clojure APIs to the world?
+
+5. Light weight specifications.
+* Often working from verbal or informal spec. And at best from informal functional specs.
+* Spec often refined/derived from Clojure implementation
+
+6. Low maintenance requirement
+* Little devops to support; make sure the systems support themselves
+* Make future changes easier
+
+7. High success rate
+* Have to demostrably outperform. Be clearly more efficient.
+* Don't be the incumbent
+
+8. 
