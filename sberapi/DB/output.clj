@@ -279,13 +279,13 @@
 
 
 
-{ :security/acode "ALFARU15N",     :security/isin "XS0494933806", :security/bcode "XS0494933806 Corp",  :security/assettype 5, :security/exchange "XETRA",      :security/currency "USD",   :db/id #db/id[:db.part/user -100137] }
+{ :security/acode "ALFARU15N", :security/isin "XS0494933806", :security/bcode "XS0494933806 Corp", :security/assettype 5, :security/exchange "XETRA",      :security/currency "USD", :db/id #db/id[:db.part/user -100137] }
 
-{ :security/acode "MGNTBO06",      :security/isin "RU000A0JRFQ4", :security/bcode "RU000A0JRFQ4 Corp",  :security/assettype 5, :security/exchange "MICEX",      :security/currency "RUB",   :db/id #db/id[:db.part/user -100138] }
+{ :security/acode "MGNTBO06", :security/isin "RU000A0JRFQ4", :security/bcode "RU000A0JRFQ4 Corp", :security/assettype 5, :security/exchange "MICEX",      :security/currency "RUB", :db/id #db/id[:db.part/user -100138] }
 
-{ :security/acode "NILSY_OLD2",    :security/isin "US46626D1081", :security/bcode "US46626D1081 Corp", :security/assettype 1, :security/name "Yandex NV", :security/exchange "XETRA",      :security/currency "USD",   :db/id #db/id[:db.part/user -100139] }
+{ :security/acode "NILSY_OLD2", :security/isin "US46626D1081", :security/bcode "US46626D1081 Corp", :security/assettype 1, :security/name "MMC Norilsk Nickel PJSC", :security/exchange "XETRA", :security/currency "USD",   :db/id #db/id[:db.part/user -100139] }
 
-{ :security/acode "NILSY",         :security/isin "US55315J1025", :security/bcode "US55315J1025 Corp", :security/assettype 1, :security/name "Yandex NV",  :security/exchange "XETRA",      :security/currency "USD",   :db/id #db/id[:db.part/user -100140] }
+{ :security/acode "NILSY", :security/isin "US55315J1025", :security/bcode "NILSY US Equity", :security/assettype 1, :security/name "MMC Norilsk Nickel PJSC",  :security/exchange "XETRA", :security/currency "USD", :db/id #db/id[:db.part/user -100140] }
 
 { :security/acode "LUKOY_OLD",     :security/isin "US6778621044", :security/bcode "US6778621044 Corp", :security/assettype 1, :security/name "Yandex NV",  :security/exchange "XETRA",      :security/currency "USD",   :db/id #db/id[:db.part/user -100141] }
 

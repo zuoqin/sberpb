@@ -111,32 +111,20 @@
 
 (defn map-deal [deal]
   (let [
-    ;;tr1 (println deal)
-
-    ;; secid (js/parseInt (name (nth position 0)))
-    ;; security (first (filter (fn [x] (if (= (:id x) secid) true false)) (:securities @app-state)))
-    
-    ;; posprice (:price (nth position 1))
-    ;; price (if (nil? (:price security)) posprice (:price security))
-
-
-    ;; currency (if (= 0 (compare "GBX" (:currency security))) "GBP" (:currency security))
-
-    
-    ;; fxrate (if (or (= "RUB" currency) (= "RUR" currency)) 1 (:price  (first (filter (fn[x] (if( = (:acode x) currency) true false)) (:securities @app-state)))))
-    ;; usdrate (:price (first (filter (fn [x] (if (= "USD" (:acode x)) true false)) (:securities @app-state))))
-
-    ;; isrusbond (if (and (= 5 (:assettype security)) 
-    ;;                    (= "RU" (subs (:isin security) 0 2))
-    ;;                    )  true false)
-    ;; isbond (if (and (= 5 (:assettype security)) 
-    ;;                ;(= "RU" (subs (:isin security) 0 2))
-    ;;                )  true false)
-    ;; newfxrate (if (= 0 (compare "GBX" (:currency security))) (/ fxrate 100.) fxrate)
-
-    result deal
+        trans (loop [result [] trans (:transactions deal) ]
+                (if (seq trans) 
+                  (let [
+                        tran (first trans)
+                        ;tr1 (.log js/console (str "tran: " tran ))
+                        ]
+                    (recur (conj result {:security (:security deal) :date (:date tran) :direction (:direction tran) :nominal (:nominal tran) :wap (:wap tran) :wapusd (:wapusd tran) :waprub (:waprub tran)})
+                         (rest trans))
+                  )
+                  result)
+        )        
+        result trans
     ]
-    ;(.log js/console (str "price: " price " fxrate:" fxrate))
+    ;
     result
   )
 )
@@ -257,7 +245,7 @@
 )
 
 (defn OnGetDeals [response]
-   (swap! app-state assoc-in [(keyword (:selectedclient @app-state)) :deals] (map (fn [x] (map-deal x)) (filter (fn [x] (if (> 1 1) true true)) response) ) )
+   (swap! app-state assoc-in [(keyword (:selectedclient @app-state)) :deals] (flatten (map (fn [x] (map-deal x)) (filter (fn [x] (if (> 1 1) true true)) response) )))
 )
 
 
