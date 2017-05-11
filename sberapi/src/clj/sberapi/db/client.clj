@@ -22,25 +22,28 @@
   )
 )
 
-(defn get-clients []
+(defn get-clients [user]
   (let [
          clients (d/q '[:find ?e ?c ?n ?curr ?usd ?rub ?eur ?gbp ?ss ?bs ?sa ?mail ?advmail
-                          :where
-                          [?e :client/code]
-                          [?e :client/code ?c]
-                          [?e :client/name ?n]
-                          [?e :client/currency ?curr]
-                          [?e :client/usd ?usd]
-                          [?e :client/rub ?rub]
-                          [?e :client/eur ?eur]
-                          [?e :client/gbp ?gbp]
-                          [?e :client/stockshare ?ss]
-                          [?e :client/bondshare ?bs]
-                          [?e :client/signedadvisory ?sa]
-                          [?e :client/email ?mail]
-                          [?e :client/advemail ?advmail]
-                          ]
-                        (d/db conn)) 
+                        :in $ ?usercode
+                        :where
+                        [?e :client/code]
+                        [?e :client/code ?c]
+                        [?e :client/name ?n]
+                        [?e :client/currency ?curr]
+                        [?e :client/usd ?usd]
+                        [?e :client/rub ?rub]
+                        [?e :client/eur ?eur]
+                        [?e :client/gbp ?gbp]
+                        [?e :client/stockshare ?ss]
+                        [?e :client/bondshare ?bs]
+                        [?e :client/signedadvisory ?sa]
+                        [?e :client/email ?mail]
+                        [?e :client/advemail ?advmail]
+                        [?u :user/code ?usercode]
+                        [?e :client/advisors ?u]
+                        ]
+                      (d/db conn) user) 
 
     ]
     (map client-to-map clients) 

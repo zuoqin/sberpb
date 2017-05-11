@@ -149,7 +149,6 @@
   :db/doc "Client cash position in RUB"
   :db.install/_attribute :db.part/db}
 
-
 {:db/id #db/id[:db.part/db]
   :db/ident :client/eur
   :db/valueType :db.type/double
@@ -199,13 +198,20 @@
   :db/doc "Client Advisory email"
   :db.install/_attribute :db.part/db}
 
-
 {:db/id #db/id[:db.part/db]
   :db/ident :client/email
   :db/valueType :db.type/string
   :db/cardinality :db.cardinality/one
   :db/doc "Client's email"
   :db.install/_attribute :db.part/db}
+
+{:db/id #db/id[:db.part/db]
+  :db/ident :client/advisors
+  :db/valueType :db.type/ref
+  :db/cardinality :db.cardinality/many
+  :db/doc "Client to users relationship"
+  :db.install/_attribute :db.part/db}
+
 
 ;; transactions
 

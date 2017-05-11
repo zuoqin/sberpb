@@ -104,7 +104,7 @@
       
       rubvalue (if (= isrusbond true) (/ (* 1000.0 currubprice amount)  100.0)  (if (= isbond true) (/ (* currubprice amount)  100.0)  (if (= assettype 15) (* multiple amount secprice (if (= seccurrency "USD") usdrate 1.0)) (* currubprice amount))))
 
-      rubcosts (if (= isrusbond true) (/ (* 1000.0 waprub amount)  100.0)  (if (= isbond true) (/ (* waprub amount)  100.0)  (if (= assettype 15) (* multiple amount (if (= seccurrency "USD") wapusd (* usdrate waprub))) (* multiple waprub amount))))
+      rubcosts (if (= isrusbond true) (/ (* 1000.0 waprub amount)  100.0)  (if (= isbond true) (/ (* waprub amount)  100.0)  (if (= assettype 15) (* multiple amount (if (= seccurrency "USD") (* usdrate wapusd) waprub)) (* multiple waprub amount))))
 
       usdcosts (if (= isrusbond true) (/ (* 1000.0 wapusd amount)  100.0)  (if (= isbond true) (/ (* wapusd amount)  100.0)  (if (= assettype 15) (* multiple amount (if (= seccurrency "USD") wapusd (/  waprub usdrate))) (* multiple wapusd amount))))
 

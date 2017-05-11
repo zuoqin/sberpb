@@ -742,7 +742,7 @@
         ;; Стоимость в валюте бумаги
         (dom/div {:className "col-xs-1 col-md-1" :style {:padding-left "0px" :padding-right "0px"}}
           (dom/a {:className "list-group-item" :href (str  "#/postrans/" (:id (first (filter (fn [x] (if (= (compare (:code x) (:selectedclient @sbercore/app-state)) 0) true false)) (:clients @sbercore/app-state)))) "/" (:id sec))}
-            (dom/h4 {:className "list-group-item-heading" :style {:text-align "right"}} (sbercore/split-thousands (gstring/format "%.2f"  (* (:nominal item) (:wap item) (if (= true isbond) 0.01 1.0) (if (= true isrusbond) 1000.0 1.0)))))
+            (dom/h4 {:className "list-group-item-heading" :style {:text-align "right"}} (sbercore/split-thousands (gstring/format "%.2f"  (* (:multiple sec) (:nominal item) (:wap item) (if (= true isbond) 0.01 1.0) (if (= true isrusbond) 1000.0 1.0)))))
           )
         )
 
@@ -750,14 +750,14 @@
         ;; Стоимость в долларах США
         (dom/div {:className "col-xs-1 col-md-1" :style {:padding-left "0px" :padding-right "0px"}}
           (dom/a {:className "list-group-item" :href (str  "#/postrans/" (:id (first (filter (fn [x] (if (= (compare (:code x) (:selectedclient @sbercore/app-state)) 0) true false)) (:clients @sbercore/app-state)))) "/" (:id sec))}
-            (dom/h4 {:className "list-group-item-heading" :style {:text-align "right"}} (sbercore/split-thousands (gstring/format "%.2f" (* (:nominal item) (:wapusd item) (if (= true isbond) 0.01 1.0) (if (= true isrusbond) 1000.0 1.0)))))
+            (dom/h4 {:className "list-group-item-heading" :style {:text-align "right"}} (sbercore/split-thousands (gstring/format "%.2f" (* (:multiple sec) (:nominal item) (:wapusd item) (if (= true isbond) 0.01 1.0) (if (= true isrusbond) 1000.0 1.0)))))
           )
         )
 
         ;; Стоимость в рублях РФ
         (dom/div {:className "col-xs-1 col-md-1" :style {:padding-left "0px" :padding-right "0px"}}
           (dom/a {:className "list-group-item" :href (str  "#/postrans/" (:id (first (filter (fn [x] (if (= (compare (:code x) (:selectedclient @sbercore/app-state)) 0) true false)) (:clients @sbercore/app-state)))) "/" (:id sec)) }
-            (dom/h4 {:className "list-group-item-heading" :style {:text-align "right"}} (sbercore/split-thousands (gstring/format "%.2f" (* (:nominal item) (:waprub item) (if (= true isbond) 0.01 1.0) (if (= true isrusbond) 1000.0 1.0)))))
+            (dom/h4 {:className "list-group-item-heading" :style {:text-align "right"}} (sbercore/split-thousands (gstring/format "%.2f" (* (:multiple sec) (:nominal item) (:waprub item) (if (= true isbond) 0.01 1.0) (if (= true isrusbond) 1000.0 1.0)))))
           )
         )
 
@@ -981,8 +981,8 @@
                   (dom/div {:className "col-xs-2 col-md-2" :style {:text-align "center"}} "Цена покупки")
                   (dom/div {:className "col-xs-2 col-md-2" :style {:text-align "center"}} "Last price")
                   (dom/div {:className "col-xs-2 col-md-2" :style {:text-align "center"}} "Currency")
-                  (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "P/L USD, %")
-                  (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "P/L RUB, %")
+                  (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "P/L USD")
+                  (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "P/L RUB")
                 )
               )
               (dom/div {:className "panel-body"}

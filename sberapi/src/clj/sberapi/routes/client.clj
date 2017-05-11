@@ -14,13 +14,13 @@
 
 (defn getClients [token]
   (let [
-    ;usercode (:iss (-> token str->jwt :claims)  ) 
-    clients (into [] (db/get-clients)   )
+    usercode (:iss (-> token str->jwt :claims)  )
+    ;;tr1 (println usercode) 
+    clients (into [] (db/get-clients usercode)   )
     result clients
     ]
     result
   )
- 
 )
 
 
