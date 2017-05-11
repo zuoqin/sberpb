@@ -1185,11 +1185,18 @@
 
 { :security/acode "SOAF25", :security/isin "US836205AR58", :security/bcode "US836205AR58 Corp", :security/assettype 5, :security/name "Yandex NV", :security/exchange "NYSE", :security/currency "USD", :db/id #db/id[:db.part/user -100572] }
 
+{ :security/acode "EURONAT190", :security/isin "XS1513286283", :security/bcode "XS1513286283 Corp", :security/assettype 5, :security/name "Yandex NV", :security/exchange "NYSE", :security/currency "USD", :db/id #db/id[:db.part/user -100573] }
+
+{ :security/acode "VEB25",         :security/isin  "XS0559915961", :security/bcode "XS0559915961 Corp", :security/assettype 5, :security/name "Yandex NV", :security/exchange "NYSE",     :security/currency "USD",   :db/id #db/id[:db.part/user -100574]}
+
+{ :security/acode "GAZP37",         :security/isin  "XS0316524130", :security/bcode "XS0316524130 Corp", :security/assettype 5, :security/name "Yandex NV", :security/exchange "NYSE",     :security/currency "USD",   :db/id #db/id[:db.part/user -100575]}
+
+{ :security/acode "GLPRLI23",  :security/assettype 5, :security/isin "XS1405775450", :security/bcode "XS1405775450 Corp", :security/exchange "XETRA", :security/currency "USD",    :db/id #db/id[:db.part/user -100576] }
 
 ;;FORTS contracts
 
 
-{ :security/acode "SI-6.17", :security/isin "URM7 Curncy", :security/bcode "URM7 Curncy", :security/assettype 15, :security/name "Futures on USD/RUB Exchange Rate", :security/exchange "RTS", :security/currency "RUB", :db/id #db/id[:db.part/user -101001] }
+{ :security/acode "SI-6.17", :security/isin "URM7 Curncy", :security/bcode "URM7 Curncy", :security/assettype 15, :security/name "Futures on USD/RUB Exchange Rate", :security/multiple 1.0, :security/exchange "RTS", :security/currency "RUB", :db/id #db/id[:db.part/user -101001] }
 
 { :security/acode "BR-4.17", :security/isin "B5J7 Comdty", :security/bcode "B5J7 Comdty", :security/assettype 15, :security/name "Brent Crude Futs  Apr17", :security/multiple 10.0, :security/exchange "RTS", :security/currency "USD", :db/id #db/id[:db.part/user -101002] }
 
@@ -1201,15 +1208,21 @@
 
 { :security/acode "LKOH-6.17", :security/isin "LKOH=M7 RU Equity", :security/bcode "LKOH=M7 RU Equity", :security/assettype 15, :security/name "LUKOIL Jun17", :security/multiple 10.0, :security/exchange "RTS", :security/currency "RUB", :db/id #db/id[:db.part/user -101007] }
 
-{ :security/acode "RTS-9.14", :security/isin "VEU14 Index", :security/bcode "VEU14 Index", :security/assettype 15, :security/name "RTS INDEX FUTURE  Sep14", :security/multiple 10.0, :security/exchange "RTS", :security/currency "USD", :db/id #db/id[:db.part/user -101006] }
+{ :security/acode "RTS-9.14", :security/isin "VEU14 Index", :security/bcode "VEU14 Index", :security/assettype 15, :security/name "RTS INDEX FUTURE  Sep14", :security/multiple 2.0, :security/exchange "RTS", :security/currency "USD", :db/id #db/id[:db.part/user -101006] }
 
 { :security/acode "VTBR-9.14", :security/isin "VTBU14 Index", :security/bcode "VTBU14 Index", :security/assettype 15, :security/name "VTBR Future Sep14", :security/multiple 10.0, :security/exchange "RTS", :security/currency "RUB", :db/id #db/id[:db.part/user -101008] }
 
-{ :security/acode "SI-6.17/C F59000 ACR 15JUN17", :security/isin "URM7C 59000 Curncy", :security/bcode "URM7C 59000 Curncy", :security/assettype 15, :security/name "SI-6.17/C F59000 ACR 15JUN17", :security/multiple 10.0, :security/exchange "RTS", :security/currency "RUB", :db/id #db/id[:db.part/user -101009] }
+{ :security/acode "SI-6.17/C F59000 ACR 15JUN17", :security/isin "URM7C 59000 Curncy", :security/bcode "URM7C 59000 Curncy", :security/assettype 15, :security/name "SI-6.17/C F59000 ACR 15JUN17", :security/multiple 1.0, :security/exchange "RTS", :security/currency "RUB", :db/id #db/id[:db.part/user -101009] }
 
-{ :security/acode "SI-6.17/C F60000 ACR 15JUN17", :security/isin "URM7C 60000 Curncy", :security/bcode "URM7C 60000 Curncy", :security/assettype 15, :security/name "URM7C 60000.00 Curncy	USD/RUB Fut Opt   Jun17C", :security/multiple 10.0, :security/exchange "RTS", :security/currency "RUB", :db/id #db/id[:db.part/user -101010] }
+{ :security/acode "SI-6.17/C F60000 ACR 15JUN17", :security/isin "URM7C 60000 Curncy", :security/bcode "URM7C 60000 Curncy", :security/assettype 15, :security/name "URM7C 60000.00 Curncy	USD/RUB Fut Opt   Jun17C", :security/multiple 1.0, :security/exchange "RTS", :security/currency "RUB", :db/id #db/id[:db.part/user -101010] }
 
-{ :security/acode "RTS-3.17/P O110000 ACU 16MAR17", :security/isin "VEH7C 11000 Index", :security/bcode "VEH7C 11000 Index", :security/assettype 15, :security/name "VEH7C 110000.00 Index	RTS INDEX OPTIONS Mar17C", :security/multiple 10.0, :security/exchange "RTS", :security/currency "USD", :db/id #db/id[:db.part/user -101011] }
+{ :security/acode "RTS-3.17/P O110000 ACU 16MAR17", :security/isin "VEH7C 11000 Index", :security/bcode "VEH7C 11000 Index", :security/assettype 15, :security/name "VEH7C 110000.00 Index	RTS INDEX OPTIONS Mar17C", :security/multiple 2.0, :security/exchange "RTS", :security/currency "USD", :db/id #db/id[:db.part/user -101011] }
+
+{ :security/acode "SI-3.15", :security/isin "URH15 Curncy", :security/bcode "URH15 Curncy", :security/assettype 15, :security/name "Futures on USD/RUB Exchange Rate", :security/multiple 1.0, :security/exchange "RTS", :security/currency "RUB", :db/id #db/id[:db.part/user -101012] }
+
+{ :security/acode "VTBR-3.15", :security/isin "VTBH15 Index", :security/bcode "VTBH15 Index", :security/assettype 15, :security/name "VTBR Future Mar15", :security/exchange "RTS", :security/multiple 10.0, :security/currency "RUB", :db/id #db/id[:db.part/user -101013] }
+
+{ :security/acode "SI-3.17", :security/isin "URH7 Curncy", :security/bcode "URH7 Curncy", :security/assettype 15, :security/name "Futures on USD/RUB Exchange Rate", :security/multiple 1.0, :security/exchange "RTS", :security/currency "RUB", :db/id #db/id[:db.part/user -101014] }
 
 ;; ISSUERS
 ;; { :issuer/code "Mail.Ru Group Ltd" :db/id #db/id[:db.part/user -101001] }
@@ -1383,7 +1396,7 @@
 
 { :client/code "VADYF", :client/name "Клиент VADYF", :client/currency "USD", :client/stockshare 50.0 :client/bondshare 50.0, :client/usd 100000.0, :client/rub 100000.0, :client/eur 100000.0, :client/gbp 100000.0, :client/signedadvisory 5000000.0, :client/advemail "anton_gorelov@sberbank-pb.ru", :client/email "MVolkov@piksoda.ru", :db/id #db/id[:db.part/user -102078]}
 
-{ :client/code "XGAQF", :client/name "Клиент XGAQF", :client/currency "USD", :client/stockshare 50.0 :client/bondshare 50.0, :client/usd 100000.0, :client/rub 100000.0, :client/eur 100000.0, :client/gbp 100000.0, :client/signedadvisory 5000000.0, :client/advemail "jaroslav_stakheev@sberbank-pb.ru", :client/email "sirotkinanatalia@mail.ru", :db/id #db/id[:db.part/user -102079]}
+{ :client/code "XGAQF", :client/name "Клиент XGAQF", :client/currency "USD", :client/stockshare 50.0 :client/bondshare 50.0, :client/usd 100000.0, :client/rub 100000.0, :client/eur 100000.0, :client/gbp 100000.0, :client/signedadvisory 5000000.0, :client/advemail "jБaroslav_stakheev@sberbank-pb.ru", :client/email "sirotkinanatalia@mail.ru", :db/id #db/id[:db.part/user -102079]}
 
 { :client/code "KDFWF", :client/name "Клиент KDFWF", :client/currency "USD", :client/stockshare 50.0 :client/bondshare 50.0, :client/usd 100000.0, :client/rub 100000.0, :client/eur 100000.0, :client/gbp 100000.0, :client/signedadvisory 5000000.0, :client/advemail "jaroslav_stakheev@sberbank-pb.ru", :client/email "495aas@gmail.com", :db/id #db/id[:db.part/user -102080]}
 
@@ -1406,6 +1419,10 @@
 { :client/code "EMQQF1",  :client/name "EMQQF w/o YANDX", :client/currency "USD", :client/stockshare 50.0 :client/bondshare 50.0, :client/usd 100000.0, :client/rub 100000.0, :client/eur 100000.0, :client/gbp 100000.0, :client/signedadvisory 5000000.0, :client/advemail "anton_gorelov@sberbank-pb.ru", :client/email "mariamia@yandex.ru", :db/id #db/id[:db.part/user -102089]}
 
 { :client/code "XNPQF1",  :client/name "Клиент XNPQF1", :client/currency "USD", :client/stockshare 50.0 :client/bondshare 50.0, :client/usd 100000.0, :client/rub 100000.0, :client/eur 100000.0, :client/gbp 100000.0, :client/signedadvisory 5000000.0, :client/advemail "Vladimir_Uspenskiy@sberbank-pb.ru", :client/email "shapoval@sib-energo.ru", :db/id #db/id[:db.part/user -102090]}
+
+{ :client/code "XNPQF",  :client/name "Клиент XNPQF", :client/currency "USD", :client/stockshare 50.0 :client/bondshare 50.0, :client/usd 100000.0, :client/rub 100000.0, :client/eur 100000.0, :client/gbp 100000.0, :client/signedadvisory 5000000.0, :client/advemail "Vladimir_Uspenskiy@sberbank-pb.ru", :client/email "shapoval@sib-energo.ru", :db/id #db/id[:db.part/user -102091]}
+
+
 
 ;; TRANSACTIONS
 
@@ -2000,6 +2017,20 @@
 { :transaction/client #db/id[:db.part/user -102051], :transaction/security #db/id[:db.part/user -100549], :transaction/nominal 18678.0,  :transaction/price 4.0195, :transaction/direction "B", :transaction/valuedate #inst "2017-03-14T10:00:00.0000000Z", :transaction/currency "USD", :transaction/comment "Change VIP to VEON",  :db/id #db/id[:db.part/user -110326] }
 
 { :transaction/client #db/id[:db.part/user -102051], :transaction/security #db/id[:db.part/user -100048], :transaction/nominal 200000.0,      :transaction/price 107.00, :transaction/direction "S", :transaction/valuedate #inst "2017-05-04T10:00:00.0000000Z", :transaction/currency "USD", :transaction/comment "Оферта KOKS18", :db/id #db/id[:db.part/user -110327] }
+
+{ :transaction/client #db/id[:db.part/user -102091], :transaction/security #db/id[:db.part/user -100048], :transaction/nominal 200000.0,      :transaction/price 107.00, :transaction/direction "S", :transaction/valuedate #inst "2017-05-04T10:00:00.0000000Z", :transaction/currency "USD", :transaction/comment "Оферта KOKS18", :db/id #db/id[:db.part/user -110328] }
+
+{ :transaction/client #db/id[:db.part/user -102050], :transaction/security #db/id[:db.part/user -100048], :transaction/nominal 200000.0,      :transaction/price 107.00, :transaction/direction "S", :transaction/valuedate #inst "2017-05-04T10:00:00.0000000Z", :transaction/currency "USD", :transaction/comment "Оферта KOKS18", :db/id #db/id[:db.part/user -110329] }
+
+{ :transaction/client #db/id[:db.part/user -102063], :transaction/security #db/id[:db.part/user -100048], :transaction/nominal 200000.0,      :transaction/price 107.00, :transaction/direction "S", :transaction/valuedate #inst "2017-05-04T10:00:00.0000000Z", :transaction/currency "USD", :transaction/comment "Оферта KOKS18", :db/id #db/id[:db.part/user -110330] }
+
+{ :transaction/client #db/id[:db.part/user -102078], :transaction/security #db/id[:db.part/user -100151], :transaction/nominal 495259.0,      :transaction/price 48.00, :transaction/direction "B", :transaction/valuedate #inst "2016-12-30T10:00:00.0000000Z", :transaction/currency "USD", :transaction/comment "Transfer In", :db/id #db/id[:db.part/user -110331] }
+
+{ :transaction/client #db/id[:db.part/user -102034], :transaction/security #db/id[:db.part/user -100048], :transaction/nominal 200000.0,      :transaction/price 107.00, :transaction/direction "S", :transaction/valuedate #inst "2017-05-04T10:00:00.0000000Z", :transaction/currency "USD", :transaction/comment "Оферта KOKS18", :db/id #db/id[:db.part/user -110332] }
+
+{ :transaction/client #db/id[:db.part/user -102034], :transaction/security #db/id[:db.part/user -100044], :transaction/nominal 14205.0, :transaction/price 4.379261, :transaction/direction "S", :transaction/valuedate #inst "2017-02-15T22:59:00.0000000Z", :transaction/currency "USD", :transaction/comment "Change VIP to VEON",  :db/id #db/id[:db.part/user -110333] }
+
+{ :transaction/client #db/id[:db.part/user -102034], :transaction/security #db/id[:db.part/user -100549], :transaction/nominal 14205.0,  :transaction/price 4.379261, :transaction/direction "B", :transaction/valuedate #inst "2017-02-15T23:00:00.0000000Z", :transaction/currency "USD", :transaction/comment "Change VIP to VEON",  :db/id #db/id[:db.part/user -110334] }
 
 
 ;; PRICES

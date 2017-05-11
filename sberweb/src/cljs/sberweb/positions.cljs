@@ -601,14 +601,18 @@
         (map (fn [item]
           (let [sec (first (filter (fn[x] (if (= (:id x) (:id item) ) true false)) (:securities @sbercore/app-state)))
                 seccur (:currency sec)
-                isbond (if (= 5 (:assettype sec)) true false)
 
                 usdrate (:price (first (filter (fn [x] (if (= "USD" (:acode x)) true false)) (:securities @sbercore/app-state))))
 
                 fxrate (if (or (= "RUB" seccur) (= "RUR" seccur)) 1 (:price  (first (filter (fn[x] (if( = (:acode x) (if (= seccur "GBX") "GBP" seccur)) true false)) (:securities @sbercore/app-state)))))
 
+
+                ;;tr1 (.log js/console (str "amount= " (:amount item) " multiple= " (:multiple sec) " priceitem= " (:price item) " pricesec= " (:price sec))) 
                 newfxrate (if (= 0 (compare "GBX" seccur)) (/ fxrate 100.) fxrate)
-                ;;tr1 (.log js/console "portfolio usd value: "  portfusdvalue)
+
+                usdprofit (if (= "USD" seccur) (* (:amount item) (:multiple sec) (- (:price item) (:wapusd item)))      (if (= "RUB" seccur) (/ (* (:amount item) (:multiple sec) (- (:currubprice item) (:waprub item))) usdrate) -7777777.777))
+
+                rubprofit (if (= "USD" seccur) (* (:amount item) (:multiple sec) (- (:price item) (:wapusd item)) usdrate)   (if (= "RUB" seccur) (* (:amount item) (:multiple sec) (- (:currubprice item) (:waprub item))) -7777777.777))
             ]
 
             (dom/div {:className "row" :style {:margin-left "0px" :margin-right "0px"}} 
@@ -648,22 +652,18 @@
               )
 
 
-              ;; USD Currency P/L, %%
-              (dom/div {:className "col-xs-1 col-md-1" :style {:padding-left "0px" :padding-right "0px" :padding-top "10px"}}
-                (dom/div {:className "progress"}
-                  (dom/div {:className (str "progress-bar" (if (< (:usdvalue item) (* (:amount item) (:wapusd item))) " progress-bar-danger" ""))  :role "progresbar" :aria-valuenow (str (.round js/Math (.abs js/Math (* 100.0 (/ (- (:usdvalue item) (* (:amount item) (:wapusd item))) (* (:amount item) (:wapusd item))))))) :aria-valuemin "0" :aria-valuemax "100" :style {:color "black" :width (str (.round js/Math (.abs js/Math (* 100.0 (/ (- (:usdvalue item) (* (:amount item) (:wapusd item) ) ) (* (:amount item) (:wapusd item) ))))) "%") }}
-                    (dom/span {:style {:position "absolute" :display "block" :width "100%"}} (.round js/Math (* 100.0 (/ (- (:usdvalue item) (* (:amount item) (:wapusd item) ) ) (* (:amount item) (:wapusd item) ))  )) )                
-                  )
+              ;; USD Currency P/L
+              (dom/div {:className "col-xs-1 col-md-1" :style {:padding-left "0px" :padding-right "0px"}}
+                (dom/a {:className "list-group-item" :style {:text-align "right"} :href (str  "#/postrans/" (:id (first (filter (fn [x] (if (= (compare (:code x) (:selectedclient @sbercore/app-state)) 0) true false)) (:clients @sbercore/app-state)))) "/" (:id item) ) }
+                  (dom/h4 {:className "list-group-item-heading"} (sbercore/split-thousands (gstring/format "%.0f" usdprofit)) )
                 )
               )
 
 
-              ;; RUB %% P/L
-              (dom/div {:className "col-xs-1 col-md-1" :style {:padding-left "0px" :padding-right "0px" :padding-top "10px"}}
-                (dom/div {:className "progress"}
-                  (dom/div {:className (str "progress-bar" (if (< (:currubprice item) (:waprub item)) " progress-bar-danger" ""))  :role "progresbar" :aria-valuenow (str (.round js/Math (.abs js/Math (* 100.0 (/ (-  (:currubprice item) (:waprub item)) (:waprub item)))))) :aria-valuemin "0" :aria-valuemax "100" :style {:color "black" :width (str (.round js/Math (.abs js/Math (* 100.0 (/ (-  (:currubprice item) (:waprub item)) (:waprub item))))) "%") }}
-                    (dom/span {:style {:position "absolute" :display "block" :width "100%"}} (.round js/Math (* 100.0 (/ (-  (:currubprice item) (:waprub item)) (:waprub item)))) ) 
-                  )
+              ;; RUB P/L
+              (dom/div {:className "col-xs-1 col-md-1" :style {:padding-left "0px" :padding-right "0px"}}
+                (dom/a {:className "list-group-item" :style {:text-align "right"} :href (str  "#/postrans/" (:id (first (filter (fn [x] (if (= (compare (:code x) (:selectedclient @sbercore/app-state)) 0) true false)) (:clients @sbercore/app-state)))) "/" (:id item) ) }
+                  (dom/h4 {:className "list-group-item-heading"} (sbercore/split-thousands (gstring/format "%.0f" rubprofit)) )
                 )
               )
             )
