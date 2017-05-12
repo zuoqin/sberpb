@@ -403,7 +403,7 @@
               (dom/div {:className "col-xs-1 col-md-1" :style {:padding-left "0px" :padding-right "0px" :padding-top "10px"}}
                 (dom/div {:className "progress"}
                   (dom/div {:className (str "progress-bar" (if (< (if (nil? (:target sec)) 0.0 (:target sec)) (:price item)) " progress-bar-danger" ""))  :role "progresbar" :aria-valuenow (str (.round js/Math (* 100.0 (/ (- (if (nil? (:target sec)) 0.0 (:target sec)) (:price item)) (:price item))  ))) :aria-valuemin "0" :aria-valuemax (str maxpotential) :style {:color "black" :width (str (gstring/format "%.0f" (abs (* 100.0 (/ potential maxpotential))) ) "%") }}
-                    (dom/span {:style {:position "absolute" :display "block" :width (str (gstring/format "%.0f" (abs (* 100.0 (/ potential maxpotential))) ) "%") :color (if (and (> potential 0) (> (/ potential maxpotential) 0.1) )  "white" "black") :font-weight "700"} } (str (.round js/Math potential) "%") )
+                    (dom/span {:style {:position "absolute" :display "block" :width (if (> (/ potential maxpotential) 0.1) (str (gstring/format "%.0f" (abs (* 100.0 (/ potential maxpotential))) ) "%") "100%" )  :color (if (and (> potential 0) (> (/ potential maxpotential) 0.1) )  "white" "black") :font-weight "700"} } (str (.round js/Math potential) "%") )
                   )
                 )
               )
@@ -909,14 +909,20 @@
   (swap! sbercore/app-state assoc-in [:current] {:name "Positions" :text "Positions with this security"} )
 )
 
+(defn doswaps []
+  (let [a (rand-int 26)
+        b (rand-int 26)
+        c (rand-int 26)
+    ]
+    (swap! sbercore/app-state assoc-in [:fake] (str a b c))
+  )
+)
 
 (defn setcontrols [value]
   (case value
     42 (sbercore/setClientsDropDown)
-    43 (swap! sbercore/app-state assoc-in [(keyword (:selectedclient @sbercore/app-state)) :deals] (:deals @app-state)) ;(swap! sbercore/app-state assoc-in [:search] "") ;(swap! sbercore/app-state assoc-in [:search] (str (:search @sbercore/app-state) ""))
+    43 (doswaps)
   )
-  
-  ;;(.log js/console "fieldcode"       )
 )
 
 (defn initqueue []
@@ -936,9 +942,10 @@
 
 
 (defn sort-deals-list [column]
+  (swap! app-state assoc-in [:search] (:search @sbercore/app-state))
   (swap! app-state assoc-in [:sort-deals-list :column] column)
-  (swap! app-state assoc-in [:deals] (:deals ((keyword (:selectedclient @sbercore/app-state)) @sbercore/app-state))) 
-  (swap! sbercore/app-state assoc-in [(keyword (:selectedclient @sbercore/app-state)) :deals] [])
+  ;(swap! app-state assoc-in [:deals] (:deals ((keyword (:selectedclient @sbercore/app-state)) @sbercore/app-state))) 
+  ;(swap! sbercore/app-state assoc-in [(keyword (:selectedclient @sbercore/app-state)) :deals] [])
   (put! ch 43)
 )
 
@@ -953,7 +960,7 @@
       ]
 
       (dom/div
-        (om/build sbercore/website-view sbercore/app-state {})
+        (om/build sbercore/website-view data {})
 
 
         (if (> (count (:positions ((keyword (:selectedclient @sbercore/app-state)) @sbercore/app-state) )) 0)

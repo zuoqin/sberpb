@@ -17,6 +17,6 @@
 
 ;;(def apipath "http://localhost:3000/")
 (def apipath "http://10.20.35.21:3000/")
-(def demouser "")
-(def demopassword "")
+(def demouser "zuoqin")
+(def demopassword "Qwerty123")
 
