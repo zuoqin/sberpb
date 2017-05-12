@@ -23,13 +23,15 @@
 
 (enable-console-print!)
 
-(defonce app-state (atom  {}))
+(defonce app-state (atom  {:sort-deals-list {:column 8 :direction 0}}))
 
 (def custom-formatter (tf/formatter "dd/MM/yyyy"))
 
 (def custom-formatter1 (tf/formatter "MMM dd yyyy hh:mm:ss"))
 
 (def ch (chan (dropping-buffer 2)))
+
+(defn abs [n] (max n (- n)))
 
 (defn OnGetPositions [response]
    (swap! sbercore/app-state assoc :positions response  )
@@ -63,14 +65,33 @@
 
 (defn comp-positions
   [position1 position2]
+  (let [
+    sec1 (first (filter (fn[x] (if (= (:id x) (:id position1) ) true false)) (:securities @sbercore/app-state)))
+    sec2 (first (filter (fn[x] (if (= (:id x) (:id position2) ) true false)) (:securities @sbercore/app-state)))
 
-  (if (or
-       (> (:usdvalue position1) (:usdvalue position2))
-       (and (= (:usdvalue position1) (:usdvalue position2)) (> (compare (:acode (first (filter (fn[x] (if (= (:id x) (:id position1) ) true false)) (:securities @sbercore/app-state)))) (:acode (first (filter (fn[x] (if (= (:id x) (:id position2) ) true false)) (:securities @sbercore/app-state))))) 0))
-    )  
-      
-      true
-      false
+    newprice1 (if (nil? (:price sec1)) 0.0001 (:price sec1))
+    newprice2 (if (nil? (:price sec2)) 0.0001 (:price sec2))
+    growth1 (* 100.0 (/ (- (if (nil? (:target sec1)) 0.0 (:target sec1)) newprice1) newprice1))
+    growth2 (* 100.0 (/ (- (if (nil? (:target sec2)) 0.0 (:target sec2)) newprice2) newprice2))
+
+
+  ]
+    (if (= (:assettype sec1) 5)
+      (if (or
+           (< (:duration sec1) (:duration sec2))
+           (and (= (:duration sec1) (:duration sec2)) (> (compare (:acode (first (filter (fn[x] (if (= (:id x) (:id position1) ) true false)) (:securities @sbercore/app-state)))) (:acode (first (filter (fn[x] (if (= (:id x) (:id position2) ) true false)) (:securities @sbercore/app-state))))) 0))
+        ) 
+          true
+          false
+      )
+      (if (or
+           (> growth1 growth2)
+           (and (= growth1 growth2) (> (compare (:acode (first (filter (fn[x] (if (= (:id x) (:id position1) ) true false)) (:securities @sbercore/app-state)))) (:acode (first (filter (fn[x] (if (= (:id x) (:id position2) ) true false)) (:securities @sbercore/app-state))))) 0))
+        ) 
+          true
+          false
+      )
+    )
   )
 )
 
@@ -94,27 +115,63 @@
     seccode1 (:acode sec1)
     seccode2 (:acode sec2)
             ]
-            ; 
-            (if (and (= true (str/includes? seccode (str/upper-case (:search @sbercore/app-state)) )) (= 1 1))   true false)
+    (case (:column (:sort-deals-list @app-state)) 
+      0 (if (or       
+          (< (compare seccode1 seccode2) 0)
+          (and (> (tc/to-long (tf/parse custom-formatter (:date deal1))) (tc/to-long (tf/parse custom-formatter (:date deal2)))) (= (compare seccode1 seccode2) 0))
+          )
+          true
+          false
+        )
 
+      1 (if (or
+          (< (:direction deal1) (:direction deal2))
+
+          (and (= (:direction deal1) (:direction deal2)) (> (tc/to-long (tf/parse custom-formatter (:date deal1))) (tc/to-long (tf/parse custom-formatter (:date deal2)))) ) 
+          (and (= (:direction deal1) (:direction deal2)) (= (tc/to-long (tf/parse custom-formatter (:date deal1))) (tc/to-long (tf/parse custom-formatter (:date deal2)))) (> (compare seccode1 seccode2) 0))
+          )
+          true
+          false
+        )
+
+      2 (if (or
+          (< (abs (:nominal deal1))  (abs (:nominal deal2)) )
+
+          (and (= (abs (:nominal deal1))  (abs (:nominal deal2)) ) (> (tc/to-long (tf/parse custom-formatter (:date deal1))) (tc/to-long (tf/parse custom-formatter (:date deal2)))) ) 
+          (and (= (abs (:nominal deal1))  (abs (:nominal deal2)) ) (= (tc/to-long (tf/parse custom-formatter (:date deal1))) (tc/to-long (tf/parse custom-formatter (:date deal2)))) (> (compare seccode1 seccode2) 0))
+          )
+          true
+          false
+        )
+      3 (if (or
+          (< (:currency sec1)  (:currency sec2) )
+
+          (and (= (:currency sec1)  (:currency sec2) ) (> (tc/to-long (tf/parse custom-formatter (:date deal1))) (tc/to-long (tf/parse custom-formatter (:date deal2)))) ) 
+          (and (= (:currency sec1)  (:currency sec2) ) (= (tc/to-long (tf/parse custom-formatter (:date deal1))) (tc/to-long (tf/parse custom-formatter (:date deal2)))) (> (compare seccode1 seccode2) 0))
+          )
+          true
+          false
+        )
+
+      4 (if (or
+          (< (:wap deal1)  (:wap deal2) )
+
+          (and (= (:wap deal1)  (:wap deal2) ) (> (tc/to-long (tf/parse custom-formatter (:date deal1))) (tc/to-long (tf/parse custom-formatter (:date deal2)))) ) 
+          (and (= (:wap deal1)  (:wap deal2) ) (= (tc/to-long (tf/parse custom-formatter (:date deal1))) (tc/to-long (tf/parse custom-formatter (:date deal2)))) (> (compare seccode1 seccode2) 0))
+          )
+          true
+          false
+        )
+
+      8 (if (or       
+          (> (tc/to-long (tf/parse custom-formatter (:date deal1))) (tc/to-long (tf/parse custom-formatter (:date deal2))))
+          (and (= (tc/to-long (tf/parse custom-formatter (:date deal1))) (tc/to-long (tf/parse custom-formatter (:date deal2)))) (> (compare seccode1 seccode2) 0))
+          )
+          true
+          false
+        )
+    )
   )
-  (case (:sort-deals-list @app-state)
-    0 (if (or       
-        (> (tc/to-long (tf/parse custom-formatter (:date deal1))) (tc/to-long (tf/parse custom-formatter (:date deal2))))
-        (and (= (tc/to-long (tf/parse custom-formatter (:date deal1))) (tc/to-long (tf/parse custom-formatter (:date deal2)))) (> (:security deal1) (:security deal2)))
-        )   
-        true
-        false
-      )
-    8 (if (or       
-        (> (tc/to-long (tf/parse custom-formatter (:date deal1))) (tc/to-long (tf/parse custom-formatter (:date deal2))))
-        (and (= (tc/to-long (tf/parse custom-formatter (:date deal1))) (tc/to-long (tf/parse custom-formatter (:date deal2)))) (> (:security deal1) (:security deal2)))
-        )   
-        true
-        false
-      )
-  )
-  
 )
 
 (defcomponent showpositions-total-view [data owner]
@@ -272,7 +329,8 @@
 
       (dom/div {:className "list-group" :style {:display "block"}}
         (map (fn [item]
-          (let [sec (first (filter (fn[x] (if (= (:id x) (:id item) ) true false)) (:securities @sbercore/app-state)))
+          (let [
+                sec (first (filter (fn[x] (if (= (:id x) (:id item) ) true false)) (:securities @sbercore/app-state)))
                 seccur (:currency sec)
                 isbond (if (= 5 (:assettype sec)) true false)
 
@@ -292,7 +350,16 @@
                 ;tr1 (.log js/console "currency: "  seccur " rate:" newfxrate)
                 portfusdvalue (:usdvalue (reduce (fn [x y] {:usdvalue (+ (:usdvalue x) (:usdvalue y))}) (:positions ((keyword (:selectedclient @sbercore/app-state)) @sbercore/app-state))))
 
-                ;;tr1 (.log js/console "portfolio usd value: "  portfusdvalue)
+                potential (* 100.0 (/ (- (if (nil? (:target sec)) 0.0 (:target sec)) (:price item)) (:price item)))
+                maxpotential (apply max (map (fn [position]
+                  (let [
+                        sec (first (filter (fn[x] (if (= (:id x) (:id position) ) true false)) (:securities @sbercore/app-state)))
+                        newprice (if (nil? (:price sec)) 0.0001 (:price sec))
+                        growth (* 100.0 (/ (- (if (nil? (:target sec)) 0.0 (:target sec)) newprice) newprice))  
+]
+                   growth)) (:positions ((keyword (:selectedclient @sbercore/app-state)) @sbercore/app-state))))
+
+                ;tr1 (.log js/console "maxpotential: "  maxpotential " potential: " potential)
             ]
 
             (dom/div {:className "row" :style {:margin-left "0px" :margin-right "0px"}} 
@@ -332,12 +399,21 @@
                 )
               )
 
-              ;;Target price
-              (dom/div {:className "col-xs-1 col-md-1" :style {:padding-left "0px" :padding-right "0px" :visibility (if (> (:target sec) 0) "visible" "hidden")}}
-                (dom/a {:className "list-group-item" :style {:text-align "right"} :href (str  "#/postrans/" (:id (first (filter (fn [x] (if (= (compare (:code x) (:selectedclient @sbercore/app-state)) 0) true false)) (:clients @sbercore/app-state)))) "/" (:id item) ) }
-                  (dom/h4 {:className "list-group-item-heading"} (if (and (> (:target sec) 0) )  (if (> (:price item) 1) (sbercore/split-thousands (gstring/format "%.0f" (if (nil? (:target sec)) 0.0 (:target sec))))  (subs (str (if (nil? (:target sec)) 0.0 (:target sec))) 0 5)) ""))
-                )            
+              ;; Потенциал роста
+              (dom/div {:className "col-xs-1 col-md-1" :style {:padding-left "0px" :padding-right "0px" :padding-top "10px"}}
+                (dom/div {:className "progress"}
+                  (dom/div {:className (str "progress-bar" (if (< (if (nil? (:target sec)) 0.0 (:target sec)) (:price item)) " progress-bar-danger" ""))  :role "progresbar" :aria-valuenow (str (.round js/Math (* 100.0 (/ (- (if (nil? (:target sec)) 0.0 (:target sec)) (:price item)) (:price item))  ))) :aria-valuemin "0" :aria-valuemax (str maxpotential) :style {:color "black" :width (str (gstring/format "%.0f" (abs (* 100.0 (/ potential maxpotential))) ) "%") }}
+                    (dom/span {:style {:position "absolute" :display "block" :width (str (gstring/format "%.0f" (abs (* 100.0 (/ potential maxpotential))) ) "%") :color (if (and (> potential 0) (> (/ potential maxpotential) 0.1) )  "white" "black") :font-weight "700"} } (str (.round js/Math potential) "%") )
+                  )
+                )
               )
+
+              ;;Target price
+              ;; (dom/div {:className "col-xs-1 col-md-1" :style {:padding-left "0px" :padding-right "0px" :visibility (if (> (:target sec) 0) "visible" "hidden")}}
+              ;;   (dom/a {:className "list-group-item" :style {:text-align "right"} :href (str  "#/postrans/" (:id (first (filter (fn [x] (if (= (compare (:code x) (:selectedclient @sbercore/app-state)) 0) true false)) (:clients @sbercore/app-state)))) "/" (:id item) ) }
+              ;;     (dom/h4 {:className "list-group-item-heading"} (if (and (> (:target sec) 0) )  (if (> (:price item) 1) (sbercore/split-thousands (gstring/format "%.0f" (if (nil? (:target sec)) 0.0 (:target sec))))  (subs (str (if (nil? (:target sec)) 0.0 (:target sec))) 0 5)) ""))
+              ;;   )            
+              ;; )
 
               ;;Рейтинг аналитиков
               (dom/div {:className "col-xs-1 col-md-1" :style {:padding-left "0px" :padding-right "0px"}}
@@ -811,7 +887,7 @@
              seccode (:acode sec)
             ]
             ; 
-            (if (and (= true (str/includes? seccode (str/upper-case (:search @sbercore/app-state)) )) (= 1 1))   true false) ) ) (:deals ((keyword (:selectedclient @sbercore/app-state)) @sbercore/app-state)))) 
+            (if (and (= true (str/includes? seccode (str/upper-case (:search @sbercore/app-state)) )) (> (:wap x) (- 0 (:column (:sort-deals-list @app-state)))  ))   true false) ) ) (:deals ((keyword (:selectedclient @sbercore/app-state)) @sbercore/app-state)))) 
         )
       )
       (dom/div {:style {:background "white"}}
@@ -834,8 +910,12 @@
 )
 
 
-(defn setcontrols []
-  (sbercore/setClientsDropDown)
+(defn setcontrols [value]
+  (case value
+    42 (sbercore/setClientsDropDown)
+    43 (swap! sbercore/app-state assoc-in [(keyword (:selectedclient @sbercore/app-state)) :deals] (:deals @app-state)) ;(swap! sbercore/app-state assoc-in [:search] "") ;(swap! sbercore/app-state assoc-in [:search] (str (:search @sbercore/app-state) ""))
+  )
+  
   ;;(.log js/console "fieldcode"       )
 )
 
@@ -844,7 +924,7 @@
     (go ;(while true)
       (take! ch(
         fn [v] (
-           setcontrols
+           setcontrols v
           )
         )
       )
@@ -853,6 +933,14 @@
 )
 
 (initqueue)
+
+
+(defn sort-deals-list [column]
+  (swap! app-state assoc-in [:sort-deals-list :column] column)
+  (swap! app-state assoc-in [:deals] (:deals ((keyword (:selectedclient @sbercore/app-state)) @sbercore/app-state))) 
+  (swap! sbercore/app-state assoc-in [(keyword (:selectedclient @sbercore/app-state)) :deals] [])
+  (put! ch 43)
+)
 
 (defcomponent positions-view [data owner]
   (will-mount [_]
@@ -919,7 +1007,7 @@
                   (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "Amount")
                   (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "Цена покупки")
                   (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "Last price")
-                  (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "Target price")
+                  (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "Потенциал роста " (dom/span {:className "glyphicon glyphicon-arrow-down"}))
                   (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "ANR")
                   (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "Currency")
                   (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "P/L USD, %")
@@ -949,7 +1037,7 @@
                   (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "Номинал")
                   (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "Цена покупки")
                   (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "Last price")
-                  (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "Дюрация")
+                  (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "Дюрация" (dom/span {:className "glyphicon glyphicon-arrow-up"}) )
                   (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "Put Date")
                   (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "Currency")
                   (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "P/L USD, %")
@@ -975,7 +1063,7 @@
             (dom/div  {:className "panel panel-primary"}
               (dom/div {:className "panel-heading"}
                 (dom/div (assoc stylerow  :className "row" )
-                  (dom/div {:className "col-xs-2 col-md-2" :style {:text-align "center"}} (b/button {:className "btn btn-primary" :onClick (fn [e] ((swap! app-state assoc-in [:sort-forts-list] "secname") (swap! sbercore/app-state assoc-in [:search] (str (:search @sbercore/app-state) ""))))} "Security Name"))
+                  (dom/div {:className "col-xs-2 col-md-2" :style {:text-align "center"}} (b/button {:className "btn btn-primary" :onClick (fn [e] ((swap! app-state assoc-in [:sort-forts-list] "secname")))} "Security Name") (dom/span {:className "glyphicon glyphicon-arrow-up"}))
                   (dom/div {:className "col-xs-2 col-md-2" :style {:text-align "center"}} "Amount")
                   (dom/div {:className "col-xs-2 col-md-2" :style {:text-align "center"}} "Цена покупки")
                   (dom/div {:className "col-xs-2 col-md-2" :style {:text-align "center"}} "Last price")
@@ -1000,15 +1088,15 @@
             (dom/div  {:className "panel panel-primary"}
               (dom/div {:className "panel-heading"}
                 (dom/div (assoc stylerow  :className "row" )
-                  (dom/div {:className "col-xs-2 col-md-2" :style {:text-align "center"}} (b/button {:className "btn btn-primary" :onClick (fn [e] ((swap! app-state assoc-in [:sort-deals-list] 0) (swap! sbercore/app-state assoc-in [:search] (str (:search @sbercore/app-state) ""))))} "Security Name"))
-                  (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "Direction")
-                  (dom/div {:className "col-xs-2 col-md-2" :style {:text-align "center"}} "Nominal")
-                  (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "Currency")
-                  (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "Price")
+                  (dom/div {:className "col-xs-2 col-md-2" :style {:text-align "center"}} (b/button {:className "btn btn-primary" :onClick (fn [e] (sort-deals-list 0))} "Security Name") (if (= (:column (:sort-deals-list @app-state)) 0) (dom/span {:className "glyphicon glyphicon-arrow-up"})))
+                  (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} (b/button {:className "btn btn-primary" :onClick (fn [e] (sort-deals-list 1))} "Direction") (if (= (:column (:sort-deals-list @app-state)) 1) (dom/span {:className "glyphicon glyphicon-arrow-up"})))
+                  (dom/div {:className "col-xs-2 col-md-2" :style {:text-align "center"}} (b/button {:className "btn btn-primary" :onClick (fn [e] (sort-deals-list 2))} "Nominal") (if (= (:column (:sort-deals-list @app-state)) 2) (dom/span {:className "glyphicon glyphicon-arrow-up"})))
+                  (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} (b/button {:className "btn btn-primary" :onClick (fn [e] (sort-deals-list 3))} "Currency") (if (= (:column (:sort-deals-list @app-state)) 3) (dom/span {:className "glyphicon glyphicon-arrow-up"})))
+                  (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} (b/button {:className "btn btn-primary" :onClick (fn [e] (sort-deals-list 4))} "Price") (if (= (:column (:sort-deals-list @app-state)) 4) (dom/span {:className "glyphicon glyphicon-arrow-up"})))
                   (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "Value")
                   (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "USD Value")
                   (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "RUB Value")
-                  (dom/div {:className "col-xs-2 col-md-2" :style {:text-align "center"}}(b/button {:className "btn btn-primary" :onClick (fn [e] ((swap! app-state assoc-in [:sort-deals-list] 8) (swap! sbercore/app-state assoc-in [:search] (str (:search @sbercore/app-state) ""))))} "Date"))
+                  (dom/div {:className "col-xs-2 col-md-2" :style {:text-align "center"}}(b/button {:className "btn btn-primary" :onClick (fn [e] (sort-deals-list 8))} "Date") (if (= (:column (:sort-deals-list @app-state)) 8) (dom/span {:className "glyphicon glyphicon-arrow-down"})))
                 )
               )
               (dom/div {:className "panel-body"}

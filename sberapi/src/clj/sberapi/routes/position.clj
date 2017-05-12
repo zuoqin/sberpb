@@ -259,9 +259,9 @@
 
 (defn calcPortfolios [token security percentage]
   (let [
-    ;usercode (:iss (-> token str->jwt :claims)  ) 
+    usercode (:iss (-> token str->jwt :claims)  ) 
     transactions (into [] (db/get-transactions-by-security security)   )
-    clients (clients/get-clients)
+    clients (clients/get-clients usercode)
     
 
     ;tr1 (println (first transactions))
@@ -354,11 +354,11 @@
 
 
 
-(defn sendLetter [security clientdata txtdata]
+(defn sendLetter [usercode security clientdata txtdata]
   (let [
     ;tr1 (println (str "sending text1: ") txtdata)
     ;tr1 (println (str clientdata))
-    email (:advmail (first (filter (fn [x] (if (= (:code x) (:code clientdata)) true false)) (clients/get-clients))))
+    email (:advmail (first (filter (fn [x] (if (= (:code x) (:code clientdata)) true false)) (clients/get-clients usercode))))
 
     sec (first (filter (fn [x] (if (= (:id x) security) true false)) (secs/get-securities)))
     seccode (:acode sec)
@@ -382,10 +382,11 @@
 
 (defn sendLetters [token security clients] 
   (let [
+      usercode (:iss (-> token str->jwt :claims))
       recommendtext (:data (first (filter (fn [x] (if (= "TRADE_IDEA" (:code x)) true false)) (syssetting/get-settings))))
       ;tr1 (println clients)
     ]
-    (doall (map (fn [x] (sendLetter security x recommendtext)) clients))
+    (doall (map (fn [x] (sendLetter usercode security x recommendtext)) clients))
     ;; (postal/send-message {:from "me@draines.com"
     ;;                         :to ["mom@example.com" "dad@example.com"]
     ;;                         :cc "bob@example.com"
