@@ -148,7 +148,18 @@
   (let [
     ;usercode (:iss (-> token str->jwt :claims)  ) 
     transactions (into [] (db/get-transactions-by-client client))
+    newtransactions (map (fn [x]
+      (let [tran x
+            
+            newvaluedate (java.util.Date. (c/to-long (f/parse db/custom-formatter (f/unparse db/custom-formatter (c/from-long (c/to-long (:valuedate x)))))))  
+            newtran (assoc tran :valuedate newvaluedate)
+            ;tr1 (println (str newtran))
+        ]
+        newtran
+      )
+    ) transactions)
 
+    ;tr1 (println (str (first newtransactions)))
     securities (distinct (map (fn [x] (:security x)) transactions))
 
     ;;tr1 (println (str "Total securities: " (count securities)))
@@ -157,23 +168,23 @@
         (let [
               sec (first secs)
 
-              thetrans (filter (fn [x] (if (and (= (:security x) sec)) true false)) transactions)
-
-              thedates (distinct (map (fn [x] (f/unparse db/custom-formatter (c/from-long (c/to-long (:valuedate x))))) thetrans))
-
+              thetrans (filter (fn [x] (if (and (= (:security x) sec)) true false)) newtransactions)
+              tr1 (println (str  "sec= " (:acode sec) (new java.util.Date)))
+              thedates (distinct (map (fn [x] (:valuedate x)) thetrans))
+              
               transbydates (loop [bydates [] dates thedates]
                 (if (seq dates)
                   (let [
                         date (first dates)
 
-                        trans (filter (fn [x] (if (and (= (f/unparse db/custom-formatter (c/from-long (c/to-long (:valuedate x)))) date)) true false)) thetrans)
-                        ;tr1 (println (str (first trans)))
+                        trans (filter (fn [x] (if (and (= (:valuedate x) date)) true false)) thetrans)
+                        ;tr1 (println date)
 
                         theres (getDealsDayRes trans) ;(reduce (fn [x y] {:nominal (+ (:nominal x) (:nominal y)) :price (/ (+ (* (:nominal x) (:price x)) (* (:nominal y) (:price y))) (+ (:nominal x) (:nominal y)))} ) {:nominal 0 :price 0.0} trans)
 
                         direction (:direction (first trans))
                         ]
-                    (recur (conj bydates {:date date  :direction direction :nominal (:nominal theres) :wap (:wap theres) :wapusd (:wapusd theres) :waprub (:waprub theres)}) (rest dates))
+                    (recur (conj bydates {:date (f/unparse db/custom-formatter (c/from-long (c/to-long date)))  :direction direction :nominal (:nominal theres) :wap (:wap theres) :wapusd (:wapusd theres) :waprub (:waprub theres)}) (rest dates))
                   )
                   bydates)
                 )

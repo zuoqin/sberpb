@@ -49,19 +49,62 @@
   )
 )
 
+(defn comp-deals
+  [deal1 deal2]
+  (let [;tr1 (println (str "deal1= " deal1 " deal2= " deal2))
+            ]
+    (if (or
+         (> (:date deal1) (:date deal2))
+         (and (= (:date deal1) (:date deal2)) (> (compare (:security deal1) (:security deal2)) 0 ))
+          ;(> (c/to-long (f/parse custom-formatter (:date deal1))) (c/to-long (f/parse custom-formatter (:date deal2))))
+          ;(and (= (c/to-long (f/parse custom-formatter (:date deal1))) (c/to-long (f/parse custom-formatter (:date deal2)))) (> (compare (:security deal1) (:security deal2)) 0 ))
+          )
+          true
+          false
+        )
+  )
+)
+
+(defn map-deal [deal]
+  (let [
+        ;tr1 (println (str deal))
+        trans (loop [result [] trans (get deal "transactions") ]
+                (if (seq trans) 
+                  (let [
+                        tran (first trans)
+                        ;tr1 (.log js/console (str "tran: " tran ))
+                        ]
+                    (recur (conj result {:security (get deal "security") :date (get tran "date" ) :direction (get tran "direction") :nominal (get tran "nominal") :wap (get tran "wap") :wapusd (get tran "wapusd") :waprub (get tran "waprub")})
+                         (rest trans))
+                  )
+                  result)
+        )        
+        result trans
+        
+    ]
+    ;
+
+    result
+  )
+)
+
+
 (defn create-client-report [client]
   (let [
 
     url (str apipath "api/security")
 
     ;tr1 (println (str "Trying to get securities"))
-    securities (json/read-str (:body (client/get url {:headers {"authorization" "Bearer TheBearer"} :proxy-host "10.20.30.41" :proxy-port 8080})))
+    securities (json/read-str (:body (client/get url {:headers {"authorization" "Bearer TheBearer"}})))
 
 
     ;tr1 (println (str "security = " (first (filter (fn [z] (if (= "RUB" (get z "acode")) true false)) securities) )  " acode=" (get (first securities) "acode")) ) 
     url (str apipath "api/position?client=" client )
     positions (filter (fn [x] (if (> (get (second x) "amount") 0) true false)) (json/read-str (:body (client/get url {:headers {"authorization" "Bearer TheBearer"}})))) 
 
+    url (str apipath "api/deals?client=" client )
+    deals (flatten (map (fn [x] (map-deal x)) (filter (fn [x] (if (= 1 1) true false)) (json/read-str (:body (client/get url {:headers {"authorization" "Bearer TheBearer"}}))))))
+    ;tr1 (println (str "deals= " (first deals)))
     newpositions (map (fn [x] (let [
       sec (first (filter (fn [sec] (if (= (get sec "id") (Long/parseLong (first x))) true false)) securities))
       isbond (if (and (= 5 (get sec "assettype"))
@@ -108,13 +151,19 @@
 
       usdcosts (if (= isrusbond true) (/ (* 1000.0 wapusd amount)  100.0)  (if (= isbond true) (/ (* wapusd amount)  100.0)  (if (= assettype 15) (* multiple amount (if (= seccurrency "USD") wapusd (/  waprub usdrate))) (* multiple wapusd amount))))
 
-      usdvalue (/ rubvalue usdrate)
+      usdvalue (/ rubvalue usdrate)     
 
 ] {:security (get sec "isin") :price (get sec "price") :wap (get (second x) "price") :amount amount :usdvalue usdvalue :rubvalue rubvalue :usdcosts usdcosts :rubcosts rubcosts :assettype assettype :currency seccurrency :anr anr :target target :duration duration :yield yield :dvddate dvddate :putdate putdate})) positions)
     ;positions (sort (comp sort-portfs-by-name) portfs)
-    ;newpositions (into [] (map (fn [x] [(first x)   (get (second x) "amount") (get (second x) "price") (get (second x) "rubprice")]) positions))
+
+    newdeals (map (fn [x] (let [sec (first (filter (fn [sec] (if (= (get sec "id") (:security x)) true false)) securities))]
+      {:security (get sec "acode") :isin (get sec "isin") :date (+ (/ (c/to-long (f/parse custom-formatter (:date x))) (* 24 3600 1000)) 25569)   :direction (:direction x) :nominal (:nominal x) :wap (:wap x) :wapusd (:wapusd x) :waprub (:waprub x)}
+      )) deals)
+
+    ;tr1 (println (str "deal = " (first newdeals)))
     ]
-    (save-xls ["sheet1" (dataset [:security :price :wap :amount :usdvalue :rubvalue :usdcosts :rubcosts :assettype :currency :anr :target :duration :yield :dvddate :putdate] (sort (comp comp-positions) newpositions))] (str xlsdir client ".xlsx"))
+    (save-xls ["positions" (dataset [:security :price :wap :amount :usdvalue :rubvalue :usdcosts :rubcosts :assettype :currency :anr :target :duration :yield :dvddate :putdate] (sort (comp comp-positions) newpositions)) "transactions" (dataset [:security :isin :direction :nominal :wap :wapusd :waprub :date] (sort (comp comp-deals) newdeals)
+) ] (str xlsdir client ".xlsx"))
     "Success"
   )
 )
