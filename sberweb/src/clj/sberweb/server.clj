@@ -39,9 +39,9 @@
     ;tr1 (println (str "pos1= " position1 " pos2= " position2))
     ]
     (if (or
-         (> (:assettype position1) (:assettype position2))
-         (and (= (:assettype position1) (:assettype position2)) (> (compare (:currency position1) (:currency position2)) 0))
-         (and (= (:assettype position1) (:assettype position2)) (= (:currency position1) (:currency position2)) (> (:usdvalue position1) (:usdvalue position2)))
+         (> (compare (:assettype position1) (:assettype position2))  0)
+         (and (= (compare (:assettype position1) (:assettype position2)) 0) (> (compare (:currency position1) (:currency position2)) 0))
+         (and (= (compare (:assettype position1) (:assettype position2)) 0 ) (= (:currency position1) (:currency position2)) (> (:usdvalue position1) (:usdvalue position2)))
       )        
         true
         false
@@ -153,7 +153,7 @@
 
       usdvalue (/ rubvalue usdrate)     
 
-] {:security (get sec "isin") :price (get sec "price") :wap (get (second x) "price") :amount amount :usdvalue usdvalue :rubvalue rubvalue :usdcosts usdcosts :rubcosts rubcosts :assettype assettype :currency seccurrency :anr anr :target target :duration duration :yield yield :dvddate dvddate :putdate putdate})) positions)
+] {:security (get sec "isin") :price (get sec "price") :wap (get (second x) "price") :amount amount :usdvalue usdvalue :rubvalue rubvalue :usdcosts usdcosts :rubcosts rubcosts :assettype (case assettype 1 "Equity" 5 "Bond" 15 "Derivatives" "Other")  :currency seccurrency :anr anr :target target :duration duration :yield yield :dvddate dvddate :putdate putdate})) positions)
     ;positions (sort (comp sort-portfs-by-name) portfs)
 
     newdeals (map (fn [x] (let [sec (first (filter (fn [sec] (if (= (get sec "id") (:security x)) true false)) securities))]

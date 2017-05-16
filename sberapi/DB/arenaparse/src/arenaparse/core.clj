@@ -926,6 +926,30 @@
   )
 )
 
+(defn create-excel-reports []
+  (let [
+    theclients (map (fn [x] (:code x)) (get-clients)) 
+    positions (loop [result [] clients theclients]
+            (if (seq clients) 
+              (let [
+                    client (first clients)
+
+                    positions (sort (comp sort-positions-by-isin) (build-excel-positions client))
+                    newpositions (map (fn [x] {:client client :isin (name (first x)) :nominal (:amount (second x))} ) positions)                    
+                    ]
+                (recur (conj result newpositions) 
+                     (rest clients))
+              )                  
+              result)
+            )
+    newpositions (flatten positions)
+    ]
+    ;
+    (save-xls ["sheet1" (dataset [:client :isin :nominal] newpositions)] "c:/DEV/Java/yyy.xlsx")
+    "Success"
+  )
+)
+
 (defn get-positions [client dt]
   (let [
 
