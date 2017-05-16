@@ -435,11 +435,11 @@
 )
 
 
-(defn get-secbcode-by-isin [isin]
+(defn get-secattr-by-isin [isin attr]
   (let [secs (get-securities)
         sec (first (filter (fn [x] (if (= (compare (:isin x) isin) 0) true false)) secs))
         ]
-    (:bcode sec)
+    ( (keyword attr) sec)
   )
 )
 
@@ -919,7 +919,7 @@
 (defn create-excel-report [client]
   (let [
     positions (sort (comp sort-positions-by-isin) (build-excel-positions client))
-    newpositions (into [] (map (fn [x] [(get-secbcode-by-isin (name (first x)))   (:amount (second x)) (:waprub (second x)) (:wapusd (second x)) (:wapseccurr (second x))]) positions))
+    newpositions (into [] (map (fn [x] [(get-secattr-by-isin (name (first x)) "bcode")   (:amount (second x)) (:waprub (second x)) (:wapusd (second x)) (:wapseccurr (second x))]) positions))
     ]
     (save-xls ["sheet1" (dataset [:isin :amount :waprub :wapusd :wapcurr] newpositions)] "c:/DEV/Java/yyy.xlsx")
     "Success"
@@ -935,7 +935,7 @@
                     client (first clients)
 
                     positions (sort (comp sort-positions-by-isin) (build-excel-positions client))
-                    newpositions (map (fn [x] {:client client :isin (name (first x)) :nominal (:amount (second x))} ) positions)                    
+                    newpositions (map (fn [x] {:client client :isin (name (first x)) :acode (get-secattr-by-isin (name (first x)) "acode") :nominal (:amount (second x))} ) positions)                    
                     ]
                 (recur (conj result newpositions) 
                      (rest clients))
@@ -945,7 +945,7 @@
     newpositions (flatten positions)
     ]
     ;
-    (save-xls ["sheet1" (dataset [:client :isin :nominal] newpositions)] "c:/DEV/Java/yyy.xlsx")
+    (save-xls ["sheet1" (dataset [:client :isin :acode :nominal] newpositions)] "c:/DEV/Java/yyy.xlsx")
     "Success"
   )
 )

@@ -61,10 +61,14 @@
         currency (nth (nth tran 6) 1)   ;(second (first (filter (fn [x] (if (= (first x) (keyword "security/currency")) true false)) security)))
 
         ;;:security (nth (nth security 0) 1)
-        ;tr5 (println (str "tran: " tran  "currency: " currency))
+        ;tr5 (println (str "tran: " tran  "currency: " currency " security: " security " first: "))
 
+        
+        newcurrency (if (= "PTS" currency) (second (first (filter (fn [x] (if (= :security/currency (first x)) true false)) security))) currency)
 
-        newtran {:client (nth (first (filter (fn [x] (if (= :client/code (first x)) true false)) client) ) 1) :security (:db/id (nth (nth tran 1) 1))  :nominal (nth (nth tran 2) 1) :price (nth (nth tran 3) 1) :direction (nth (nth tran 4) 1) :valuedate (nth (nth tran 5) 1) :currency currency :comment (nth (nth tran 7) 1) :fx (if (or (= "RUR" currency) (= "RUB" currency))  1 (get-fxrate-by-date currency (nth (nth tran 5) 1)))  :id (first tranid) }
+        ;tr5 (println (str "newcurrency: " newcurrency))
+
+        newtran {:client (nth (first (filter (fn [x] (if (= :client/code (first x)) true false)) client) ) 1) :security (:db/id (nth (nth tran 1) 1))  :nominal (nth (nth tran 2) 1) :price (nth (nth tran 3) 1) :direction (nth (nth tran 4) 1) :valuedate (nth (nth tran 5) 1) :currency newcurrency :comment (nth (nth tran 7) 1) :fx (if (or (= "RUR" newcurrency) (= "RUB" newcurrency))  1 (get-fxrate-by-date newcurrency (nth (nth tran 5) 1)))  :id (first tranid) }
         ]
 
     newtran

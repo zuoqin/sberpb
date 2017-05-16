@@ -48,17 +48,18 @@
 
 
 (defn getPositions [] 
-
-  (if (> (count (:positions ((keyword (:selectedclient @sbercore/app-state)) @sbercore/app-state))) 0)
-    (sbercore/setClientsDropDown)
-    ;; (GET (str settings/apipath "api/position?client=" (:selectedclient @app-state) ) {
-    ;;   :handler OnGetPositions
-    ;;   :error-handler error-handler
-    ;;   :headers {
-    ;;     :content-type "application/json"
-    ;;     :Authorization (str "Bearer "  (:token (:token @sbercore/app-state))) }
-    ;; })
-    (sbercore/getPositions)
+  (if (not (nil? (:selectedclient @sbercore/app-state)))
+    (if (> (count (:positions ((keyword (:selectedclient @sbercore/app-state)) @sbercore/app-state))) 0)
+      (sbercore/setClientsDropDown)
+      ;; (GET (str settings/apipath "api/position?client=" (:selectedclient @app-state) ) {
+      ;;   :handler OnGetPositions
+      ;;   :error-handler error-handler
+      ;;   :headers {
+      ;;     :content-type "application/json"
+      ;;     :Authorization (str "Bearer "  (:token (:token @sbercore/app-state))) }
+      ;; })
+      (sbercore/getPositions)
+    )
   )
 )
 
@@ -1042,9 +1043,12 @@
 
 (defn onMount [data]
   (getPositions)
-  (if (nil? (:deals ((keyword (:selectedclient @sbercore/app-state)) @sbercore/app-state)))
-    (sbercore/getDeals)
+  (if (not (nil? (:selectedclient @sbercore/app-state)))
+    (if (nil? (:deals ((keyword (:selectedclient @sbercore/app-state)) @sbercore/app-state)))
+      (sbercore/getDeals)
+    )
   )
+
   (put! ch 42)
   (swap! sbercore/app-state assoc-in [:current] {:name "Positions" :text "Positions with this security"} )
 )
@@ -1102,160 +1106,161 @@
       (dom/div
         (om/build sbercore/website-view data {})
 
+        (if (not (nil? (:selectedclient @sbercore/app-state)))
+          (if (> (count (:positions ((keyword (:selectedclient @sbercore/app-state)) @sbercore/app-state) )) 0)
+            (dom/div
+              (dom/div {:style {:margin-top "70px"} :className "panel panel-info"}
+                (dom/div {:className "panel-heading"}
+                  (dom/div (assoc stylerow  :className "row" )
+                    (dom/div {:className "col-xs-12 col-md-12" :style {:text-align "center"}} "Денежная позиция")
+                  )
+                )
+              )
 
-        (if (> (count (:positions ((keyword (:selectedclient @sbercore/app-state)) @sbercore/app-state) )) 0)
-          (dom/div
-            (dom/div {:style {:margin-top "70px"} :className "panel panel-info"}
-              (dom/div {:className "panel-heading"}
-                (dom/div (assoc stylerow  :className "row" )
-                  (dom/div {:className "col-xs-12 col-md-12" :style {:text-align "center"}} "Cash позиция")
+              (dom/div  {:className "panel panel-primary"}
+                (dom/div {:className "panel-heading"}
+                  (dom/div (assoc stylerow  :className "row" )
+                    (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "")
+                    (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "")
+                    (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "Доллар США")
+                    (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "")
+                    (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "")
+                    (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "Рубль")
+                    (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "")
+                    (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "")
+                    (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "Евро")
+                    (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "")
+                    (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "")
+                    (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "Фунт")
+                  )
+                )
+                (dom/div {:className "panel-body"}
+                  (om/build showcash-view  data {})
+                )
+              )
+
+
+
+
+              (dom/div {:className "panel panel-info"}
+                (dom/div {:className "panel-heading"}
+                  (dom/div (assoc stylerow  :className "row" )
+                    (dom/div {:className "col-xs-12 col-md-12" :style {:text-align "center"} } "Акции")
+                  )
+                )
+              )
+              (dom/div  {:className "panel panel-primary"}
+                (dom/div {:className "panel-heading"}
+                  (dom/div (assoc stylerow  :className "row" )
+                    (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "Бумага")
+                    (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "Доля, %")
+                    (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "Количество")
+                    (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "USD Value")
+                    (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "Цена покупки")
+                    (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "Last price")
+                    (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "Пот-л роста " (dom/span {:className "glyphicon glyphicon-arrow-down"}))
+                    (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "ANR")
+                    (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "P/L USD, %")
+                    (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "P/L RUB, %")
+                    (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "Yield")
+                    (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "Ex-div date")
+                  )
+                )
+                (dom/div {:className "panel-body"}
+                  (om/build showstocks-view  data {})
+                  (om/build showstocks-total-view  data {})
+                )
+              )
+
+              (dom/div {:style {:margin-top "30px"} :className "panel panel-info"}
+                (dom/div {:className "panel-heading"}
+                  (dom/div (assoc stylerow  :className "row" )
+                    (dom/div {:className "col-xs-12 col-md-12" :style {:text-align "center"}} "Облигации")
+                  )
+                )
+              )
+              (dom/div  {:className "panel panel-primary" :style {:margin-top "0px" :margin-left "0px" :margin-right "0px"}}
+                (dom/div {:className "panel-heading"}
+                  (dom/div (assoc stylerow  :className "row" )
+                    (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "Security Name")
+                    (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "Доля, %")
+                    (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "Номинал")
+                    (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "USD Val w/o ACC")
+                    (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "Цена покупки")
+                    (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "Last price")
+                    (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "Дюрация" (dom/span {:className "glyphicon glyphicon-arrow-up"}) )
+                    (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "Put Date")
+                    (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "P/L USD, %")
+                    (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "P/L RUB, %")
+                    (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "Yield")
+                    (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "Coupon date")
+                  )
+                )
+                (dom/div {:className "panel-body"}
+                  (om/build showbonds-view  data {})
+                  (om/build showbonds-total-view  data {})
+                )
+              )
+
+
+              (dom/div {:className "panel panel-info"}
+                (dom/div {:className "panel-heading"}
+                  (dom/div (assoc stylerow  :className "row" )
+                    (dom/div {:className "col-xs-12 col-md-12" :style {:text-align "center"} } "FORTS")
+                  )
+                )
+              )
+              (dom/div  {:className "panel panel-primary"}
+                (dom/div {:className "panel-heading"}
+                  (dom/div (assoc stylerow  :className "row" )
+                    (dom/div {:className "col-xs-2 col-md-2" :style {:text-align "center"}} (b/button {:className "btn btn-primary" :onClick (fn [e] ((swap! app-state assoc-in [:sort-forts-list] "secname")))} "Security Name") (dom/span {:className "glyphicon glyphicon-arrow-up"}))
+                    (dom/div {:className "col-xs-2 col-md-2" :style {:text-align "center"}} "Amount")
+                    (dom/div {:className "col-xs-2 col-md-2" :style {:text-align "center"}} "Цена покупки")
+                    (dom/div {:className "col-xs-2 col-md-2" :style {:text-align "center"}} "Last price")
+                    (dom/div {:className "col-xs-2 col-md-2" :style {:text-align "center"}} "Currency")
+                    (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "P/L USD")
+                    (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "P/L RUB")
+                  )
+                )
+                (dom/div {:className "panel-body"}
+                  (om/build showforts-view  data {})
+                )
+              )
+
+
+              (dom/div {:style {:margin-top "30px"} :className "panel panel-info"}
+                (dom/div {:className "panel-heading"}
+                  (dom/div (assoc stylerow  :className "row" )
+                    (dom/div {:className "col-xs-12 col-md-12" :style {:text-align "center"}} "История сделок")
+                  )
+                )
+              )
+              (dom/div  {:className "panel panel-primary"}
+                (dom/div {:className "panel-heading"}
+                  (dom/div (assoc stylerow  :className "row" )
+                    (dom/div {:className "col-xs-2 col-md-2" :style {:text-align "center"}} (b/button {:className "btn btn-primary" :onClick (fn [e] (sort-deals-list 0))} "Security Name") (if (= (:column (:sort-deals-list @app-state)) 0) (dom/span {:className "glyphicon glyphicon-arrow-up"})))
+                    (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} (b/button {:className "btn btn-primary" :onClick (fn [e] (sort-deals-list 1))} "Direction") (if (= (:column (:sort-deals-list @app-state)) 1) (dom/span {:className "glyphicon glyphicon-arrow-up"})))
+                    (dom/div {:className "col-xs-2 col-md-2" :style {:text-align "center"}} (b/button {:className "btn btn-primary" :onClick (fn [e] (sort-deals-list 2))} "Nominal") (if (= (:column (:sort-deals-list @app-state)) 2) (dom/span {:className "glyphicon glyphicon-arrow-up"})))
+                    (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} (b/button {:className "btn btn-primary" :onClick (fn [e] (sort-deals-list 3))} "Currency") (if (= (:column (:sort-deals-list @app-state)) 3) (dom/span {:className "glyphicon glyphicon-arrow-up"})))
+                    (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} (b/button {:className "btn btn-primary" :onClick (fn [e] (sort-deals-list 4))} "Price") (if (= (:column (:sort-deals-list @app-state)) 4) (dom/span {:className "glyphicon glyphicon-arrow-up"})))
+                    (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "Value")
+                    (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "USD Value")
+                    (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "RUB Value")
+                    (dom/div {:className "col-xs-2 col-md-2" :style {:text-align "center"}}(b/button {:className "btn btn-primary" :onClick (fn [e] (sort-deals-list 8))} "Date") (if (= (:column (:sort-deals-list @app-state)) 8) (dom/span {:className "glyphicon glyphicon-arrow-down"})))
+                  )
+                )
+                (dom/div {:className "panel-body"}
+                  (om/build showdeals-view data {})
                 )
               )
             )
-
-            (dom/div  {:className "panel panel-primary"}
-              (dom/div {:className "panel-heading"}
-                (dom/div (assoc stylerow  :className "row" )
-                  (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "")
-                  (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "")
-                  (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "Доллар США")
-                  (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "")
-                  (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "")
-                  (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "Рубль")
-                  (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "")
-                  (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "")
-                  (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "Евро")
-                  (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "")
-                  (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "")
-                  (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "Фунт")
-                )
-              )
-              (dom/div {:className "panel-body"}
-                (om/build showcash-view  data {})
-              )
+            (dom/div {:style {:background "white"}}
+              (dom/p {:style {:text-align "center"}}
+                (dom/img {:src "images/loader.gif"})
+              )        
             )
-
-
-
-           
-            (dom/div {:className "panel panel-info"}
-              (dom/div {:className "panel-heading"}
-                (dom/div (assoc stylerow  :className "row" )
-                  (dom/div {:className "col-xs-12 col-md-12" :style {:text-align "center"} } "Акции")
-                )
-              )
-            )
-            (dom/div  {:className "panel panel-primary"}
-              (dom/div {:className "panel-heading"}
-                (dom/div (assoc stylerow  :className "row" )
-                  (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "Security Name")
-                  (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "Share, %")
-                  (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "Amount")
-                  (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "USD Value")
-                  (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "Цена покупки")
-                  (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "Last price")
-                  (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "Пот-л роста " (dom/span {:className "glyphicon glyphicon-arrow-down"}))
-                  (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "ANR")
-                  (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "P/L USD, %")
-                  (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "P/L RUB, %")
-                  (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "Yield")
-                  (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "Ex-div date")
-                )
-              )
-              (dom/div {:className "panel-body"}
-                (om/build showstocks-view  data {})
-                (om/build showstocks-total-view  data {})
-              )
-            )
-
-            (dom/div {:style {:margin-top "30px"} :className "panel panel-info"}
-              (dom/div {:className "panel-heading"}
-                (dom/div (assoc stylerow  :className "row" )
-                  (dom/div {:className "col-xs-12 col-md-12" :style {:text-align "center"}} "Облигации")
-                )
-              )
-            )
-            (dom/div  {:className "panel panel-primary" :style {:margin-top "0px" :margin-left "0px" :margin-right "0px"}}
-              (dom/div {:className "panel-heading"}
-                (dom/div (assoc stylerow  :className "row" )
-                  (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "Security Name")
-                  (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "Доля, %")
-                  (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "Номинал")
-                  (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "USD Val w/o ACC")
-                  (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "Цена покупки")
-                  (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "Last price")
-                  (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "Дюрация" (dom/span {:className "glyphicon glyphicon-arrow-up"}) )
-                  (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "Put Date")
-                  (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "P/L USD, %")
-                  (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "P/L RUB, %")
-                  (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "Yield")
-                  (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "Coupon date")
-                )
-              )
-              (dom/div {:className "panel-body"}
-                (om/build showbonds-view  data {})
-                (om/build showbonds-total-view  data {})
-              )
-            )
-
-
-            (dom/div {:className "panel panel-info"}
-              (dom/div {:className "panel-heading"}
-                (dom/div (assoc stylerow  :className "row" )
-                  (dom/div {:className "col-xs-12 col-md-12" :style {:text-align "center"} } "FORTS")
-                )
-              )
-            )
-            (dom/div  {:className "panel panel-primary"}
-              (dom/div {:className "panel-heading"}
-                (dom/div (assoc stylerow  :className "row" )
-                  (dom/div {:className "col-xs-2 col-md-2" :style {:text-align "center"}} (b/button {:className "btn btn-primary" :onClick (fn [e] ((swap! app-state assoc-in [:sort-forts-list] "secname")))} "Security Name") (dom/span {:className "glyphicon glyphicon-arrow-up"}))
-                  (dom/div {:className "col-xs-2 col-md-2" :style {:text-align "center"}} "Amount")
-                  (dom/div {:className "col-xs-2 col-md-2" :style {:text-align "center"}} "Цена покупки")
-                  (dom/div {:className "col-xs-2 col-md-2" :style {:text-align "center"}} "Last price")
-                  (dom/div {:className "col-xs-2 col-md-2" :style {:text-align "center"}} "Currency")
-                  (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "P/L USD")
-                  (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "P/L RUB")
-                )
-              )
-              (dom/div {:className "panel-body"}
-                (om/build showforts-view  data {})
-              )
-            )
-
-
-            (dom/div {:style {:margin-top "30px"} :className "panel panel-info"}
-              (dom/div {:className "panel-heading"}
-                (dom/div (assoc stylerow  :className "row" )
-                  (dom/div {:className "col-xs-12 col-md-12" :style {:text-align "center"}} "История сделок")
-                )
-              )
-            )
-            (dom/div  {:className "panel panel-primary"}
-              (dom/div {:className "panel-heading"}
-                (dom/div (assoc stylerow  :className "row" )
-                  (dom/div {:className "col-xs-2 col-md-2" :style {:text-align "center"}} (b/button {:className "btn btn-primary" :onClick (fn [e] (sort-deals-list 0))} "Security Name") (if (= (:column (:sort-deals-list @app-state)) 0) (dom/span {:className "glyphicon glyphicon-arrow-up"})))
-                  (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} (b/button {:className "btn btn-primary" :onClick (fn [e] (sort-deals-list 1))} "Direction") (if (= (:column (:sort-deals-list @app-state)) 1) (dom/span {:className "glyphicon glyphicon-arrow-up"})))
-                  (dom/div {:className "col-xs-2 col-md-2" :style {:text-align "center"}} (b/button {:className "btn btn-primary" :onClick (fn [e] (sort-deals-list 2))} "Nominal") (if (= (:column (:sort-deals-list @app-state)) 2) (dom/span {:className "glyphicon glyphicon-arrow-up"})))
-                  (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} (b/button {:className "btn btn-primary" :onClick (fn [e] (sort-deals-list 3))} "Currency") (if (= (:column (:sort-deals-list @app-state)) 3) (dom/span {:className "glyphicon glyphicon-arrow-up"})))
-                  (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} (b/button {:className "btn btn-primary" :onClick (fn [e] (sort-deals-list 4))} "Price") (if (= (:column (:sort-deals-list @app-state)) 4) (dom/span {:className "glyphicon glyphicon-arrow-up"})))
-                  (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "Value")
-                  (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "USD Value")
-                  (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "RUB Value")
-                  (dom/div {:className "col-xs-2 col-md-2" :style {:text-align "center"}}(b/button {:className "btn btn-primary" :onClick (fn [e] (sort-deals-list 8))} "Date") (if (= (:column (:sort-deals-list @app-state)) 8) (dom/span {:className "glyphicon glyphicon-arrow-down"})))
-                )
-              )
-              (dom/div {:className "panel-body"}
-                (om/build showdeals-view data {})
-              )
-            )
+            ;(if (nil? (:selectedclient @sbercore/app-state)))
           )
-          (dom/div {:style {:background "white"}}
-            (dom/p {:style {:text-align "center"}}
-              (dom/img {:src "images/loader.gif"})
-            )        
-          )
-          ;(if (nil? (:selectedclient @sbercore/app-state)))
         )
       )
     )

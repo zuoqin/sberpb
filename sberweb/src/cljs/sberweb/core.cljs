@@ -21,7 +21,7 @@
 
 (enable-console-print!)
 
-(defonce app-state (atom {:state 0 :percentage "5.00" :noholders 0 :selectedclient "AAOHF" :GBCJF {:deals [{:security 17592186045951 :tradedate #inst "2016-12-13T10:00:00.0000000Z" :direction "B" :amount 456 :price 3.56 :currency "RUB"} {:security 17592186045951 :tradedate #inst "2016-12-14T10:00:00.0000000Z" :direction "S" :amount 4 :price 13.56 :currency "RUB"}]} :search ""  :user {:role "admin"} }))
+(defonce app-state (atom {:state 0 :percentage "5.00" :noholders 0 :selectedclient nil :search ""  :user {:role "admin"} }))
 
 
 
