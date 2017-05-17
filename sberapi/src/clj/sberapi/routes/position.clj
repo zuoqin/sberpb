@@ -144,55 +144,102 @@
   )
 )
 
+
+(defn sort-deals [deal1 deal2]
+  (let [
+        ;tr1 (println tran1)
+        ;tr2 (println tran2)
+        ]
+    
+    (if (or  (< (:security deal1) (:security deal2))
+	  (and (= (:security deal1) (:security deal2))(< (c/to-long (:valuedate deal1))  (c/to-long (:valuedate deal2)) )))
+    true
+    false)
+  )
+)
+
+
 (defn getDeals [token client]
   (let [
     ;usercode (:iss (-> token str->jwt :claims)  ) 
     transactions (into [] (db/get-transactions-by-client client))
-    newtransactions (map (fn [x]
-      (let [tran x
+    newtransactions (sort (comp sort-deals) (map (fn [x]
+                              (let [tran x
             
-            newvaluedate (java.util.Date. (c/to-long (f/parse db/custom-formatter (f/unparse db/custom-formatter (c/from-long (c/to-long (:valuedate x)))))))  
-            newtran (assoc tran :valuedate newvaluedate)
-            ;tr1 (println (str newtran))
-        ]
-        newtran
-      )
-    ) transactions)
+                                    newvaluedate (java.util.Date. (c/to-long (f/parse db/custom-formatter (f/unparse db/custom-formatter (c/from-long (c/to-long (:valuedate x)))))))  
+                                    newtran (assoc tran :valuedate newvaluedate)
+                                        ;tr1 (println (str newtran))
+                                    ]
+                                newtran
+                                )
+                              ) transactions))
 
-    ;tr1 (println (str (first newtransactions)))
-    securities (distinct (map (fn [x] (:security x)) transactions))
+    thecursec (first (filter (fn [x] (if (= (:security (first newtransactions)) (:id x)) true false)) (secs/get-securities)))
+    thedirection (:direction (first newtransactions))
+    
+
+
+    ;tr1 (println (str (first newtransactions) " sec= " thecursec))
+    theusdrate (db/get-fxrate-by-date "USD" (:valuedate (first newtransactions)))
+    theseccurrate (db/get-fxrate-by-date (:currency thecursec) (:valuedate (first newtransactions)))
+    ;tr1 (println (str "777777"))
+    thetrancurrate (db/get-fxrate-by-date (:currency (first newtransactions)) (:valuedate (first newtransactions)))
+    thecurdate (:valuedate (first newtransactions))
+    ;tr1 (println (str "8888888888"))
+    ;securities (distinct (map (fn [x] (:security x)) transactions))
 
     ;;tr1 (println (str "Total securities: " (count securities)))
-    transbysecs (loop [result [] secs securities]
-      (if (seq secs)
+    transbysecs (loop [result [] thetrans newtransactions cursec thecursec deals []  waprub 0 wapusd 0 wap 0 amnt (:nominal (first newtransactions)) usdrate theusdrate trancurrrate thetrancurrate seccurrate theseccurrate curdate thecurdate direction thedirection]
+      (if (seq thetrans)
         (let [
-              sec (first secs)
+              tran (first thetrans)
 
-              thetrans (filter (fn [x] (if (and (= (:security x) sec)) true false)) newtransactions)
-              tr1 (println (str  "sec= " (:acode sec) (new java.util.Date)))
-              thedates (distinct (map (fn [x] (:valuedate x)) thetrans))
+              newcursec (if (= (:security tran) (:id cursec)) cursec (first (filter (fn [x] (if (= (:security tran) (:id x)) true false)) (secs/get-securities))))
               
-              transbydates (loop [bydates [] dates thedates]
-                (if (seq dates)
-                  (let [
-                        date (first dates)
+              trannominal (if (= "B" (:direction tran)) (:nominal tran) (- 0 (:nominal tran)))
+              newnominal (if (and (= (:id cursec)  (:id newcursec)) (= curdate (:valuedate tran))) (+ trannominal amnt) (:nominal tran)) 
 
-                        trans (filter (fn [x] (if (and (= (:valuedate x) date)) true false)) thetrans)
-                        ;tr1 (println date)
+              newtrancurrate  (if (and (= (:id cursec)  (:id newcursec)) (= curdate (:valuedate tran))) trancurrrate (db/get-fxrate-by-date (:currency tran) (:valuedate tran)))
 
-                        theres (getDealsDayRes trans) ;(reduce (fn [x y] {:nominal (+ (:nominal x) (:nominal y)) :price (/ (+ (* (:nominal x) (:price x)) (* (:nominal y) (:price y))) (+ (:nominal x) (:nominal y)))} ) {:nominal 0 :price 0.0} trans)
+              rubprice (if (= 5 (:assettype cursec)) (* seccurrate (:price tran)) (* newtrancurrate (:price tran)))
 
-                        direction (:direction (first trans))
-                        ]
-                    (recur (conj bydates {:date (f/unparse db/custom-formatter (c/from-long (c/to-long date)))  :direction direction :nominal (:nominal theres) :wap (:wap theres) :wapusd (:wapusd theres) :waprub (:waprub theres)}) (rest dates))
-                  )
-                  bydates)
-                )
+
+              newusdrate (if (= (:valuedate tran) curdate) usdrate (db/get-fxrate-by-date "USD" (:valuedate tran)))
+
+              ;tr1 (println (str "9999999999999 sec= " cursec))
+              
+              newseccurrate (if (and (= (:id cursec)  (:id newcursec)) (= curdate (:valuedate tran))) seccurrate (db/get-fxrate-by-date (:currency newcursec) (:valuedate tran)))
+
+              
+              ;tr1 (println (str "2222222222222"))
+              usdprice (/ rubprice newusdrate)
+              seccurprice (/ rubprice newseccurrate)
+              ;tr1 (if (= (:id cursec) 17592186045631) (println (str tran))) 
+              
+              ;tr1 (println (str "000000000"))
+
+              ;tttt (println (str "newnominal=" newnominal " amnt=" amnt " trannominal=" trannominal " cursec=" (:id cursec) " newsec=" (:id newcursec) " seccurprice= " seccurprice " price=" (:price tran) " rubprice=" rubprice  " amnt=" newnominal))
+              ;;(if (= (:id newcursec) 17592186045631) )  " newwaprub=" (:waprub theres) " wapusd=" (:wapusd theres) " wap=" (:wap theres)
+
+
+              theres (if (and (= (:valuedate tran) curdate) (= (:id cursec) (:id newcursec))) {:nominal newnominal :wap (case newnominal 0.0 seccurprice (/ (+ (* trannominal seccurprice) (* amnt wap)) newnominal))   :wapusd (case newnominal 0.0 usdprice (/ (+ (* trannominal usdprice) (* amnt wapusd)) newnominal))   :waprub (case newnominal 0.0 rubprice (/ (+ (* trannominal rubprice) (* amnt waprub)) newnominal)) }  {:nominal newnominal :wap seccurprice  :wapusd usdprice  :waprub rubprice })
+
+
+
+              newdeals (if (= (:id cursec) (:id newcursec))  (if (= (:valuedate tran) curdate) deals (conj deals {:date (f/unparse db/custom-formatter (c/from-long (c/to-long curdate)))  :direction direction :nominal amnt :waprub waprub :wapusd wapusd :wap wap}) ) [])
+
+
+              newresult (if (= (:id cursec)  (:security tran)) result (conj result {:security (:id cursec)  :transactions (conj deals {:date (f/unparse db/custom-formatter (c/from-long (c/to-long curdate)))  :direction direction :nominal amnt :waprub waprub :wapusd wapusd :wap wap})}))
+              ;thetrans (filter (fn [x] (if (and (= (:security x) sec)) true false)) newtransactions)
+              ;tr1 (if (= (:id cursec) 17592186045631) (println (str  "deals count= " (count newdeals) " newcursec= " (:id newcursec) " cursec= " (:id cursec) " curdate= " curdate " valuedate= " (:valuedate tran))))
+              ;thedates (distinct (map (fn [x] (:valuedate x)) thetrans))
+              
+              
               ]
-          (recur (conj result {:security sec :transactions transbydates})
-               (rest secs))
-        )                  
-        result)
+          (recur newresult (rest thetrans) newcursec newdeals (:waprub theres) (:wapusd theres) (:wap theres) newnominal newusdrate newtrancurrate newseccurrate (:valuedate tran) (:direction tran))
+        )
+        result ;(conj result {:security (:id cursec)  :transactions deals})
+        )
       )
 
     ;tr1 (println (str "Total deals: " (count transbysecs)))

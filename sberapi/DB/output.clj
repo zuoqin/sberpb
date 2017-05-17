@@ -9,6 +9,7 @@
 { :user/code "guillaume", :user/password "Qwerty123", :user/role "admin", :db/id #db/id[:db.part/user -105008] }
 { :user/code "michael", :user/password "Qwerty123", :user/role "admin", :db/id #db/id[:db.part/user -105009] }
 { :user/code "elena", :user/password "Qwerty123", :user/role "admin", :db/id #db/id[:db.part/user -105010] }
+{ :user/code "darya", :user/password "Qwerty123", :user/role "admin", :db/id #db/id[:db.part/user -105011] }
 
 
 
@@ -1222,7 +1223,7 @@
 { :security/acode "VFCUS",  :security/assettype 1, :security/isin "US9182041080", :security/bcode "VFC US Equity", :security/exchange "XETRA", :security/currency "USD", :db/id #db/id[:db.part/user -100592] }
 
 
-;{ :security/acode "AUUSISE", :security/isin "CH0106027193", :security/bcode "CH0106027193 Equity", :security/assettype 1, :security/name "Yandex NV", :security/exchange "NYSE", :security/currency "CHF", :db/id #db/id[:db.part/user -100557] }
+{ :security/acode "PROMBK19N", :security/isin "XS1506500039", :security/bcode "XS1506500039 Corp", :security/assettype 5, :security/name "Yandex NV", :security/exchange "NYSE", :security/currency "CHF", :db/id #db/id[:db.part/user -100557] }
 
 ;;FORTS contracts
 
@@ -1298,7 +1299,7 @@
 
 { :client/code "DADSF",  :client/name "Клиент DADSF", :client/currency "USD", :client/stockshare 50.0 :client/bondshare 50.0, :client/usd 100000.0, :client/rub 100000.0, :client/eur 100000.0, :client/gbp 100000.0, :client/signedadvisory 5000000.0, :client/advemail "jaroslav_stakheev@sberbank-pb.ru", :client/email "stasdas7@gmail.com", :client/advisors [ #db/id[:db.part/user -105001] #db/id[:db.part/user -105002] ], :db/id #db/id[:db.part/user -102014]}
 
-{ :client/code "BBKEF",  :client/name "Клиент BBKEF", :client/currency "USD", :client/stockshare 50.0 :client/bondshare 50.0, :client/usd 100000.0, :client/rub 100000.0, :client/eur 100000.0, :client/gbp 100000.0, :client/signedadvisory 5000000.0, :client/advemail "jaroslav_stakheev@sberbank-pb.ru", :client/email "ssb19671973@gmail.com", :client/advisors [ #db/id[:db.part/user -105001] #db/id[:db.part/user -105002] ], :db/id #db/id[:db.part/user -102015]}
+{ :client/code "BBKEF",  :client/name "Клиент BBKEF", :client/currency "USD", :client/stockshare 50.0 :client/bondshare 50.0, :client/usd 100000.0, :client/rub 100000.0, :client/eur 100000.0, :client/gbp 100000.0, :client/signedadvisory 5000000.0, :client/advemail "jaroslav_stakheev@sberbank-pb.ru", :client/email "ssb19671973@gmail.com", :client/advisors [ #db/id[:db.part/user -105001] #db/id[:db.part/user -105002] #db/id[:db.part/user -105011]], :db/id #db/id[:db.part/user -102015]}
 
 { :client/code "LABKS",  :client/name "Клиент LABKS", :client/currency "USD", :client/stockshare 50.0 :client/bondshare 50.0, :client/usd 100000.0, :client/rub 100000.0, :client/eur 100000.0, :client/gbp 100000.0, :client/signedadvisory 5000000.0, :client/advemail "Maria_Shuidina@sberbank-pb.ru", :client/email "Petr.Skalin@kaspersky.com", :client/advisors [ #db/id[:db.part/user -105001] #db/id[:db.part/user -105002] ], :db/id #db/id[:db.part/user -102016]}
 
@@ -1378,11 +1379,11 @@
 
 { :client/code "KDEYF", :client/name "Клиент KDEYF", :client/currency "USD", :client/stockshare 50.0 :client/bondshare 50.0, :client/usd 100000.0, :client/rub 100000.0, :client/eur 100000.0, :client/gbp 100000.0, :client/signedadvisory 5000000.0, :client/advemail "Vladimir_Uspenskiy@sberbank-pb.ru", :client/email "mkorbukov@yandex.ru", :client/advisors [ #db/id[:db.part/user -105001] #db/id[:db.part/user -105002] ], :db/id #db/id[:db.part/user -102054]}
 
-{ :client/code "AAOHF",  :client/name "Клиент AAOHF", :client/currency "USD", :client/stockshare 50.0 :client/bondshare 50.0, :client/usd 100000.0, :client/rub 100000.0, :client/eur 100000.0, :client/gbp 100000.0, :client/signedadvisory 5000000.0, :client/advemail "Rustam_Nazimanov@sberbank-pb.ru", :client/email "aa7217540@gmail.com", :client/advisors [ #db/id[:db.part/user -105001] #db/id[:db.part/user -105002] #db/id[:db.part/user -105004] ], :db/id #db/id[:db.part/user -102055]}
+{ :client/code "AAOHF",  :client/name "Клиент AAOHF", :client/currency "USD", :client/stockshare 50.0 :client/bondshare 50.0, :client/usd 100000.0, :client/rub 100000.0, :client/eur 100000.0, :client/gbp 100000.0, :client/signedadvisory 5000000.0, :client/advemail "Rustam_Nazimanov@sberbank-pb.ru", :client/email "aa7217540@gmail.com", :client/advisors [ #db/id[:db.part/user -105001] #db/id[:db.part/user -105002] #db/id[:db.part/user -105004] #db/id[:db.part/user -105011]], :db/id #db/id[:db.part/user -102055]}
 
 { :client/code "MBLUF", :client/name "Клиент MBLUF", :client/currency "USD", :client/stockshare 50.0 :client/bondshare 50.0, :client/usd 100000.0, :client/rub 100000.0, :client/eur 100000.0, :client/gbp 100000.0, :client/signedadvisory 5000000.0, :client/advemail "Rustam_Nazimanov@sberbank-pb.ru", :client/email "s_makarov@bk.ru", :client/advisors [ #db/id[:db.part/user -105001] #db/id[:db.part/user -105002] #db/id[:db.part/user -105004] ], :db/id #db/id[:db.part/user -102056]}
 
-{ :client/code "BBKEF1", :client/name "Клиент BBKEF1", :client/currency "USD", :client/stockshare 50.0 :client/bondshare 50.0, :client/usd 100000.0, :client/rub 100000.0, :client/eur 100000.0, :client/gbp 100000.0, :client/signedadvisory 5000000.0, :client/advemail "jaroslav_stakheev@sberbank-pb.ru", :client/email "ssb19671973@gmail.com", :client/advisors [ #db/id[:db.part/user -105001] #db/id[:db.part/user -105002] ], :db/id #db/id[:db.part/user -102057]}
+{ :client/code "BBKEF1", :client/name "Клиент BBKEF1", :client/currency "USD", :client/stockshare 50.0 :client/bondshare 50.0, :client/usd 100000.0, :client/rub 100000.0, :client/eur 100000.0, :client/gbp 100000.0, :client/signedadvisory 5000000.0, :client/advemail "jaroslav_stakheev@sberbank-pb.ru", :client/email "ssb19671973@gmail.com", :client/advisors [ #db/id[:db.part/user -105001] #db/id[:db.part/user -105002] #db/id[:db.part/user -105011]], :db/id #db/id[:db.part/user -102057]}
 
 { :client/code "XGAQF1", :client/name "Клиент XGAQF1", :client/currency "USD", :client/stockshare 50.0 :client/bondshare 50.0, :client/usd 100000.0, :client/rub 100000.0, :client/eur 100000.0, :client/gbp 100000.0, :client/signedadvisory 5000000.0, :client/advemail "jaroslav_stakheev@sberbank-pb.ru", :client/email "sirotkinanatalia@mail.ru", :client/advisors [ #db/id[:db.part/user -105001] #db/id[:db.part/user -105002] ], :db/id #db/id[:db.part/user -102058]}
 
@@ -1444,13 +1445,15 @@
 
 { :client/code "SATQF", :client/name "Клиент SATQF", :client/currency "USD", :client/stockshare 50.0 :client/bondshare 50.0, :client/usd 100000.0, :client/rub 100000.0, :client/eur 100000.0, :client/gbp 100000.0, :client/signedadvisory 5000000.0, :client/advemail "Irina_Mishina@sberbank-pb.ru", :client/email "p.shackiy@gmail.com", :client/advisors [ #db/id[:db.part/user -105001] #db/id[:db.part/user -105002] ], :db/id #db/id[:db.part/user -102087]}
 
-{ :client/code "IVNPF", :client/name "Клиент IVNPF", :client/currency "USD", :client/stockshare 50.0 :client/bondshare 50.0, :client/usd 100000.0, :client/rub 100000.0, :client/eur 100000.0, :client/gbp 100000.0, :client/signedadvisory 5000000.0, :client/advemail "elena_slobodina@sberbank-pb.ru", :client/email "Ivanova25@inbox.ru", :client/advisors [ #db/id[:db.part/user -105001] #db/id[:db.part/user -105002] #db/id[:db.part/user -105010]], :db/id #db/id[:db.part/user -102088]}
+{ :client/code "IVNPF", :client/name "Клиент IVNPF", :client/currency "USD", :client/stockshare 50.0 :client/bondshare 50.0, :client/usd 100000.0, :client/rub 100000.0, :client/eur 100000.0, :client/gbp 100000.0, :client/signedadvisory 5000000.0, :client/advemail "elena_slobodina@sberbank-pb.ru", :client/email "Ivanova25@inbox.ru", :client/advisors [ #db/id[:db.part/user -105001] #db/id[:db.part/user -105002] #db/id[:db.part/user -105010] #db/id[:db.part/user -105011]], :db/id #db/id[:db.part/user -102088]}
 
 { :client/code "EMQQF1",  :client/name "EMQQF w/o YANDX", :client/currency "USD", :client/stockshare 50.0 :client/bondshare 50.0, :client/usd 100000.0, :client/rub 100000.0, :client/eur 100000.0, :client/gbp 100000.0, :client/signedadvisory 5000000.0, :client/advemail "anton_gorelov@sberbank-pb.ru", :client/email "mariamia@yandex.ru", :client/advisors [ #db/id[:db.part/user -105001] #db/id[:db.part/user -105002] #db/id[:db.part/user -105008] #db/id[:db.part/user -105009]], :db/id #db/id[:db.part/user -102089]}
 
 { :client/code "XNPQF1",  :client/name "Клиент XNPQF1", :client/currency "USD", :client/stockshare 50.0 :client/bondshare 50.0, :client/usd 100000.0, :client/rub 100000.0, :client/eur 100000.0, :client/gbp 100000.0, :client/signedadvisory 5000000.0, :client/advemail "Vladimir_Uspenskiy@sberbank-pb.ru", :client/email "shapoval@sib-energo.ru", :client/advisors [ #db/id[:db.part/user -105001] #db/id[:db.part/user -105002] #db/id[:db.part/user -105004] ], :db/id #db/id[:db.part/user -102090]}
 
 { :client/code "XNPQF",  :client/name "Клиент XNPQF", :client/currency "USD", :client/stockshare 50.0 :client/bondshare 50.0, :client/usd 100000.0, :client/rub 100000.0, :client/eur 100000.0, :client/gbp 100000.0, :client/signedadvisory 5000000.0, :client/advemail "Vladimir_Uspenskiy@sberbank-pb.ru", :client/email "shapoval@sib-energo.ru", :client/advisors [ #db/id[:db.part/user -105001] #db/id[:db.part/user -105002] #db/id[:db.part/user -105004] ], :db/id #db/id[:db.part/user -102091]}
+
+{ :client/code "BBKVF",  :client/name "Клиент BBKVF", :client/currency "USD", :client/stockshare 50.0 :client/bondshare 50.0, :client/usd 100000.0, :client/rub 100000.0, :client/eur 100000.0, :client/gbp 100000.0, :client/signedadvisory 5000000.0, :client/advemail "igor_prokhaev@sberbank-pb.ru", :client/email "cb1022@bk.ru", :client/advisors [ #db/id[:db.part/user -105001] #db/id[:db.part/user -105002] ], :db/id #db/id[:db.part/user -102092]}
 
 
 
@@ -2267,6 +2270,9 @@
 
 { :transaction/client #db/id[:db.part/user -102078], :transaction/security #db/id[:db.part/user -100054], :transaction/nominal 947000.0, :transaction/price 104.53, :transaction/direction "S", :transaction/valuedate #inst "2016-12-26T10:00:00.0000000Z", :transaction/currency "USD", :transaction/comment "Transfer out", :db/id #db/id[:db.part/user -110423] }
 
+{ :transaction/client #db/id[:db.part/user -102092], :transaction/security #db/id[:db.part/user -100098], :transaction/nominal 16290.0,      :transaction/price 3706.41, :transaction/direction "S", :transaction/valuedate #inst "2017-02-20T10:00:00.0000000Z", :transaction/currency "RUB", :transaction/comment "Оферта", :db/id #db/id[:db.part/user -110424] }
+
+{ :transaction/client #db/id[:db.part/user -102092], :transaction/security #db/id[:db.part/user -100087], :transaction/nominal 1094000.0,      :transaction/price 107.50, :transaction/direction "S", :transaction/valuedate #inst "2017-03-10T10:00:00.0000000Z", :transaction/currency "USD", :transaction/comment "Оферта Евраз, 6.5% 22apr2020, USD", :db/id #db/id[:db.part/user -110425] }
 
 
 
