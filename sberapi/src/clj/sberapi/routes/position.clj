@@ -97,54 +97,6 @@
   )
 )
 
-(defn getDealsDayRes [transactions]
-  (let [
-        ;tr1 (println (str "first transaction: " (first transactions)))
-        usdrate (db/get-fxrate-by-date "USD" (:valuedate (first transactions)))
-        sec (first (filter (fn [x] (if (= (:security (first transactions)) (:id x)) true false)) (secs/get-securities)))
-
-        seccurrate (db/get-fxrate-by-date (:currency sec) (:valuedate (first transactions)))
-        trancurrrates {(keyword (:currency (first transactions))) (db/get-fxrate-by-date (str/upper-case (:currency (first transactions))) (:valuedate (first transactions)))}
-        
-        result (loop [result {} trans transactions]
-          (if (seq trans)
-            (let [
-                  tran (first trans)
-                  trancurrrate (if (nil? ((keyword (:currency (first transactions))) trancurrrates)) (db/get-fxrate-by-date (str/upper-case (:currency tran)) (:valuedate tran)) ((keyword (:currency (first transactions))) trancurrrates))
-                  tr1 (assoc trancurrrates (keyword (:currency tran)) trancurrrate)
-                  
-                  ;tr1 (println (str (first trans)))
-
-                  waprub (if (nil? (:waprub result)) 0 (:waprub result))
-                  wapusd (if (nil? (:wapusd result)) 0 (:wapusd result))
-                  wap (if (nil? (:wap result)) 0 (:wap result))
-
-                  amnt (if (nil? (:nominal result )) 0 (:nominal result )) 
-
-                  trannominal (if (= "B" (:direction tran)) (:nominal tran) (- 0 (:nominal tran)))
-                  newnominal (+ trannominal amnt)
-                  rubprice (if (= 5 (:assettype sec)) (* seccurrate (:price tran)) (* trancurrrate (:price tran)))  
-                  usdprice (/ rubprice usdrate)
-                  seccurprice (/ rubprice seccurrate)
-                  
-                  
-
-                  ;tr1 (println (str "newnominal= " newnominal))
-                  theres {:nominal newnominal :wap (if (= 0.0 newnominal) 0.0 (/ (+ (* trannominal seccurprice) (* amnt wap)) newnominal))  :wapusd (if (= 0.0 newnominal) 0.0 (/ (+ (* trannominal usdprice) (* amnt wapusd)) newnominal))  :waprub (if (= 0.0 newnominal) 0.0 (/ (+ (* trannominal rubprice) (* amnt waprub)) newnominal)) }
-                  
-
-                  direction (:direction tran)
-                  ]
-              (recur (conj result {:date (:valuedate tran)  :direction direction :nominal (:nominal theres) :waprub (:waprub theres) :wapusd (:wapusd theres) :wap (:wap theres)}) (rest trans))
-            )
-            result)
-          )
-    ]
-    result
-  )
-)
-
-
 (defn sort-deals [deal1 deal2]
   (let [
         ;tr1 (println tran1)
@@ -189,7 +141,7 @@
     ;securities (distinct (map (fn [x] (:security x)) transactions))
 
     ;;tr1 (println (str "Total securities: " (count securities)))
-    transbysecs (loop [result [] thetrans newtransactions cursec thecursec deals []  waprub 0 wapusd 0 wap 0 amnt (:nominal (first newtransactions)) usdrate theusdrate trancurrrate thetrancurrate seccurrate theseccurrate curdate thecurdate direction thedirection]
+    transbysecs (loop [result [] thetrans newtransactions cursec thecursec deals []  waprub 0 wapusd 0 wap 0 amnt 0.0 usdrate theusdrate trancurrrate thetrancurrate seccurrate theseccurrate curdate thecurdate direction thedirection]
       (if (seq thetrans)
         (let [
               tran (first thetrans)

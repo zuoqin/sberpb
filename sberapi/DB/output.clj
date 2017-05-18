@@ -1245,7 +1245,7 @@
 
 { :security/acode "SI-6.17/C F59000 ACR 15JUN17", :security/isin "URM7C 59000 Curncy", :security/bcode "URM7C 59000 Curncy", :security/assettype 15, :security/name "SI-6.17/C F59000 ACR 15JUN17", :security/multiple 1.0, :security/exchange "RTS", :security/currency "RUB", :db/id #db/id[:db.part/user -101009] }
 
-{ :security/acode "SI-6.17/C F60000 ACR 15JUN17", :security/isin "URM7C 60000 Curncy", :security/bcode "URM7C 60000 Curncy", :security/assettype 15, :security/name "URM7C 60000.00 Curncy	USD/RUB Fut Opt   Jun17C", :security/multiple 1.0, :security/exchange "RTS", :security/currency "RUB", :db/id #db/id[:db.part/user -101010] }
+{ :security/acode "SI-6.17/C F60000 ACR 15JUN17", :security/isin "URM7C 60000 Curncy", :security/bcode "URM7C 60000 Curncy", :security/assettype 15, :security/name "USD/RUB Fut Opt   Jun17C", :security/multiple 1.0, :security/exchange "RTS", :security/currency "RUB", :db/id #db/id[:db.part/user -101010] }
 
 { :security/acode "RTS-3.17/P O110000 ACU 16MAR17", :security/isin "VEH7C 11000 Index", :security/bcode "VEH7C 11000 Index", :security/assettype 15, :security/name "VEH7C 110000.00 Index	RTS INDEX OPTIONS Mar17C", :security/multiple 2.0, :security/exchange "RTS", :security/currency "USD", :db/id #db/id[:db.part/user -101011] }
 
