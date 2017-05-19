@@ -166,12 +166,12 @@
               ;tr1 (println (str "2222222222222"))
               usdprice (/ rubprice newusdrate)
               seccurprice (/ rubprice newseccurrate)
-              ;tr1 (if (= (:id cursec) 17592186045631) (println (str tran))) 
+              ;tr1 (if (= (:id cursec) 17592186046015) (println (str tran))) 
               
               ;tr1 (println (str "000000000"))
 
               ;tttt (println (str "newnominal=" newnominal " amnt=" amnt " trannominal=" trannominal " cursec=" (:id cursec) " newsec=" (:id newcursec) " seccurprice= " seccurprice " price=" (:price tran) " rubprice=" rubprice  " amnt=" newnominal))
-              ;;(if (= (:id newcursec) 17592186045631) )  " newwaprub=" (:waprub theres) " wapusd=" (:wapusd theres) " wap=" (:wap theres)
+              ;;(if (= (:id newcursec) 17592186046015) )  " newwaprub=" (:waprub theres) " wapusd=" (:wapusd theres) " wap=" (:wap theres)
 
 
               theres (if (and (= (:valuedate tran) curdate) (= (:id cursec) (:id newcursec))) {:nominal newnominal :wap (case newnominal 0.0 seccurprice (/ (+ (* trannominal seccurprice) (* amnt wap)) newnominal))   :wapusd (case newnominal 0.0 usdprice (/ (+ (* trannominal usdprice) (* amnt wapusd)) newnominal))   :waprub (case newnominal 0.0 rubprice (/ (+ (* trannominal rubprice) (* amnt waprub)) newnominal)) }  {:nominal newnominal :wap seccurprice  :wapusd usdprice  :waprub rubprice })
@@ -183,14 +183,14 @@
 
               newresult (if (= (:id cursec)  (:security tran)) result (conj result {:security (:id cursec)  :transactions (conj deals {:date (f/unparse db/custom-formatter (c/from-long (c/to-long curdate)))  :direction direction :nominal amnt :waprub waprub :wapusd wapusd :wap wap})}))
               ;thetrans (filter (fn [x] (if (and (= (:security x) sec)) true false)) newtransactions)
-              ;tr1 (if (= (:id cursec) 17592186045631) (println (str  "deals count= " (count newdeals) " newcursec= " (:id newcursec) " cursec= " (:id cursec) " curdate= " curdate " valuedate= " (:valuedate tran))))
+              tr1 (if (= (:id cursec) 17592186046015) (println (str  "deals count= " (count newdeals) " newcursec= " (:id newcursec) " cursec= " (:id cursec) " curdate= " curdate " valuedate= " (:valuedate tran))))
               ;thedates (distinct (map (fn [x] (:valuedate x)) thetrans))
               
               
               ]
           (recur newresult (rest thetrans) newcursec newdeals (:waprub theres) (:wapusd theres) (:wap theres) newnominal newusdrate newtrancurrate newseccurrate (:valuedate tran) (:direction tran))
         )
-        result ;(conj result {:security (:id cursec)  :transactions deals})
+        (conj result {:security (:id cursec)  :transactions (conj deals {:date (f/unparse db/custom-formatter (c/from-long (c/to-long curdate)))  :direction direction :nominal amnt :waprub waprub :wapusd wapusd :wap wap})})
         )
       )
 
