@@ -94,7 +94,9 @@
 (defn OnGetSecurities [response]
   (swap! sbercore/app-state assoc-in [:securities] response )
   (swap! app-state assoc-in [:state] 0)
-  (aset js/window "location" "#/portfolios")
+  ;(swap! sbercore/app-state assoc-in [:view] 1 )
+  ;(aset js/window "location" "#/positions")
+  (put! ch 42)
 )
 
 (defn reqsecurities []
@@ -260,6 +262,27 @@
     )
   )
 )
+
+(defn setcontrols [value]
+  (case value
+    42 (sbercore/goPositions 0)
+  )
+)
+
+(defn initqueue []
+  (doseq [n (range 1000)]
+    (go ;(while true)
+      (take! ch(
+        fn [v] (
+           setcontrols v
+          )
+        )
+      )
+    )
+  )
+)
+
+(initqueue)
 
 
 

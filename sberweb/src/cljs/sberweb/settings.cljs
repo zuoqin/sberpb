@@ -12,11 +12,11 @@
 (enable-console-print!)
 
 ;;(def apipath "http://10.30.60.102:3000/")
-;;(def apipath "https://api.sberpb.com/")
+(def apipath "https://api.sberpb.com/")
 
 
 ;;(def apipath "http://localhost:3000/")
-(def apipath "http://10.20.35.21:3000/")
+;;(def apipath "http://10.20.35.21:3000/")
 (def demouser "zuoqin")
 (def demopassword "Qwerty123")
 
