@@ -298,7 +298,7 @@
   :db/ident :price/targetprice
   :db/valueType :db.type/double
   :db/cardinality :db.cardinality/one
-  :db/doc "Target price"
+  :db/doc "Target price for stocks or accrued for bonds"
   :db.install/_attribute :db.part/db}
 
 {:db/id #db/id[:db.part/db]

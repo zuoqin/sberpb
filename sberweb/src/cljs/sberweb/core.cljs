@@ -66,6 +66,11 @@
   (swap! app-state assoc-in [:view] 1 )
 )
 
+(defn goPositions2 [e]
+  (aset js/window "location" "#/positions2")
+  (swap! app-state assoc-in [:view] 1 )
+)
+
 (defn goUsers [data]
   (swap! app-state assoc-in [:view] 3 )
 )
@@ -584,6 +589,12 @@
             )
           )
           (dom/ul {:className "nav navbar-nav navbar-right"}
+            (dom/li
+              (dom/a {:style {:margin "10px" :padding-bottom "0px"} :href "#/positions2" :onClick (fn [e] (goPositions2 e))}
+                 (dom/span {:className "glyphicon glyphicon-cog"})
+                 "Positions w/acc"
+              )
+            )
             (dom/li
               (dom/a {:style {:margin "10px" :padding-bottom "0px"} :href "#/portfolios" :onClick (fn [e] (goPortfolios e))}
                  (dom/span {:className "glyphicon glyphicon-cog"})
