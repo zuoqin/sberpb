@@ -64,6 +64,23 @@
 )
 
 
+(defn calc_portfusdvalue []
+  (let [
+         secsusdvalue (:usdvalue (reduce (fn [x y] {:usdvalue (+ (:usdvalue x) (:usdvalue y))}) (:positions ((keyword (:selectedclient @sbercore/app-state)) @sbercore/app-state))))
+         usdrate (:price (first (filter (fn [x] (if (= "USD" (:acode x)) true false)) (:securities @sbercore/app-state))))
+         eurrate (:price (first (filter (fn [x] (if (= "USD" (:acode x)) true false)) (:securities @sbercore/app-state))))
+         gbprate (:price (first (filter (fn [x] (if (= "USD" (:acode x)) true false)) (:securities @sbercore/app-state))))
+         cashusdvalue (+ (:usd (first (filter (fn [x] (if (= (:code x) (:selectedclient @sbercore/app-state)) true false)) (:clients @sbercore/app-state)))) (* eurrate (/ (:eur (first (filter (fn [x] (if (= (:code x) (:selectedclient @sbercore/app-state)) true false)) (:clients @sbercore/app-state)))) usdrate)) (* gbprate (/ (:gbp (first (filter (fn [x] (if (= (:code x) (:selectedclient @sbercore/app-state)) true false)) (:clients @sbercore/app-state)))) usdrate)) (* 1.0 (/ (:rub (first (filter (fn [x] (if (= (:code x) (:selectedclient @sbercore/app-state)) true false)) (:clients @sbercore/app-state)))) usdrate)))
+
+
+         portfusdvalue (+ secsusdvalue cashusdvalue)
+
+  ]
+  portfusdvalue
+  )
+)
+
+
 (defn comp-positions
   [position1 position2]
   (let [
@@ -177,8 +194,7 @@
 
 (defcomponent showstocks-total-view [data owner]
   (render [_]
-    (let [portfusdvalue (:usdvalue (reduce (fn [x y] {:usdvalue (+ (:usdvalue x) (:usdvalue y))}) (:positions ((keyword (:selectedclient @sbercore/app-state)) @sbercore/app-state))))]
-
+    (let [portfusdvalue (calc_portfusdvalue)]
       (if (> (count (:positions ((keyword (:selectedclient @sbercore/app-state)) @sbercore/app-state) )) 0)
         (dom/div {:className "list-group" :style {:display "block"}}
           (dom/div {:className "row" :style {:margin-left "0px" :margin-right "0px"}} 
@@ -266,7 +282,7 @@
     ;;               sec (first (filter (fn[x] (if (= (:id x) (:id item) ) true false)) (:securities @sbercore/app-state)))
     ;;               seccur (:currency sec)
     ;;               isbond (if (= 5 (:assettype sec)) true false)
-    ;;               usdrate (:price (first (filter (fn [x] (if (= "USD" (:acode x)) true false)) (:securities @sbercore/app-state))))
+    ;;               usdrate (:price (first (filter (fn [x] (if (= "USD" (:acode x)) true false)) (:securities @sbercore/app-state))))Б
 
     ;;               fxrate (if (or (= "RUB" seccur) (= "RUR" seccur)) 1 (:price  (first (filter (fn[x] (if( = (:acode x) (if (= seccur "GBX") "GBP" seccur)) true false)) (:securities @sbercore/app-state)))))
     ;;               newfxrate (if (= 0 (compare "GBX" seccur)) (/ fxrate 100.) fxrate)
@@ -297,7 +313,7 @@
 
 (defcomponent showbonds-total-view [data owner]
   (render [_]
-    (let [portfusdvalue (:usdvalue (reduce (fn [x y] {:usdvalue (+ (:usdvalue x) (:usdvalue y))}) (:positions ((keyword (:selectedclient @sbercore/app-state)) @sbercore/app-state))))]
+    (let [portfusdvalue (calc_portfusdvalue)]
 
       (if (> (count (:positions ((keyword (:selectedclient @sbercore/app-state)) @sbercore/app-state) )) 0)
         (dom/div {:className "list-group" :style {:display "block"}}
@@ -320,29 +336,18 @@
                 (gstring/format "%.0f" (:usdvalue (reduce (fn [x y] {:usdvalue (+ (:usdvalue x) (:usdvalue y))} ) (filter (fn [x] (if (= (:assettype (first (filter (fn [y] (if (= (:id y) (:id x)) true false)) (:securities @sbercore/app-state))) ) 5) true false) ) (:positions ((keyword (:selectedclient @sbercore/app-state)) @sbercore/app-state)))))))))
 
             ;WAP Price
-            ;; (dom/div {:className "col-xs-1 col-md-1" :style {:padding-left "0px" :padding-right "0px"}}
-
-
-
-            ;; )
+            (dom/div {:className "hidden-xs col-md-1" :style {:padding-left "0px" :padding-right "0px"}})
 
             ;Last Price
-            ;; (dom/div {:className "col-xs-1 col-md-1" :style {:padding-left "0px" :padding-right "0px"}}
+            (dom/div {:className "hidden-xs col-md-1" :style {:padding-left "0px" :padding-right "0px"}})
 
-
-
-            ;; )
             ;Target Price
-            (dom/div {:className "col-xs-1 col-md-1" :style {:padding-left "0px" :padding-right "0px"}}
+            ;(dom/div {:className "col-xs-1 col-md-1" :style {:padding-left "0px" :padding-right "0px"}})
 
 
-            )
-
-            ;ANR
-            (dom/div {:className "col-xs-1 col-md-1" :style {:padding-left "0px" :padding-right "0px"}}
-
-
-            )
+            (dom/div {:className "col-xs-3 col-md-2" :style {:padding-left "0px" :padding-right "0px" :text-align "right" :font-weight "700"}}
+              (dom/h4 {:className "list-group-item-heading" :style {:margin-left "10px" :font-weight "700" :margin-right "0px"}} (sbercore/split-thousands 
+                (gstring/format "%.0f" (:usdvalue (reduce (fn [x y] (let [sec (first (filter (fn [s] (if (= (:id s) (:id y)) true false)) (:securities @sbercore/app-state)))] {:usdvalue (+ (:usdvalue x) (/ (* (:usdvalue y) (+ (:price sec) (:target sec))) (:price sec)))})) {:usdvalue 0.0} (filter (fn [x] (if (= (:assettype (first (filter (fn [y] (if (= (:id y) (:id x)) true false)) (:securities @sbercore/app-state))) ) 5) true false) ) (:positions ((keyword (:selectedclient @sbercore/app-state)) @sbercore/app-state)))))))))
 
 
             ;; USD Currency P/L, %%
@@ -469,7 +474,7 @@
                 newfxrate (if (= 0 (compare "GBX" seccur)) (/ fxrate 100.) fxrate)
                 putdate (if (nil? (:putdate item)) #inst "1900-01-01T00:00:00.000-00:00" (:putdate item))
                 ;tr1 (.log js/console "currency: "  seccur " rate:" newfxrate)
-                portfusdvalue (:usdvalue (reduce (fn [x y] {:usdvalue (+ (:usdvalue x) (:usdvalue y))}) (:positions ((keyword (:selectedclient @sbercore/app-state)) @sbercore/app-state))))
+                portfusdvalue (calc_portfusdvalue)
 
                 potential (* 100.0 (/ (- (if (nil? (:target sec)) 0.0 (:target sec)) (:price item)) (:price item)))
                 maxpotential (apply max (map (fn [position]
@@ -673,7 +678,7 @@
                 putdate (if (nil? (:putdate sec)) #inst "1900-01-01T00:00:00.000-00:00" (:putdate sec))
                 dvddate (if (nil? (:dvddate sec)) #inst "1900-01-01T00:00:00.000-00:00" (:dvddate sec))
                 ;;tr1 (println putdate)
-                portfusdvalue (:usdvalue (reduce (fn [x y] {:usdvalue (+ (:usdvalue x) (:usdvalue y))}) (:positions ((keyword (:selectedclient @sbercore/app-state)) @sbercore/app-state))))
+                portfusdvalue (calc_portfusdvalue)
             ]
 
             (dom/div {:className "row" :style {:margin-left "0px" :margin-right "0px"}} 
@@ -728,11 +733,10 @@
                 )
               )
 
-              ;;Put date
-              (dom/div {:className "hidden-xs col-md-1" :style {:padding-left "0px" :padding-right "0px" :visibility (if (> (.indexOf (tf/unparse custom-formatter (tc/from-long (tc/to-long putdate))) "1900") 0)  "hidden" "visible")} }
+              ;;Dirty price
+              (dom/div {:className "col-xs-2 col-md-1" :style {:padding-left "0px" :padding-right "0px"} }
                 (dom/a {:className "list-group-item" :style {:text-align "right"} :href (str  "#/postrans/" (:id (first (filter (fn [x] (if (= (compare (:code x) (:selectedclient @sbercore/app-state)) 0) true false)) (:clients @sbercore/app-state)))) "/" (:id item) ) }
-                  (dom/h4 {:className "list-group-item-heading"} (tf/unparse custom-formatter (tc/from-long (tc/to-long putdate)))
-                  )
+                  (dom/h4 {:className "list-group-item-heading"} (sbercore/split-thousands (gstring/format "%.0f" (/ (* (:usdvalue item) (+ (:price sec) (:target sec))) (:price item)))))
                 )
               )
 
@@ -784,7 +788,7 @@
               ;; )
 
               ;;Coupon date
-              (dom/div {:className "col-xs-2 col-md-1" :style {:padding-left "0px" :padding-right "0px" :visibility (if (> (.indexOf (tf/unparse custom-formatter (tc/from-long (tc/to-long dvddate))) "1900") 0)  "hidden" "visible")} }
+              (dom/div {:className "hidden-xs col-md-1" :style {:padding-left "0px" :padding-right "0px" :visibility (if (> (.indexOf (tf/unparse custom-formatter (tc/from-long (tc/to-long dvddate))) "1900") 0)  "hidden" "visible")} }
                 (dom/a {:className "list-group-item" :style {:text-align "right"} :href (str  "#/postrans/" (:id (first (filter (fn [x] (if (= (compare (:code x) (:selectedclient @sbercore/app-state)) 0) true false)) (:clients @sbercore/app-state)))) "/" (:id item) ) }
                   (dom/h4 {:className "list-group-item-heading"} (tf/unparse custom-formatter (tc/from-long (tc/to-long (if (nil? (:dvddate sec)) #inst "1900-01-01T00:00:00.000-00:00" dvddate))))
                   )
@@ -1182,11 +1186,11 @@
                     (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "Цена покупки")
                     (dom/div {:className "hidden-xs col-md-1" :style {:text-align "center"}} "Last price")
                     (dom/div {:className "hidden-xs col-md-1" :style {:text-align "center"}} "Дюрация" (dom/span {:className "glyphicon glyphicon-arrow-up"}) )
-                    (dom/div {:className "hidden-xs col-md-1" :style {:text-align "center"}} "Put Date")
+                    (dom/div {:className "col-xs-2 col-md-1" :style {:text-align "center"}} "USd Val i/acc")
                     (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "P/L USD, %")
                     (dom/div {:className "hidden-xs col-md-1" :style {:text-align "center"}} "P/L RUB, %")
                     (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "Yield")
-                    (dom/div {:className "col-xs-2 col-md-1" :style {:text-align "center"}} "Coupon date")
+                    (dom/div {:className "hidden-xs col-md-1" :style {:text-align "center"}} "Coupon date")
                   )
                 )
                 (dom/div {:className "panel-body"}

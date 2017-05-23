@@ -15,6 +15,7 @@
 	    
             [sberweb.syssettingsdetail :as syssettingsdetail]
             [sberweb.positions :as positions]
+            [sberweb.positions2 :as positions2]
             [sberweb.portfolios :as portfolios]
             [sberweb.calcportfs :as calcportfs]
             [sberweb.postrans :as postrans]

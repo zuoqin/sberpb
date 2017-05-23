@@ -73,7 +73,7 @@
     conn (d/connect uri)
     ;tr1 (println (str "in get-fxrate-by-date " currency " for date: " dt) )
     newdate (java.util.Date. (c/to-long (f/parse custom-formatter (f/unparse custom-formatter (c/from-long (c/to-long dt))))))
-    newcurrency (if (= currency "GBX") "GBP" (if (= "PTS" currency) "RUB" currency))
+    newcurrency (if (= currency "GBX") "GBP" (if (= "PTS" currency) "RUB" currency))Б
 
  
     security (ffirst (d/q '[:find ?e
@@ -176,7 +176,7 @@
   (let [
      conn (d/connect uri)
      ]
-    (d/transact-async conn [{ :security/acode "PROMBK19N", :security/isin "XS1506500039", :security/bcode "XS1506500039 Corp", :security/assettype 5, :security/name "Yandex NV", :security/exchange "NYSE", :security/currency "CHF", :db/id #db/id[:db.part/user -100557] }]
+    (d/transact-async conn [{ :client/code "VAESF",  :client/name "Клиент VAESF", :client/currency "USD", :client/stockshare 50.0 :client/bondshare 50.0, :client/usd 100000.0, :client/rub 100000.0, :client/eur 100000.0, :client/gbp 100000.0, :client/signedadvisory 5000000.0, :client/advemail "igor_prokhaev@sberbank-pb.ru", :client/email "cb1022@bk.ru", :client/advisors [ #db/id[:db.part/user -105001] #db/id[:db.part/user -105002] ], :db/id #db/id[:db.part/user -102093]}]
     )
     ; To insert new entity:
     ;(d/transact conn [{ :transaction/client #db/id[:db.part/user 17592186045573] :transaction/security #db/id[:db.part/user 17592186065674], :transaction/nominal 108000.0 :transaction/price 100.0 :transaction/direction "S" :transaction/valuedate #inst "2014-04-22T00:00:00.0000000Z", :transaction/currency "RUB" :transaction/comment "", :db/id #db/id[:db.part/user -110002] }])
@@ -237,27 +237,34 @@
 
 
          ;tr1 (println (str tran " clientid = " client) )
-         trans (d/q '[:find ?e
-                      :in $ ?client ?currency ?direction ?nominal ?price ?dt
-                      :where
-                      [?e :transaction/client ?c]
-                      [?c :client/code ?client]
-                      ;[?e :transaction/currency ?currency]
-                      [?e :transaction/direction ?direction]
-                      [?e :transaction/nominal ?nominal1]
-                      [?e :transaction/price ?price1]
-                      [?e :transaction/valuedate ?dt]
-                      [(* ?price 1.000001) ?p1]
-                      [(* ?price 0.999999) ?p2]
-                      [(* ?nominal 1.000001) ?n1]
-                      [(* ?nominal 0.999999) ?n2]
-                      [(< ?nominal1 ?n1)]
-                      [(> ?nominal1 ?n2)]
-                      [(< ?price1 ?p1)]
-                      [(> ?price1 ?p2)]
-                     ] (d/db conn) (second (first (filter (fn [x] (if (= (first x) :client/code) true false)) client)))  (:currency tran) (str (:direction tran))  (:nominal tran) (:price tran) (:valuedate tran))
+
+
+         ;; trans (d/q '[:find ?e
+         ;;              :in $ ?client ?currency ?direction ?nominal ?price ?dt
+         ;;              :where
+         ;;              [?e :transaction/client ?c]
+         ;;              [?c :client/code ?client]
+         ;;              ;[?e :transaction/currency ?currency]
+         ;;              [?e :transaction/direction ?direction]
+         ;;              [?e :transaction/nominal ?nominal1]
+         ;;              [?e :transaction/price ?price1]
+         ;;              [?e :transaction/valuedate ?dt]
+         ;;              [(* ?price 1.000001) ?p1]
+         ;;              [(* ?price 0.999999) ?p2]
+         ;;              [(* ?nominal 1.000001) ?n1]
+         ;;              [(* ?nominal 0.999999) ?n2]
+         ;;              [(< ?nominal1 ?n1)]
+         ;;              [(> ?nominal1 ?n2)]
+         ;;              [(< ?price1 ?p1)]
+         ;;              [(> ?price1 ?p2)]
+         ;;             ] (d/db conn) (second (first (filter (fn [x] (if (= (first x) :client/code) true false)) client)))  (:currency tran) (str (:direction tran))  (:nominal tran) (:price tran) (:valuedate tran))
         
 
+         trans (d/q '[:find ?e
+                      :in $ ?refnum
+                      :where
+                      [?e :transaction/refnum ?refnum]
+                     ] (d/db conn) (:refnum tran))
     ]
     (count trans) 
     ;(ent client)
@@ -503,6 +510,7 @@
         (if (< num 36)
 
           (case num
+            0 (recur (assoc result :refnum (first (:content  (first (:content (nth tran num)  )  )))  ) (inc num))
             1 (recur (assoc result :status (first (:content  (first (:content (nth tran num)  )  )))  ) (inc num))
             3 (recur (assoc result :client (get-client-by-code (first (:content  (first (:content (nth tran num)  )  ))))  ) (inc num))
             6 (recur (assoc result :valuedate (java.util.Date. (c/to-long (f/parse built-in-formatter (first (:content  (first (:content (nth tran num)  )  ))) )))
@@ -535,10 +543,11 @@
         name (get-client-name-by-id (:client tran))
         newid (- 0 110001 id)
         ;tr1 (println (str id))
-        str1 (str "{ :transaction/client #db/id[:db.part/user " (:client tran) "] :transaction/security #db/id[:db.part/user " (:security tran) "], :transaction/nominal " (str/replace (format "%.1f" (:nominal tran)) "," ".")  " :transaction/price " (:price tran) " :transaction/direction \"" (:direction tran) "\" :transaction/valuedate  #inst \"" (f/unparse built-in-formatter (c/from-long (c/to-long (:valuedate tran))) ) "0000Z\", :transaction/currency \"" (:currency tran) "\" :transaction/comment \"\", :db/id #db/id[:db.part/user " newid "]}\n")
+        str1 (str "{ :transaction/client #db/id[:db.part/user " (:client tran) "] :transaction/security #db/id[:db.part/user " (:security tran) "], :transaction/nominal " (str/replace (format "%.1f" (:nominal tran)) "," ".")  " :transaction/price " (:price tran) " :transaction/direction \"" (:direction tran) "\" :transaction/valuedate  #inst \"" (f/unparse built-in-formatter (c/from-long (c/to-long (:valuedate tran))) ) "0000Z\", :transaction/currency \"" (:currency tran) "\" :transaction/refnum \"" (:refnum tran) "\" :transaction/comment \"\", :db/id #db/id[:db.part/user " newid "]}\n")
 
         ;tr2 (println (str str1))
         ]
+    ;(spit (str drive ":/DEV/output/" name ".clj")  str1 :append true)
     (if (= (find-transaction tran) 0)
       (spit (str drive ":/DEV/output/" name ".clj")  str1 :append true)
       (println tran)
@@ -727,7 +736,7 @@
   (let [f (slurp (str drive ":/DEV/Java/" client ".xml"))
         x (parse f)
         trancnt (- (count (:content (nth   (:content (nth (:content x) 4) )  0 ) ) ) 1)  
-        ;tr1 (println (str "count= " trancnt))
+        ;;tr1 (println (str "count= " trancnt))
         trans (loop [result [] num 0 parent "" ]
           (let [item (if (<= num trancnt) (:content (nth (:content (nth   (:content (nth (:content x) 4) )  0 ) )  num)))
             ]
@@ -785,7 +794,6 @@
                          (nil? (:currency x))
                          (= "R" (:direction x))
                          ) false true)) tranmap)
-    ;tranmap
   )
 )
 
@@ -1224,6 +1232,8 @@
           ;t1 (println (str "in save-transactions " client))
           tranmap (get-transactions client (java.util.Date. (+ (* 1000 60 60 24) (.getTime (java.util.Date.)) )))
 
+          ;tr4 (println (str tranmap))
+
           newtran (map (fn [x] (let [
 
       
@@ -1234,7 +1244,7 @@
           secisin (second (first (filter (fn [security] (if (= (keyword "security/isin") (first security)) x)) sec)))
 
 
-          ;;tr2 (println (str (:security x) " isin = " secisin " seccurrency = " seccurrency " trancurrency = " (:currency x)) )
+          ;tr2 (println (str (:security x) " isin = " secisin " seccurrency = " seccurrency " trancurrency = " (:currency x)) )
           
 
 
@@ -1256,7 +1266,7 @@
           ]
           ;{:client (:client x) :valuedate (:valuedate x) :direction (:direction x) :price (* newrate (:price x))  :nominal (:nominal x) :currency seccurrency :security (get-sec-by-acode (:security x)) }
 
-          {:client (:client x) :valuedate (:valuedate x) :direction (:direction x) :price (:price x)  :nominal (:nominal x) :currency (:currency x) :security (get-sec-by-acode (:security x)) }
+          {:client (:client x) :valuedate (:valuedate x) :direction (:direction x) :price (:price x)  :nominal (:nominal x) :currency (:currency x) :security (get-sec-by-acode (:security x)) :refnum (:refnum x)}
 
           ))  (filter (fn [x] (if (or (nil? (:security x)) (= 0 (compare "TNBP" (:security x))) (= 0 (compare "TNBPP" (:security x))))  false true))  tranmap))
 

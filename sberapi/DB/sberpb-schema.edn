@@ -275,6 +275,14 @@
   :db/doc "Transaction currency"
   :db.install/_attribute :db.part/db}
 
+ {:db/id #db/id[:db.part/db]
+  :db/ident :transaction/refnum
+  :db/valueType :db.type/string
+  :db/fulltext true
+  :db/cardinality :db.cardinality/one
+  :db/doc "Transaction reference number"
+  :db.install/_attribute :db.part/db}
+
 
 
 ;; prices

@@ -329,7 +329,7 @@
 
 { :security/acode "BKMOS17",       :security/isin  "XS0299183250", :security/bcode "XS0299183250 Corp", :security/assettype 5, :security/name "Yandex NV", :security/exchange "GERM",    :security/currency "USD",   :db/id #db/id[:db.part/user -100158]}
 
-{ :security/acode "GAZBK17",       :security/isin  "XS0783291221", :security/bcode "XS0783291221 CBBT Corp", :security/assettype 5, :security/name "Yandex NV", :security/exchange "CBBT",    :security/currency "USD",   :db/id #db/id[:db.part/user -100159]}
+{ :security/acode "GAZBK17",       :security/isin  "XS0783291221", :security/bcode "XS0783291221 CBBT Corp", :security/assettype 5, :security/name "Газпромбанк, 5.625% 17may2017", :security/exchange "CBBT",    :security/currency "USD",   :db/id #db/id[:db.part/user -100159]}
 
 { :security/acode "GZPN23",        :security/isin  "XS0997544860", :security/bcode "EJ951547 Corp",      :security/assettype 5, :security/exchange "",        :security/currency "USD",   :db/id #db/id[:db.part/user -100160]}
 
@@ -1225,6 +1225,8 @@
 
 { :security/acode "PROMBK19N", :security/isin "XS1506500039", :security/bcode "XS1506500039 Corp", :security/assettype 5, :security/name "Yandex NV", :security/exchange "NYSE", :security/currency "CHF", :db/id #db/id[:db.part/user -100557] }
 
+{ :security/acode "PETBRA26", :security/isin "US71647NAQ25", :security/bcode "US71647NAQ25 Corp", :security/assettype 5, :security/name "Yandex NV", :security/exchange "NYSE", :security/currency "USD", :db/id #db/id[:db.part/user -100593] }
+
 ;;FORTS contracts
 
 { :security/acode "SI-6.17", :security/isin "URM7 Curncy", :security/bcode "URM7 Curncy", :security/assettype 15, :security/name "Futures on USD/RUB Exchange Rate", :security/multiple 1.0, :security/exchange "RTS", :security/currency "RUB", :db/id #db/id[:db.part/user -101001] }
@@ -1454,6 +1456,8 @@
 { :client/code "XNPQF",  :client/name "Клиент XNPQF", :client/currency "USD", :client/stockshare 50.0 :client/bondshare 50.0, :client/usd 100000.0, :client/rub 100000.0, :client/eur 100000.0, :client/gbp 100000.0, :client/signedadvisory 5000000.0, :client/advemail "Vladimir_Uspenskiy@sberbank-pb.ru", :client/email "shapoval@sib-energo.ru", :client/advisors [ #db/id[:db.part/user -105001] #db/id[:db.part/user -105002] #db/id[:db.part/user -105004] ], :db/id #db/id[:db.part/user -102091]}
 
 { :client/code "BBKVF",  :client/name "Клиент BBKVF", :client/currency "USD", :client/stockshare 50.0 :client/bondshare 50.0, :client/usd 100000.0, :client/rub 100000.0, :client/eur 100000.0, :client/gbp 100000.0, :client/signedadvisory 5000000.0, :client/advemail "igor_prokhaev@sberbank-pb.ru", :client/email "cb1022@bk.ru", :client/advisors [ #db/id[:db.part/user -105001] #db/id[:db.part/user -105002] ], :db/id #db/id[:db.part/user -102092]}
+
+{ :client/code "VAESF",  :client/name "Клиент VAESF", :client/currency "USD", :client/stockshare 50.0 :client/bondshare 50.0, :client/usd 100000.0, :client/rub 100000.0, :client/eur 100000.0, :client/gbp 100000.0, :client/signedadvisory 5000000.0, :client/advemail "igor_prokhaev@sberbank-pb.ru", :client/email "cb1022@bk.ru", :client/advisors [ #db/id[:db.part/user -105001] #db/id[:db.part/user -105002] ], :db/id #db/id[:db.part/user -102093]}
 
 
 
@@ -2241,7 +2245,7 @@
 
 { :transaction/client #db/id[:db.part/user -102029], :transaction/security #db/id[:db.part/user -100048], :transaction/nominal 200000.0, :transaction/price 107.00, :transaction/direction "S", :transaction/valuedate #inst "2017-05-04T10:00:00.0000000Z", :transaction/currency "USD", :transaction/comment "Оферта KOKS18", :db/id #db/id[:db.part/user -110410] }
 
-{ :transaction/client #db/id[:db.part/user -102029], :transaction/security #db/id[:db.part/user -100007], :transaction/nominal 196420.0, :transaction/price 90.00, :transaction/direction "S", :transaction/valuedate #inst "2015-08-09T10:00:00.0000000Z", :transaction/currency "RUB", :transaction/comment "Transfer Out MSTT", :db/id #db/id[:db.part/user -110411] }
+{ :transaction/client #db/id[:db.part/user -102007], :transaction/security #db/id[:db.part/user -100007], :transaction/nominal 196420.0, :transaction/price 90.00, :transaction/direction "S", :transaction/valuedate #inst "2015-08-09T10:00:00.0000000Z", :transaction/currency "RUB", :transaction/comment "Transfer Out MSTT", :db/id #db/id[:db.part/user -110411] }
 
 
 ;; IVNPF Transfer In
@@ -2273,6 +2277,8 @@
 { :transaction/client #db/id[:db.part/user -102092], :transaction/security #db/id[:db.part/user -100098], :transaction/nominal 16290.0,      :transaction/price 3706.41, :transaction/direction "S", :transaction/valuedate #inst "2017-02-20T10:00:00.0000000Z", :transaction/currency "RUB", :transaction/comment "Оферта", :db/id #db/id[:db.part/user -110424] }
 
 { :transaction/client #db/id[:db.part/user -102092], :transaction/security #db/id[:db.part/user -100087], :transaction/nominal 1094000.0,      :transaction/price 107.50, :transaction/direction "S", :transaction/valuedate #inst "2017-03-10T10:00:00.0000000Z", :transaction/currency "USD", :transaction/comment "Оферта Евраз, 6.5% 22apr2020, USD", :db/id #db/id[:db.part/user -110425] }
+
+{ :transaction/client #db/id[:db.part/user -102011], :transaction/security #db/id[:db.part/user -100159], :transaction/nominal 600000.0,      :transaction/price 100.00, :transaction/direction "S", :transaction/valuedate #inst "2017-05-16T10:00:00.0000000Z", :transaction/currency "USD", :transaction/comment "Погашение Газпромбанк, 5.625% 17may2017", :db/id #db/id[:db.part/user -110426] }
 
 
 
