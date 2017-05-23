@@ -261,12 +261,14 @@
         
 
          trans (d/q '[:find ?e
-                      :in $ ?refnum
+                      :in $ ?client ?refnum
                       :where
+                      [?e :transaction/client ?c]
+                      [?c :client/code ?client]
                       [?e :transaction/refnum ?refnum]
-                     ] (d/db conn) (:refnum tran))
+                     ] (d/db conn) (second (first (filter (fn [x] (if (= (first x) :client/code) true false)) client))) (:refnum tran))
     ]
-    (count trans) 
+    (count trans)
     ;(ent client)
   )
 )
@@ -1524,6 +1526,9 @@
     ;(count transactions) 
     ;res1
     ;transactions
+    
+    ;(first filtertran)
+    ;(filter (fn [x] (if (= 110.75 (:price x)) true false)) filtertran)
     (doseq [trans filtertran] (insert-new-tran-to-db trans))
     ;(insert-new-tran-to-db (nth filtertran 15))
   )

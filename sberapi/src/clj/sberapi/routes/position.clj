@@ -57,8 +57,8 @@
                         currency (:currency security)
 
                         ;tr1 (println "step 1")
-                        amnt (if (nil? (:amount ( (keyword sec) result ))) 0 (:amount ( (keyword sec) result ))) 
-                        prevpr (if (nil? (:price ((keyword sec) result))) 0 (:price ((keyword sec) result)))                       
+                        amnt (if (nil? (:amount ( (keyword sec) result ))) 0.0 (:amount ( (keyword sec) result ))) 
+                        prevpr (if (nil? (:price ((keyword sec) result))) 0.0 (:price ((keyword sec) result)))                       
 
                         usdrate (db/get-fxrate-by-date "USD" (:valuedate tran))
                         seccurfxrate (db/get-fxrate-by-date currency (:valuedate tran))
@@ -67,18 +67,21 @@
                         rubprice (* (if (= 5 (:assettype security)) seccurfxrate (:fx tran) ) (:price tran)) 
                         usdprice (/ rubprice usdrate)
                         prevrubprice (:rubprice ((keyword sec) result))
-                        tranamnt (if (= "B" (:direction tran)) (:nominal tran) (- 0 (:nominal tran)))
+                        tranamnt (if (= "B" (:direction tran)) (:nominal tran) (- 0.0 (:nominal tran)))
                         newamnt (if (nil? amnt ) tranamnt (+ amnt tranamnt) )
                         ;tr1 (println "step 3")
                         prevusdprice (:wapusd ((keyword sec) result))
 
-                        wap (if (= 0 amnt ) (* (:price tran) (if (= 5 (:assettype security)) 1.0 (/ trancurfxrate seccurfxrate)))  (if (> newamnt 0) (if (> tranamnt 0) (/ (+ (* prevpr amnt) (* (:price tran) (if (= 5 (:assettype security)) 1.0 (/ trancurfxrate seccurfxrate)) tranamnt)) newamnt)  prevpr)  0))
+                        wap (if (= 0.0 amnt ) (* (:price tran) (if (= 5 (:assettype security)) 1.0 (/ trancurfxrate seccurfxrate)))  (if (> newamnt 0.0) (if (> tranamnt 0.0) (/ (+ (* prevpr amnt) (* (:price tran) (if (= 5 (:assettype security)) 1.0 (/ trancurfxrate seccurfxrate)) tranamnt)) newamnt)  prevpr)  0.0))
 
                         
-                        waprub (if (= amnt 0) rubprice (if (> newamnt 0) (/ (+ (* prevrubprice amnt) (* rubprice tranamnt)) newamnt) 0))
-                        ;tr1 (println "step 5")
-                        wapusd (if (= amnt 0) usdprice (if (> newamnt 0) (/ (+ (* prevusdprice amnt) (* usdprice tranamnt)) newamnt) 0))
+                        waprub (if (= amnt 0.0)  rubprice (if (= "S" (:direction tran)) prevrubprice (if (> newamnt 0.0) (/ (+ (* prevrubprice amnt) (* rubprice tranamnt)) newamnt) 0.0)) )
+                         
+                        wapusd (if (= amnt 0.0) usdprice (if (= "S" (:direction tran)) prevusdprice (if (> newamnt 0.0) (/ (+ (* prevusdprice amnt) (* usdprice tranamnt)) newamnt) 0.0)))
 
+                        ;tr1 (if (= (:id security) 17592186045631) (println (str "amnt= " amnt " newamnt= " newamnt " wap= " wap " waprub= " waprub " wapusd= " wapusd " prevusdprice= " prevusdprice)))
+
+                        ;;(if (= amnt 0.0) " amount 0" " amount not 0")
                         ;tr1 (println "step 6")
                         ]
                     (recur (assoc-in result [(keyword sec) ] {:amount newamnt :price wap :rubprice waprub :wapusd wapusd} )
