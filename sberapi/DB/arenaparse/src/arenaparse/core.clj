@@ -73,7 +73,7 @@
     conn (d/connect uri)
     ;tr1 (println (str "in get-fxrate-by-date " currency " for date: " dt) )
     newdate (java.util.Date. (c/to-long (f/parse custom-formatter (f/unparse custom-formatter (c/from-long (c/to-long dt))))))
-    newcurrency (if (= currency "GBX") "GBP" (if (= "PTS" currency) "RUB" currency))Б
+    newcurrency (if (= currency "GBX") "GBP" (if (= "PTS" currency) "RUB" currency))
 
  
     security (ffirst (d/q '[:find ?e
@@ -176,7 +176,7 @@
   (let [
      conn (d/connect uri)
      ]
-    (d/transact-async conn [{ :client/code "VAESF",  :client/name "Клиент VAESF", :client/currency "USD", :client/stockshare 50.0 :client/bondshare 50.0, :client/usd 100000.0, :client/rub 100000.0, :client/eur 100000.0, :client/gbp 100000.0, :client/signedadvisory 5000000.0, :client/advemail "igor_prokhaev@sberbank-pb.ru", :client/email "cb1022@bk.ru", :client/advisors [ #db/id[:db.part/user -105001] #db/id[:db.part/user -105002] ], :db/id #db/id[:db.part/user -102093]}]
+    (d/transact-async conn [{ :security/acode "SI-6.17/C F58000 ACR 15JUN17", :security/isin "URM7C 58000 Curncy", :security/bcode "URM7C 58000 Curncy", :security/assettype 15, :security/name "SI-6.17/C F58000 ACR 15JUN17", :security/multiple 1.0, :security/exchange "RTS", :security/currency "RUB", :db/id #db/id[:db.part/user -101016] }]
     )
     ; To insert new entity:
     ;(d/transact conn [{ :transaction/client #db/id[:db.part/user 17592186045573] :transaction/security #db/id[:db.part/user 17592186065674], :transaction/nominal 108000.0 :transaction/price 100.0 :transaction/direction "S" :transaction/valuedate #inst "2014-04-22T00:00:00.0000000Z", :transaction/currency "RUB" :transaction/comment "", :db/id #db/id[:db.part/user -110002] }])
@@ -765,7 +765,7 @@
                     (or (= 0 (compare "We Sell" (first (:content  (first (:content (nth item 9)  )  ))))) 
                        (= 0 (compare "We Buy" (first (:content  (first (:content (nth item 9)  )  )))))
                     )
-                    (str/includes? (str/lower-case (first (:content  (first (:content (nth item 4)  )  )))) "forts")
+                    (or (str/includes? (str/lower-case (first (:content  (first (:content (nth item 4)  )  )))) "forts") (str/includes? (str/lower-case (first (:content  (first (:content (nth item 8)  )  )))) "options")) 
                     )
                     (recur (conj result (set-future-tran item parent)) (inc num) parent)
                     (recur result (inc num) parent)
@@ -1112,19 +1112,19 @@
 
     t2 (spit (str drive ":/DEV/output/" client ".txt")  ",,,,\n" :append true)
     t3 (doall (map (fn [x] (append-position-to-file client x dt)) positions))
-    t4 (if (not (nil? selectfile)) (doall (map (fn [x] (let [
-                                               str1 (str client "," (str (if (= "RUR" (:currency x)) "RUB" (:currency x))  " Curncy")  "," (format "%.2f" (:amount x))  ","  "," (f/unparse build-in-basicdate-formatter (c/from-long (+  (* 3600000 6) (c/to-long (:date x))) )) "\n")
-                                               ]
-                                           ;;(println str1)
-                                           (spit (str drive ":/DEV/output/" client ".txt") str1 :append true)
-                                           )) (filter (fn [y] (if (= client (:account y)) true false)) cash))))
+    ;; t4 (if (not (nil? selectfile)) (doall (map (fn [x] (let [
+    ;;                                            str1 (str client "," (str (if (= "RUR" (:currency x)) "RUB" (:currency x))  " Curncy")  "," (format "%.2f" (:amount x))  ","  "," (f/unparse build-in-basicdate-formatter (c/from-long (+  (* 3600000 6) (c/to-long (:date x))) )) "\n")
+    ;;                                            ]
+    ;;                                        ;;(println str1)
+    ;;                                        (spit (str drive ":/DEV/output/" client ".txt") str1 :append true)
+    ;;                                        )) (filter (fn [y] (if (= client (:account y)) true false)) cash))))
     ]
   )
 )
 
 (defn get-portf-by-num [client num]
   (let [
-    newnum (+ 1451606399000 (* num 86400000) ) ;;1488412799000 1325462399000
+    newnum (+ 1451606399000 (* num 86400000) ) ;;1488412799000 1325462399000 1451606399000  for 2014: 1262304000000
     newdate (java.util.Date. newnum)
     ;tr1 (println newdate)
     day-of-week (f/unparse day-of-week-formatter (c/from-long (c/to-long newdate)))
@@ -1435,13 +1435,13 @@
 ;;                                             })
 ;; )
 
-(defn insert-new-transaction [client security nominal price direction valuedate currency comment]
+(defn insert-new-transaction [client security nominal price direction valuedate currency comment refnum]
   (let [
         conn (d/connect uri)
     ]
 
     ;(println (str "Insert new transaction. Client: " client " security: " security " nominal: " nominal " price: " price " direction: " direction " valuedate: " valuedate " currency: " currency " comment: " comment) )
-    (d/transact conn [{ :transaction/client client :transaction/security security, :transaction/nominal (Double/parseDouble (str nominal)) :transaction/price (Double/parseDouble (str price)) :transaction/direction direction :transaction/valuedate valuedate, :transaction/currency currency :transaction/comment comment, :db/id #db/id[:db.part/user -110002] }])
+    (d/transact conn [{ :transaction/client client :transaction/security security, :transaction/nominal (Double/parseDouble (str nominal)) :transaction/price (Double/parseDouble (str price)) :transaction/direction direction :transaction/valuedate valuedate, :transaction/currency currency :transaction/comment comment, :transaction/refnum refnum :db/id #db/id[:db.part/user -110002] }])
   )
 )
 
@@ -1457,7 +1457,7 @@
 
     (if (and (= (find-transaction tran) 0) (not (nil? security)))
       ; To insert new entity:
-      (insert-new-transaction (:client tran) (:id security) (:nominal tran) (:price tran) (:direction tran) (:valuedate tran) (:currency tran) "" )
+      (insert-new-transaction (:client tran) (:id security) (:nominal tran) (:price tran) (:direction tran) (:valuedate tran) (:currency tran) "" (:refnum tran))
 
       (if (and (nil? security))
         (println (str "Security does not exist: " (:security tran)))
@@ -1624,6 +1624,17 @@
     res1
   )
 )
+
+(defn upload-to-bloomberg []
+  (let [portfs (->> (load-workbook (str  drive ":/DEV/Java/"  "CheckNewTransactions.xlsx") )
+     (select-sheet "bloomberg")
+     (select-columns {:A :portf}))]
+
+    ;(doall (map (fn [x] (generateportfs (:portf x))) portfs ))
+    (doall (map (fn [x] (build-excel-transactions (:portf x))) portfs ))
+  )
+)
+
 
 (defn -main 
   "I don't do a whole lot ... yet."

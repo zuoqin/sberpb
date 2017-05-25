@@ -92,8 +92,9 @@
                 :source-paths ["src/cljs" "src/cljc"]
                 :jar true
                 :compiler {:main sberweb.login
+                           :asset-path "js/compiled/out"
                            :output-to "resources/public/js/compiled1/sberweb.js"
-                           :output-dir "target"
+                           :output-dir "resources/public/js/compiled1/out"
                            :source-map-timestamp true
                            :optimizations :advanced
                            :closure-warnings {:externs-validation :off}
@@ -156,7 +157,7 @@
 
              :uberjar
              {:source-paths ^:replace ["src/clj" "src/cljc"]
-              :prep-tasks ["compile" ["cljsbuild" "once" "max"]]
+              :prep-tasks ["compile" ["cljsbuild" "once" "min"]]
               :hooks []
               :omit-source true
               :aot :all}})
