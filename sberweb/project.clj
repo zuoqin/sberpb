@@ -58,8 +58,8 @@
 
                 :compiler {:main sberweb.login
                            :asset-path "js/compiled/out"
-                           :output-to "resources/public/js/compiled/sberweb.js"
-                           :output-dir "resources/public/js/compiled/out"
+                           :output-to "resources/public/js/compiled1/sberweb.js"
+                           :output-dir "resources/public/js/compiled1/out"
                            :source-map-timestamp true
                            :optimizations :none
                            :pretty-print true}}
@@ -93,14 +93,14 @@
                 :jar true
                 :compiler {:main sberweb.login
                            :asset-path "js/compiled/out"
-                           :output-to "resources/public/js/compiled1/sberweb.js"
-                           :output-dir "resources/public/js/compiled1/out"
+                           :output-to "resources/public/js/compiled/sberweb.js"
+                           :output-dir "resources/public/js/compiled/out"
                            :source-map-timestamp true
                            :optimizations :advanced
                            :closure-warnings {:externs-validation :off}
                            :externs [
                              "cljsjs/common/bootstrap.ext.js"
-                             "cljsjs/common/jquery-timepicker.ext.js"
+                             "cljsjs/common/jquery-timepicker.ext.js"                             
                              "resources/public/javascript/bootstrap-datepicker.min.js"
                              "cljsjs/common/jquery.ext.js"
                            ]

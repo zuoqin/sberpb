@@ -7,6 +7,7 @@
             [clj-time.format :as f]
             [clj-time.local :as l]
             [clj-time.coerce :as c]
+            [clojure.data.codec.base64 :as b64]
 ))
 
 
@@ -16,7 +17,7 @@
 
 (defn client-to-map [client]
   (let [
-    newclient {:id (nth client 0) :code (nth client 1) :name (nth client 2) :currency (nth client 3) :usd (nth client 4) :rub (nth client 5) :eur (nth client 6) :gbp (nth client 7) :stockshare (nth client 8) :bondshare (nth client 9) :signedadvisory (nth client 10) :email (nth client 11) :advmail (nth client 12)}
+    newclient {:id (nth client 0) :code (nth client 1) :name (nth client 2) :currency (nth client 3) :usd (nth client 4) :rub (nth client 5) :eur (nth client 6) :gbp (nth client 7) :stockshare (nth client 8) :bondshare (nth client 9) :signedadvisory (nth client 10) :email (nth client 11) :advmail (String. (b64/decode (bytes (byte-array (map byte (nth client 12)))))) }
   ]
   newclient
   )

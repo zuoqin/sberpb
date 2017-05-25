@@ -32,6 +32,7 @@
                  [com.draines/postal "2.0.2"]
                  [clj-jwt "0.1.1"]
                  [jumblerg/ring.middleware.cors "1.0.1"]
+                 [org.clojure/data.codec "0.1.0"]
 		]
 
   :min-lein-version "2.0.0"

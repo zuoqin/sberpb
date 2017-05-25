@@ -119,15 +119,14 @@
     ;usercode (:iss (-> token str->jwt :claims)  ) 
     transactions (into [] (db/get-transactions-by-client client))
     newtransactions (sort (comp sort-deals) (map (fn [x]
-                              (let [tran x
-            
-                                    newvaluedate (java.util.Date. (c/to-long (f/parse db/custom-formatter (f/unparse db/custom-formatter (c/from-long (c/to-long (:valuedate x)))))))  
-                                    newtran (assoc tran :valuedate newvaluedate)
-                                        ;tr1 (println (str newtran))
-                                    ]
-                                newtran
-                                )
-                              ) transactions))
+        (let [tran x
+              newvaluedate (java.util.Date. (c/to-long (f/parse db/custom-formatter (f/unparse db/custom-formatter (c/from-long (c/to-long (:valuedate x)))))))  
+              newtran (assoc tran :valuedate newvaluedate)
+              ;tr1 (println (str newtran))
+             ]
+             newtran
+        )
+      ) transactions))
 
     thecursec (first (filter (fn [x] (if (= (:security (first newtransactions)) (:id x)) true false)) (secs/get-securities)))
     thedirection (:direction (first newtransactions))
@@ -150,16 +149,18 @@
               tran (first thetrans)
 
               newcursec (if (= (:security tran) (:id cursec)) cursec (first (filter (fn [x] (if (= (:security tran) (:id x)) true false)) (secs/get-securities))))
-              newamnt (if (and (= (:id cursec)  (:id newcursec))) amnt 0.0)
+
+              newamnt (if (and (= (:id cursec)  (:id newcursec))  (= curdate (:valuedate tran))) amnt 0.0)
 
               trannominal (if (= "B" (:direction tran)) (:nominal tran) (- 0 (:nominal tran)))
-              newnominal (if (and (= (:id cursec)  (:id newcursec)) (= curdate (:valuedate tran))) (+ trannominal newamnt) (:nominal tran)) 
+
+              newnominal (if (and (= (:id cursec)  (:id newcursec)) (= curdate (:valuedate tran))) (+ trannominal newamnt) trannominal) 
 
               newseccurrate (if (and (= (:id cursec)  (:id newcursec)) (= curdate (:valuedate tran))) seccurrate (db/get-fxrate-by-date (:currency newcursec) (:valuedate tran)))
               newtrancurrate  (if (and (= (:id cursec)  (:id newcursec)) (= curdate (:valuedate tran))) trancurrrate (db/get-fxrate-by-date (:currency tran) (:valuedate tran)))
 
               rubprice (if (= 5 (:assettype newcursec)) (* newseccurrate (:price tran)) (* newtrancurrate (:price tran)))
-              ;tr1 (if (= (:id newcursec) 17592186045465) (println (str " rubprice=" rubprice " tranprice=" (:price tran))))
+              ;tr1 (if (= (:id newcursec) 17592186045512) (println (str " rubprice= " rubprice " tranprice= " (:price tran) " newnominal= " newnominal " trannominal= " trannominal)))
 
               newusdrate (if (= (:valuedate tran) curdate) usdrate (db/get-fxrate-by-date "USD" (:valuedate tran)))
 

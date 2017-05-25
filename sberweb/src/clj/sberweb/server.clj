@@ -153,7 +153,7 @@
 
       usdvalue (/ rubvalue usdrate)     
 
-] {:security (get sec "isin") :price (get sec "price") :wap (get (second x) "price") :amount amount :usdvalue usdvalue :rubvalue rubvalue :usdcosts usdcosts :rubcosts rubcosts :assettype (case assettype 1 "Equity" 5 "Bond" 15 "Derivatives" "Other")  :currency seccurrency :anr anr :target target :duration duration :yield yield :dvddate dvddate :putdate putdate})) positions)
+] {:security (get sec "bcode") :isin (get sec "isin") :price (get sec "price") :wap (get (second x) "price") :amount amount :usdvalue usdvalue :rubvalue rubvalue :usdcosts usdcosts :rubcosts rubcosts :assettype (case assettype 1 "Equity" 5 "Bond" 15 "Derivatives" "Other")  :currency seccurrency :anr anr :target target :duration duration :yield yield :dvddate dvddate :putdate putdate})) positions)
     ;positions (sort (comp sort-portfs-by-name) portfs)
 
     newdeals (map (fn [x] (let [sec (first (filter (fn [sec] (if (= (get sec "id") (:security x)) true false)) securities))]
@@ -162,7 +162,7 @@
 
     ;tr1 (println (str "deal = " (first newdeals)))
     ]
-    (save-xls ["positions" (dataset [:security :price :wap :amount :usdvalue :rubvalue :usdcosts :rubcosts :assettype :currency :anr :target :duration :yield :dvddate :putdate] (sort (comp comp-positions) newpositions)) "transactions" (dataset [:security :isin :direction :nominal :wap :wapusd :waprub :date] (sort (comp comp-deals) newdeals)
+    (save-xls ["positions" (dataset [:security :isin :price :wap :amount :usdvalue :rubvalue :usdcosts :rubcosts :assettype :currency :anr :target :duration :yield :dvddate :putdate] (sort (comp comp-positions) newpositions)) "transactions" (dataset [:security :isin :direction :nominal :wap :wapusd :waprub :date] (sort (comp comp-deals) newdeals)
 ) ] (str xlsdir client ".xlsx"))
     "Success"
   )
