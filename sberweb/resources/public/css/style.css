@@ -1,5 +1,5 @@
 a {
-  border-style: none;
+  border-style: none !important;
 }
 
 h1 {
