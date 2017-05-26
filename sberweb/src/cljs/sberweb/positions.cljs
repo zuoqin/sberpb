@@ -79,7 +79,8 @@
   ]
     (if (= (:assettype sec1) 5)
       (if (or
-           (< (:duration sec1) (:duration sec2))
+           (< (:currency sec1) (:currency sec2))
+           (and (= (:currency sec1) (:currency sec2)) (< (:duration sec1) (:duration sec2))) 
            (and (= (:duration sec1) (:duration sec2)) (> (compare (:acode (first (filter (fn[x] (if (= (:id x) (:id position1) ) true false)) (:securities @sbercore/app-state)))) (:acode (first (filter (fn[x] (if (= (:id x) (:id position2) ) true false)) (:securities @sbercore/app-state))))) 0))
         ) 
           true
@@ -546,7 +547,7 @@
 
               ;;Рейтинг аналитиков
               (dom/div {:className "hidden-xs col-md-1" :style {:padding-left "0px" :padding-right "0px"}}
-                (dom/a {:className "list-group-item" :style {:text-align "right"} :href (str  "#/postrans/" (:id (first (filter (fn [x] (if (= (compare (:code x) (:selectedclient @sbercore/app-state)) 0) true false)) (:clients @sbercore/app-state)))) "/" (:id item) ) }
+                (dom/a {:className "list-group-item" :style {:text-align "right"} :href (str  "#/postrans/" (:id (first (filter (fn [x] (if (= (compare (:code x) (:selectedclient @sbercore/app-state)) 0) true false)) (:clients @sbercore/app-state)))) "/" (:id item))}
                   (dom/h4 {:className "list-group-item-heading"} (gstring/format "%.2f" (if (nil? (:anr sec)) 0.0 (:anr sec)))
                   )
                 )
@@ -565,7 +566,7 @@
               (dom/div {:className "plprdiv col-xs-1 col-md-1"}
                 (dom/div {:className "progress"}
                   (dom/div {:className (str "progress-bar" (if (< (:usdvalue item) (* (:amount item) (:wapusd item))) " progress-bar-danger" ""))  :role "progresbar" :aria-valuenow (str (.round js/Math (.abs js/Math (* 100.0 (/ (- (:usdvalue item) (* (:amount item) (:wapusd item))) (* (:amount item) (:wapusd item))))))) :aria-valuemin "0" :aria-valuemax "100" :style {:color "black" :width (str (.round js/Math (.abs js/Math (* 100.0 (/ (- (:usdvalue item) (* (:amount item) (:wapusd item) ) ) (* (:amount item) (:wapusd item) ))))) "%") }}
-                    (dom/span {:className "plprogress" :style {:position "absolute" :display "block" :width "100%"}} (.round js/Math (* 100.0 (/ (- (:usdvalue item) (* (:amount item) (:wapusd item) ) ) (* (:amount item) (:wapusd item) ))  )) )                
+                    (dom/span {:className "plprogress" :style {:position "absolute" :display "block" :width "100%"}} (.round js/Math (* 100.0 (/ (- (:usdvalue item) (* (:amount item) (:wapusd item) ) ) (* (:amount item) (:wapusd item) )))))
                   )
                 )
               )
@@ -708,7 +709,7 @@
               ;; Цена покупки
               (dom/div {:className "col-xs-1 col-md-1" :style {:padding-left "0px" :padding-right "0px"}}
                 (dom/a {:className "list-group-item" :style {:text-align "right"} :href (str  "#/postrans/" (:id (first (filter (fn [x] (if (= (compare (:code x) (:selectedclient @sbercore/app-state)) 0) true false)) (:clients @sbercore/app-state)))) "/" (:id item) ) }
-                  (dom/h4 {:className "list-group-item-heading" :style {:white-space "nowrap"}} (str (if (> (:wap item) 1) (gstring/format "%.2f" (:wap item))  (subs (str (:wap item)) 0 5) )  ) ;;" " (case (:currency item) "USD" "$" "GBP" "£" "GBX" "£p" "EUR" "€" "RUB" "₽" "RUR" "₽" "")
+                  (dom/h4 {:className "list-group-item-heading" :style {:white-space "nowrap"}} (str (if (> (:wap item) 1) (gstring/format "%.2f" (:wap item))  (subs (str (:wap item)) 0 5) ) " " (case (:currency item) "USD" "$" "GBP" "£" "GBX" "£p" "EUR" "€" "RUB" "₽" "RUR" "₽" "") )
                   )
                 )
               )
@@ -747,7 +748,7 @@
               ;; USD P/L, %%
               (dom/div {:className "plprdiv col-xs-1 col-md-1" :style {:padding-left "0px" :padding-right "0px"}}
                 (dom/div {:className "progress"}
-                  (dom/div {:className (str "progress-bar" (if (< (:usdvalue item) usdcosts) " progress-bar-danger" ""))  :role "progresbar" :aria-valuenow (gstring/format "%.2f" (* 100.0 (/ (- (:usdvalue item) usdcosts) usdcosts))) :aria-valuemin "0" :aria-valuemax "100" :style {:color "black" :width (gstring/format "%.0f" (* 100.0 (/ (- (:usdvalue item) usdcosts) usdcosts))) }}
+                  (dom/div {:className (str "progress-bar" (if (< (:usdvalue item) usdcosts) " progress-bar-danger" ""))  :role "progresbar" :aria-valuenow (gstring/format "%.2f" (* 100.0 (/ (- (:usdvalue item) usdcosts) usdcosts))) :aria-valuemin "0" :aria-valuemax "100" :style {:color "black" :width (str (gstring/format "%.0f" (* 100.0 (/ (- (:usdvalue item) usdcosts) usdcosts))) "%")}}
                     (dom/span {:className "plprogress" :style {:position "absolute" :display "block" :width "100%"}} (gstring/format "%.2f" (* 100.0 (/ (- (:usdvalue item) usdcosts) usdcosts))))                
                   )
                 )
@@ -755,7 +756,7 @@
 
 
               ;; RUB %% P/L
-              (dom/div {:className "hidden-xs col-md-1" :style {:padding-left "0px" :padding-right "0px" :padding-top "10px"}}
+              (dom/div {:className "hidden-xs col-md-1" :style {:padding-left "0px" :padding-right "0px" :padding-top "10px"}}                
                 (dom/div {:className "progress"}
                   (dom/div {:className (str "progress-bar" (if (< (:currubprice item) (:waprub item)) " progress-bar-danger" ""))  :role "progresbar" :aria-valuenow (str (.round js/Math (.abs js/Math (* 100.0 (/ (-  (:currubprice item) (:waprub item)) (:waprub item)))))) :aria-valuemin "0" :aria-valuemax "100" :style {:color "black" :width (str (.round js/Math (.abs js/Math (* 100.0 (/ (-  (:currubprice item) (:waprub item)) (:waprub item))))) "%") }}
                     (dom/span {:className "plprogress" :style {:position "absolute" :display "block" :width "100%"}} (gstring/format "%.2f" (* 100.0 (/ (-  (:currubprice item) (:waprub item)) (:waprub item)))))

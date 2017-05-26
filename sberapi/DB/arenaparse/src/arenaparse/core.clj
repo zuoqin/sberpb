@@ -163,7 +163,7 @@
 
 (defn readallcbrrates []
   (let [
-        currencies ["USD" "EUR" "CHF" "GBP"]
+        currencies ["USD" "EUR" "CHF" "GBP" "HKD"]
 
         
   ]
@@ -176,7 +176,7 @@
   (let [
      conn (d/connect uri)
      ]
-    (d/transact-async conn [{ :security/acode "SI-6.17/C F58000 ACR 15JUN17", :security/isin "URM7C 58000 Curncy", :security/bcode "URM7C 58000 Curncy", :security/assettype 15, :security/name "SI-6.17/C F58000 ACR 15JUN17", :security/multiple 1.0, :security/exchange "RTS", :security/currency "RUB", :db/id #db/id[:db.part/user -101016] }]
+    (d/transact-async conn [{ :client/code "PYUUF",  :client/name "Клиент PYUUF", :client/currency "USD", :client/stockshare 50.0 :client/bondshare 50.0, :client/usd 100000.0, :client/rub 100000.0, :client/eur 100000.0, :client/gbp 100000.0, :client/signedadvisory 5000000.0, :client/advemail "VmxhZGltaXJfVXNwZW5za2l5QHNiZXJiYW5rLXBiLnJ1", :client/email "VWxpeWFubmE4NkBtYWlsLnJ1", :client/advisors [ #db/id[:db.part/user -105001] #db/id[:db.part/user -105002] ], :db/id #db/id[:db.part/user -102099]}]
     )
     ; To insert new entity:
     ;(d/transact conn [{ :transaction/client #db/id[:db.part/user 17592186045573] :transaction/security #db/id[:db.part/user 17592186065674], :transaction/nominal 108000.0 :transaction/price 100.0 :transaction/direction "S" :transaction/valuedate #inst "2014-04-22T00:00:00.0000000Z", :transaction/currency "RUB" :transaction/comment "", :db/id #db/id[:db.part/user -110002] }])
@@ -521,7 +521,7 @@
             9 (recur (assoc result :direction (if (str/includes? (str/lower-case (first (:content  (first (:content (nth tran num)  )  )))) "repo") "R"  (if (= "B" (subs (first (:content  (first (:content (nth tran num)  )  ))) 3 4 )) "S" "B"))   ) (inc num))
             10 (recur (assoc result :price (if (nil? (first (:content  (first (:content (nth tran num)  )  )))) 0 (Float/parseFloat (first (:content  (first (:content (nth tran num)  )  ))))))    (inc num)
                     )
-            12 (recur (assoc result :nominal (Float/parseFloat (if (= (subs (first (:content  (first (:content (nth tran num)  )  ))) 0 1) "-") (subs (first (:content  (first (:content (nth tran num)  )  ))) 1)  (first (:content  (first (:content (nth tran num)  )  )))) )  ) (inc num))
+            12 (recur (assoc result :nominal (Double/parseDouble (if (= (subs (first (:content  (first (:content (nth tran num)  )  ))) 0 1) "-") (subs (first (:content  (first (:content (nth tran num)  )  ))) 1)  (first (:content  (first (:content (nth tran num)  )  )))) )  ) (inc num))
             14 (recur (assoc result :currency (first (:content  (first (:content (nth tran num)  )  ))) ) (inc num))
             ;16 (recur (assoc result :client (subs (first (:content  (first (:content (nth tran num)  )  ))) 1 )  ) (inc num))
             ;;23 (recur (assoc result :security (get-sec-by-code (first (:content  (first (:content (nth tran num)  )  ))))  ) (inc num))
@@ -544,9 +544,9 @@
   (let [
         name (get-client-name-by-id (:client tran))
         newid (- 0 110001 id)
-        ;tr1 (println (str id))
+        ;tr1 (println (str "nominal= " (:nominal tran)))
+        
         str1 (str "{ :transaction/client #db/id[:db.part/user " (:client tran) "] :transaction/security #db/id[:db.part/user " (:security tran) "], :transaction/nominal " (str/replace (format "%.1f" (:nominal tran)) "," ".")  " :transaction/price " (:price tran) " :transaction/direction \"" (:direction tran) "\" :transaction/valuedate  #inst \"" (f/unparse built-in-formatter (c/from-long (c/to-long (:valuedate tran))) ) "0000Z\", :transaction/currency \"" (:currency tran) "\" :transaction/refnum \"" (:refnum tran) "\" :transaction/comment \"\", :db/id #db/id[:db.part/user " newid "]}\n")
-
         ;tr2 (println (str str1))
         ]
     ;(spit (str drive ":/DEV/output/" name ".clj")  str1 :append true)
@@ -1630,7 +1630,7 @@
      (select-sheet "bloomberg")
      (select-columns {:A :portf}))]
 
-    ;(doall (map (fn [x] (generateportfs (:portf x))) portfs ))
+    (doall (map (fn [x] (generateportfs (:portf x))) portfs ))
     (doall (map (fn [x] (build-excel-transactions (:portf x))) portfs ))
   )
 )

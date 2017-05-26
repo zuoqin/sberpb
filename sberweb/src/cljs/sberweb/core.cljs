@@ -170,7 +170,7 @@
 
 (defn map-portfolio [item]
   (let [
-    tr1 (.log js/console item)
+    ;tr1 (.log js/console item)
     portfid (name (nth item 0))
     portfolio (first (filter (fn [x] (if (= (compare (:code x) portfid) 0) true false)) (:clients @app-state)))
 

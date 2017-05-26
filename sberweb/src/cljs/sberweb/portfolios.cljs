@@ -90,7 +90,7 @@
               usdrate (:price (first (filter (fn [x] (if (= "USD" (:acode x)) true false)) (:securities @sbercore/app-state))))
               fxrate (if (or (= "RUB" seccurrency) (= "RUR" seccurrency)) 1 (:price (first (filter (fn[x] (if( = (:acode x) (if (= seccurrency "GBX") "GBP" seccurrency)) true false)) (:securities @sbercore/app-state)))))
               newfxrate (if (= 0 (compare "GBX" seccurrency)) (/ fxrate 100.) fxrate)
-              tr1 (.log js/console (str (* 100.0 (/ (- (* (:wapusd item) (:amount item) (if (= 5 (:assettype sec)) (if isrusbond 10.0 10.0) 1.0)) (:usdvalue item)) (* (:wapusd item) (:amount item) (if (= 5 (:assettype sec)) 10.0 1.0)) ))))
+              ;tr1 (.log js/console (str (* 100.0 (/ (- (* (:wapusd item) (:amount item) (if (= 5 (:assettype sec)) (if isrusbond 10.0 10.0) 1.0)) (:usdvalue item)) (* (:wapusd item) (:amount item) (if (= 5 (:assettype sec)) 10.0 1.0)) ))))
              ]
 
 

@@ -95,8 +95,8 @@
                            :asset-path "js/compiled/out"
                            :output-to "resources/public/js/compiled/sberweb.js"
                            :output-dir "resources/public/js/compiled/out"
-                           :source-map-timestamp true
-                           :optimizations :advanced
+                           :source-map-timestamp false
+                           :optimizations :simple
                            :closure-warnings {:externs-validation :off}
                            :externs [
                              "cljsjs/common/bootstrap.ext.js"
