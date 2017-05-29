@@ -97,7 +97,12 @@
         )
         (dom/div
           (dom/a {:className "list-group-item" :href "/templates/CLIENT_WEB.xlsx" }
-            (dom/h4  #js {:className "list-group-item-heading"} "Download Excel template")
+            (dom/h4  #js {:className "list-group-item-heading"} "Download Excel template without Bloomberg connection")
+          )
+        )
+        (dom/div
+          (dom/a {:className "list-group-item" :href "/templates/template_bloomberg.xlsx" }
+            (dom/h4  #js {:className "list-group-item-heading"} "Download Bloomberg Excel template")
           )
         )
       )

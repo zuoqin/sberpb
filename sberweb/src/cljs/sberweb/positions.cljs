@@ -180,7 +180,9 @@
   (render [_]
     (let [portfusdvalue (:usdvalue (reduce (fn [x y] {:usdvalue (+ (:usdvalue x) (:usdvalue y))}) (:positions ((keyword (:selectedclient @sbercore/app-state)) @sbercore/app-state))))]
 
-      (if (> (count (:positions ((keyword (:selectedclient @sbercore/app-state)) @sbercore/app-state) )) 0)
+      (if (or (> (count (:positions ((keyword (:selectedclient @sbercore/app-state)) @sbercore/app-state) )) 0)
+              (> (count (:deals ((keyword (:selectedclient @sbercore/app-state)) @sbercore/app-state) )) 0)
+        )
         (dom/div {:className "list-group" :style {:display "block"}}
           (dom/div {:className "row" :style {:margin-left "0px" :margin-right "0px"}} 
             (dom/div {:className "col-xs-2 col-md-1" :style {:padding-left "0px" :padding-right "0px"}}
@@ -300,7 +302,9 @@
   (render [_]
     (let [portfusdvalue (:usdvalue (reduce (fn [x y] {:usdvalue (+ (:usdvalue x) (:usdvalue y))}) (:positions ((keyword (:selectedclient @sbercore/app-state)) @sbercore/app-state))))]
 
-      (if (> (count (:positions ((keyword (:selectedclient @sbercore/app-state)) @sbercore/app-state) )) 0)
+      (if (or (> (count (:positions ((keyword (:selectedclient @sbercore/app-state)) @sbercore/app-state) )) 0)
+              (> (count (:deals ((keyword (:selectedclient @sbercore/app-state)) @sbercore/app-state) )) 0)
+        )
         (dom/div {:className "list-group" :style {:display "block"}}
           (dom/div {:className "row" :style {:margin-left "0px" :margin-right "0px"}} 
             (dom/div {:className "col-xs-1 col-md-1" :style {:padding-left "0px" :padding-right "0px"}}
@@ -447,7 +451,9 @@
 (defcomponent showstocks-view [data owner]
   (render
     [_]
-    (if (> (count (:positions ((keyword (:selectedclient @sbercore/app-state)) @sbercore/app-state) )) 0)
+    (if (or (> (count (:positions ((keyword (:selectedclient @sbercore/app-state)) @sbercore/app-state) )) 0)
+            (> (count (:deals ((keyword (:selectedclient @sbercore/app-state)) @sbercore/app-state) )) 0)
+      )
 
       (dom/div {:className "list-group" :style {:display "block"}}
         (map (fn [item]
@@ -748,7 +754,7 @@
               ;; USD P/L, %%
               (dom/div {:className "plprdiv col-xs-1 col-md-1" :style {:padding-left "0px" :padding-right "0px"}}
                 (dom/div {:className "progress"}
-                  (dom/div {:className (str "progress-bar" (if (< (:usdvalue item) usdcosts) " progress-bar-danger" ""))  :role "progresbar" :aria-valuenow (gstring/format "%.2f" (* 100.0 (/ (- (:usdvalue item) usdcosts) usdcosts))) :aria-valuemin "0" :aria-valuemax "100" :style {:color "black" :width (str (gstring/format "%.0f" (* 100.0 (/ (- (:usdvalue item) usdcosts) usdcosts))) "%")}}
+                  (dom/div {:className (str "progress-bar" (if (< (:usdvalue item) usdcosts) " progress-bar-danger" ""))  :role "progresbar" :aria-valuenow (gstring/format "%.2f" (* 100.0 (/ (- (:usdvalue item) usdcosts) usdcosts))) :aria-valuemin "0" :aria-valuemax "100" :style {:color "black" :width (str (gstring/format "%.0f" (.abs js/Math (* 100.0 (/ (- (:usdvalue item) usdcosts) usdcosts)))) "%")}}
                     (dom/span {:className "plprogress" :style {:position "absolute" :display "block" :width "100%"}} (gstring/format "%.2f" (* 100.0 (/ (- (:usdvalue item) usdcosts) usdcosts))))                
                   )
                 )
@@ -1007,7 +1013,8 @@
 (defcomponent showdeals-view [data owner]
   (render
     [_]
-    (if (> (count (:deals ((keyword (:selectedclient @sbercore/app-state)) @sbercore/app-state) )) 0)
+    (if (or (> (count (:deals ((keyword (:selectedclient @sbercore/app-state)) @sbercore/app-state) )) 0)
+      )
       (dom/div {:className "list-group" :style {:display "block"}}
         (map (fn [item]
           (let [
@@ -1100,7 +1107,9 @@
         (om/build sbercore/website-view data {})
 
         (if (not (nil? (:selectedclient @sbercore/app-state)))
-          (if (> (count (:positions ((keyword (:selectedclient @sbercore/app-state)) @sbercore/app-state) )) 0)
+          (if (or (> (count (:positions ((keyword (:selectedclient @sbercore/app-state)) @sbercore/app-state) )) 0)
+                  (> (count (:deals ((keyword (:selectedclient @sbercore/app-state)) @sbercore/app-state) )) 0)
+            )
             (dom/div
               (dom/div {:style {:margin-top "70px"} :className "panel panel-info"}
                 (dom/div {:className "panel-heading"}

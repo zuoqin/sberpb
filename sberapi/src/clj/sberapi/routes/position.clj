@@ -37,6 +37,25 @@
   )
 )
 
+(defn sort-trans-from-db [tran1 tran2]
+  (let [
+        ;tr1 (println tran1)
+        ;tr2 (println tran2)
+
+        
+        dt1 (c/to-long (:valuedate tran1))
+        dt2 (c/to-long (:valuedate tran2))
+
+        ]
+    
+    (if (or  (< (compare (:client tran1) (:client tran2)) 0 ) 
+             (and (= (compare (:client tran1) (:client tran2)) 0 ) (< dt1  dt2)) 
+             (and (= (:client tran1) (:client tran2)) (= dt1 dt2)(< (:id tran1) (:id tran2))))
+    true
+    false)
+  )
+)
+
 (defn getPositions [token client]
   (let [
     ;usercode (:iss (-> token str->jwt :claims)  ) 
@@ -225,7 +244,7 @@
 (defn getPortfolios [token security]
   (let [
     ;usercode (:iss (-> token str->jwt :claims)  ) 
-    transactions (into [] (db/get-transactions-by-security security)   )
+    transactions (sort (comp sort-trans-from-db) (db/get-transactions-by-security security))
 
     ;tr1 (println (first transactions))
     securities (secs/get-securities)
@@ -254,7 +273,7 @@
                         newamnt (if (nil? amnt ) tranamnt (+ amnt tranamnt) )
 
 
-                        ;tr1 (println (str "prevpr= " prevpr " amnt= " amnt " tranamnt= " tranamnt " newamnt= " newamnt))
+                        ;tr1 (if (= client "PYUMF") (println (str "prevpr= " prevpr " amnt= " amnt " tranamnt= " tranamnt " newamnt= " newamnt))) 
                         
                         wap (if (= 0.0 amnt ) (* (:price tran) (if (= 5 (:assettype security)) 1.0 (/ trancurfxrate seccurfxrate)))  (if (> newamnt 0.0) (if (> tranamnt 0.0) (/ (+ (* prevpr amnt) (* (:price tran) (if (= 5 (:assettype security)) 1.0 (/ trancurfxrate seccurfxrate)) tranamnt)) newamnt)  prevpr)  0.0))
 
