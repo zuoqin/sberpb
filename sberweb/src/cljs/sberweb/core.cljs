@@ -581,36 +581,76 @@
       (dom/input {:id "search" :type "text" :placeholder "Search" :style {:height "32px" :margin-top "1px"} :value  (:search @data) :onChange (fn [e] (handleChange e )) })  )
             )
 
-            (dom/li {:style {:margin-left "5px"}}
-              ;; (dom/a {:href (str "/clientexcel/" (:selectedclient @app-state)) :style {:padding-top "9px"}}
-              ;;   (dom/span "Download positions"))
-
-              (b/button {:className "btn btn-default" :onClick (fn [e] (downloadPortfolio e) )} "Download Excel")
-            )
+            ;; (dom/li {:style {:margin-left "5px"}}
+            ;;   (b/button {:className "btn btn-default" :onClick (fn [e] (downloadPortfolio e) )} "Download Excel")
+            ;; )
           )
           (dom/ul {:className "nav navbar-nav navbar-right"}
-            (dom/li
-              (dom/a {:style {:margin "10px" :padding-bottom "0px"} :href "#/positions2" :onClick (fn [e] (goPositions2 e))}
-                 (dom/span {:className "glyphicon glyphicon-cog"})
-                 "Positions w/acc"
+            (dom/li {:className "dropdown"}
+              (dom/a {:className "dropdown-toggle" :data-toggle "dropdown"  :aria-expanded "false" }
+                 (dom/i {:className "fa fa-exchange"})
+                 (dom/i {:className "fa fa-caret-down"})
+              )
+              (dom/ul {:className "dropdown-menu dropdown-messages"}
+                (dom/li 
+                  (dom/a {:style {:cursor "pointer" :pointer-events (if (nil? (:selectedclient @app-state)) "none" "all")} :onClick (fn [e] (downloadPortfolio e) )}
+                    (dom/div
+                      (dom/i {:className "fa fa-cloud-download"})
+                     "Download Excel"
+                    )
+                  )
+                )
               )
             )
-            (dom/li
-              (dom/a {:style {:margin "10px" :padding-bottom "0px"} :href "#/portfolios" :onClick (fn [e] (goPortfolios e))}
-                 (dom/span {:className "glyphicon glyphicon-cog"})
-                 "Portfolios"
+            (dom/li {:className "dropdown"}
+              (dom/a {:className "dropdown-toggle" :data-toggle "dropdown"  :aria-expanded "false" }
+                 (dom/i {:className "fa fa-tasks fa-fw"})
+                 (dom/i {:className "fa fa-caret-down"})
+              )
+              (dom/ul {:className "dropdown-menu dropdown-tasks"}
+                (dom/li
+                  (dom/a {:href "#/positions2" :onClick (fn [e] (goPositions2 e))}
+                    (dom/div
+                      (dom/i {:className "fa fa-comment fa-fw"})
+                      "Positions w/acc"
+                    )
+                  )
+                )
+                (dom/li {:className "divider"})
+                (dom/li
+                  (dom/a {:href "#/portfolios" :onClick (fn [e] (goPortfolios e))}
+                    (dom/div
+                      (dom/i {:className "fa fa-twitter fa-fw"})
+                      "Portfolios"
+                    )
+                  )
+                )
+                (dom/li {:className "divider"})
+                (dom/li
+                  (dom/a {:href "#/calcportfs" :onClick (fn [e] (goCalcPortfs e))}
+                    (dom/div
+                      (dom/i {:className "fa fa-tasks fa-fw"})
+                      "Calculation"
+                    )
+                  )
+                )
               )
             )
-            (dom/li
-              (dom/a {:style {:margin "10px" :padding-bottom "0px"} :href "#/calcportfs" :onClick (fn [e] (goCalcPortfs e))}
-                 (dom/span {:className "glyphicon glyphicon-wrench"})
-                 "Calculation"
+
+            (dom/li {:className "dropdown"}
+              (dom/a {:className "dropdown-toggle" :data-toggle "dropdown"  :aria-expanded "false" }
+                 (dom/i {:className "fa fa-user fa-fw"})
+                 (dom/i {:className "fa fa-caret-down"})
               )
-            )
-            (dom/li
-              (dom/a (assoc style :href "#/login")
-                (dom/i {:className "fa fa-sign-out fa-fw"})
-                "Exit"
+              (dom/ul {:className "dropdown-menu dropdown-user"}
+                (dom/li
+                  (dom/a {:href "#/login"}
+                    (dom/div
+                      (dom/i {:className "fa fa-sign-out fa-fw"})
+                      "Exit"
+                    )
+                  )
+                )
               )
             )
           )
