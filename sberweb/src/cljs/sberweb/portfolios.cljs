@@ -104,7 +104,7 @@
             )
 
             ;; Количество бумаг
-            (dom/div {:className "col-xs-1 col-md-1" :style {:padding-left "0px" :padding-right "0px"}}            
+            (dom/div {:className "col-xs-2 col-md-1" :style {:padding-left "0px" :padding-right "0px"}}            
               (dom/a {:className "list-group-item" :style {:padding-left "3px" :padding-right "3px" :text-align "right"} :href (str  "#/postrans/" (:id item) "/" (:selectedsec @sbercore/app-state)) }
                 (dom/h4 {:className "list-group-item-heading"} (sbercore/split-thousands (str (:amount item)))   )
               )            
@@ -155,7 +155,7 @@
             )
 
             ;; RUB P/L
-            (dom/div {:className "col-xs-1 col-md-1" :style {:padding-left "0px" :padding-right "0px" :padding-top "10px"}}
+            (dom/div {:className "hidden-xs col-md-1" :style {:padding-left "0px" :padding-right "0px" :padding-top "10px"}}
               (dom/div
                 (dom/div 
                   (dom/span {:style {:position "absolute" :padding-right "5px" :text-align "right" :display "block" :width "100%"}} (sbercore/split-thousands (str (.round js/Math  (if (= isrusbond true) (/ (* 1000.0 (-  (:currubprice item) (:waprub item)) (:amount item))  100.0)  (if (= isbond true) (/ (* (-  (:currubprice item) (:waprub item)) (:amount item))  100.0)  (* (-  (:currubprice item) (:waprub item)) (:amount item))))   ))))
@@ -189,7 +189,7 @@
            (sort (comp comp-portfs) (filter (fn [x] (let [
                portfname (:name (first (filter (fn[y] (if (= (:id x) (:id y) ) true false)) (:clients @sbercore/app-state))))
                ]
-               (if (or (= false (str/includes? portfname (:search @sbercore/app-state))))  false true)) ) (:portfolios ((keyword (str (:selectedsec @sbercore/app-state))) @sbercore/app-state))))
+               (if (or (nil? (:id x)) (= false (str/includes? portfname (:search @sbercore/app-state))))  false true)) ) (:portfolios ((keyword (str (:selectedsec @sbercore/app-state))) @sbercore/app-state))))
 
         
       )
@@ -242,14 +242,14 @@
 
             (dom/div (assoc stylerow  :className "row" )
               (dom/div {:className "col-xs-2 col-md-2" :style {:text-align "center"}}  "Portfolio")
-              (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "Amount")
+              (dom/div {:className "col-xs-2 col-md-1" :style {:text-align "center"}} "Amount")
               (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "WAP price")
               (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "Last price")
               (dom/div {:className "col-xs-2 col-md-2" :style {:text-align "center"}} "USD Value")
               ;(dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "P/L, %")
               (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "P/L, USD %")
               (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "P/L, RUB %")
-              (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "P/L, RUB")
+              (dom/div {:className "hidden-xs col-md-1" :style {:text-align "center"}} "P/L, RUB")
               (dom/div {:className "col-xs-2 col-md-2" :style {:text-align "center"}} "P/L USD")
             )
           )

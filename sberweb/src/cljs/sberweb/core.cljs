@@ -596,7 +596,16 @@
                   (dom/a {:style {:cursor "pointer" :pointer-events (if (nil? (:selectedclient @app-state)) "none" "all")} :onClick (fn [e] (downloadPortfolio e) )}
                     (dom/div
                       (dom/i {:className "fa fa-cloud-download"})
-                     "Download Excel"
+                     "Сохранить в Excel"
+                    )
+                  )
+                )
+                (dom/li {:className "divider"})
+                (dom/li 
+                  (dom/a {:style {:cursor "pointer" :pointer-events (if (nil? (:selectedclient @app-state)) "none" "all")} :onClick (fn [e] (printMonth) )}
+                    (dom/div
+                      (dom/i {:className "fa fa-print"})
+                      "Печать"
                     )
                   )
                 )
@@ -612,7 +621,7 @@
                   (dom/a {:href "#/positions2" :onClick (fn [e] (goPositions2 e))}
                     (dom/div
                       (dom/i {:className "fa fa-comment fa-fw"})
-                      "Positions w/acc"
+                      "Позиции с НКД"
                     )
                   )
                 )
@@ -621,7 +630,7 @@
                   (dom/a {:href "#/portfolios" :onClick (fn [e] (goPortfolios e))}
                     (dom/div
                       (dom/i {:className "fa fa-twitter fa-fw"})
-                      "Portfolios"
+                      "Держатели бумаги"
                     )
                   )
                 )
@@ -630,7 +639,7 @@
                   (dom/a {:href "#/calcportfs" :onClick (fn [e] (goCalcPortfs e))}
                     (dom/div
                       (dom/i {:className "fa fa-tasks fa-fw"})
-                      "Calculation"
+                      "Расчеты"
                     )
                   )
                 )
@@ -647,7 +656,7 @@
                   (dom/a {:href "#/login"}
                     (dom/div
                       (dom/i {:className "fa fa-sign-out fa-fw"})
-                      "Exit"
+                      "Выход"
                     )
                   )
                 )
@@ -697,30 +706,74 @@
               (dom/h5 {:style {:margin-left "5px" :margin-right "5px" :height "32px" :margin-top "1px"}} " "
       (dom/input {:id "search" :type "text" :placeholder "Search" :style {:height "32px" :margin-top "1px"} :value  (:search @app-state) :onChange (fn [e] (handleChange e )) })  )
             )
-
-            (dom/li {:style {:margin-left "5px"}}
-              (b/button {:className "btn btn-info"  :onClick (fn [e] (printMonth))  } "Print portfolios")
-            )
           )
 
-
           (dom/ul {:className "nav navbar-nav navbar-right"}
-            (dom/li
-              (dom/a {:style {:margin "10px" :padding-bottom "0px"} :href "#/positions" :onClick (fn [e] (goPositions e))}
-                 (dom/span {:className "glyphicon glyphicon-cog"})
-                 "Positions"
+            (dom/li {:className "dropdown"}
+              (dom/a {:className "dropdown-toggle" :data-toggle "dropdown"  :aria-expanded "false" }
+                 (dom/i {:className "fa fa-exchange"})
+                 (dom/i {:className "fa fa-caret-down"})
+              )
+              (dom/ul {:className "dropdown-menu dropdown-messages"}
+                (dom/li 
+                  (dom/a {:style {:cursor "pointer" :pointer-events (if (nil? (:selectedclient @app-state)) "none" "all")} :onClick (fn [e] (printMonth) )}
+                    (dom/div
+                      (dom/i {:className "fa fa-print"})
+                      "Печать"
+                    )
+                  )
+                )
               )
             )
-            (dom/li
-              (dom/a {:style {:margin "10px" :padding-bottom "0px"} :href "#/calcportfs" :onClick (fn [e] (goCalcPortfs e))}
-                 (dom/span {:className "glyphicon glyphicon-wrench"})
-                 "Calculation"
+            (dom/li {:className "dropdown"}
+              (dom/a {:className "dropdown-toggle" :data-toggle "dropdown"  :aria-expanded "false" }
+                 (dom/i {:className "fa fa-tasks fa-fw"})
+                 (dom/i {:className "fa fa-caret-down"})
+              )
+              (dom/ul {:className "dropdown-menu dropdown-tasks"}
+                (dom/li
+                  (dom/a {:href "#/positions" :onClick (fn [e] (goPositions e))}
+                    (dom/div
+                      (dom/i {:className "fa fa-comment fa-fw"})
+                      "Позиции"
+                    )
+                  )
+                )
+                (dom/li {:className "divider"})
+                (dom/li
+                  (dom/a {:href "#/positions2" :onClick (fn [e] (goPositions2 e))}
+                    (dom/div
+                      (dom/i {:className "fa fa-twitter fa-fw"})
+                      "Позиции с НКД"
+                    )
+                  )
+                )
+                (dom/li {:className "divider"})
+                (dom/li
+                  (dom/a {:href "#/calcportfs" :onClick (fn [e] (goCalcPortfs e))}
+                    (dom/div
+                      (dom/i {:className "fa fa-tasks fa-fw"})
+                      "Расчеты"
+                    )
+                  )
+                )
               )
             )
-            (dom/li
-              (dom/a (assoc style :href "#/login")
-                (dom/i {:className "fa fa-sign-out fa-fw"})
-                "Exit"
+
+            (dom/li {:className "dropdown"}
+              (dom/a {:className "dropdown-toggle" :data-toggle "dropdown"  :aria-expanded "false" }
+                 (dom/i {:className "fa fa-user fa-fw"})
+                 (dom/i {:className "fa fa-caret-down"})
+              )
+              (dom/ul {:className "dropdown-menu dropdown-user"}
+                (dom/li
+                  (dom/a {:href "#/login"}
+                    (dom/div
+                      (dom/i {:className "fa fa-sign-out fa-fw"})
+                      "Выход"
+                    )
+                  )
+                )
               )
             )
           )

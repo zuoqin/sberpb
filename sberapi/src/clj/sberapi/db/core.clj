@@ -1,7 +1,11 @@
 (ns sberapi.db.core
   (:require [datomic.api :as d]
             [mount.core :refer [defstate]]
-            [sberapi.config :refer [env]]))
+            [sberapi.config :refer [env]]
+            [clojure.string :as str]
+            [digest] 
+  )
+)
 
 (defstate conn
           :start (-> env :database-url d/connect)
@@ -49,14 +53,17 @@
 
 
 (defn find-user [login password]
-  (let [users (d/q '[:find ?login ?r
+  (let [
+    ;tr1 (println (str (digest/md5 password)))
+    ;tr1 (println (str (str/lower-case login)))
+    users (d/q '[:find ?login ?r
                       :in $ ?login ?password
                       :where
                       [?u :user/code ?login]
                       [?u :user/password ?password]
                       [?u :user/role ?r]
                      ]
-                     (d/db conn) login password)
+                     (d/db conn) (str/lower-case login) (digest/md5 password)  )
     ]
     users
   )

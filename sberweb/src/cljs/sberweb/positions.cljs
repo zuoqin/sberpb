@@ -601,7 +601,7 @@
                 )
                 (dom/div {:className "col-md-6" :style {:padding-left "0px" :padding-right "0px"}}
                   (dom/div 
-                   (dom/span {:style {:position "absolute" :padding-right "5px" :text-align "right" :display "block" :width "100%" :white-space "nowrap" :background-color (if (> (:usdvalue item) (* (:amount item) (:wapusd item) )) "lightgreen" "lightpink")}} (sbercore/split-thousands (str (.round js/Math (/ (* (if (= isrusbond true) 1000.0 1.0) (-  (:price item) (:wap item))  (:amount item) newfxrate) (* usdrate (if (= isbond true) 100.0 1.0)))))))
+                   (dom/span {:style {:position "absolute" :padding-right "5px" :text-align "right" :display "block" :width "100%" :white-space "nowrap" :background-color (if (> (:usdvalue item) (* (:amount item) (:wapusd item) )) "lightgreen" "lightpink")}} (sbercore/split-thousands (str (.round js/Math (-  (:usdvalue item) (* (:wapusd item) (:amount item)))))))
                   )
                 )
               )
@@ -765,7 +765,7 @@
               (dom/div {:className "plprdiv col-xs-1 hidden-md hidden-lg"}
                 (dom/div {:className "progress"}
                   (dom/div {:className (str "progress-bar" (if (< (:usdvalue item) usdcosts) " progress-bar-danger" ""))  :role "progresbar" :aria-valuenow (gstring/format "%.2f" (* 100.0 (/ (- (:usdvalue item) usdcosts) usdcosts))) :aria-valuemin "0" :aria-valuemax "100" :style {:color "black" :width (str (gstring/format "%.0f" (.abs js/Math (* 100.0 (/ (- (:usdvalue item) usdcosts) usdcosts)))) "%")}}
-                    (dom/span {:className "plprogress" :style {:position "absolute" :display "block" :width "100%"}} (gstring/format "%.2f" (* 100.0 (/ (- (:usdvalue item) usdcosts) usdcosts))))                
+                    (dom/span {:className "plprogress" :style {:position "absolute" :display "block" :width "100%" :white-space "nowrap"}} (gstring/format "%.2f" (* 100.0 (/ (- (:usdvalue item) usdcosts) usdcosts))))                
                   )
                 )
               )
@@ -773,14 +773,14 @@
                 (dom/div {:className "col-md-6" :style {:padding-left "0px" :padding-right "0px"}}
                   (dom/div {:className "progress"}
                     (dom/div {:className (str "progress-bar" (if (< (:currubprice item) (:waprub item)) " progress-bar-danger" ""))  :role "progresbar" :aria-valuenow (str (.round js/Math (.abs js/Math (* 100.0 (/ (-  (:currubprice item) (:waprub item)) (:waprub item)))))) :aria-valuemin "0" :aria-valuemax "100" :style {:color "black" :width (str (.round js/Math (.abs js/Math (* 100.0 (/ (-  (:currubprice item) (:waprub item)) (:waprub item))))) "%") }}
-                      (dom/span {:className "plprogress" :style {:position "absolute" :display "block" :width "100%"}} (gstring/format "%.2f" (* 100.0 (/ (-  (:currubprice item) (:waprub item)) (:waprub item)))))
+                      (dom/span {:className "plprogress" :style {:position "absolute" :display "block" :width "100%" :white-space "nowrap"}} (gstring/format "%.2f" (* 100.0 (/ (-  (:currubprice item) (:waprub item)) (:waprub item)))))
                     )
                   )
                 )
                 (dom/div {:className "col-md-6" :style {:padding-left "0px" :padding-right "0px"}}
                   (dom/div {:className "progress"}
                     (dom/div {:className (str "progress-bar" (if (< (:usdvalue item) usdcosts) " progress-bar-danger" ""))  :role "progresbar" :aria-valuenow (gstring/format "%.2f" (* 100.0 (/ (- (:usdvalue item) usdcosts) usdcosts))) :aria-valuemin "0" :aria-valuemax "100" :style {:color "black" :width (str (gstring/format "%.0f" (.abs js/Math (* 100.0 (/ (- (:usdvalue item) usdcosts) usdcosts)))) "%")}}
-                      (dom/span {:className "plprogress" :style {:position "absolute" :display "block" :width "100%"}} (gstring/format "%.2f" (* 100.0 (/ (- (:usdvalue item) usdcosts) usdcosts))))                
+                      (dom/span {:className "plprogress" :style {:position "absolute" :display "block" :width "100%" :white-space "nowrap"}} (gstring/format "%.2f" (* 100.0 (/ (- (:usdvalue item) usdcosts) usdcosts))))                
                     )
                   )
                 )
@@ -794,7 +794,7 @@
                 )
                 (dom/div {:className "col-md-6" :style {:padding-left "0px" :padding-right "0px"}}
                   (dom/div 
-                    (dom/span {:style {:position "absolute" :padding-right "5px" :text-align "right" :display "block" :width "100%" :background-color (if (> (:usdvalue item) usdcosts) "lightgreen" "lightpink")}} (sbercore/split-thousands (str (.round js/Math (- (:usdvalue item) usdcosts)))))
+                    (dom/span {:style {:position "absolute" :padding-right "5px" :text-align "right" :display "block" :width "100%" :background-color (if (> (:usdvalue item) usdcosts) "lightgreen" "lightpink") :white-space "nowrap"}} (sbercore/split-thousands (str (.round js/Math (- (:usdvalue item) usdcosts)))))
                   )
                 )
               )
@@ -881,6 +881,8 @@
             ]
 
             (dom/div {:className "row" :style {:margin-left "0px" :margin-right "0px"}} 
+
+              ;; Наименование контракта
               (dom/div {:className "col-xs-2 col-md-2" :style {:padding-left "0px" :padding-right "0px"}}
                 (dom/a {:className "list-group-item" :href (str  "#/postrans/" (:id (first (filter (fn [x] (if (= (compare (:code x) (:selectedclient @sbercore/app-state)) 0) true false)) (:clients @sbercore/app-state)))) "/" (:id item) ) }
                   (dom/h4 {:className "list-group-item-heading" :style {:white-space "nowrap"}} (:acode sec))
@@ -896,21 +898,21 @@
 
 
               ;; Цена покупки
-              (dom/div {:className "col-xs-2 col-md-2" :style {:padding-left "0px" :padding-right "0px"}}
+              (dom/div {:className "col-xs-1 col-md-1" :style {:padding-left "0px" :padding-right "0px"}}
                 (dom/a {:className "list-group-item" :style {:text-align "right"} :href (str  "#/postrans/" (:id (first (filter (fn [x] (if (= (compare (:code x) (:selectedclient @sbercore/app-state)) 0) true false)) (:clients @sbercore/app-state)))) "/" (:id item) ) }
                   (dom/h4 {:className "list-group-item-heading"} (sbercore/split-thousands  (if (> (:wap item) 1) (gstring/format "%.2f" (:wap item))  (subs (str (:usdvalue item)) 0 5))))
                 )
               )
 
               ;; Last Price
-              (dom/div {:className "col-xs-2 col-md-2" :style {:padding-left "0px" :padding-right "0px"}}
+              (dom/div {:className "col-xs-1 col-md-1" :style {:padding-left "0px" :padding-right "0px"}}
                 (dom/a {:className "list-group-item" :style {:text-align "right"} :href (str  "#/postrans/" (:id (first (filter (fn [x] (if (= (compare (:code x) (:selectedclient @sbercore/app-state)) 0) true false)) (:clients @sbercore/app-state)))) "/" (:id item) ) }
                   (dom/h4 {:className "list-group-item-heading"} (sbercore/split-thousands (if (> (:price item) 1) (gstring/format "%.2f" (:price item))  (subs (str (:price item)) 0 5))) )
                 )
               )
 
               ;; Currency
-              (dom/div {:className "col-xs-2 col-md-2" :style {:padding-left "0px" :padding-right "0px"}}
+              (dom/div {:className "col-xs-1 col-md-1" :style {:padding-left "0px" :padding-right "0px"}}
                 (dom/a {:className "list-group-item" :style {:text-align "right"} :href (str  "#/postrans/" (:id (first (filter (fn [x] (if (= (compare (:code x) (:selectedclient @sbercore/app-state)) 0) true false)) (:clients @sbercore/app-state)))) "/" (:id item) ) }
                   (dom/h4 {:className "list-group-item-heading"} (:currency item))
                 )
@@ -926,9 +928,17 @@
 
 
               ;; RUB P/L
-              (dom/div {:className "col-xs-1 col-md-1" :style {:padding-left "0px" :padding-right "0px"}}
+              (dom/div {:className "col-xs-2 col-md-2" :style {:padding-left "0px" :padding-right "0px"}}
                 (dom/a {:className "list-group-item" :style {:text-align "right"} :href (str  "#/postrans/" (:id (first (filter (fn [x] (if (= (compare (:code x) (:selectedclient @sbercore/app-state)) 0) true false)) (:clients @sbercore/app-state)))) "/" (:id item) ) }
                   (dom/h4 {:className "list-group-item-heading"} (sbercore/split-thousands (gstring/format "%.0f" rubprofit)) )
+                )
+              )
+
+
+              ;;Дата экспирации
+              (dom/div {:className "col-xs-2 col-md-2" :style {:padding-left "0px" :padding-right "0px" :visibility (if (or (nil? (:dvddate sec)) (> (.indexOf (tf/unparse custom-formatter (tc/from-long (tc/to-long (:dvddate sec)))) "1900") 0) )   "hidden" "visible")}}
+                (dom/a {:className "list-group-item" :style {:text-align "right"} :href (str  "#/postrans/" (:id (first (filter (fn [x] (if (= (compare (:code x) (:selectedclient @sbercore/app-state)) 0) true false)) (:clients @sbercore/app-state)))) "/" (:id item) ) }
+                  (dom/h4 {:className "list-group-item-heading"} (tf/unparse custom-formatter (tc/from-long (tc/to-long (if (nil? (:dvddate sec)) #inst "1900-01-01T00:00:00.000-00:00" (:dvddate sec)) ))))
                 )
               )
             )
@@ -1245,12 +1255,13 @@
                 (dom/div {:className "panel-heading"}
                   (dom/div (assoc stylerow  :className "row" )
                     (dom/div {:className "col-xs-2 col-md-2" :style {:text-align "center"}} (b/button {:className "btn btn-primary colbtn" :onClick (fn [e] ((swap! app-state assoc-in [:sort-forts-list] "secname")))} "Security") (dom/span {:className "glyphicon glyphicon-arrow-up"}))
-                    (dom/div {:className "col-xs-2 col-md-2" :style {:text-align "center"}} "Amount")
-                    (dom/div {:className "col-xs-2 col-md-2" :style {:text-align "center"}} "Цена покупки")
-                    (dom/div {:className "col-xs-2 col-md-2" :style {:text-align "center"}} "Last price")
-                    (dom/div {:className "col-xs-2 col-md-2" :style {:text-align "center"}} "Currency")
+                    (dom/div {:className "col-xs-2 col-md-2" :style {:text-align "center"}} "Количество")
+                    (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "Цена покупки")
+                    (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "Last price")
+                    (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "Currency")
                     (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "P/L USD")
-                    (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "P/L RUB")
+                    (dom/div {:className "col-xs-2 col-md-2" :style {:text-align "center"}} "P/L RUB")
+                    (dom/div {:className "col-xs-2 col-md-2" :style {:text-align "center"}} "Экспирация")
                   )
                 )
                 (dom/div {:className "panel-body"}

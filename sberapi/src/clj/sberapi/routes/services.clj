@@ -44,8 +44,8 @@
       ;:return String
       :form-params [grant_type :- String, username :- String, password :- String]
       :summary     "login/password with form-parameters"
-      (ok (if (dbservices/checkUser username password)
-            {:access_token (-> (dbservices/claim username) jwt to-str) :expires_in 99999 :token_type "bearer"}
+      (ok (if (dbservices/checkUser (str/lower-case username) password)
+            {:access_token (-> (dbservices/claim (str/lower-case username)) jwt to-str) :expires_in 99999 :token_type "bearer"}
             ""
          )
       )

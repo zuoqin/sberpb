@@ -176,7 +176,9 @@
   (let [
      conn (d/connect uri)
      ]
-    (d/transact-async conn [{ :client/code "XKRQF",  :client/name "Клиент XKRQF", :client/currency "USD", :client/stockshare 50.0 :client/bondshare 50.0, :client/usd 100000.0, :client/rub 100000.0, :client/eur 100000.0, :client/gbp 100000.0, :client/signedadvisory 5000000.0, :client/advemail "TWFyaWFfU2h1aWRpbmFAc2JlcmJhbmstcGIucnU=", :client/email "c2h1cmRvdkBnbWFpbC5jb20=", :client/advisors [ #db/id[:db.part/user -105001] #db/id[:db.part/user -105002] #db/id[:db.part/user -105006]], :db/id #db/id[:db.part/user -102105]}]
+    (d/transact-async conn [{ :security/acode "FEES", :security/isin "RU000A0JPNN9", :security/bcode "FEES RX Equity", :security/assettype 1, :security/name "", :security/exchange "NYSE", :security/currency "RUB", :db/id #db/id[:db.part/user -100614] }
+
+{ :security/acode "SSAREGS", :security/isin "US48122U2042", :security/bcode "SSAREGS Equity", :security/assettype 1, :security/name "", :security/exchange "NYSE", :security/currency "RUB", :db/id #db/id[:db.part/user -100615] }]
     )
     ; To insert new entity:
     ;(d/transact conn [{ :transaction/client #db/id[:db.part/user 17592186045573] :transaction/security #db/id[:db.part/user 17592186065674], :transaction/nominal 108000.0 :transaction/price 100.0 :transaction/direction "S" :transaction/valuedate #inst "2014-04-22T00:00:00.0000000Z", :transaction/currency "RUB" :transaction/comment "", :db/id #db/id[:db.part/user -110002] }])
@@ -1125,7 +1127,7 @@
 
 (defn get-portf-by-num [client num]
   (let [
-    newnum (+ 1451606399000 (* num 86400000) ) ;;1488412799000 1325462399000 1451606399000  for 2014: 1262304000000
+    newnum (+ 1388534400000 (* num 86400000) ) ;;1488412799000 1325462399000 1451606399000  for 2014: 1262304000000   1451606399000
     newdate (java.util.Date. newnum)
     ;tr1 (println newdate)
     day-of-week (f/unparse day-of-week-formatter (c/from-long (c/to-long newdate)))
@@ -1633,7 +1635,7 @@
      (select-sheet "bloomberg")
      (select-columns {:A :portf}))]
 
-    (doall (map (fn [x] (generateportfs (:portf x))) portfs ))
+    ;(doall (map (fn [x] (generateportfs (:portf x))) portfs ))
     (doall (map (fn [x] (build-excel-transactions (:portf x))) portfs ))
   )
 )
