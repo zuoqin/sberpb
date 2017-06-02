@@ -137,8 +137,8 @@
             ;; USD P/L, %%
             (dom/div {:className "col-xs-1 col-md-1" :style {:padding-left "0px" :padding-right "0px" :padding-top "10px"}}
               (dom/div {:className "progress"}
-                (dom/div {:className (str "progress-bar" (if (< (:usdvalue item) (* (:wapusd item) (:amount item) (if (= 5 (:assettype sec)) 10.0 1.0))) " progress-bar-danger" ""))  :role "progresbar" :aria-valuenow (str (.round js/Math (.abs js/Math (* 100.0 (/ (- (:usdvalue item) (* (:wapusd item) (:amount item) (if (= 5 (:assettype sec)) 10.0 1.0))) (* (:wapusd item) (:amount item) (if (= 5 (:assettype sec)) 10.0 1.0)) )) ))) :aria-valuemin "0" :aria-valuemax "100" :style {:color "black" :width (str (.round js/Math (.abs js/Math  (* 100.0 (/ (- (:usdvalue item) (* (:wapusd item) (:amount item) (if (= 5 (:assettype sec)) (if isrusbond 10.0 0.01) 1.0))) (* (:wapusd item) (:amount item) (if (= 5 (:assettype sec)) (if isrusbond 10.0 0.01) 1.0)) )))) "%") }}
-                  (dom/span {:style {:position "absolute" :display "block" :width "100%"}} (.round js/Math (* 100.0 (/ (- (:usdvalue item) (* (:wapusd item) (:amount item) (if (= 5 (:assettype sec)) (if isrusbond 10.0 0.01) 1.0))) (* (:wapusd item) (:amount item) (if (= 5 (:assettype sec)) (if isrusbond 10.0 0.01) 1.0)) ))))
+                (dom/div {:className (str "progress-bar" (if (< (:usdvalue item) (* (:wapusd item) (:amount item) (if (= 5 (:assettype sec)) (if isrusbond 10.0 0.01) 1.0))) " progress-bar-danger" ""))  :role "progresbar" :aria-valuenow (str (.round js/Math (.abs js/Math (* 100.0 (/ (- (:usdvalue item) (* (:wapusd item) (:amount item) (if (= 5 (:assettype sec)) (if isrusbond 10.0 0.01) 1.0))) (* (:wapusd item) (:amount item) (if (= 5 (:assettype sec)) (if isrusbond 10.0 0.01) 1.0)) )) ))) :aria-valuemin "0" :aria-valuemax "100" :style {:color "black" :width (str (.round js/Math (.abs js/Math  (* 100.0 (/ (- (:usdvalue item) (* (:wapusd item) (:amount item) (if (= 5 (:assettype sec)) (if isrusbond 10.0 0.01) 1.0))) (* (:wapusd item) (:amount item) (if (= 5 (:assettype sec)) (if isrusbond 10.0 0.01) 1.0)) )))) "%") }}
+                  (dom/span {:style {:position "absolute" :display "block" :width "100%"}} (gstring/format "%.2f" (* 100.0 (/ (- (:usdvalue item) (* (:wapusd item) (:amount item) (if (= 5 (:assettype sec)) (if isrusbond 10.0 0.01) 1.0))) (* (:wapusd item) (:amount item) (if (= 5 (:assettype sec)) (if isrusbond 10.0 0.01) 1.0)) ))))
                 )
               )
             )
@@ -148,7 +148,7 @@
             (dom/div {:className "col-xs-1 col-md-1" :style {:padding-left "0px" :padding-right "0px" :padding-top "10px"}}
               (dom/div {:className "progress"}
                 (dom/div {:className (str "progress-bar" (if (< (:currubprice item) (:waprub item)) " progress-bar-danger" ""))  :role "progresbar" :aria-valuenow (str (.round js/Math (.abs js/Math (* 100.0 (/ (-  (:currubprice item) (:waprub item)) (:waprub item)))))) :aria-valuemin "0" :aria-valuemax "100" :style {:color "black" :width (str (.round js/Math (.abs js/Math (* 100.0 (/ (-  (:currubprice item) (:waprub item)) (:waprub item))))) "%") }}
-                  (dom/span {:style {:position "absolute" :display "block" :width "100%"}} (.round js/Math (* 100.0 (/ (-  (:currubprice item) (:waprub item)) (if (> (:waprub item) 0.0001) (:waprub item) 0.0001) ))) ) 
+                  (dom/span {:style {:position "absolute" :display "block" :width "100%"}} (gstring/format "%.2f" (* 100.0 (/ (-  (:currubprice item) (:waprub item)) (if (> (:waprub item) 0.0001) (:waprub item) 0.0001) ))) ) 
 
                 )
               )
@@ -187,9 +187,9 @@
         )
         )
            (sort (comp comp-portfs) (filter (fn [x] (let [
-               portfname (:name (first (filter (fn[y] (if (= (:id x) (:id y) ) true false)) (:clients @sbercore/app-state))))
+               portfname (str/lower-case (:name (first (filter (fn[y] (if (= (:id x) (:id y) ) true false)) (:clients @sbercore/app-state))))) 
                ]
-               (if (or (nil? (:id x)) (= false (str/includes? portfname (:search @sbercore/app-state))))  false true)) ) (:portfolios ((keyword (str (:selectedsec @sbercore/app-state))) @sbercore/app-state))))
+               (if (or (nil? (:id x)) (= false (str/includes? portfname (str/lower-case (:search @sbercore/app-state)))))  false true)) ) (:portfolios ((keyword (str (:selectedsec @sbercore/app-state))) @sbercore/app-state))))
 
         
       )

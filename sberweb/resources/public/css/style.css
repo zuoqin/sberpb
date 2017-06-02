@@ -82,6 +82,8 @@ h1 {
   .col-md-1 {font-size: 14px;}
   .col-md-2 {font-size: 14px;}  
   .colbtn {font-size: 14px;}
+  .col-xs-2 {font-size: 14px; padding-left: 0px; padding-right: 0px;}  
+  .col-xs-3 {font-size: 14px; padding-left: 0px; padding-right: 0px;}  
   .plprogress {font-size: 12px;}
   .plprdiv {padding-top: 10px; padding-right: 0px; padding-left: 0xpx}
 }

@@ -581,14 +581,14 @@
                 (dom/div {:className "col-md-6" :style {:padding-left "0px" :padding-right "0px"}}
                   (dom/div {:className "progress"}
                     (dom/div {:className (str "progress-bar" (if (< (:currubprice item) (:waprub item)) " progress-bar-danger" ""))  :role "progresbar" :aria-valuenow (str (.round js/Math (.abs js/Math (* 100.0 (/ (-  (:currubprice item) (:waprub item)) (:waprub item)))))) :aria-valuemin "0" :aria-valuemax "100" :style {:color "black" :width (str (.round js/Math (.abs js/Math (* 100.0 (/ (-  (:currubprice item) (:waprub item)) (:waprub item))))) "%") }}
-                      (dom/span {:className "plprogress" :style {:position "absolute" :display "block" :width "100%"}} (.round js/Math (* 100.0 (/ (-  (:currubprice item) (:waprub item)) (:waprub item)))) ) 
+                      (dom/span {:className "plprogress" :style {:position "absolute" :display "block" :width "100%"}} (gstring/format "%.2f" (* 100.0 (/ (-  (:currubprice item) (:waprub item)) (:waprub item))))) 
                     )
                   )
                 )
                 (dom/div {:className "col-md-6" :style {:padding-left "0px" :padding-right "0px"}}
                   (dom/div {:className "progress"}
                     (dom/div {:className (str "progress-bar" (if (< (:usdvalue item) (* (:amount item) (:wapusd item))) " progress-bar-danger" ""))  :role "progresbar" :aria-valuenow (str (.round js/Math (.abs js/Math (* 100.0 (/ (- (:usdvalue item) (* (:amount item) (:wapusd item))) (* (:amount item) (:wapusd item))))))) :aria-valuemin "0" :aria-valuemax "100" :style {:color "black" :width (str (.round js/Math (.abs js/Math (* 100.0 (/ (- (:usdvalue item) (* (:amount item) (:wapusd item) ) ) (* (:amount item) (:wapusd item) ))))) "%") }}
-                      (dom/span {:className "plprogress" :style {:position "absolute" :display "block" :width "100%"}} (.round js/Math (* 100.0 (/ (- (:usdvalue item) (* (:amount item) (:wapusd item) ) ) (* (:amount item) (:wapusd item) )))))
+                      (dom/span {:className "plprogress" :style {:position "absolute" :display "block" :width "100%"}} (gstring/format "%.2f" (* 100.0 (/ (- (:usdvalue item) (* (:amount item) (:wapusd item))) (* (:amount item) (:wapusd item))))))
                     )
                   )
                 )
@@ -790,7 +790,7 @@
               ;; USD RUB P/L
               (dom/div {:className "hidden-xs col-md-1" :style {:padding-left "0px" :padding-right "0px" :padding-top "10px"}}                
                 (dom/div {:className "col-md-6" :style {:padding-left "0px" :padding-right "0px"}}
-                  (dom/span {:style {:position "absolute" :padding-right "5px" :text-align "right" :display "block" :width "100%" :background-color (if (> (:currubprice item) (:waprub item)) "lightgreen" "lightpink") }} (sbercore/split-thousands (str (.round js/Math  (if (= isrusbond true) (/ (* 1000.0 (-  (:currubprice item) (:waprub item)) (:amount item))  100.0)  (if (= isbond true) (/ (* (-  (:currubprice item) (:waprub item)) (:amount item))  100.0)  (* (-  (:currubprice item) (:waprub item)) (:amount item))))))))
+                  (dom/span {:style {:position "absolute" :padding-right "5px" :text-align "right" :display "block" :width "100%" :background-color (if (> (:currubprice item) (:waprub item)) "lightgreen" "lightpink") :white-space "nowrap" }} (sbercore/split-thousands (str (.round js/Math  (if (= isrusbond true) (/ (* 1000.0 (-  (:currubprice item) (:waprub item)) (:amount item))  100.0)  (if (= isbond true) (/ (* (-  (:currubprice item) (:waprub item)) (:amount item))  100.0)  (* (-  (:currubprice item) (:waprub item)) (:amount item))))))))
                 )
                 (dom/div {:className "col-md-6" :style {:padding-left "0px" :padding-right "0px"}}
                   (dom/div 

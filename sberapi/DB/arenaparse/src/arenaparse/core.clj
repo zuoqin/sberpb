@@ -176,9 +176,7 @@
   (let [
      conn (d/connect uri)
      ]
-    (d/transact-async conn [{ :security/acode "FEES", :security/isin "RU000A0JPNN9", :security/bcode "FEES RX Equity", :security/assettype 1, :security/name "", :security/exchange "NYSE", :security/currency "RUB", :db/id #db/id[:db.part/user -100614] }
-
-{ :security/acode "SSAREGS", :security/isin "US48122U2042", :security/bcode "SSAREGS Equity", :security/assettype 1, :security/name "", :security/exchange "NYSE", :security/currency "RUB", :db/id #db/id[:db.part/user -100615] }]
+    (d/transact-async conn [{ :security/acode "BR-7.17", :security/isin "B5N7 Comdty", :security/bcode "B5N7 Comdty", :security/assettype 15, :security/name "Brent Crude Futs  July17", :security/multiple 10.0, :security/exchange "RTS", :security/currency "USD", :db/id #db/id[:db.part/user -101017] }]
     )
     ; To insert new entity:
     ;(d/transact conn [{ :transaction/client #db/id[:db.part/user 17592186045573] :transaction/security #db/id[:db.part/user 17592186065674], :transaction/nominal 108000.0 :transaction/price 100.0 :transaction/direction "S" :transaction/valuedate #inst "2014-04-22T00:00:00.0000000Z", :transaction/currency "RUB" :transaction/comment "", :db/id #db/id[:db.part/user -110002] }])
@@ -1127,7 +1125,7 @@
 
 (defn get-portf-by-num [client num]
   (let [
-    newnum (+ 1388534400000 (* num 86400000) ) ;;1488412799000 1325462399000 1451606399000  for 2014: 1262304000000   1451606399000
+    newnum (+ 1451606399000 (* num 86400000) ) ;;1488412799000 1325462399000 1451606399000  for 2014: 1262304000000
     newdate (java.util.Date. newnum)
     ;tr1 (println newdate)
     day-of-week (f/unparse day-of-week-formatter (c/from-long (c/to-long newdate)))
@@ -1478,7 +1476,7 @@
 	
         trancnt (- (count (:content (nth   (:content (nth (:content x) 4) )  0 ) ) ) 1)  
         ;tr1 (println trancnt)
-        trans (loop [result [] num 0 ]
+        trans (loop [result [] num 0 parent ""]
           (let [item (if (<= num trancnt) (:content (nth (:content (nth (:content (nth (:content x) 4) )  0 ) )  num)))
             ]
             (if (<= num trancnt)
@@ -1492,8 +1490,26 @@
                    (if (> (count item) 23) (not (str/includes? (str/lower-case  (if (nil? (first (:content  (first (:content (nth item 24)  )  )))) "" (first (:content  (first (:content (nth item 24)  )  ))))  ) "call")) true) 
                    (if (> (count item) 23) (not (str/includes? (str/lower-case  (if (nil? (first (:content  (first (:content (nth item 24)  )  )))) "" (first (:content  (first (:content (nth item 24)  )  ))))  ) "put")) true) 
                 )
-                (recur (conj result item ) (inc num))
-                (recur result (inc num))
+                (recur (conj result item ) (inc num) parent)
+
+                (if (and
+                   (= (:ss:StyleID (:attrs (nth item 0))) "s68" )
+                   (or (= true (.contains (first (:content  (first (:content (nth item 0))))) "Instrument:")))
+                )
+                  (recur result (inc num) (subs (first (:content  (first (:content (nth item 0))))) 16))
+
+                  (if (and
+                    (= (:ss:StyleID (:attrs (nth item 0))) "s72" )
+                    (or (= 0 (compare "We Sell" (first (:content  (first (:content (nth item 9)  )  ))))) 
+                       (= 0 (compare "We Buy" (first (:content  (first (:content (nth item 9)  )  )))))
+                    )
+                    (or (str/includes? (str/lower-case (first (:content  (first (:content (nth item 4)  )  )))) "forts") (str/includes? (str/lower-case (first (:content  (first (:content (nth item 8)  )  )))) "options")) 
+                    )
+                    (recur (conj result (set-future-tran item parent)) (inc num) parent)
+                    (recur result (inc num) parent)
+                  )
+                )
+                ;(recur result (inc num))
               )
               result
             )
@@ -1635,7 +1651,7 @@
      (select-sheet "bloomberg")
      (select-columns {:A :portf}))]
 
-    ;(doall (map (fn [x] (generateportfs (:portf x))) portfs ))
+    (doall (map (fn [x] (generateportfs (:portf x))) portfs ))
     (doall (map (fn [x] (build-excel-transactions (:portf x))) portfs ))
   )
 )

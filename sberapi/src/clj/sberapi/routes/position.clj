@@ -248,6 +248,7 @@
 
     ;tr1 (println (first transactions))
     securities (secs/get-securities)
+    thesecurity (first (filter (fn [x] (if (= security (:id x)) true false)) securities))
     portfolios (loop [result {} trans transactions]
                 (if (seq trans) 
                   (let [
@@ -255,27 +256,29 @@
                         client (:client tran)
                         
 
-                        ;tr1 (println (str tran))
-                        currency (:currency (first (filter (fn [x] (if (= (:security tran) (:id x)) true false)) securities)))
+                        
+                        currency (:currency thesecurity)
                         amnt (if (nil? (:amount ( (keyword client) result ))) 0.0 (:amount ( (keyword client) result )))  
                         prevpr (:price ((keyword client) result))
                         
                         usdrate (db/get-fxrate-by-date "USD" (:valuedate tran))
                         seccurfxrate (db/get-fxrate-by-date currency (:valuedate tran))
                         trancurfxrate (db/get-fxrate-by-date (:currency tran) (:valuedate tran))
-                        rubprice (* trancurfxrate (:price tran))
+                        rubprice (if (= 5 (:assettype thesecurity)) (* seccurfxrate (:price tran)) (* trancurfxrate (:price tran))) 
                         usdprice (/ rubprice usdrate)
+                        seccurprice (/ rubprice seccurfxrate)
 
+                        
                         prevrubprice (:rubprice ((keyword client) result))
                         prevusdprice (:wapusd ((keyword client) result))
 
                         tranamnt (if (= "B" (:direction tran)) (:nominal tran) (- 0 (:nominal tran)))
                         newamnt (if (nil? amnt ) tranamnt (+ amnt tranamnt) )
 
-
+                        ;tr1 (if (= (:client tran) "GBCJF") (println (str "secfx= " seccurfxrate " usdprice=" usdprice " rubprice=" rubprice " assetprice=" (:assettype thesecurity)))) 
                         ;tr1 (if (= client "PYUMF") (println (str "prevpr= " prevpr " amnt= " amnt " tranamnt= " tranamnt " newamnt= " newamnt))) 
                         
-                        wap (if (= 0.0 amnt ) (* (:price tran) (if (= 5 (:assettype security)) 1.0 (/ trancurfxrate seccurfxrate)))  (if (> newamnt 0.0) (if (> tranamnt 0.0) (/ (+ (* prevpr amnt) (* (:price tran) (if (= 5 (:assettype security)) 1.0 (/ trancurfxrate seccurfxrate)) tranamnt)) newamnt)  prevpr)  0.0))
+                        wap (if (= 0.0 amnt ) seccurprice  (if (> newamnt 0.0) (if (> tranamnt 0.0) (/ (+ (* prevpr amnt) (* seccurprice tranamnt)) newamnt)  prevpr)  0.0))
 
                         waprub (if (= amnt 0.0)  rubprice (if (= "S" (:direction tran)) prevrubprice (if (> newamnt 0.0) (/ (+ (* prevrubprice amnt) (* rubprice tranamnt)) newamnt) 0.0)) )
                         wapusd (if (= amnt 0.0) usdprice (if (= "S" (:direction tran)) prevusdprice (if (> newamnt 0.0) (/ (+ (* prevusdprice amnt) (* usdprice tranamnt)) newamnt) 0.0)))
