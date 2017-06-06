@@ -90,7 +90,8 @@
 
 
 (defn error-handler [{:keys [status status-text]}]
-  (.log js/console (str "something bad happened: " status " " status-text)))
+  (.log js/console (str "something bad happened: " status " " status-text))
+)
 
 (defn OnGetSecurities [response]
   (swap! sbercore/app-state assoc-in [:securities] response )
@@ -144,12 +145,14 @@
 
 
 (defn OnGetUser [response]
+  ;(.log js/console (str "In On GetUser"))
   (doall (map setUser response))
   (reqclients)  
 )
 
 
-(defn requser []
+(defn requser [token]
+  ;(.log js/console (str "In requser with token " (:token  (:token @sbercore/app-state))))
   (GET (str settings/apipath "api/user") {
     :handler OnGetUser
     :error-handler error-handler
@@ -163,11 +166,12 @@
       ;response1 (js->clj response)
       newdata {:token (get response (keyword "access_token"))  :expires (get response (keyword "expires_in") ) }
     ]
-    ;;(.log js/console (str (select-keys (js->clj response) [:Title :Reference :Introduction])  ))    
+    ;(.log js/console (str (:token newdata)))
     (swap! sbercore/app-state assoc-in [:token] newdata )
     (swap! sbercore/app-state assoc-in [:view] 2 )
     (swap! sbercore/app-state assoc-in [:users] [] )
-    (requser)
+    (requser {:token newdata})
+    ;(put! ch 43)
   )
 )
 
@@ -200,11 +204,14 @@
 
 
 
-(defn checklogin [owner]
+(defn checklogin [owner e]
   (let [
     theUserName (-> (om/get-node owner "txtUserName") .-value)
     thePassword (-> (om/get-node owner "txtPassword") .-value)
     ]
+    (.preventDefault (.. e -nativeEvent))
+    (.stopPropagation (.. e -nativeEvent))
+    (.stopImmediatePropagation (.. e -nativeEvent))
     ;(aset js/window "location" "http://localhost:3449/#/something")
     ;(.log js/console owner )
     (dologin (str theUserName) (str thePassword)) 
@@ -254,8 +261,7 @@
         (dom/input #js {:type "text" :ref "txtUserName"
            :defaultValue  settings/demouser  :className "form-control" :placeholder "User Name" } )
         (dom/input {:className "form-control" :ref "txtPassword" :id "txtPassword" :defaultValue settings/demopassword :type "password"  :placeholder "Password"} )
-        (dom/button #js {
-          :className (if (= (:state @app-state) 0) "btn btn-lg btn-primary btn-block" "btn btn-lg btn-primary btn-block m-progress" )  :type "button" :onClick (fn [e](checklogin owner))} "Login")
+        (dom/button {:className (if (= (:state @app-state) 0) "btn btn-lg btn-primary btn-block" "btn btn-lg btn-primary btn-block m-progress" ) :onClick (fn [e](checklogin owner e)) :type "submit" } "Login")
         
       )
       (addModal)
@@ -267,6 +273,7 @@
 (defn setcontrols [value]
   (case value
     42 (sbercore/goPositions 0)
+    43 (requser @sbercore/app-state)
   )
 )
 

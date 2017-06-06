@@ -187,11 +187,10 @@
         )
         )
            (sort (comp comp-portfs) (filter (fn [x] (let [
-               portfname (str/lower-case (:name (first (filter (fn[y] (if (= (:id x) (:id y) ) true false)) (:clients @sbercore/app-state))))) 
+               name (:name (first (filter (fn[y] (if (= (:id x) (:id y) ) true false)) (:clients @sbercore/app-state))))
+               portfname (str/lower-case (if (nil? name) "" name)) 
                ]
                (if (or (nil? (:id x)) (= false (str/includes? portfname (str/lower-case (:search @sbercore/app-state)))))  false true)) ) (:portfolios ((keyword (str (:selectedsec @sbercore/app-state))) @sbercore/app-state))))
-
-        
       )
     )
   )
@@ -207,7 +206,7 @@
 
 (defn setcontrols []
   (sbercore/setSecsDropDown)
-  ;;(.log js/console "fieldcode"       )
+  ;;(.log js/console "fieldcode" )
 )
 
 (defn initqueue []
@@ -234,7 +233,6 @@
       stylerow {:style {:margin-left "0px" :margin-right "0px"}}
       styleprimary {:style {:margin-top "70px" :margin-left "0px" :margin-right "0px"}}
       ]
-
       (dom/div
         (om/build sbercore/website-view sbercore/app-state {})
         (dom/div  (assoc styleprimary  :className "panel panel-primary")
@@ -253,8 +251,15 @@
               (dom/div {:className "col-xs-2 col-md-2" :style {:text-align "center"}} "P/L USD")
             )
           )
-          (dom/div {:className "panel-body"}
-            (om/build showportfs-view  data {})
+          (if (or (nil? (:selectedsec @sbercore/app-state)) (> (count (:portfolios ((keyword (str (:selectedsec @sbercore/app-state))) @sbercore/app-state))) 0))
+            (dom/div {:className "panel-body"}
+              (om/build showportfs-view  data {})
+            )
+            (dom/div {:style {:background "white"}}
+              (dom/p {:style {:text-align "center"}}
+                (dom/img {:src "images/loader.gif"})
+              )
+            )
           )
         )
       ) 

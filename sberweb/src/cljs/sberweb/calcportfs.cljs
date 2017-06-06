@@ -180,7 +180,7 @@
                   (dom/h4 {:className "list-group-item-heading"} (:client item))
                   (dom/span {:className "clientinfo"} 
                     (dom/p (str "Всего активов в advisory: " (sbercore/split-thousands (gstring/format "%.0f" (:signedadvisory client))) " " (:currency client)))
-
+                    (dom/p (str "Доля акций: " (gstring/format "%.0f" (:stockshare client)) "% Доля облигаций: " (:bondshare client) "%"))
                     (dom/p (str "Банкир: " ) (dom/a {:href (str "mailto:" (:advmail client) "?Subject=Trade%20idea") } (:advmail client)))
                   )
                 )

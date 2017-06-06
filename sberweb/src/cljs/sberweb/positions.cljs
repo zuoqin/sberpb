@@ -178,8 +178,9 @@
 
 (defcomponent showstocks-total-view [data owner]
   (render [_]
-    (let [portfusdvalue (:usdvalue (reduce (fn [x y] {:usdvalue (+ (:usdvalue x) (:usdvalue y))}) (:positions ((keyword (:selectedclient @sbercore/app-state)) @sbercore/app-state))))]
-
+    (let [
+           portfusdvalue (sbercore/calc_portfusdvalue)
+      ]
       (if (or (> (count (:positions ((keyword (:selectedclient @sbercore/app-state)) @sbercore/app-state) )) 0)
               (> (count (:deals ((keyword (:selectedclient @sbercore/app-state)) @sbercore/app-state) )) 0)
         )
@@ -300,7 +301,7 @@
 
 (defcomponent showbonds-total-view [data owner]
   (render [_]
-    (let [portfusdvalue (:usdvalue (reduce (fn [x y] {:usdvalue (+ (:usdvalue x) (:usdvalue y))}) (:positions ((keyword (:selectedclient @sbercore/app-state)) @sbercore/app-state))))]
+    (let [portfusdvalue (sbercore/calc_portfusdvalue)]
 
       (if (or (> (count (:positions ((keyword (:selectedclient @sbercore/app-state)) @sbercore/app-state) )) 0)
               (> (count (:deals ((keyword (:selectedclient @sbercore/app-state)) @sbercore/app-state) )) 0)
@@ -424,7 +425,12 @@
     (if (> (count (:clients @sbercore/app-state)) 0)
       (dom/div {:className "row" :style {:margin-left "0px" :margin-right "0px"}}
 
-        (dom/div {:className "col-xs-3 col-md-3" :style {:padding-left "0px" :padding-right "0px" :background-color (if (< (:usd (first (filter (fn [x] (if (= (:code x) (:selectedclient @sbercore/app-state)) true false)) (:clients @sbercore/app-state)))) 0) "lightpink" "white")} }
+        (dom/div {:className "col-xs-3 col-md-2" :style {:padding-left "0px" :padding-right "0px"} }
+          (dom/h4 {:className "list-group-item-heading" :style {:text-align "right" :font-weight "700"}} (str (gstring/format "%.2f" (* 100 (/ (sbercore/calc_cashusdvalue) (sbercore/calc_portfusdvalue))))) 
+          )
+        )
+
+        (dom/div {:className "col-xs-2 col-md-2" :style {:padding-left "0px" :padding-right "0px" :background-color (if (< (:usd (first (filter (fn [x] (if (= (:code x) (:selectedclient @sbercore/app-state)) true false)) (:clients @sbercore/app-state)))) 0) "lightpink" "white")} }
           (dom/h4 {:className "list-group-item-heading" :style {:text-align "right"}} (sbercore/split-thousands (str (:usd (first (filter (fn [x] (if (= (:code x) (:selectedclient @sbercore/app-state)) true false)) (:clients @sbercore/app-state))))))
           )
         )
@@ -439,7 +445,7 @@
           )
         )
 
-        (dom/div {:className "col-xs-3 col-md-3" :style {:padding-left "0px" :padding-right "0px" :background-color (if (< (:gbp (first (filter (fn [x] (if (= (:code x) (:selectedclient @sbercore/app-state)) true false)) (:clients @sbercore/app-state)))) 0) "lightpink" "white")}}
+        (dom/div {:className "col-xs-1 col-md-2" :style {:padding-left "0px" :padding-right "0px" :background-color (if (< (:gbp (first (filter (fn [x] (if (= (:code x) (:selectedclient @sbercore/app-state)) true false)) (:clients @sbercore/app-state)))) 0) "lightpink" "white")}}
           (dom/h4 {:className "list-group-item-heading" :style {:text-align "right"}} (sbercore/split-thousands (str (:gbp (first (filter (fn [x] (if (= (:code x) (:selectedclient @sbercore/app-state)) true false)) (:clients @sbercore/app-state))))))
           )
         )
@@ -1161,18 +1167,16 @@
               (dom/div  {:className "panel panel-primary"}
                 (dom/div {:className "panel-heading"}
                   (dom/div (assoc stylerow  :className "row" )
-                    (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "")
-                    (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "")
-                    (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "Доллар США")
-                    (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "")
+                    (dom/div {:className "col-xs-2 col-md-1" :style {:text-align "center"}} "")
+                    (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "Доля, %")
+                    (dom/div {:className "col-xs-2 col-md-2" :style {:text-align "center"}} "Доллар США")
                     (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "")
                     (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "Рубль")
                     (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "")
                     (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "")
                     (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "Евро")
                     (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "")
-                    (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "")
-                    (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "Фунт")
+                    (dom/div {:className "col-xs-1 col-md-2" :style {:text-align "center"}} "Фунт")
                   )
                 )
                 (dom/div {:className "panel-body"}

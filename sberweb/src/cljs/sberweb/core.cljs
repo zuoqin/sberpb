@@ -930,6 +930,32 @@
   )
 )
 
+(defn calc_cashusdvalue []
+  (let [
+         usdrate (:price (first (filter (fn [x] (if (= "USD" (:acode x)) true false)) (:securities @app-state))))
+         eurrate (:price (first (filter (fn [x] (if (= "USD" (:acode x)) true false)) (:securities @app-state))))
+         gbprate (:price (first (filter (fn [x] (if (= "USD" (:acode x)) true false)) (:securities @app-state))))
+         cashusdvalue (+ (:usd (first (filter (fn [x] (if (= (:code x) (:selectedclient @app-state)) true false)) (:clients @app-state)))) (* eurrate (/ (:eur (first (filter (fn [x] (if (= (:code x) (:selectedclient @app-state)) true false)) (:clients @app-state)))) usdrate)) (* gbprate (/ (:gbp (first (filter (fn [x] (if (= (:code x) (:selectedclient @app-state)) true false)) (:clients @app-state)))) usdrate)) (* 1.0 (/ (:rub (first (filter (fn [x] (if (= (:code x) (:selectedclient @app-state)) true false)) (:clients @app-state)))) usdrate)))
+  ]
+  cashusdvalue
+  )
+)
+
+
+(defn calc_portfusdvalue []
+  (let [
+         secsusdvalue (:usdvalue (reduce (fn [x y] {:usdvalue (+ (:usdvalue x) (:usdvalue y))}) (filter (fn [x] (let [
+           sec (first (filter (fn[y] (if (= (:id x) (:id y) ) true false)) (:securities @app-state)))
+           assettype (:assettype sec)]
+           (if (or (= 1 assettype) (= 5 assettype)) true false))) (:positions ((keyword (:selectedclient @app-state)) @app-state)))
+))
+         cashusdvalue (calc_cashusdvalue) 
+
+         portfusdvalue (+ secsusdvalue cashusdvalue)
+  ]
+  portfusdvalue
+  )
+)
 
 (defmulti website-view
   (

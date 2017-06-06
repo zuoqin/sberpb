@@ -176,7 +176,7 @@
   (let [
      conn (d/connect uri)
      ]
-    (d/transact-async conn [{ :security/acode "BR-7.17", :security/isin "B5N7 Comdty", :security/bcode "B5N7 Comdty", :security/assettype 15, :security/name "Brent Crude Futs  July17", :security/multiple 10.0, :security/exchange "RTS", :security/currency "USD", :db/id #db/id[:db.part/user -101017] }]
+    (d/transact-async conn [{ :client/code "RYOQF",  :client/name "Клиент RYOQF", :client/currency "USD", :client/stockshare 50.0 :client/bondshare 50.0, :client/usd 100000.0, :client/rub 100000.0, :client/eur 100000.0, :client/gbp 100000.0, :client/signedadvisory 5000000.0, :client/advemail "QW5kcmV5X0tvemh1a2hvdkBzYmVyYmFuay1wYi5ydQ==", :client/email "RmVkb3Jvdl9wYXZlbEB5YWhvby5jb20=", :client/advisors [ #db/id[:db.part/user -105001] #db/id[:db.part/user -105002] #db/id[:db.part/user -105012]], :db/id #db/id[:db.part/user -102114]}]
     )
     ; To insert new entity:
     ;(d/transact conn [{ :transaction/client #db/id[:db.part/user 17592186045573] :transaction/security #db/id[:db.part/user 17592186065674], :transaction/nominal 108000.0 :transaction/price 100.0 :transaction/direction "S" :transaction/valuedate #inst "2014-04-22T00:00:00.0000000Z", :transaction/currency "RUB" :transaction/comment "", :db/id #db/id[:db.part/user -110002] }])
@@ -778,8 +778,10 @@
         )
         
         ;filtertran  (filter (fn [x] (if (nil? (:security x)) false true)) trans)
+
+
         tranmap (map tran-to-map trans)
-	;tr2 (println (nth tranmap 25))
+	;;tr2 (println (filter (fn [x] (if (= "UPRO" (:security x)) true false)) tranmap))
         ;tr5 (println (first tranmap ) )
     ]
     (filter (fn [x] (if (or 
@@ -1470,12 +1472,15 @@
   )
 )
 
-(defn recent-deals-to-db []
-  (let [f (slurp (str drive ":/DEV/Java/" "recentdeals" ".xml"))
+
+(defn recent-deals-to-db-by-num [num]
+  (let [
+        filename (str drive ":/DEV/Java/" "recentdeals" (if (< (count (str num)) 2) "0") num ".xml")
+        f (slurp filename)
         x (parse f)
 	
         trancnt (- (count (:content (nth   (:content (nth (:content x) 4) )  0 ) ) ) 1)  
-        ;tr1 (println trancnt)
+        tr1 (println "importing transactions from " filename)
         trans (loop [result [] num 0 parent ""]
           (let [item (if (<= num trancnt) (:content (nth (:content (nth (:content (nth (:content x) 4) )  0 ) )  num)))
             ]
@@ -1555,6 +1560,16 @@
   )
 )
 
+(defn recent-deals-to-db []
+  (let [
+    files [3 4 5 6]
+    trans (doall (map (fn [x] (recent-deals-to-db-by-num x))  files )) 
+    ]
+    ;(count secs)
+    ;newsecs
+    "Success"
+  )
+)
 
 (defn get-recent-deals []
   (let [f (slurp (str drive ":/DEV/Java/" "todaydeals" ".xml"))
