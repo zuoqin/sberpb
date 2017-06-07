@@ -398,9 +398,9 @@
 
 { :security/acode "KORSUS",        :security/isin  "VGG607541015", :security/bcode "KORS US Equity", :security/assettype 1, :security/name "Yandex NV",  :security/exchange "SW",              :security/currency "USD",   :db/id #db/id[:db.part/user -100192]}
 
-{ :security/acode "DIXY",          :security/isin  "RU000A0JP7H1", :security/bcode "DIXY RM Equity", :security/exchange "RX",           :security/assettype 1,          :security/currency "RUB",   :db/id #db/id[:db.part/user -100193]}
+{ :security/acode "DIXY", :security/isin "RU000A0JP7H1", :security/bcode "DIXY RM Equity", :security/exchange "RX", :security/assettype 1, :security/currency "RUB", :db/id #db/id[:db.part/user -100193]}
 
-{ :security/acode "NVTK", :security/isin  "RU000A0DKVS5", :security/bcode "NVTK RX Equity", :security/assettype 1, :security/name "Yandex NV", :security/exchange "RX",              :security/currency "RUB", :db/id #db/id[:db.part/user -100194]}
+{ :security/acode "NVTK", :security/isin "RU000A0DKVS5", :security/bcode "NVTK RX Equity", :security/assettype 1, :security/name "Yandex NV", :security/exchange "RX", :security/currency "RUB", :db/id #db/id[:db.part/user -100194]}
 
 { :security/acode "AFKSRU19",      :security/isin  "XS0783242877", :security/bcode "XS0783242877 SBER Corp", :security/assettype 5, :security/name "Yandex NV", :security/exchange "SBER", :security/currency "USD",   :db/id #db/id[:db.part/user -100195]}
 
@@ -869,7 +869,7 @@
 
 { :security/acode "PETBRA21A",        :security/assettype 5, :security/bcode "US71647NAP42 Corp", :security/isin "US71647NAP42", :security/exchange "MOSCOW", :security/currency "USD",    :db/id #db/id[:db.part/user -100422] }
 
-{ :security/acode "RUALRU22",        :security/assettype 5, :security/bcode "XS1533921299 Corp", :security/isin "XS1533921299", :security/exchange "MOSCOW", :security/currency "USD",    :db/id #db/id[:db.part/user -100423] }
+{ :security/acode "RUALRU22", :security/assettype 5, :security/bcode "XS1533921299 Corp", :security/isin "XS1533921299", :security/exchange "MOSCOW", :security/currency "USD", :db/id #db/id[:db.part/user -100423] }
 
 { :security/acode "VAKBN21",        :security/assettype 5, :security/bcode "XS1508914691 Corp", :security/isin "XS1508914691", :security/exchange "MOSCOW", :security/currency "USD",    :db/id #db/id[:db.part/user -100424] }
 
@@ -1272,8 +1272,9 @@
 
 { :security/acode "SMSNLI", :security/isin "US7960508882", :security/bcode "SMSN LI Equity", :security/assettype 1, :security/name "", :security/exchange "RX", :security/currency "USD", :db/id #db/id[:db.part/user -100618]}
 
-{ :security/acode "METINR24", :security/isin  "XS1603335610", :security/bcode "XS1603335610 Corp", :security/assettype 5, :security/name "", :security/exchange "RX", :security/currency "USD", :db/id #db/id[:db.part/user -100619]}
+{ :security/acode "METINR24", :security/isin "XS1603335610", :security/bcode "XS1603335610 Corp", :security/assettype 5, :security/name "", :security/exchange "RX", :security/currency "USD", :db/id #db/id[:db.part/user -100619]}
 
+{ :security/acode "RUALRU23", :security/assettype 5, :security/bcode "XS1577964965 Corp", :security/isin "XS1577964965", :security/exchange "MOSCOW", :security/currency "USD", :db/id #db/id[:db.part/user -100620] }
 
 ;;FORTS contracts
 
@@ -2656,6 +2657,10 @@
 { :transaction/client #db/id[:db.part/user -102022], :transaction/security #db/id[:db.part/user -100237], :transaction/nominal 600.0, :transaction/price 13.70, :transaction/direction "B", :transaction/valuedate #inst "2013-04-24T10:00:00.0000000Z", :transaction/currency "USD", :transaction/comment "Transfer In", :db/id #db/id[:db.part/user -110529] }
 
 { :transaction/client #db/id[:db.part/user -102022], :transaction/security #db/id[:db.part/user -100237], :transaction/nominal 932.0, :transaction/price 14.90, :transaction/direction "B", :transaction/valuedate #inst "2013-01-16T10:00:00.0000000Z", :transaction/currency "USD", :transaction/comment "Transfer In", :db/id #db/id[:db.part/user -110530] }
+
+{ :transaction/client #db/id[:db.part/user -102022], :transaction/security #db/id[:db.part/user -100194], :transaction/nominal 4510.0, :transaction/price 600.3364, :transaction/direction "B", :transaction/valuedate #inst "2015-08-31T10:00:00.0000000Z", :transaction/currency "RUB", :transaction/comment "Offset trade in Arena", :db/id #db/id[:db.part/user -110531] }
+
+{ :transaction/client #db/id[:db.part/user -102017], :transaction/security #db/id[:db.part/user -100048], :transaction/nominal 200000.0,      :transaction/price 107.00, :transaction/direction "S", :transaction/valuedate #inst "2017-05-04T10:00:00.0000000Z", :transaction/currency "USD", :transaction/comment "Оферта KOKS18", :db/id #db/id[:db.part/user -110532] }
 
 
 ;; PRICES

@@ -176,7 +176,7 @@
   (let [
      conn (d/connect uri)
      ]
-    (d/transact-async conn [{ :client/code "RYOQF",  :client/name "Клиент RYOQF", :client/currency "USD", :client/stockshare 50.0 :client/bondshare 50.0, :client/usd 100000.0, :client/rub 100000.0, :client/eur 100000.0, :client/gbp 100000.0, :client/signedadvisory 5000000.0, :client/advemail "QW5kcmV5X0tvemh1a2hvdkBzYmVyYmFuay1wYi5ydQ==", :client/email "RmVkb3Jvdl9wYXZlbEB5YWhvby5jb20=", :client/advisors [ #db/id[:db.part/user -105001] #db/id[:db.part/user -105002] #db/id[:db.part/user -105012]], :db/id #db/id[:db.part/user -102114]}]
+    (d/transact-async conn [{ :security/acode "RUALRU23", :security/assettype 5, :security/bcode "XS1577964965 Corp", :security/isin "XS1577964965", :security/exchange "MOSCOW", :security/currency "USD", :db/id #db/id[:db.part/user -100620] }]
     )
     ; To insert new entity:
     ;(d/transact conn [{ :transaction/client #db/id[:db.part/user 17592186045573] :transaction/security #db/id[:db.part/user 17592186065674], :transaction/nominal 108000.0 :transaction/price 100.0 :transaction/direction "S" :transaction/valuedate #inst "2014-04-22T00:00:00.0000000Z", :transaction/currency "RUB" :transaction/comment "", :db/id #db/id[:db.part/user -110002] }])

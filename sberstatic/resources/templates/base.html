@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <META name="viewport" content="width=device-width, initial-scale=1">
+    <title>Welcome to sberstatic</title>
+
+    <!-- styles -->
+    {% style "/assets/bootstrap/css/bootstrap.min.css" %}
+    {% style "/assets/font-awesome/css/font-awesome.min.css" %}
+
+    {% style "/css/screen.css" %}
+  </head>
+  <body>
+      <!-- navbar -->
+      <nav class="navbar navbar-dark bg-primary" role="navigation">
+          <button class="navbar-toggler hidden-sm-up"
+                  type="button"
+                  data-toggle="collapse"
+                  data-target="#collapsing-navbar">
+          </button>
+          <div class="collapse navbar-toggleable-xs" id="collapsing-navbar">
+              <a class="navbar-brand" href="{{servlet-context}}/">sberstatic</a>
+              <ul class="nav navbar-nav">
+                  <li class="nav-item">
+                      <a href="{{servlet-context}}/"
+                         class="nav-link{% ifequal page "home.html" %} active{%endifequal%}">
+                      home
+                      </a>
+                  </li>
+                  <li class="nav-item">
+                      <a href="{{servlet-context}}/about"
+                         class="nav-link{% ifequal page "about.html" %} active{%endifequal%}">
+                      about
+                      </a>
+                  </li>
+              </ul>
+          </div>
+      </nav>
+
+    <div class="container">
+      {% block content %}
+      {% endblock %}
+    </div>
+
+    <!-- scripts -->
+    {% script "/assets/jquery/jquery.min.js" %}
+    {% script "/assets/tether/dist/js/tether.min.js" %}
+    {% script "/assets/bootstrap/js/bootstrap.min.js" %}
+    {% script "/js/tinymce/tinymce.min.js" %}
+
+    <script type="text/javascript">
+      var context = "{{servlet-context}}";
+      tinymce.init({
+       selector: '#mytextarea',
+       images_upload_url: 'postAcceptor.php',
+       images_upload_base_path: '/some/basepath',
+       images_upload_credentials: true,
+       file_picker_types: 'image',
+       plugins: "image imagetools",
+       imagetools_cors_hosts: ['mydomain.com', 'otherdomain.com'],
+       imagetools_proxy: 'proxy.php',
+       toolbar: "image",
+
+       file_picker_callback: function(callback, value, meta) {
+         var input = document.createElement('input');
+         input.setAttribute('type', 'file');
+         input.setAttribute('accept', 'image/*');
+
+         input.onchange = function() {
+           var file = this.files[0];
+           
+           var reader = new FileReader();
+           reader.readAsDataURL(file);
+           reader.onload = function () {
+             // Note: Now we need to register the blob in TinyMCEs image blob
+             // registry. In the next release this part hopefully won't be
+             // necessary, as we are looking to handle it internally.
+             var id = 'blobid' + (new Date()).getTime();
+             var blobCache =  tinymce.activeEditor.editorUpload.blobCache;
+             var blobInfo = blobCache.create(id, file, reader.result);
+             blobCache.add(blobInfo);
+
+             // call the callback and populate the Title field with the file name
+             callback(blobInfo.blobUri(), { title: file.name });
+           };
+         };
+
+         input.click();
+       }
+     });
+
+     
+    </script>
+    {% block page-scripts %}
+    {% endblock %}
+  </body>
+</html>
