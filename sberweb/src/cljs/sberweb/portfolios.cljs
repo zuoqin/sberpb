@@ -206,6 +206,9 @@
 
 (defn setcontrols []
   (sbercore/setSecsDropDown)
+  (if (not (= nil (:selectedsec @sbercore/app-state)))
+    (sbercore/getPortfolios)
+  )
   ;;(.log js/console "fieldcode" )
 )
 

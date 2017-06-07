@@ -1,4 +1,3 @@
-
 (ns sberweb.core
   (:require [om.core :as om :include-macros true]
             [om-tools.dom :as dom :include-macros true]
@@ -21,7 +20,7 @@
 
 (enable-console-print!)
 
-(defonce app-state (atom {:state 0 :percentage "5.00" :noholders 0 :selectedclient nil :search ""  :user {:role "admin"} }))
+(defonce app-state (atom {:state 0 :percentage "5.00" :noholders 0 :selectedclient nil :search "" :selectedcurrency "all" :user {:role "admin"} }))
 
 
 
@@ -108,6 +107,13 @@
 )
 
 (defn handle-change [e owner]
+  
+  (swap! app-state assoc-in [:form (keyword (.. e -target -id))] 
+    (.. e -target -value)
+  ) 
+)
+
+(defn handle-change-currency [e owner]
   
   (swap! app-state assoc-in [:form (keyword (.. e -target -id))] 
     (.. e -target -value)
@@ -334,6 +340,19 @@
   ;;(.log js/console value)  
 )
 
+(defn onCalcCurrenciesDropDownChange [id value]
+  (let [
+        code ""
+        ]
+
+    (swap! app-state assoc-in [:selectedcurrency] value)
+    ;(if (nil? (:calcportfs ((keyword value) @app-state))))
+    ;(getCalcPortfolios)
+  )
+  
+  ;;(.log js/console value)  
+)
+
 (defn onDropDownChange [id value]
   (let [
         code (:code (first (filter (fn[x] (if (= (:id x) (js/parseInt value) ) true false)) (:clients @app-state)))  )
@@ -437,6 +456,30 @@
            (fn [e]
              (
                onCalcSecsDropDownChange (.. e -target -id) (.. e -target -value)
+             )
+           )
+         )
+       )
+     )
+   )
+
+
+
+  (jquery
+     (fn []
+       (-> (jquery "#currencies" )
+         (.selectpicker {})
+       )
+     )
+   )
+   (jquery
+     (fn []
+       (-> (jquery "#currencies" )
+         (.selectpicker "val" (:selectedcurrency @app-state))
+         (.on "change"
+           (fn [e]
+             (
+               onCalcCurrenciesDropDownChange (.. e -target -id) (.. e -target -value)
              )
            )
          )
@@ -836,32 +879,101 @@
             (dom/li {:style {:margin-left "5px"}}
               (dom/button #js {:id "btnrefresh" :disabled (if (= 1 (:state @data)) false true) :className (if (= 2 (:state @data)) "btn btn-info m-progress" "btn btn-info")  :type "button" :onClick (fn [e] (getCalcPortfolios))} "Обновить")
             )
+
+            (dom/li {:style {:margin-left "15px" :padding-right "10px"}}
+              (dom/label {:for "currencies" :style {:font-weight 100 :margin-top "7px"}} "Валюта: ")
+            )
+            (dom/li
+              (dom/div {:style {:margin-right "10px"}} 
+                (omdom/select #js {:id "currencies"
+                                   :className "selectpicker"
+                                   :data-show-subtext "true"
+                                   :data-live-search "true"
+                                   :onChange #(handle-change-currency % owner)
+                                   }
+                  (dom/option {:key "allcur" :value "all"
+                    :onChange #(handle-change-currency % owner)} "ВСЕ")
+                  (dom/option {:key "usdcur" :value "usd"
+                    :onChange #(handle-change-currency % owner)} "USD")
+                  (dom/option {:key "rubcur" :value "rub"
+                    :onChange #(handle-change-currency % owner)} "RUB")
+                  (dom/option {:key "eurcur" :value "eur"
+                    :onChange #(handle-change-currency % owner)} "EUR")
+                  (dom/option {:key "gbpcur" :value "gbp"
+                    :onChange #(handle-change-currency % owner)} "GBP")
+                  ;;(buildSecsList data owner)
+                )
+              )
+            )
           )
 
 
           (dom/ul {:className "nav navbar-nav navbar-right"}
-            (dom/li
-              (dom/a {:style {:margin "10px" :padding-bottom "0px"} :href "#/syssettings" :onClick (fn [e] (goSettings e))}
-                 (dom/span {:className "glyphicon glyphicon-book"})
-                 "Settings"
+            (dom/li {:className "dropdown"}
+              (dom/a {:className "dropdown-toggle" :data-toggle "dropdown"  :aria-expanded "false" }
+                 (dom/i {:className "fa fa-exchange"})
+                 (dom/i {:className "fa fa-caret-down"})
+              )
+              (dom/ul {:className "dropdown-menu dropdown-messages"}
+                (dom/li 
+                  (dom/a {:style {:cursor "pointer" :pointer-events (if (nil? (:selectedclient @app-state)) "none" "all")} :onClick (fn [e] (printMonth) )}
+                    (dom/div
+                      (dom/i {:className "fa fa-print"})
+                      "Печать"
+                    )
+                  )
+                )
               )
             )
-            (dom/li
-              (dom/a {:style {:margin "10px" :padding-bottom "0px"} :href "#/positions" :onClick (fn [e] (goPositions e))}
-                 (dom/span {:className "glyphicon glyphicon-cog"})
-                 "Positions"
+            (dom/li {:className "dropdown"}
+              (dom/a {:className "dropdown-toggle" :data-toggle "dropdown"  :aria-expanded "false" }
+                 (dom/i {:className "fa fa-tasks fa-fw"})
+                 (dom/i {:className "fa fa-caret-down"})
+              )
+              (dom/ul {:className "dropdown-menu dropdown-tasks"}
+                (dom/li
+                  (dom/a {:href "#/positions" :onClick (fn [e] (goPositions e))}
+                    (dom/div
+                      (dom/i {:className "fa fa-comment fa-fw"})
+                      "Позиции"
+                    )
+                  )
+                )
+                (dom/li {:className "divider"})
+                (dom/li
+                  (dom/a {:href "#/portfolios" :onClick (fn [e] (goPortfolios e))}
+                    (dom/div
+                      (dom/i {:className "fa fa-twitter fa-fw"})
+                      "Держатели бумаги"
+                    )
+                  )
+                )
+                (dom/li {:className "divider"})
+                (dom/li
+                  (dom/a {:href "#/syssettings" :onClick (fn [e] (goSettings e))}
+                    (dom/div
+                      (dom/i {:className "fa fa-tasks fa-fw"})
+                      "Опции"
+                    )
+                  )
+                )
               )
             )
-            (dom/li
-              (dom/a {:style {:margin "10px" :padding-bottom "0px"} :href "#/calcportfs" :onClick (fn [e] (goCalcPortfs e))}
-                 (dom/span {:className "glyphicon glyphicon-wrench"})
-                 "Calculation"
+
+            (dom/li {:className "dropdown"}
+              (dom/a {:className "dropdown-toggle" :data-toggle "dropdown"  :aria-expanded "false" }
+                 (dom/i {:className "fa fa-user fa-fw"})
+                 (dom/i {:className "fa fa-caret-down"})
               )
-            )
-            (dom/li
-              (dom/a (assoc style :href "#/login")
-                (dom/i {:className "fa fa-sign-out fa-fw"})
-                "Exit"
+              (dom/ul {:className "dropdown-menu dropdown-user"}
+                (dom/li
+                  (dom/a {:href "#/login"}
+                    (dom/div
+                      (dom/i {:className "fa fa-sign-out fa-fw"})
+                      "Выход"
+                    )
+                  )
+                )
               )
             )
           )
@@ -930,14 +1042,19 @@
   )
 )
 
-(defn calc_cashusdvalue []
-  (let [
-         usdrate (:price (first (filter (fn [x] (if (= "USD" (:acode x)) true false)) (:securities @app-state))))
-         eurrate (:price (first (filter (fn [x] (if (= "USD" (:acode x)) true false)) (:securities @app-state))))
-         gbprate (:price (first (filter (fn [x] (if (= "USD" (:acode x)) true false)) (:securities @app-state))))
-         cashusdvalue (+ (:usd (first (filter (fn [x] (if (= (:code x) (:selectedclient @app-state)) true false)) (:clients @app-state)))) (* eurrate (/ (:eur (first (filter (fn [x] (if (= (:code x) (:selectedclient @app-state)) true false)) (:clients @app-state)))) usdrate)) (* gbprate (/ (:gbp (first (filter (fn [x] (if (= (:code x) (:selectedclient @app-state)) true false)) (:clients @app-state)))) usdrate)) (* 1.0 (/ (:rub (first (filter (fn [x] (if (= (:code x) (:selectedclient @app-state)) true false)) (:clients @app-state)))) usdrate)))
-  ]
-  cashusdvalue
+(defn calc_cashusdvalue
+  ([clientcode]
+    (let [
+           usdrate (:price (first (filter (fn [x] (if (= "USD" (:acode x)) true false)) (:securities @app-state))))
+           eurrate (:price (first (filter (fn [x] (if (= "EUR" (:acode x)) true false)) (:securities @app-state))))
+           gbprate (:price (first (filter (fn [x] (if (= "GBP" (:acode x)) true false)) (:securities @app-state))))
+           cashusdvalue (+ (:usd (first (filter (fn [x] (if (= (:code x) clientcode) true false)) (:clients @app-state)))) (* eurrate (/ (:eur (first (filter (fn [x] (if (= (:code x) clientcode) true false)) (:clients @app-state)))) usdrate)) (* gbprate (/ (:gbp (first (filter (fn [x] (if (= (:code x) clientcode) true false)) (:clients @app-state)))) usdrate)) (* 1.0 (/ (:rub (first (filter (fn [x] (if (= (:code x) clientcode) true false)) (:clients @app-state)))) usdrate)))
+    ]
+    cashusdvalue
+    )
+  )
+  ([]
+    (calc_cashusdvalue (:selectedclient @app-state))
   )
 )
 

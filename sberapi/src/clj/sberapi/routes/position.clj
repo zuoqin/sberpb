@@ -258,7 +258,7 @@
 
                         
                         currency (:currency thesecurity)
-                        amnt (if (nil? (:amount ( (keyword client) result ))) 0.0 (:amount ( (keyword client) result )))  
+                        amnt (if (nil? (:amount ( (keyword client) result ))) 0.0 (:amount ( (keyword client) result )))
                         prevpr (:price ((keyword client) result))
                         
                         usdrate (db/get-fxrate-by-date "USD" (:valuedate tran))
@@ -309,21 +309,27 @@
 
 (defn calcPortfolios [token security percentage]
   (let [
-    usercode (:iss (-> token str->jwt :claims)  ) 
-    transactions (into [] (db/get-transactions-by-security security)   )
+    usercode "zuoqin" ;(:iss (-> token str->jwt :claims)  ) 
+    transactions (into [] (db/get-transactions-by-security security))
     clients (clients/get-clients usercode)
     
 
     ;tr1 (println (first transactions))
     securities (secs/get-securities)
 
-
+        
     sec (first (filter (fn [x] (if (= security (:id x)) true false)) securities))
+
+    isrusbond (if (and (= 5 (:assettype sec))
+                                   (= "RU" (subs (:isin sec) 0 2))
+                                   )  true false)
+    isbond (if (and (= 5 (:assettype sec))
+                                   ;(= "RU" (subs (:isin security) 0 2))
+                                   )  true false)
     secfxrate (db/get-fxrate-by-date (:currency sec) (java.util.Date.))
     lastprice (db/get-fxrate-by-date (:acode sec) (java.util.Date.))
 
     secrubprice (* secfxrate (if (nil? lastprice) 0 lastprice) )
-
     portfolios (loop [result {} trans transactions]
                 (if (seq trans) 
                   (let [
@@ -332,29 +338,38 @@
                         
 
                         
-                        currency (:currency (first (filter (fn [x] (if (= (:security tran) (:id x)) true false)) securities)))
-
-                        ;tr1 (println (str "client= " client " tran= " tran))
-                        amnt (:amount ( (keyword client) result ))
+                        currency (:currency sec)
+                        amnt (if (nil? (:amount ( (keyword client) result ))) 0.0 (:amount ( (keyword client) result )))
                         prevpr (:price ((keyword client) result))
                         
-                        rubprice (* (:fx tran) (:price tran))
+                        usdrate (db/get-fxrate-by-date "USD" (:valuedate tran))
+                        seccurfxrate (db/get-fxrate-by-date currency (:valuedate tran))
+                        trancurfxrate (db/get-fxrate-by-date (:currency tran) (:valuedate tran))
+                        rubprice (if (= 5 (:assettype sec)) (* seccurfxrate (:price tran)) (* trancurfxrate (:price tran))) 
+                        usdprice (/ rubprice usdrate)
+                        seccurprice (/ rubprice seccurfxrate)
 
+                        
                         prevrubprice (:rubprice ((keyword client) result))
+                        prevusdprice (:wapusd ((keyword client) result))
+
                         tranamnt (if (= "B" (:direction tran)) (:nominal tran) (- 0 (:nominal tran)))
                         newamnt (if (nil? amnt ) tranamnt (+ amnt tranamnt) )
-                        wap (if (nil? amnt ) (:price tran) (if (> newamnt 0) (/ (+ (* prevpr amnt) (* (:price tran) tranamnt)) newamnt) 0))
 
+                        ;tr1 (if (= (:client tran) "GBCJF") (println (str "secfx= " seccurfxrate " usdprice=" usdprice " rubprice=" rubprice " assetprice=" (:assettype thesecurity)))) 
+                        ;tr1 (if (= client "PYUMF") (println (str "prevpr= " prevpr " amnt= " amnt " tranamnt= " tranamnt " newamnt= " newamnt))) 
+                        
+                        wap (if (= 0.0 amnt ) seccurprice  (if (> newamnt 0.0) (if (> tranamnt 0.0) (/ (+ (* prevpr amnt) (* seccurprice tranamnt)) newamnt)  prevpr)  0.0))
 
-
-                        ;tr1 (if (= "VADAF" client) (println (str "fx tran: " (:fx tran) " price: " (:price tran) " rubprice: " rubprice)))
-                        waprub (if (nil? amnt ) rubprice (if (> newamnt 0) (/ (+ (* prevrubprice amnt) (* rubprice tranamnt)) newamnt) 0))
+                        waprub (if (= amnt 0.0)  rubprice (if (= "S" (:direction tran)) prevrubprice (if (> newamnt 0.0) (/ (+ (* prevrubprice amnt) (* rubprice tranamnt)) newamnt) 0.0)) )
+                        wapusd (if (= amnt 0.0) usdprice (if (= "S" (:direction tran)) prevusdprice (if (> newamnt 0.0) (/ (+ (* prevusdprice amnt) (* usdprice tranamnt)) newamnt) 0.0)))
                         ]
-                    (recur (assoc-in result [(keyword client) ] {:amount newamnt :price wap :rubprice waprub} )
+                    (recur (assoc-in result [(keyword client) ] {:amount newamnt :price wap :rubprice waprub :wapusd wapusd} )
                          (rest trans))
                   )                  
                   result)
-                ) 
+                )     
+
 
 
     filter_portfs (filter (fn [x] (if (> (:amount (second x)) 0) true false))  portfolios)
@@ -369,7 +384,7 @@
 
            seclastrubprice (if (= secrubprice 0.0) (if (nil? usedlimit) 0.0 (:rubprice usedlimit) ) secrubprice)
 
-           calcusedlimit (if (nil? usedlimit) 0 (* (:amount usedlimit) seclastrubprice))
+           calcusedlimit (if (nil? usedlimit) 0 (* (if isrusbond 10.0 (if isbond 0.01 1.0)) (:amount usedlimit) seclastrubprice))
 
            usdrate (db/get-fxrate-by-date "USD" (java.util.Date.))
            eurrate (db/get-fxrate-by-date "EUR" (java.util.Date.))
@@ -379,22 +394,31 @@
 
            clienttotalrub (+ (* (:usd client) usdrate) (* (:rub client) 1.0) (* (:eur client) eurrate) (* (:gbp client) gbprate))
 
-           seclimitinrub (/ (* fxrate (:signedadvisory client)  (if (= (:assettype sec) 5) (* (:bondshare client) percentage) (* (:stockshare client) percentage)) ) 10000.0 )
+           seclimitinrub (/ (* fxrate (:signedadvisory client)  (if (= (:assettype sec) 5) (* (:bondshare client) percentage) (* (:stockshare client) percentage)) ) 10.0 )
 
            ;tr1 (println client)
-           ;tr1 (println (str "fxrate: " fxrate " seclimitinrub: " seclimitinrub))
+           ;tr1 (if (= "GBCJF" (:code client)) (println (str "fxrate: " fxrate " seclimitinrub: " seclimitinrub " calcusedlimit=" calcusedlimit " usedlimit" usedlimit " seclastrubprice=" seclastrubprice))) 
 
-           ;tr1 (println (str "client: " client " sec last price: " seclastrubprice) " usedlimit: " usedlimit )
+           ;tr1 (if (= "GBCJF" (:code client)) (println (str "client: " client " sec last price: " seclastrubprice) " usedlimit: " usedlimit " secrubprice=" secrubprice)) 
      ]
-      {:client (:code client) :usd (:usd client) :rub (:rub client) :eur (:eur client) :gbp (:gbp client) :currency (:currency client) :shares (if (nil? usedlimit) 0 (:amount usedlimit)) :maxlimit (int (/ seclimitinrub (if (= 0.0 seclastrubprice) 1.0 seclastrubprice))) :freelimit (int (/ (- seclimitinrub calcusedlimit) (if (= 0.0 seclastrubprice) 1.0 seclastrubprice)))
+      {:client (:code client) :usd (:usd client) :rub (:rub client) :eur (:eur client) :gbp (:gbp client) :currency (:currency client) :shares (if (nil? usedlimit) 0 (:amount usedlimit))
 
- :maxusdshares (int (/ (if (> (* usdrate (:usd client))  (- seclimitinrub calcusedlimit)) (- seclimitinrub calcusedlimit) (* usdrate (:usd client))) (if (= 0.0 seclastrubprice) 1.0 seclastrubprice)))
+ ;; Максимальный лимит на ценную бумагу
+ :maxlimit (long (/ seclimitinrub (* (if (= 0.0 seclastrubprice) 1.0 seclastrubprice) (if isrusbond 10.0 (if isbond 0.01 1.0)))))
 
- :maxrubshares (int (/ (if (> (* 1.0 (:rub client))  (- seclimitinrub calcusedlimit)) (- seclimitinrub calcusedlimit) (* 1.0 (:rub client))) (if (= 0.0 seclastrubprice) 1.0 seclastrubprice)))
+ ;; Свободный лимит на покупку ценных бумаг:
+ ;; для иностранных облигаций - в номинале бумаги
+ ;; для российских облигаций - в тысячах рублей номинала (как в Арене)
+ ;; для акций - штук
+ :freelimit (long (/ (- seclimitinrub calcusedlimit) (* (if (= 0.0 seclastrubprice) 1.0 seclastrubprice) (if isrusbond 10.0 (if isbond 0.01 1.0))))) 
 
- :maxeurshares (int (/ (if (> (* eurrate (:eur client))  (- seclimitinrub calcusedlimit)) (- seclimitinrub calcusedlimit) (* eurrate (:eur client))) (if (= 0.0 seclastrubprice) 1.0 seclastrubprice)))
+ :maxusdshares (long (/ (if (> (* usdrate (:usd client))  (- seclimitinrub calcusedlimit)) (- seclimitinrub calcusedlimit) (* usdrate (:usd client))) (* (if (= 0.0 seclastrubprice) 1.0 seclastrubprice) (if isrusbond 10.0 (if isbond 0.01 1.0)))))
 
- :maxgbpshares (int (/ (if (> (* gbprate (:gbp client))  (- seclimitinrub calcusedlimit)) (- seclimitinrub calcusedlimit) (* gbprate (:gbp client))) (if (= 0.0 seclastrubprice) 1.0 seclastrubprice)))
+ :maxrubshares (long (/ (if (> (* 1.0 (:rub client))  (- seclimitinrub calcusedlimit)) (- seclimitinrub calcusedlimit) (* 1.0 (:rub client))) (* (if (= 0.0 seclastrubprice) 1.0 seclastrubprice) (if isrusbond 10.0 (if isbond 0.01 1.0)))))
+
+ :maxeurshares (long (/ (if (> (* eurrate (:eur client))  (- seclimitinrub calcusedlimit)) (- seclimitinrub calcusedlimit) (* eurrate (:eur client))) (* (if (= 0.0 seclastrubprice) 1.0 seclastrubprice) (if isrusbond 10.0 (if isbond 0.01 1.0)))))
+
+ :maxgbpshares (long (/ (if (> (* gbprate (:gbp client))  (- seclimitinrub calcusedlimit)) (- seclimitinrub calcusedlimit) (* gbprate (:gbp client)))  (* (if (= 0.0 seclastrubprice) 1.0 seclastrubprice) (if isrusbond 10.0 (if isbond 0.01 1.0))))) 
       }
       ))   clients)
     ]
