@@ -1,6 +1,6 @@
 (ns sberstatic.routes.home
   (:require [sberstatic.layout :as layout]
-            [compojure.core :refer [defroutes GET]]
+            [compojure.core :refer [defroutes GET POST]]
             [ring.util.http-response :as response]
             [clojure.java.io :as io]))
 
@@ -11,7 +11,16 @@
 (defn about-page []
   (layout/render "about.html"))
 
+(defn on-upload-image [request]
+  (let [tr1 (println request)]
+    {:body { :location "/img/20110616117.jpg" }}
+  )
+)
+  
+
 (defroutes home-routes
   (GET "/" [] (home-page))
-  (GET "/about" [] (about-page)))
+  (GET "/about" [] (about-page))
+  (POST "/imageupload" [] (fn [request] (on-upload-image request)) )
+)
 

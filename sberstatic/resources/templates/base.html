@@ -53,8 +53,8 @@
       var context = "{{servlet-context}}";
       tinymce.init({
        selector: '#mytextarea',
-       images_upload_url: 'postAcceptor.php',
-       images_upload_base_path: '/some/basepath',
+
+       images_upload_base_path: '/imageupload',
        images_upload_credentials: true,
        file_picker_types: 'image',
        plugins: "image imagetools",
@@ -62,6 +62,19 @@
        imagetools_proxy: 'proxy.php',
        toolbar: "image",
 
+       setup: function (editor) {
+         editor.on('change', function (e) {
+           console.log('change event', e);
+           tinymce.triggerSave();
+           editor.save();
+         });
+         editor.on('submit', function (e) {
+           console.log('submit event', e);
+           //editor.save();
+         });
+       },
+
+       
        file_picker_callback: function(callback, value, meta) {
          var input = document.createElement('input');
          input.setAttribute('type', 'file');

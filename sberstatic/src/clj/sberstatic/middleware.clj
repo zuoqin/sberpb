@@ -4,6 +4,7 @@
             [sberstatic.layout :refer [*app-context* error-page]]
             [ring.middleware.anti-forgery :refer [wrap-anti-forgery]]
             [ring.middleware.webjars :refer [wrap-webjars]]
+            [ring.middleware.multipart-params :refer [wrap-multipart-params]]
             [muuntaja.middleware :refer [wrap-format wrap-params]]
             [sberstatic.config :refer [env]]
             [ring.middleware.flash :refer [wrap-flash]]
@@ -45,7 +46,7 @@
         :title "Invalid anti-forgery token"})}))
 
 (defn wrap-formats [handler]
-  (let [wrapped (-> handler wrap-params wrap-format)]
+  (let [wrapped (-> handler wrap-params wrap-format wrap-multipart-params)]
     (fn [request]
       ;; disable wrap-formats for websockets
       ;; since they're not compatible with this middleware
