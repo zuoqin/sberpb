@@ -452,6 +452,27 @@
   )
 )
 
+;; (defn get-client-security-position [client security dt]
+;;   (let [
+;;     transactions (sort-by first #(> (c/to-long %1) (c/to-long %2))
+;;            (d/q '[:find ?d ?n
+;;              :in $ ?s ?c ?dt
+;;              :where
+;;              [?e :transaction/security ?s]
+;;              [?e :transaction/client ?c]
+;;              [?e :transaction/direction ?d]
+;;              [?e :transaction/nominal ?n]
+;;              [?e :transaction/valuedate ?d]
+;;              [(<= ?d ?dt)]
+;;              ]
+;;            (d/db conn) security client newdate))
+;;     amount (reduce (fn [x y]) 0 transactions)
+;;     ;tr1 (if (nil? client) (println (str "Client " code " not found")))
+;;     ]
+;;     amount
+;;   )
+;; )
+
 
 (defn get-client-by-code [code]
   (let [
@@ -810,29 +831,36 @@
     ;tr1 (println (first transactions))
     securities (get-securities)
     
-    newtransactions (map (fn [x] (let [
-    isin (:isin (first (filter (fn [y] (if (= (:security x) (:acode y)) true false)) securities)))
+    newtransactions (loop
+      [result [] amounts {} trans transactions]
+      (if (seq trans)
+        (let [
+          
+          tran (first trans)
+          ;tr1 (println (str tran) )
+          sec (first (filter (fn [y] (if (= (:security tran) (:acode y)) true false)) securities))
 
-    currency (:currency (first (filter (fn [y] (if (= (:security x) (:acode y)) true false)) securities)))
+          ;tr1 (println (str "sec=" sec) )
+          isin (:isin sec)
+          assettype (:assettype sec)
 
-    assettype (:assettype (first (filter (fn [y] (if (= (:security x) (:acode y)) true false)) securities)))
-    isrussian (if (and 
-(= assettype 5)
-;; Check ISIN starts with RU
-(or (= (compare currency "RUB") 0 ) (= (compare currency "RUR") 0 )) 
-;; Check currency = RUB
-(= (compare (subs isin 0 2) "RU") 0 ) 
-)  true false)
 
-    ;trancurrency (:currency x)
-    ;trancurrencyfxrate (get-fxrate-by-date trancurrency (:valuedate x))
 
-    ;tr1 (if (or (= isin "US92719A1060") (= isin "US91822M1062")) (println (str "fx = " (:fx x))))
-    seccurrencyfxrate (get-fxrate-by-date currency (:valuedate x))
-      
+
+          tranamnt (if (= "B" (:direction tran)) (:nominal tran) (- 0 (:nominal tran)))
+
+          ;tr1 (println (str "tranamnt=" tranamnt) )
+          amnt (:amount ( (keyword (:acode sec)) amounts ))
+
+          ;tr1 (println (str "amnt=" amnt) )
+          newamnt (if (nil? amnt ) tranamnt (+ amnt tranamnt) )
+          
+          ;tr1 (println (str "newamnt=" newamnt " seckey=" (keyword (:acode sec))) )
       ]
-      {:portfolio client :isin isin :quantity (if (= isrussian true) (* 1000.0 (:nominal x)) (:nominal x))  :price (* (:price x) (if (= 5 assettype) 1.0 (:fx x)) )    :date (f/unparse build-in-basicdate-formatter (c/from-long (c/to-long (:valuedate x))) ) :type (if (= "B" (:direction x)) "BUY LONG" "SELL LONG")}
-    )) transactions)
+      (recur (conj result {:portfolio client :isin isin :quantity (:nominal tran) :price (* (:price tran) (if (= 5 assettype) 1.0 (:fx tran))) :date (f/unparse build-in-basicdate-formatter (c/from-long (c/to-long (:valuedate tran))) ) :type (if (> tranamnt 0) (if (> newamnt 0) "BUY LONG" "BUY TO COVER") (if (< newamnt 0) "SELL SHORT" "SELL LONG")) }) (assoc-in amounts [(keyword (:acode sec)) ] {:amount newamnt} ) (rest trans))
+      )
+      result)
+    )
     ]
     (save-xls ["sheet1" (dataset [:portfolio :isin :quantity :price :date :type] newtransactions)] (str drive ":/DEV/Java/" client "_trans.xlsx") )
     "Success"
@@ -985,7 +1013,7 @@
                         currency (:currency thesecurity)
 
                         
-                        amnt (:amount ( (keyword sec) result ))
+                        amnt (case (:amount ( (keyword sec) result )) nil 0.0 (:amount ( (keyword sec) result ))) 
                         prevpr (if (nil? (:price ((keyword sec) result))) 0 (:price ((keyword sec) result)))
                         
                         tranprice (* (:price tran) (if (= 5 (:assettype thesecurity)) 1.0 (:fx tran))  )
@@ -995,16 +1023,16 @@
                         
                         
                         ;tr2 (println tran)
-                        newamnt (if (nil? amnt ) tranamnt (+ amnt tranamnt) )
+                        newamnt (+ amnt tranamnt) 
 
 
                         
 
-                        wap (if (nil? amnt ) tranprice (if (> newamnt 0) 
-
-
-
-                        (if (> tranamnt 0) (/ (+ (* prevpr amnt) (* tranprice tranamnt)) newamnt)  prevpr)  0))
+                        wap (if (= amnt 0.0) tranprice (if (>= amnt 0.0)
+                          (if (> tranamnt 0.0) (/ (+ (* prevpr amnt) (* tranprice tranamnt)) newamnt)  prevpr)
+                          (if (> tranamnt 0.0) prevpr (/ (+ (* prevpr amnt) (* tranprice tranamnt)) newamnt))
+                          )
+                        )
 
 
                         ;;tr5 (if (= wap 0.0) (println (str "prevpr: " prevpr " amnt: " amnt " tranprice: " tranprice " newamnt: " newamnt " tranamnt:" tranamnt)))
@@ -1017,9 +1045,9 @@
                   result)
                 )
     ;tr1 (println (first positions))
-    newpositions (map (fn [x] [(name (first x)) {:amount (if (< (:amount (second x)) 0) 0 (:amount (second x))) :price (:price (second x))}]) positions)
+    newpositions (map (fn [x] [(name (first x)) {:amount (:amount (second x)) :price (:price (second x))}]) positions)
 
-    filterpos (filter (fn [x] (if (= 0.0 (:amount (second x)) ) false true)) newpositions)
+    filterpos newpositions ;(filter (fn [x] (if (= 0.0 (:amount (second x)) ) false true)) newpositions)
 
     result (map (fn [x] (let [
                              assettype (second (first (filter (fn [y] (if (= (first y) :security/assettype) true false))(ent [[(get-secid-by-isin (first x))]]) ) ))
@@ -1044,6 +1072,7 @@
   (let [
     conn (d/connect uri)
     ]
+    ;(println (str "client=" client " amount=" amount))
     (d/transact-async conn [
       {(keyword (str "client/" currency)) amount,
        :client/code client ;; this finds the existing entity
@@ -1059,14 +1088,14 @@
     dt (java.util.Date.)
     f (clojure.java.io/file "R:/MIS_PB/Advisory")
     fs (file-seq f)
-    filename (str "Deals, Operations, Balances Advisory for Zorchenkov Alexey " (f/unparse build-in-date-formatter (c/from-long (+ (c/to-long dt) (* 0 24)) )))
+    filename (str "Deals, Operations, BalancesCurrency Advisory " (f/unparse build-in-date-formatter (c/from-long (+ (c/to-long dt) (* 0 24)) )))
     
     selectfile (first (filter (fn [x] (let [name (.getName x)] (if  (.contains name filename) true false))) fs))
 
     t1 (if (not (nil? selectfile))(println (str "found filename: " filename " date: " dt)))
     cash (drop 2 (if (not (nil? selectfile)) (->> (load-workbook (str "R:/MIS_PB/Advisory/" (.getName selectfile)))
                                              (select-sheet "Balances-Currency")
-                                             (select-columns {:A :date, :B :code :C :currency :D :amount :F :usd :G :rub})) (println (str "file with cash balances not found for date: " (f/unparse build-in-date-formatter (c/from-long (+ (c/to-long dt) (* 3600000 24)) )))))) 
+                                             (select-columns {:A :date, :B :code :C :currency :D :amount :F :usd :G :rub})) (println (str "file with cash balances not found for date: " (f/unparse build-in-date-formatter (c/from-long (+ (c/to-long dt) (* 0 24)) )))))) 
 
     ;t1 (println (nth cash 2))
 
@@ -1141,9 +1170,9 @@
                                                (= 0 (compare "Wed" day-of-week))
                                                (= 0 (compare "Thu" day-of-week))
                                                (= 0 (compare "Fri" day-of-week))
-                                               ) )  (filter (fn [x] (if (> (:amount (second x)) 0) true false)) (get-positions client newdate)) )
+                                               ) )  (filter (fn [x] (if (= (:amount (second x)) 0.0) false true)) (get-positions client newdate)) )
         ]    
-    (if (not (nil? positions)) (save-positions-bloomberg client positions newdate) )
+    (if (not (nil? positions)) (save-positions-bloomberg client positions newdate))
     "Success"
   )
 )

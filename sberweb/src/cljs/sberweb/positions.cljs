@@ -431,22 +431,22 @@
         )
 
         (dom/div {:className "col-xs-2 col-md-2" :style {:padding-left "0px" :padding-right "0px" :background-color (if (< (:usd (first (filter (fn [x] (if (= (:code x) (:selectedclient @sbercore/app-state)) true false)) (:clients @sbercore/app-state)))) 0) "lightpink" "white")} }
-          (dom/h4 {:className "list-group-item-heading" :style {:text-align "right"}} (sbercore/split-thousands (str (:usd (first (filter (fn [x] (if (= (:code x) (:selectedclient @sbercore/app-state)) true false)) (:clients @sbercore/app-state))))))
+          (dom/h4 {:className "list-group-item-heading" :style {:text-align "right"}} (sbercore/split-thousands (gstring/format "%.2f" (:usd (first (filter (fn [x] (if (= (:code x) (:selectedclient @sbercore/app-state)) true false)) (:clients @sbercore/app-state))))))
           )
         )
 
         (dom/div {:className "col-xs-3 col-md-3" :style {:padding-left "0px" :padding-right "0px" :background-color (if (< (:rub (first (filter (fn [x] (if (= (:code x) (:selectedclient @sbercore/app-state)) true false)) (:clients @sbercore/app-state)))) 0) "lightpink" "white")}}
-          (dom/h4 {:className "list-group-item-heading" :style {:text-align "right"}} (sbercore/split-thousands (str (:rub (first (filter (fn [x] (if (= (:code x) (:selectedclient @sbercore/app-state)) true false)) (:clients @sbercore/app-state))))))
+          (dom/h4 {:className "list-group-item-heading" :style {:text-align "right"}} (sbercore/split-thousands (gstring/format "%.2f" (:rub (first (filter (fn [x] (if (= (:code x) (:selectedclient @sbercore/app-state)) true false)) (:clients @sbercore/app-state))))))
           )
         )
 
         (dom/div {:className "col-xs-3 col-md-3" :style {:padding-left "0px" :padding-right "0px" :background-color (if (< (:eur (first (filter (fn [x] (if (= (:code x) (:selectedclient @sbercore/app-state)) true false)) (:clients @sbercore/app-state)))) 0) "lightpink" "white")}}
-          (dom/h4 {:className "list-group-item-heading" :style {:text-align "right"}} (sbercore/split-thousands (str (:eur (first (filter (fn [x] (if (= (:code x) (:selectedclient @sbercore/app-state)) true false)) (:clients @sbercore/app-state))))))
+          (dom/h4 {:className "list-group-item-heading" :style {:text-align "right"}} (sbercore/split-thousands (gstring/format "%.2f" (:eur (first (filter (fn [x] (if (= (:code x) (:selectedclient @sbercore/app-state)) true false)) (:clients @sbercore/app-state))))))
           )
         )
 
         (dom/div {:className "col-xs-1 col-md-2" :style {:padding-left "0px" :padding-right "0px" :background-color (if (< (:gbp (first (filter (fn [x] (if (= (:code x) (:selectedclient @sbercore/app-state)) true false)) (:clients @sbercore/app-state)))) 0) "lightpink" "white")}}
-          (dom/h4 {:className "list-group-item-heading" :style {:text-align "right"}} (sbercore/split-thousands (str (:gbp (first (filter (fn [x] (if (= (:code x) (:selectedclient @sbercore/app-state)) true false)) (:clients @sbercore/app-state))))))
+          (dom/h4 {:className "list-group-item-heading" :style {:text-align "right"}} (sbercore/split-thousands (gstring/format "%.2f" (:gbp (first (filter (fn [x] (if (= (:code x) (:selectedclient @sbercore/app-state)) true false)) (:clients @sbercore/app-state))))))
           )
         )
       )
