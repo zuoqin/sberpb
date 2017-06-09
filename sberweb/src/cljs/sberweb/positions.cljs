@@ -179,7 +179,13 @@
 (defcomponent showstocks-total-view [data owner]
   (render [_]
     (let [
-           portfusdvalue (sbercore/calc_portfusdvalue)
+        portfusdvalue (sbercore/calc_portfusdvalue)
+        usdrate (:price (first (filter (fn [x] (if (= "USD" (:acode x)) true false)) (:securities @app-state))))
+        client (first (filter (fn [x] (if (= (:selectedclient @sbercore/app-state) (:acode x)) true false)) (:clients @sbercore/app-state)))
+
+        clientcurrencyrate (:price (first (filter (fn [x] (if (= (str/upper-case (:currency client)) (:acode x)) true false)) (:securities @sbercore/app-state))))
+
+        portfclientcurrencyvalue 1.0
       ]
       (if (or (> (count (:positions ((keyword (:selectedclient @sbercore/app-state)) @sbercore/app-state) )) 0)
               (> (count (:deals ((keyword (:selectedclient @sbercore/app-state)) @sbercore/app-state) )) 0)
@@ -199,10 +205,10 @@
             ;;(dom/div {:className "col-xs-1 col-md-1" :style {:padding-left "0px" :padding-right "0px"}})
 
 
-            ;USD Value
+            ;Client Currency Value
             (dom/div {:className "col-xs-2 col-md-2" :style {:padding-left "0px" :padding-right "0px" :text-align "right" :font-weight "700"}}
               (dom/h4 {:className "list-group-item-heading" :style {:margin-left "10px" :font-weight "700" :margin-right "0px"}} (sbercore/split-thousands 
-                (gstring/format "%.0f" (:usdvalue (reduce (fn [x y] {:usdvalue (+ (:usdvalue x) (:usdvalue y))} ) (filter (fn [x] (if (= (:assettype (first (filter (fn [y] (if (= (:id y) (:id x)) true false)) (:securities @sbercore/app-state))) ) 1) true false) ) (:positions ((keyword (:selectedclient @sbercore/app-state)) @sbercore/app-state)))))))))
+                (gstring/format "%.0f" (:posvalue (reduce (fn [x y] {:posvalue (+ (:posvalue x) (:posvalue y))} ) (filter (fn [x] (if (= (:assettype (first (filter (fn [y] (if (= (:id y) (:id x)) true false)) (:securities @sbercore/app-state))) ) 1) true false) ) (:positions ((keyword (:selectedclient @sbercore/app-state)) @sbercore/app-state)))))))))
 
             ;; ;WAP Price
             ;; (dom/div {:className "col-xs-1 col-md-1" :style {:padding-left "0px" :padding-right "0px"}}
@@ -464,6 +470,8 @@
       (dom/div {:className "list-group" :style {:display "block"}}
         (map (fn [item]
           (let [
+                client (first (filter (fn [x] (if (= (:selectedclient @sbercore/app-state) (:acode x)) true false)) (:clients @sbercore/app-state)))
+                clientcurrencyrate (:price (first (filter (fn [x] (if (= (str/upper-case (:currency client)) (:acode x)) true false)) (:securities @sbercore/app-state))))
                 sec (first (filter (fn[x] (if (= (:id x) (:id item) ) true false)) (:securities @sbercore/app-state)))
                 seccur (:currency sec)
                 isbond (if (= 5 (:assettype sec)) true false)
@@ -482,8 +490,9 @@
                 newfxrate (if (= 0 (compare "GBX" seccur)) (/ fxrate 100.) fxrate)
                 putdate (if (nil? (:putdate item)) #inst "1900-01-01T00:00:00.000-00:00" (:putdate item))
                 ;tr1 (.log js/console "currency: "  seccur " rate:" newfxrate)
-                portfusdvalue (:usdvalue (reduce (fn [x y] {:usdvalue (+ (:usdvalue x) (:usdvalue y))}) (:positions ((keyword (:selectedclient @sbercore/app-state)) @sbercore/app-state))))
-
+                portfusdvalue (sbercore/calc_portfusdvalue)
+                
+                
                 potential (* 100.0 (/ (- (if (nil? (:target sec)) 0.0 (:target sec)) (:price item)) (:price item)))
                 maxpotential (apply max (map (fn [position]
                   (let [

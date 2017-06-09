@@ -60,7 +60,7 @@
   (let [
 
         ;tr1 (if (= (name (first position)) "RU000A0JP5V6") (println position)) 
-        str1 (str client "," (name (first position)) "," (format "%.1f" (:amount (second position)))  "," (:price (second position)) "," (f/unparse build-in-basicdate-formatter (c/from-long (c/to-long dt)) ) "\n")
+        str1 (str client "," (name (first position)) "," (format "%.1f" (/ (:amount (second position)) (if (str/includes? (name (first position)) "LKOH=") 10.0 1.0))) "," (:price (second position)) "," (f/unparse build-in-basicdate-formatter (c/from-long (c/to-long dt)) ) "\n")
         ]
     ;;(println str1)
     (spit (str drive ":/DEV/output/" client ".txt") str1 :append true)
@@ -857,7 +857,7 @@
           
           ;tr1 (println (str "newamnt=" newamnt " seckey=" (keyword (:acode sec))) )
       ]
-      (recur (conj result {:portfolio client :isin isin :quantity (:nominal tran) :price (* (:price tran) (if (= 5 assettype) 1.0 (:fx tran))) :date (f/unparse build-in-basicdate-formatter (c/from-long (c/to-long (:valuedate tran))) ) :type (if (> tranamnt 0) (if (> newamnt 0) "BUY LONG" "BUY TO COVER") (if (< newamnt 0) "SELL SHORT" "SELL LONG")) }) (assoc-in amounts [(keyword (:acode sec)) ] {:amount newamnt} ) (rest trans))
+      (recur (conj result {:portfolio client :isin isin :quantity (/ (:nominal tran) (if (str/includes? isin "LKOH=") 10.0 1.0))  :price (* (:price tran) (if (= 5 assettype) 1.0 (:fx tran))) :date (f/unparse build-in-basicdate-formatter (c/from-long (c/to-long (:valuedate tran))) ) :type (if (> tranamnt 0) (if (> newamnt 0) "BUY LONG" "BUY TO COVER") (if (< newamnt 0) "SELL SHORT" "SELL LONG")) }) (assoc-in amounts [(keyword (:acode sec)) ] {:amount newamnt} ) (rest trans))
       )
       result)
     )
