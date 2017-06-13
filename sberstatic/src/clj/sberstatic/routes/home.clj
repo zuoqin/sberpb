@@ -2,16 +2,10 @@
   (:require [sberstatic.layout :as layout]
             [compojure.core :refer [defroutes GET POST]]
             [ring.util.http-response :as response]
-            [clj-http.client :as httpclient]
+            
+
+            ;;[sberstatic.routes.tradeidea :as tradeidea]
             [clojure.java.io :as io]))
-
-(def imagepath "C:/DEV/clojure/sberpb/sberstatic/resources/public/img/tradeidea/")
-
-(def apipath "http://localhost:3000/")
-
-(defn tradeidea-page [token]
-  (layout/render
-    "tradeidea.html" {:docs (-> "docs/tradeidea.md" io/resource slurp) :original_idea "John"}))
 
 
 (defn home-page []
@@ -20,6 +14,15 @@
 
 (defn about-page []
   (layout/render "about.html"))
+
+
+(def imagepath "C:/DEV/clojure/sberpb/sberstatic/resources/public/img/tradeidea/")
+
+(def apipath "http://localhost:3000/")
+
+(defn tradeidea-page [token]
+  (layout/render
+    "tradeidea.html" {:docs (-> "docs/tradeidea.md" io/resource slurp) :original_idea "John"}))
 
 
 (defn copy-file [source-path dest-path]
@@ -44,13 +47,11 @@
 (defn on-save-html [request]
   (let [;tr1 (println request)
         url (str apipath "api/syssetting")
-        tr1 (httpclient/put url {:headers {"authorization" "Bearer TheBearer"} :content-type :json :body (str "{\"code\": \"TRADE_IDEA\", \"data\":" (:full_html (:params request)) "}")}) 
-
+        ;;tr1 (tradeidea/update-tradeidea request)
     ]
      (response/found "/tradeidea/1")
   )
 )
-  
 
 (defroutes home-routes
   (GET "/" [] (home-page))
