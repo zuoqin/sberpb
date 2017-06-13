@@ -58,8 +58,8 @@
 
                 :compiler {:main sberweb.login
                            :asset-path "js/compiled/out"
-                           :output-to "resources/public/js/compiled/sberweb.js"
-                           :output-dir "resources/public/js/compiled/out"
+                           :output-to "resources/public/js/compiled2/sberweb.js"
+                           :output-dir "resources/public/js/compiled2/out"
                            :source-map-timestamp true
                            :optimizations :none
                            :pretty-print true}}
@@ -94,8 +94,8 @@
                 :jar true
                 :compiler {:main sberweb.login
                            :asset-path "js/compiled/out"
-                           :output-to "resources/public/js/compiled2/sberweb.js"
-                           :output-dir "resources/public/js/compiled2/out"
+                           :output-to "resources/public/js/compiled/sberweb.js"
+                           :output-dir "resources/public/js/compiled/out"
                            :source-map-timestamp false
                            :optimizations :simple
                            :closure-warnings {:externs-validation :off}
@@ -159,7 +159,7 @@
 
              :uberjar
              {:source-paths ^:replace ["src/clj" "src/cljc"]
-              :prep-tasks ["compile" ["cljsbuild" "once" "max"]]
+              :prep-tasks ["compile" ["cljsbuild" "once" "min"]]
               :hooks []
               :omit-source true
               :aot :all}})

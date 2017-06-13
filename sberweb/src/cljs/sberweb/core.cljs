@@ -143,7 +143,7 @@
 
 (defn map-position [position]
   (let [
-    client (first (filter (fn [x] (if (= (:selectedclient @app-state) (:acode x)) true false)) (:clients @app-state)))
+    client (first (filter (fn [x] (if (= (:selectedclient @app-state) (:code x)) true false)) (:clients @app-state)))
     secid (js/parseInt (name (nth position 0)))
     security (first (filter (fn [x] (if (= (:id x) secid) true false)) (:securities @app-state)))
     
@@ -157,6 +157,8 @@
     fxrate (if (or (= "RUB" currency) (= "RUR" currency)) 1 (:price  (first (filter (fn[x] (if( = (:acode x) currency) true false)) (:securities @app-state)))))
     usdrate (:price (first (filter (fn [x] (if (= "USD" (:acode x)) true false)) (:securities @app-state))))
 
+
+    tr1 (.log js/console (str "client currency: " (:currency client)))
     clientcurrencyrate (:price (first (filter (fn [x] (if (= (str/upper-case (:currency client)) (:acode x)) true false)) (:securities @app-state))))
 
     isrusbond (if (and (= 5 (:assettype security)) 
@@ -172,7 +174,6 @@
 
 
     ]
-    ;(.log js/console (str "price: " price " fxrate:" fxrate))
     result
   )
 )
@@ -1045,8 +1046,6 @@
   )
 )
 
-(defn calc_cashvalue []
-)
 
 (defn calc_cashusdvalue
   ([clientcode]
@@ -1065,6 +1064,22 @@
 )
 
 
+(defn calc_cashvalue
+  ([clientcode]
+    (let [
+      client (first (filter (fn [x] (if (= (:selectedclient @app-state) (:code x)) true false)) (:clients @app-state)))
+      clientcurrencyrate (:price (first (filter (fn [x] (if (= (str/upper-case (:currency client)) (:acode x)) true false)) (:securities @app-state))))
+      usdrate (:price (first (filter (fn [x] (if (= "USD" (:acode x)) true false)) (:securities @app-state))))
+      ]
+      (/ (* (calc_cashusdvalue clientcode) usdrate) clientcurrencyrate)
+    )
+  )
+  ([]
+    (calc_cashvalue (:selectedclient @app-state))
+  )
+)
+
+
 (defn calc_portfusdvalue []
   (let [
          secsusdvalue (:usdvalue (reduce (fn [x y] {:usdvalue (+ (:usdvalue x) (:usdvalue y))}) (filter (fn [x] (let [
@@ -1077,6 +1092,18 @@
          portfusdvalue (+ secsusdvalue cashusdvalue)
   ]
   portfusdvalue
+  )
+)
+
+(defn calc_portfvalue []
+  (let [
+      client (first (filter (fn [x] (if (= (:selectedclient @app-state) (:code x)) true false)) (:clients @app-state)))
+      clientcurrencyrate (:price (first (filter (fn [x] (if (= (str/upper-case (:currency client)) (:acode x)) true false)) (:securities @app-state))))
+      usdrate (:price (first (filter (fn [x] (if (= "USD" (:acode x)) true false)) (:securities @app-state))))      
+
+      portfusdvalue (calc_portfusdvalue)
+    ]
+    (/ (* portfusdvalue usdrate) clientcurrencyrate) 
   )
 )
 
