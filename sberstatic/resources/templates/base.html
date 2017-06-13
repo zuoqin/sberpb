@@ -54,7 +54,10 @@
       tinymce.init({
        selector: '#mytextarea',
 
-       images_upload_base_path: '/imageupload',
+       relative_urls: false,
+       remove_script_host: false,
+       document_base_url: "http://localhost:3000/",
+       images_upload_base_path: '/img/tradeidea',
        images_upload_credentials: true,
        file_picker_types: 'image',
        plugins: "image imagetools",
@@ -62,11 +65,16 @@
        imagetools_proxy: 'proxy.php',
        toolbar: "image",
 
+       // Support automatic image upload
+       images_upload_url: 'imageupload',
+       automatic_uploads: true,
+
        setup: function (editor) {
          editor.on('change', function (e) {
            console.log('change event', e);
            tinymce.triggerSave();
            editor.save();
+           $('#full_html').val(tinymce.get('mytextarea').getContent());
          });
          editor.on('submit', function (e) {
            console.log('submit event', e);
