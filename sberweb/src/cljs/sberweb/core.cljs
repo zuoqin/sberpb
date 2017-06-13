@@ -75,7 +75,8 @@
 )
 
 (defn goSettings [data]
-  (swap! app-state assoc-in [:view] 5 )
+  ;;(swap! app-state assoc-in [:view] 5 )
+  (.open js/window (str "http://localhost:3000/tradeidea/" (:token (:token @app-state))))
 )
 
 
@@ -954,7 +955,7 @@
                 )
                 (dom/li {:className "divider"})
                 (dom/li
-                  (dom/a {:href "#/syssettings" :onClick (fn [e] (goSettings e))}
+                  (dom/a {:href "#/calcportfs" :onClick (fn [e] (goSettings e))}
                     (dom/div
                       (dom/i {:className "fa fa-tasks fa-fw"})
                       "Опции"
@@ -1018,7 +1019,7 @@
             (dom/li
               (dom/a {:style {:margin "10px" :padding-bottom "0px"} :href "#/syssettings" :onClick (fn [e] (goPositions e))}
                  (dom/span {:className "glyphicon glyphicon-book"})
-                 "Settings"
+                 "Positions"
               )
             )
             (dom/li

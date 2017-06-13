@@ -3,7 +3,7 @@
   <head>
     <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <META name="viewport" content="width=device-width, initial-scale=1">
-    <title>Welcome to sberstatic</title>
+    <title>Sberbank PB assets management</title>
 
     <!-- styles -->
     {% style "/assets/bootstrap/css/bootstrap.min.css" %}
@@ -43,76 +43,8 @@
       {% endblock %}
     </div>
 
-    <!-- scripts -->
-    {% script "/assets/jquery/jquery.min.js" %}
-    {% script "/assets/tether/dist/js/tether.min.js" %}
-    {% script "/assets/bootstrap/js/bootstrap.min.js" %}
-    {% script "/js/tinymce/tinymce.min.js" %}
 
-    <script type="text/javascript">
-      var context = "{{servlet-context}}";
-      tinymce.init({
-       selector: '#mytextarea',
 
-       relative_urls: false,
-       remove_script_host: false,
-       document_base_url: "http://localhost:3000/",
-       images_upload_base_path: '/img/tradeidea',
-       images_upload_credentials: true,
-       file_picker_types: 'image',
-       plugins: "image imagetools",
-       imagetools_cors_hosts: ['mydomain.com', 'otherdomain.com'],
-       imagetools_proxy: 'proxy.php',
-       toolbar: "image",
-
-       // Support automatic image upload
-       images_upload_url: 'imageupload',
-       automatic_uploads: true,
-
-       setup: function (editor) {
-         editor.on('change', function (e) {
-           console.log('change event', e);
-           tinymce.triggerSave();
-           editor.save();
-           $('#full_html').val(tinymce.get('mytextarea').getContent());
-         });
-         editor.on('submit', function (e) {
-           console.log('submit event', e);
-           //editor.save();
-         });
-       },
-
-       
-       file_picker_callback: function(callback, value, meta) {
-         var input = document.createElement('input');
-         input.setAttribute('type', 'file');
-         input.setAttribute('accept', 'image/*');
-
-         input.onchange = function() {
-           var file = this.files[0];
-           
-           var reader = new FileReader();
-           reader.readAsDataURL(file);
-           reader.onload = function () {
-             // Note: Now we need to register the blob in TinyMCEs image blob
-             // registry. In the next release this part hopefully won't be
-             // necessary, as we are looking to handle it internally.
-             var id = 'blobid' + (new Date()).getTime();
-             var blobCache =  tinymce.activeEditor.editorUpload.blobCache;
-             var blobInfo = blobCache.create(id, file, reader.result);
-             blobCache.add(blobInfo);
-
-             // call the callback and populate the Title field with the file name
-             callback(blobInfo.blobUri(), { title: file.name });
-           };
-         };
-
-         input.click();
-       }
-     });
-
-     
-    </script>
     {% block page-scripts %}
     {% endblock %}
   </body>
