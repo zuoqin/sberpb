@@ -4,7 +4,7 @@
             [ring.util.http-response :as response]
             
 
-            ;;[sberstatic.routes.tradeidea :as tradeidea]
+            [sberstatic.routes.tradeidea :as tradeidea]
             [clojure.java.io :as io]))
 
 
@@ -46,8 +46,8 @@
 
 (defn on-save-html [request]
   (let [;tr1 (println request)
-        url (str apipath "api/syssetting")
-        ;;tr1 (tradeidea/update-tradeidea request)
+        ;url (str apipath "api/syssetting")
+        tr1 (tradeidea/update-tradeidea request)
     ]
      (response/found "/tradeidea/1")
   )

@@ -58,8 +58,7 @@
 
 (defn append-position-to-file [client position dt]
   (let [
-
-        ;tr1 (if (= (name (first position)) "RU000A0JP5V6") (println position)) 
+        ;tr1 (println position)
         str1 (str client "," (name (first position)) "," (format "%.1f" (/ (:amount (second position)) (if (str/includes? (name (first position)) "LKOH=") 10.0 1.0))) "," (:price (second position)) "," (f/unparse build-in-basicdate-formatter (c/from-long (c/to-long dt)) ) "\n")
         ]
     ;;(println str1)
@@ -923,7 +922,7 @@
                 ) 
 
 
-    result (filter (fn [x] (if (> (:amount (second x)) 0) true false))  positions) 
+    result (filter (fn [x] (if (= (:amount (second x)) 0.0) false true))  positions) 
     
     ]
     result
@@ -1142,8 +1141,10 @@
                  (select-columns {:A :date, :B :account :C :currency :D :amount})) (println (str "file with cash balances not found for date: " (f/unparse build-in-date-formatter (c/from-long (+ (c/to-long dt) (* 3600000 24)) )))))
 
 
+    ;tr1 (println (first (into [] positions)))
+    newpositions (filter (fn [x] (if (> (:amount (second x)) 0.0) true false )) (into [] positions))
     t2 (spit (str drive ":/DEV/output/" client ".txt")  ",,,,\n" :append true)
-    t3 (doall (map (fn [x] (append-position-to-file client x dt)) positions))
+    t3 (doall (map (fn [x] (append-position-to-file client x dt)) (if (> (count newpositions) 0) newpositions (into [] positions))))
     ;; t4 (if (not (nil? selectfile)) (doall (map (fn [x] (let [
     ;;                                            str1 (str client "," (str (if (= "RUR" (:currency x)) "RUB" (:currency x))  " Curncy")  "," (format "%.2f" (:amount x))  ","  "," (f/unparse build-in-basicdate-formatter (c/from-long (+  (* 3600000 6) (c/to-long (:date x))) )) "\n")
     ;;                                            ]
@@ -1153,30 +1154,6 @@
     ]
   )
 )
-
-(defn get-portf-by-num [client num]
-  (let [
-    newnum (+ 1451606399000 (* num 86400000) ) ;;1488412799000 1325462399000 1451606399000  for 2014: 1262304000000
-    newdate (java.util.Date. newnum)
-    ;tr1 (println newdate)
-    day-of-week (f/unparse day-of-week-formatter (c/from-long (c/to-long newdate)))
-
-    ;tr2 (println day-of-week)
-    trancount (get-trans-count-for-day client newdate)
-
-        
-    positions (if (and (> trancount 0) (or (= 0 (compare "Mon" day-of-week)) 
-                                               (= 0 (compare "Tue" day-of-week))
-                                               (= 0 (compare "Wed" day-of-week))
-                                               (= 0 (compare "Thu" day-of-week))
-                                               (= 0 (compare "Fri" day-of-week))
-                                               ) )  (filter (fn [x] (if (= (:amount (second x)) 0.0) false true)) (get-positions client newdate)) )
-        ]    
-    (if (not (nil? positions)) (save-positions-bloomberg client positions newdate))
-    "Success"
-  )
-)
-
 
 (defn append-positions-to-excel [client]
   (let [
@@ -1248,12 +1225,81 @@
   )
 )
 
+(defn get-portf-by-num [client num]
+  (let [
+    newnum (+ 1451606399000 (* num 86400000) ) ;;1488412799000 1325462399000 1451606399000  for 2014: 1262304000000 1451606399000
+    newdate (java.util.Date. newnum)
+    ;tr1 (println newdate)
+    day-of-week (f/unparse day-of-week-formatter (c/from-long (c/to-long newdate)))
+
+    ;tr2 (println day-of-week)
+    trancount (get-trans-count-for-day client newdate)
+
+        
+    positions (if (and (> trancount 0) (or (= 0 (compare "Mon" day-of-week)) 
+                                               (= 0 (compare "Tue" day-of-week))
+                                               (= 0 (compare "Wed" day-of-week))
+                                               (= 0 (compare "Thu" day-of-week))
+                                               (= 0 (compare "Fri" day-of-week))
+                                               ) )  (filter (fn [x] (if (= (:amount (second x)) 0.0) false true)) (get-positions client newdate)) )
+        ]    
+    (if (not (nil? positions)) (save-positions-bloomberg client positions newdate))
+    "Success"
+  )
+)
+
 (defn generateportfs [client]
   (let [
 
     ;res1 (spit (str "C:/DEV/clojure/sberpb/sberapi/DB/" client ".txt")  ",,,,\n" :append false)
+    transactions (sort (comp sort-tran-from-db) (get-transactions-from-db client (java.util.Date.)))
     res1 (spit (str drive ":/DEV/output/" client ".txt") (str "Portfolio Name,Security ID,Position/Quantity/Nominal,Cost Px asset Currency,Date\n")  :append false)
-    days (doall (map (fn [x] (get-portf-by-num client x)) (range 0 2500 1))) 
+    securities (get-securities)
+    lastpositions (loop
+      [positions {} valuedate nil trans transactions]
+      (if (seq trans)
+        (let [
+          
+          tran (first trans)
+          newvaluedate (java.util.Date. (c/to-long (f/parse custom-formatter (f/unparse custom-formatter (c/from-long (c/to-long (:valuedate tran)))))))
+          tr1 (if (and (> (count positions) 0) (not= newvaluedate valuedate))  (save-positions-bloomberg client positions valuedate))
+          ;tr1 (println (str tran) )           
+          sec (first (filter (fn [y] (if (= (:security tran) (:acode y)) true false)) securities))
+
+          ;tr1 (println (str "sec=" sec) )
+          isin (:isin sec)
+          acode (:acode sec)
+          assettype (:assettype sec)
+
+          tranamnt (if (= "B" (:direction tran)) (:nominal tran) (- 0 (:nominal tran)))
+
+          ;tr1 (println (str "tranamnt=" tranamnt) )
+          amnt (if (nil? (:amount ( (keyword isin) positions )) ) 0.0 (:amount ( (keyword isin) positions )))
+
+          ;tr1 (println (str "amnt=" amnt) )
+          newamnt (+ amnt tranamnt) 
+
+
+          prevpr (if (nil? (:price ((keyword isin) positions))) 0 (:price ((keyword isin) positions)))
+                        
+          tranprice (* (:price tran) (if (= 5 assettype) 1.0 (:fx tran))  )
+
+          ;tr1 (println (str "tran=" tran " tranprice=" tranprice " tranamnt=" tranamnt " prevpr=" prevpr " amnt=" amnt))
+          wap (if (= amnt 0.0) tranprice (if (>= amnt 0.0)
+            (if (> tranamnt 0.0) (/ (+ (* prevpr amnt) (* tranprice tranamnt)) newamnt)  prevpr)
+            (if (> tranamnt 0.0) prevpr (/ (+ (* prevpr amnt) (* tranprice tranamnt)) newamnt))
+            )
+          )
+          ;tr1 (println positions)
+          ;tr1 (println (str "newamnt=" newamnt " seckey=" (keyword (:acode sec))) )
+      ]
+      (recur (assoc-in positions [(keyword isin) ] {:amount newamnt :price wap} ) newvaluedate (rest trans))
+      )
+      {:positions positions :lastdate valuedate} )
+    )
+
+    lastday (if (and (> (count lastpositions) 0))  (save-positions-bloomberg client (:positions lastpositions) (:lastdate lastpositions)))
+    ;days (doall (map (fn [x] (get-portf-by-num client x)) (range 0 2500 1))) 
     ]
     
     "Success"
@@ -1495,7 +1541,7 @@
 
       (if (and (nil? security))
         (println (str "Security does not exist: " (:security tran)))
-        (println (str "Transaction already existed: " tran))        
+        ;(println (str "Transaction already existed: " tran))        
       )            
     )
   )

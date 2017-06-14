@@ -188,6 +188,15 @@
     {:status 200
      :headers {"Content-Type" "text/html; charset=utf-8"}
      :body (io/input-stream (io/resource "public/index.html"))})
+  (GET "/tradeidea/:token" [token]
+    (let [
+          file 1.0
+    ]
+    {:status 200
+     :headers {"Content-Type" "text/html; charset=utf-8"}
+     :body (io/input-stream (io/resource "public/index.html"))}
+    )
+  )
   (GET "/secexcel/:sec" [sec]
     (let [
           file (create-excel-report sec)
@@ -200,6 +209,13 @@
           file (create-client-report client)
     ]
     {:status 200 :headers {"Content-Type" "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet; charset=utf-8"} :body (io/input-stream (str xlsdir client ".xlsx") )}
+    )
+  )
+  (GET "/clientbloombergportf/:client" [client]
+    (let [
+          file 1;(create-client-bloomberg-port client)
+    ]
+    {:status 200 :headers {"Content-Type" "text/plain; charset=utf-8"} :body (io/input-stream (str xlsdir client ".txt") )}
     )
   )
   (resources "/")
