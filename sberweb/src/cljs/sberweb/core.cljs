@@ -159,7 +159,7 @@
     usdrate (:price (first (filter (fn [x] (if (= "USD" (:acode x)) true false)) (:securities @app-state))))
 
 
-    tr1 (.log js/console (str "client currency: " (:currency client)))
+    ;;tr1 (.log js/console (str "client currency: " (:currency client) "position=" (nth position 1)))
     clientcurrencyrate (:price (first (filter (fn [x] (if (= (str/upper-case (:currency client)) (:acode x)) true false)) (:securities @app-state))))
 
     isrusbond (if (and (= 5 (:assettype security)) 
@@ -257,7 +257,7 @@
 )
 
 (defn OnGetPositions [response]
-   (swap! app-state assoc-in [(keyword (:selectedclient @app-state)) :positions] (map (fn [x] (map-position x)) (filter (fn [x] (if (> (:amount (nth x 1)) 0) true false)) response) ) )
+   (swap! app-state assoc-in [(keyword (:selectedclient @app-state)) :positions] (map (fn [x] (map-position x)) (filter (fn [x] (if (= (:amount (nth x 1)) 0.0) false true)) response) ) )
 )
 
 (defn OnGetDeals [response]

@@ -963,7 +963,7 @@
                   seccode (:acode sec)
                   assettype (:assettype sec)]
                   (if (or (not= 15 assettype)
-                          (<= (:amount x) 0) 
+                          (= (:amount x) 0.0) 
                           (= false (str/includes? seccode (str/upper-case (:search @sbercore/app-state)) ))
                       )  false true)
                 ))

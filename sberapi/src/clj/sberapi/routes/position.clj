@@ -72,10 +72,12 @@
                   (let [
                         tran (first trans)
                         sec (str (:security tran))
+
                         security (first (filter (fn [x] (if (= (:security tran) (:id x)) true false)) securities))
+
                         currency (:currency security)
 
-                        ;tr1 (println (str tran))
+                        ;;tr1 (if (= (:id security) 17592186046065) (println (str tran)))
                         amnt (if (nil? (:amount ( (keyword sec) result ))) 0.0 (:amount ( (keyword sec) result ))) 
                         prevpr (if (nil? (:price ((keyword sec) result))) 0.0 (:price ((keyword sec) result)))                       
 
@@ -83,7 +85,7 @@
                         seccurfxrate (db/get-fxrate-by-date currency (:valuedate tran))
                         trancurfxrate (db/get-fxrate-by-date (:currency tran) (:valuedate tran))
                         
-                        rubprice (* (if (= 5 (:assettype security)) seccurfxrate (:fx tran) ) (:price tran)) 
+                        rubprice (* (if (or (= 5 (:assettype security)) (= 15 (:assettype security)))  seccurfxrate (:fx tran) ) (:price tran))
                         usdprice (/ rubprice usdrate)
                         prevrubprice (:rubprice ((keyword sec) result))
                         tranamnt (if (= "B" (:direction tran)) (:nominal tran) (- 0.0 (:nominal tran)))
@@ -91,14 +93,14 @@
                         ;tr1 (println "step 3")
                         prevusdprice (:wapusd ((keyword sec) result))
 
-                        wap (if (= 0.0 amnt ) (* (:price tran) (if (= 5 (:assettype security)) 1.0 (/ trancurfxrate seccurfxrate)))  (if (> newamnt 0.0) (if (> tranamnt 0.0) (/ (+ (* prevpr amnt) (* (:price tran) (if (= 5 (:assettype security)) 1.0 (/ trancurfxrate seccurfxrate)) tranamnt)) newamnt)  prevpr)  0.0))
+                        wap (if (= 0.0 amnt ) (* (:price tran) (if (or (= 5 (:assettype security)) (= 15 (:assettype security)))  1.0 (/ trancurfxrate seccurfxrate)))  (if (not= newamnt 0.0) (if (> tranamnt 0.0) (/ (+ (* prevpr amnt) (* (:price tran) (if (or (= 5 (:assettype security)) (= 15 (:assettype security)))  1.0 (/ trancurfxrate seccurfxrate)) tranamnt)) newamnt)  prevpr)  0.0))
 
                         
                         waprub (if (= amnt 0.0)  rubprice (if (= "S" (:direction tran)) prevrubprice (if (> newamnt 0.0) (/ (+ (* prevrubprice amnt) (* rubprice tranamnt)) newamnt) 0.0)) )
                          
                         wapusd (if (= amnt 0.0) usdprice (if (= "S" (:direction tran)) prevusdprice (if (> newamnt 0.0) (/ (+ (* prevusdprice amnt) (* usdprice tranamnt)) newamnt) 0.0)))
 
-                        ;tr1 (if (= (:id security) 17592186045631) (println (str "amnt= " amnt " newamnt= " newamnt " wap= " wap " waprub= " waprub " wapusd= " wapusd " prevusdprice= " prevusdprice)))
+                        ;tr1 (if (= (:id security) 17592186046065) (println (str "assettype=" (:assettype security) " amnt= " amnt " newamnt= " newamnt " wap= " wap " waprub= " waprub " wapusd= " wapusd " prevusdprice= " prevusdprice)))
 
                         ;;(if (= amnt 0.0) " amount 0" " amount not 0")
                         ;tr1 (println "step 6")
@@ -113,8 +115,8 @@
     ;result (map (fn [x] (let [y (name (first x))   z (if (< (second x) 0) 0 (second x)) ] [y z] ))  positions) 
     
     ]
-    ;(filter (fn [x] (if (= (keyword "17592186045777")  (first x)) true false)) positions)
-    positions
+    (filter (fn [x] (if (= 0.0 (:amount (second x))) false true)) positions)
+    ;positions
     ;(first positions)
   )
 )

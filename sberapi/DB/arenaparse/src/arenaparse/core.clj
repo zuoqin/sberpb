@@ -59,7 +59,7 @@
 (defn append-position-to-file [client position dt]
   (let [
         ;tr1 (println position)
-        str1 (str client "," (name (first position)) "," (format "%.1f" (/ (:amount (second position)) (if (str/includes? (name (first position)) "LKOH=") 10.0 1.0))) "," (:price (second position)) "," (f/unparse build-in-basicdate-formatter (c/from-long (c/to-long dt)) ) "\n")
+        str1 (str client "," (name (first position)) "," (format "%.1f" (/ (:amount (second posiБtion)) (if (str/includes? (name (first position)) "LKOH=") 10.0 1.0))) "," (:price (second position)) "," (f/unparse build-in-basicdate-formatter (c/from-long (c/to-long dt)) ) "\n")
         ]
     ;;(println str1)
     (spit (str drive ":/DEV/output/" client ".txt") str1 :append true)
@@ -72,10 +72,10 @@
     conn (d/connect uri)
     ;tr1 (println (str "in get-fxrate-by-date " currency " for date: " dt) )
     newdate (java.util.Date. (c/to-long (f/parse custom-formatter (f/unparse custom-formatter (c/from-long (c/to-long dt))))))
-    newcurrency (if (= currency "GBX") "GBP" (if (= "PTS" currency) "RUB" currency))
+    newcurrency (if (= currency "GBX") "GBP" (if (= "PTS" currency) "RUB" (if (nil? currency) "RUB" currency)))
 
  
-    security (ffirst (d/q '[:find ?e
+    security (ffirst (d/Бq '[:find ?e
                        :in $ ?sec
                        :where
                        [?e :security/acode ?sec]
@@ -175,7 +175,9 @@
   (let [
      conn (d/connect uri)
      ]
-    (d/transact-async conn [{ :security/acode "CRBKMOPERP", :security/assettype 5, :security/bcode "XS1601094755 Corp", :security/isin "XS1601094755", :security/exchange "MOSCOW", :security/currency "USD", :db/id #db/id[:db.part/user -100622] }]
+    (d/transact-async conn [{ :security/acode "PETBRA22A", :security/assettype 5, :security/bcode "US71647NAR08 Corp", :security/isin "US71647NAR08", :security/exchange "MOSCOW", :security/currency "USD", :db/id #db/id[:db.part/user -100629] }
+
+{ :security/acode "SISIOAALX", :security/assettype 1, :security/bcode "LU0959626531 Equity", :security/isin "LU0959626531", :security/exchange "MOSCOW", :security/currency "USD", :db/id #db/id[:db.part/user -100630] }]
     )
     ; To insert new entity:
     ;(d/transact conn [{ :transaction/client #db/id[:db.part/user 17592186045573] :transaction/security #db/id[:db.part/user 17592186065674], :transaction/nominal 108000.0 :transaction/price 100.0 :transaction/direction "S" :transaction/valuedate #inst "2014-04-22T00:00:00.0000000Z", :transaction/currency "RUB" :transaction/comment "", :db/id #db/id[:db.part/user -110002] }])
@@ -860,8 +862,25 @@
       )
       result)
     )
+
+    newtrans (map (fn [x] (let [
+
+
+       ;;tr1 (println (str x))
+       assettype (second (first (filter (fn [y] (if (= (first y) :security/assettype) true false))(ent [[(get-secid-by-isin (:isin x))]]) ) ))
+
+       isrussian (if (and 
+
+;; Check ISIN starts with RU
+(= (compare (subs  (second (first (filter (fn [y] (if (= (first y) :security/isin) true false)) (ent [[(get-secid-by-isin (:isin x) )]])) )) 0 2) "RU") 0 ) 
+;; Check currency = RUB
+(= (compare (subs  (second (first (filter (fn [y] (if (= (first y) :security/isin) true false)) (ent [[(get-secid-by-isin (:isin x ))]])) )) 0 2) "RU") 0 ) 
+)  true false)
     ]
-    (save-xls ["sheet1" (dataset [:portfolio :isin :quantity :price :date :type] newtransactions)] (str drive ":/DEV/Java/" client "_trans.xlsx") )
+    {:portfolio (:portfolio x)  :isin (:isin x) :quantity (if (and (= assettype 5) (= isrussian true)) (* 1000 (:quantity x)) (:quantity x)) :price (:price x) :date (:date x) :type (:type x)} 
+)) newtransactions)
+    ]
+    (save-xls ["sheet1" (dataset [:portfolio :isin :quantity :price :date :type] newtrans)] (str drive ":/DEV/Java/" client "_trans.xlsx") )
     "Success"
   )
 )
@@ -870,7 +889,7 @@
   (let [
     transactions (sort (comp sort-tran-from-db) (get-transactions-from-db client (java.util.Date.))   )
 
-    ;tr1 (println (first transactions))
+    ;tr1 (println (str "client=" client))
     securities (get-securities)
     positions (loop [result {} trans transactions]
                 (if (seq trans) 
@@ -958,13 +977,33 @@
 
 (defn create-excel-report [client]
   (let [
-    positions (sort (comp sort-positions-by-isin) (build-excel-positions client))
+    positions (sort (comp sort-positioБns-by-isin) (build-excel-positions client))
     newpositions (into [] (map (fn [x] [(get-secattr-by-isin (name (first x)) "bcode")   (:amount (second x)) (:waprub (second x)) (:wapusd (second x)) (:wapseccurr (second x))]) positions))
     ]
     (save-xls ["sheet1" (dataset [:isin :amount :waprub :wapusd :wapcurr] newpositions)] "c:/DEV/Java/yyy.xlsx")
     "Success"
   )
 )
+
+
+(defn sort-portfs-to-excel [portf1 portf2]
+  (let [
+        ;tr1 (println tran1)
+        ;tr2 (println tran2)
+
+        
+        dt1 1
+        dt2 1
+
+        ]
+    
+    (if (or  (< (compare (:client portf1) (:client portf2)) 0)
+	  (and (= dt1 dt2) (< (compare (:direction tran1) (:direction tran2)) 0) ))
+    true
+    false)
+  )
+)
+
 
 (defn create-excel-reports []
   (let [
@@ -975,7 +1014,7 @@
                     client (first clients)
 
                     positions (sort (comp sort-positions-by-isin) (build-excel-positions client))
-                    newpositions (map (fn [x] {:client client :isin (name (first x)) :acode (get-secattr-by-isin (name (first x)) "acode") :nominal (:amount (second x))} ) positions)                    
+                    newpositions (map (fn [x] {:client client :isin (name (first x)) :acode (get-secattr-by-isin (name (first x)) "acode") :nominal (:amount (second x)) :waprub (:waprub (second x)) :wapusd (:wapusd (second x))} ) positions)                    
                     ]
                 (recur (conj result newpositions) 
                      (rest clients))
@@ -985,7 +1024,7 @@
     newpositions (flatten positions)
     ]
     ;
-    (save-xls ["sheet1" (dataset [:client :isin :acode :nominal] newpositions)] "c:/DEV/Java/yyy.xlsx")
+    (save-xls ["sheet1" (dataset [:client :isin :acode :nominal :waprub :wapusd] newpositions)] "c:/DEV/Java/yyy.xlsx")
     "Success"
   )
 )
@@ -1140,9 +1179,25 @@
                  (select-sheet "Balances-Currency")
                  (select-columns {:A :date, :B :account :C :currency :D :amount})) (println (str "file with cash balances not found for date: " (f/unparse build-in-date-formatter (c/from-long (+ (c/to-long dt) (* 3600000 24)) )))))
 
+    positions1 (map (fn [x] (let [
+                             assettype (second (first (filter (fn [y] (if (= (first y) :security/assettype) true false))(ent [[(get-secid-by-isin (name (first x)) )]]) ) ))
+                             isrussian (if (and 
+
+;; Check ISIN starts with RU
+(= (compare (subs  (second (first (filter (fn [y] (if (= (first y) :security/isin) true false)) (ent [[(get-secid-by-isin (name (first x)) )]])) )) 0 2) "RU") 0 ) 
+;; Check currency = RUB
+(= (compare (subs  (second (first (filter (fn [y] (if (= (first y) :security/isin) true false)) (ent [[(get-secid-by-isin (name (first x)) )]])) )) 0 2) "RU") 0 ) 
+)  true false)
+
+
+                              ;tr1 (println (str "x=" x " isrussian=" isrussian " assettype=" assettype))
+                              ]
+                          [(name (first x))  {:amount (if (and (= assettype 5) (= isrussian true)) (* 1000 (:amount (second x))) (:amount (second x)))  :price (:price (second x)) }]
+                          )) positions)
+
 
     ;tr1 (println (first (into [] positions)))
-    newpositions (filter (fn [x] (if (> (:amount (second x)) 0.0) true false )) (into [] positions))
+    newpositions (filter (fn [x] (if (> (:amount (second x)) 0.0) true false )) (into [] positions1))
     t2 (spit (str drive ":/DEV/output/" client ".txt")  ",,,,\n" :append true)
     t3 (doall (map (fn [x] (append-position-to-file client x dt)) (if (> (count newpositions) 0) newpositions (into [] positions))))
     ;; t4 (if (not (nil? selectfile)) (doall (map (fn [x] (let [
