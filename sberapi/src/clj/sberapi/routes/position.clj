@@ -375,13 +375,14 @@
 
 
     filter_portfs (filter (fn [x] (if (> (:amount (second x)) 0) true false))  portfolios)
-
+    ;;tr1 (println (first filter_portfs))
 
     
     calc_portfs (map (fn [client] (
       let [
 
            ;tr1 (println (filter (fn [x] (if (= :ZADNF (first x)) true false)) filter_portfs))
+
            usedlimit (second (first (filter (fn [x] (if (= (:code client) (name (first x))) true false)) filter_portfs)))
 
            seclastrubprice (if (= secrubprice 0.0) (if (nil? usedlimit) 0.0 (:rubprice usedlimit) ) secrubprice)

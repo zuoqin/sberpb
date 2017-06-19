@@ -59,7 +59,7 @@
 (defn append-position-to-file [client position dt]
   (let [
         ;tr1 (println position)
-        str1 (str client "," (name (first position)) "," (format "%.1f" (/ (:amount (second posiБtion)) (if (str/includes? (name (first position)) "LKOH=") 10.0 1.0))) "," (:price (second position)) "," (f/unparse build-in-basicdate-formatter (c/from-long (c/to-long dt)) ) "\n")
+        str1 (str client "," (name (first position)) "," (format "%.1f" (/ (:amount (second position)) (if (str/includes? (name (first position)) "LKOH=") 10.0 1.0))) "," (:price (second position)) "," (f/unparse build-in-basicdate-formatter (c/from-long (c/to-long dt)) ) "\n")
         ]
     ;;(println str1)
     (spit (str drive ":/DEV/output/" client ".txt") str1 :append true)
@@ -75,7 +75,7 @@
     newcurrency (if (= currency "GBX") "GBP" (if (= "PTS" currency) "RUB" (if (nil? currency) "RUB" currency)))
 
  
-    security (ffirst (d/Бq '[:find ?e
+    security (ffirst (d/q '[:find ?e
                        :in $ ?sec
                        :where
                        [?e :security/acode ?sec]
@@ -646,12 +646,18 @@
        
         ;; security currency
         currency (second (first (filter (fn [x] (if (= (first x) (keyword "security/currency")) true false)) security)))
+
+
         fx_sec_currency  (if (or (= "RUR" currency) (= "RUB" currency))  1 (get-fxrate-by-date currency (nth (nth tran 5) 1)))
 
 
         fx_tran_currency (if (or (= "RUR" (nth (nth tran 5) 1)) (= "RUB" (nth (nth tran 5) 1)))  1 (get-fxrate-by-date (nth (nth tran 6) 1) (nth (nth tran 5) 1)))
 
-        newtran {:client client :security acode  :nominal (nth (nth tran 2) 1) :price (nth (nth tran 3) 1) :direction (nth (nth tran 4) 1) :valuedate (nth (nth tran 5) 1) :currency currency :comment (if (> (count (nth tran 7)) 1) (nth (nth tran 7) 1) "")  :fx (/ fx_tran_currency fx_sec_currency) :id (nth (nth tran 8) 1)}
+        newprice (* (nth (nth tran 3) 1) (/ fx_tran_currency fx_sec_currency))
+
+
+        ;;
+        newtran {:client client :security acode  :nominal (nth (nth tran 2) 1) :price newprice :direction (nth (nth tran 4) 1) :valuedate (nth (nth tran 5) 1) :currency currency :comment (if (> (count (nth tran 7)) 1) (nth (nth tran 7) 1) "")  :fx (/ fx_tran_currency fx_sec_currency) :id (nth (nth tran 8) 1)}
         ;tr1 (if (= (compare acode "HMSGLI" ) 0) (println (str (nth (nth tran 6) 1) " fx1: " fx_tran_currency " " currency " fx2: " fx_sec_currency " fx: " (:fx newtran) " date: " (:valuedate newtran) "\n")) ) 
         ]
     newtran
@@ -897,11 +903,11 @@
                         tran (first trans)
                         
                         sec (str (:security tran)) ;;acode
+                        thesecurity (first (filter (fn [x] (if (= (:security tran) (:acode x)) true false)) securities))
 
+                        currency (:currency thesecurity)
 
-                        currency (:currency (first (filter (fn [x] (if (= (:security tran) (:acode x)) true false)) securities)))
-
-                        isin (:isin (first (filter (fn [x] (if (= (:security tran) (:acode x)) true false)) securities)))
+                        isin (:isin thesecurity)
 
                         ;tr8 ( println tran)  
                         
@@ -909,16 +915,18 @@
 
                         prevpr (if (nil? (:wapseccurr ((keyword isin) result))) 0 (:wapseccurr ((keyword isin) result)))
                         
-                        rubprice (* (get-fxrate-by-date (:currency tran) (:valuedate tran)) (:price tran))
+                        seccurrprice (if (= 15 (:assettype thesecurity)) (:price tran) (:price tran))
+
+
+                        rubprice (* (get-fxrate-by-date currency (:valuedate tran)) (:price tran))
 
                         usdrate (get-fxrate-by-date "USD" (:valuedate tran))
                         ;seccurrrate (get-fxrate-by-date currency (:valuedate tran))
 
                         usdprice (/ rubprice usdrate)
-                        seccurrprice (* (:fx tran) (:price tran))
 
 
-                        ;tr3 (if (= (compare (:security tran) "HGMLN") 0) (println tran)) 
+
                         ;tr4 (if (= (compare (:security tran) "HGMLN") 0) (println (str "seccurrencyprice: " seccurrprice " rubprice: " rubprice))) 
                         prevrubprice (:waprub ((keyword isin) result))
                         prevusdprice (:wapusd ((keyword isin) result))
@@ -926,13 +934,15 @@
                         tranamnt (if (= "B" (:direction tran)) (:nominal tran) (- 0 (:nominal tran)))
                         newamnt (if (nil? amnt ) tranamnt (+ amnt tranamnt) )
 
-                        wapseccurr (if (nil? amnt ) seccurrprice (if (> newamnt 0) (/ (+ (* prevpr amnt) (* seccurrprice tranamnt)) newamnt) 0))
+                        wapseccurr (if (or (nil? amnt) (= 0.0 amnt))  seccurrprice (if (> (* tranamnt amnt) 0.0) (/ (+ (* prevpr amnt) (* seccurrprice tranamnt)) newamnt) prevpr))
 
 
-                        waprub (if (nil? amnt ) rubprice (if (> newamnt 0) (/ (+ (* prevrubprice amnt) (* rubprice tranamnt)) newamnt) 0))
+                        waprub (if (or (nil? amnt) (= 0.0 amnt))  rubprice (if (> (* tranamnt amnt) 0.0) (/ (+ (* prevrubprice amnt) (* rubprice tranamnt)) newamnt) prevrubprice))
 
 
-                        wapusd (if (nil? amnt ) usdprice (if (> newamnt 0) (/ (+ (* prevusdprice amnt) (* usdprice tranamnt)) newamnt) 0))
+                        wapusd (if (or (nil? amnt) (= 0.0 amnt))  usdprice (if (> (* tranamnt amnt) 0.0) (/ (+ (* prevusdprice amnt) (* usdprice tranamnt)) newamnt) prevusdprice))
+
+                        tr3 (if (= (compare (:security tran) "MFON") 0) (println (str "amnt= " amnt " tranamnt=" tranamnt " wapseccurr=" wapseccurr " wapusd=" wapusd " usdprice=" usdprice " rubprice=" rubprice " usdrate=" usdrate " pricetr=" (:price tran) " currencytr=" (:currency tran) " fxtran=" (:fx tran))))
                         ]
                     (recur (assoc-in result [(keyword isin) ] {:amount newamnt :wapseccurr wapseccurr :waprub waprub :wapusd wapusd} )
                          (rest trans))
@@ -977,10 +987,10 @@
 
 (defn create-excel-report [client]
   (let [
-    positions (sort (comp sort-positioБns-by-isin) (build-excel-positions client))
-    newpositions (into [] (map (fn [x] [(get-secattr-by-isin (name (first x)) "bcode")   (:amount (second x)) (:waprub (second x)) (:wapusd (second x)) (:wapseccurr (second x))]) positions))
+    positions (sort (comp sort-positions-by-isin) (build-excel-positions client))
+    newpositions (into [] (map (fn [x] [client (get-secattr-by-isin (name (first x)) "isin") (get-secattr-by-isin (name (first x)) "acode") (:amount (second x)) (:waprub (second x)) (:wapusd (second x)) (:wapseccurr (second x))]) positions))
     ]
-    (save-xls ["sheet1" (dataset [:isin :amount :waprub :wapusd :wapcurr] newpositions)] "c:/DEV/Java/yyy.xlsx")
+    (save-xls ["sheet1" (dataset [:client :isin :acode :amount :waprub :wapusd :wapcurr] newpositions)] "c:/DEV/Java/yyy.xlsx")
     "Success"
   )
 )
@@ -998,7 +1008,7 @@
         ]
     
     (if (or  (< (compare (:client portf1) (:client portf2)) 0)
-	  (and (= dt1 dt2) (< (compare (:direction tran1) (:direction tran2)) 0) ))
+	  (and (= (compare (:client portf1) (:client portf2)) 0) (< (compare (:acode portf1) (:acode portf2)) 0) ))
     true
     false)
   )

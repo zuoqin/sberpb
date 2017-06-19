@@ -93,6 +93,66 @@
   )
 )
 
+(defn calc_cashusdvalue
+  ([clientcode]
+    (let [
+           usdrate (:price (first (filter (fn [x] (if (= "USD" (:acode x)) true false)) (:securities @app-state))))
+           eurrate (:price (first (filter (fn [x] (if (= "EUR" (:acode x)) true false)) (:securities @app-state))))
+           gbprate (:price (first (filter (fn [x] (if (= "GBP" (:acode x)) true false)) (:securities @app-state))))
+           cashusdvalue (+ (:usd (first (filter (fn [x] (if (= (:code x) clientcode) true false)) (:clients @app-state)))) (* eurrate (/ (:eur (first (filter (fn [x] (if (= (:code x) clientcode) true false)) (:clients @app-state)))) usdrate)) (* gbprate (/ (:gbp (first (filter (fn [x] (if (= (:code x) clientcode) true false)) (:clients @app-state)))) usdrate)) (* 1.0 (/ (:rub (first (filter (fn [x] (if (= (:code x) clientcode) true false)) (:clients @app-state)))) usdrate)))
+    ]
+    cashusdvalue
+    )
+  )
+  ([]
+    (calc_cashusdvalue (:selectedclient @app-state))
+  )
+)
+
+
+(defn calc_cashvalue
+  ([clientcode]
+    (let [
+      client (first (filter (fn [x] (if (= (:selectedclient @app-state) (:code x)) true false)) (:clients @app-state)))
+      clientcurrencyrate (:price (first (filter (fn [x] (if (= (str/upper-case (:currency client)) (:acode x)) true false)) (:securities @app-state))))
+      usdrate (:price (first (filter (fn [x] (if (= "USD" (:acode x)) true false)) (:securities @app-state))))
+      ]
+      (/ (* (calc_cashusdvalue clientcode) usdrate) clientcurrencyrate)
+    )
+  )
+  ([]
+    (calc_cashvalue (:selectedclient @app-state))
+  )
+)
+
+(defn calc_portfusdvalue []
+  (let [
+         secsusdvalue (if (nil? (:selectedclient @app-state)) 0.0 (:usdvalue (reduce (fn [x y] {:usdvalue (+ (:usdvalue x) (:usdvalue y))}) (filter (fn [x] (let [
+                                                                                                                                     sec (first (filter (fn[y] (if (= (:id x) (:id y) ) true false)) (:securities @app-state)))
+                                                                                                                                     assettype (:assettype sec)]
+                                                                                                                                 (if (or (= 1 assettype) (= 5 assettype)) true false))) (:positions ((keyword (:selectedclient @app-state)) @app-state)))
+                                                 ))) 
+         cashusdvalue (calc_cashusdvalue) 
+
+         portfusdvalue (+ secsusdvalue cashusdvalue)
+  ]
+  portfusdvalue
+  )
+)
+
+(defn calc_portfvalue []
+  (let [
+      client (first (filter (fn [x] (if (= (:selectedclient @app-state) (:code x)) true false)) (:clients @app-state)))
+      clientcurrencyrate (if (nil? client) 1.0 (:price (first (filter (fn [x] (if (= (str/upper-case (:currency client)) (:acode x)) true false)) (:securities @app-state))))) 
+      usdrate (:price (first (filter (fn [x] (if (= "USD" (:acode x)) true false)) (:securities @app-state))))      
+
+      portfusdvalue (calc_portfusdvalue)
+    ]
+    (/ (* portfusdvalue usdrate) clientcurrencyrate) 
+  )
+)
+
+
 (defn handle-chkb-change [e]
   ;(.log js/console (.. e -target -id) )  
   ;(.log js/console "The change ....")
@@ -591,11 +651,40 @@
 
 
 
+(defn calculatetotallimit []
+  (let [
+    client (first (filter (fn [x] (if (= (:selectedclient @app-state) (:code x)) true false)) (:clients @app-state)))
+    signedadvisory (:signedadvisory client)
+
+    limit (if (or (= 5000001.0 signedadvisory) (some (partial = (:code client))  ["ELLQF" "INFLE" "AKTOS" "RWVQF" "XJZQF" "MADUN2" "XGNQF"] ) )  (calc_portfvalue) signedadvisory)
+    ]
+    limit
+  )
+)
+
+(defn calculatetotallimitusd []
+  (let [
+    client (first (filter (fn [x] (if (= (:selectedclient @app-state) (:code x)) true false)) (:clients @app-state)))
+    currency (:currency client)
+  
+    usdrate (:price (first (filter (fn [x] (if (= "USD" (:acode x)) true false)) (:securities @app-state))))
+
+    limit (calculatetotallimit)
+    ]
+    (if (= "USD" currency) limit (/ limit usdrate))
+  )
+)
 
 (defcomponent positions-navigation-view [data owner]
   (render [_]
     (let [style {:style {:margin "10px" :padding-bottom "0px"}}
       stylehome {:style {:margin-top "10px"} }
+      currency (:currency (first (filter (fn [x] (if (= (:selectedclient @app-state) (:code x)) true false)) (:clients @app-state))))
+
+      portfvalue (calc_portfvalue)
+
+
+      totallimit (calculatetotallimit)
       ]
       (dom/nav {:className "navbar navbar-default navbar-fixed-top" :role "navigation"}
         (dom/div {:className "navbar-header"}
@@ -628,10 +717,9 @@
               (dom/h5 {:style {:margin-left "5px" :margin-right "5px" :height "32px" :margin-top "1px"}} " "
       (dom/input {:id "search" :type "text" :placeholder "Search" :style {:height "32px" :margin-top "1px"} :value  (:search @data) :onChange (fn [e] (handleChange e )) })  )
             )
+            (if (= (nil? (:selectedclient @app-state)) false) (dom/li
+                (dom/h5 {:style {:margin-left "5px" :margin-right "5px" :height "32px" :margin-top "10px"}} (str "Всего лимит инвестирования: " (split-thousands (gstring/format "%.0f" totallimit))  " " currency (if (> (- totallimit portfvalue) 1000.0) (str " Не инвестировано: " (split-thousands (gstring/format "%.0f" (- totallimit portfvalue))) " " currency) " Все средства инвестированы.")  ) )))
 
-            ;; (dom/li {:style {:margin-left "5px"}}
-            ;;   (b/button {:className "btn btn-default" :onClick (fn [e] (downloadPortfolio e) )} "Download Excel")
-            ;; )
           )
           (dom/ul {:className "nav navbar-nav navbar-right"}
             (dom/li {:className "dropdown"}
@@ -1048,65 +1136,8 @@
 )
 
 
-(defn calc_cashusdvalue
-  ([clientcode]
-    (let [
-           usdrate (:price (first (filter (fn [x] (if (= "USD" (:acode x)) true false)) (:securities @app-state))))
-           eurrate (:price (first (filter (fn [x] (if (= "EUR" (:acode x)) true false)) (:securities @app-state))))
-           gbprate (:price (first (filter (fn [x] (if (= "GBP" (:acode x)) true false)) (:securities @app-state))))
-           cashusdvalue (+ (:usd (first (filter (fn [x] (if (= (:code x) clientcode) true false)) (:clients @app-state)))) (* eurrate (/ (:eur (first (filter (fn [x] (if (= (:code x) clientcode) true false)) (:clients @app-state)))) usdrate)) (* gbprate (/ (:gbp (first (filter (fn [x] (if (= (:code x) clientcode) true false)) (:clients @app-state)))) usdrate)) (* 1.0 (/ (:rub (first (filter (fn [x] (if (= (:code x) clientcode) true false)) (:clients @app-state)))) usdrate)))
-    ]
-    cashusdvalue
-    )
-  )
-  ([]
-    (calc_cashusdvalue (:selectedclient @app-state))
-  )
-)
 
 
-(defn calc_cashvalue
-  ([clientcode]
-    (let [
-      client (first (filter (fn [x] (if (= (:selectedclient @app-state) (:code x)) true false)) (:clients @app-state)))
-      clientcurrencyrate (:price (first (filter (fn [x] (if (= (str/upper-case (:currency client)) (:acode x)) true false)) (:securities @app-state))))
-      usdrate (:price (first (filter (fn [x] (if (= "USD" (:acode x)) true false)) (:securities @app-state))))
-      ]
-      (/ (* (calc_cashusdvalue clientcode) usdrate) clientcurrencyrate)
-    )
-  )
-  ([]
-    (calc_cashvalue (:selectedclient @app-state))
-  )
-)
-
-
-(defn calc_portfusdvalue []
-  (let [
-         secsusdvalue (:usdvalue (reduce (fn [x y] {:usdvalue (+ (:usdvalue x) (:usdvalue y))}) (filter (fn [x] (let [
-           sec (first (filter (fn[y] (if (= (:id x) (:id y) ) true false)) (:securities @app-state)))
-           assettype (:assettype sec)]
-           (if (or (= 1 assettype) (= 5 assettype)) true false))) (:positions ((keyword (:selectedclient @app-state)) @app-state)))
-))
-         cashusdvalue (calc_cashusdvalue) 
-
-         portfusdvalue (+ secsusdvalue cashusdvalue)
-  ]
-  portfusdvalue
-  )
-)
-
-(defn calc_portfvalue []
-  (let [
-      client (first (filter (fn [x] (if (= (:selectedclient @app-state) (:code x)) true false)) (:clients @app-state)))
-      clientcurrencyrate (:price (first (filter (fn [x] (if (= (str/upper-case (:currency client)) (:acode x)) true false)) (:securities @app-state))))
-      usdrate (:price (first (filter (fn [x] (if (= "USD" (:acode x)) true false)) (:securities @app-state))))      
-
-      portfusdvalue (calc_portfusdvalue)
-    ]
-    (/ (* portfusdvalue usdrate) clientcurrencyrate) 
-  )
-)
 
 (defmulti website-view
   (
