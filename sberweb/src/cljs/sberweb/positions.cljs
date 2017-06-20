@@ -76,7 +76,7 @@
 
 
   ]
-    (if (= (:assettype sec1) 5)
+    (if (and (= (:assettype sec1) 5) (= (:assettype sec2) 5)) 
       (if (or
            (< (:currency sec1) (:currency sec2))
            (and (= (:currency sec1) (:currency sec2)) (< (:duration sec1) (:duration sec2))) 
