@@ -9,10 +9,12 @@
             [environ.core :refer [env]]
             [clj-http.client :as client]
             [clojure.data.json :as json]
-
+            [ring.util.http-response :as response]
             [clj-time.format :as f]
             [clj-time.coerce :as c]
             [clj-time.core :as t]
+
+            [clojure.java.io :as io]
 
             [ring.adapter.jetty :refer [run-jetty]])
   (:gen-class))
@@ -21,6 +23,39 @@
 ;;(def apipath "http://10.20.35.21:3000/")
 (def apipath "http://localhost:3000/")
 (def xlsdir "c:/DEV/Java/")
+
+(def bloombergportdir "c:/DEV/output/")
+(def imagepath "C:/DEV/clojure/sberpb/sberstatic/resources/public/img/tradeidea/")
+
+(defn copy-file [source-path dest-path]
+  (io/copy (io/file source-path) (io/file dest-path)))
+
+
+(defn on-upload-image [request]
+  (let [;tr1 (println request)
+
+      filepath (.getAbsolutePath (:tempfile (:file (:params request))))
+      newfilename (:filename (:file (:params request)))
+      ;tr1 (println (str "Path to file: " filepath " File name: " newfilename))
+
+      tr1 (copy-file (.getAbsolutePath (:tempfile (:file (:params request)))) (str imagepath newfilename))
+
+      tr1 (io/delete-file filepath)
+    ]
+    {:body { :location (str "/" newfilename)  }}
+  )
+)
+
+
+(defn on-save-html [request]
+  (let [;tr1 (println request)
+        ;url (str apipath "api/syssetting")
+        tr1 1 ;(tradeidea/update-tradeidea request)
+    ]
+     (response/found "/tradeidea/1")
+  )
+)
+
 
 (defn sort-portfs-by-name [portf1 portf2] 
   (let [
@@ -194,7 +229,7 @@
     ]
     {:status 200
      :headers {"Content-Type" "text/html; charset=utf-8"}
-     :body (io/input-stream (io/resource "public/index.html"))}
+     :body (io/input-stream (io/resource "public/tradeidea.html"))}
     )
   )
   (GET "/secexcel/:sec" [sec]
@@ -213,11 +248,30 @@
   )
   (GET "/clientbloombergportf/:client" [client]
     (let [
-          file 1;(create-client-bloomberg-port client)
+      url (str apipath "api/bloomberg_portf?portf=" client)
+      ;tr1 (println (str "Trying to get securities"))
+      response (client/get url {:headers {"authorization" "Bearer TheBearer"}})
+
+
     ]
-    {:status 200 :headers {"Content-Type" "text/plain; charset=utf-8"} :body (io/input-stream (str xlsdir client ".txt") )}
+    {:status 200 :headers {"Content-Type" "text/plain", "charset" "utf-8", "Content-Disposition" "attachment", "filename" "portfolio.txt"} :body (io/input-stream (str bloombergportdir client ".txt") )}
     )
   )
+  (GET "/clientbloombergtrans/:client" [client]
+    (let [
+      url (str apipath "api/bloomberg_trans?portf=" client)
+      response (client/get url {:headers {"authorization" "Bearer TheBearer"}})
+    ]
+    {:status 200 :headers {"Content-Type" "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, charset=utf-8"} :body (io/input-stream (str xlsdir client ".xlsx") )}
+    )
+  )
+
+
+
+  (POST "/imageupload" [] (fn [request] (on-upload-image request)) )
+  (POST "/tradeidea" [token] (fn [request] (on-save-html request)) )
+
+
   (resources "/")
 )
 

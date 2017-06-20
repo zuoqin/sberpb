@@ -886,8 +886,16 @@
     ]
     {:portfolio (:portfolio x)  :isin (:isin x) :quantity (if (and (= assettype 5) (= isrussian true)) (* 1000 (:quantity x)) (:quantity x)) :price (:price x)  :date (:date x) :type (:type x)} 
 )) newtransactions)
+
+
+    ;; wb (create-workbook "transactions"
+    ;;                       [["" "Price"]
+    ;;                        ["Foo Widget" 100]
+    ;;                        ["Bar Widget" 200]])
+    ;;   sheet (select-sheet "Price List" wb)
+    ;;   header-row (first (row-seq sheet)
     ]
-    (save-xls ["sheet1" (dataset [:portfolio :isin :quantity :price :date :type] newtrans)] (str drive ":/DEV/Java/" client "_trans.xlsx") )
+    ;(save-xls ["sheet1" (dataset [:portfolio :isin :quantity :price :date :type] newtrans)] (str drive ":/DEV/Java/" client "_trans.xlsx") )
     "Success"
   )
 )

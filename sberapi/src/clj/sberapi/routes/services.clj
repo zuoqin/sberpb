@@ -55,6 +55,34 @@
   )
 
   (context "/api" []
+    :tags ["bloomberg"]
+
+    (GET "/bloomberg_portf" []
+      :header-params [authorization :- String]
+      :summary "Generate Bloomberg portfolio file"
+      :query-params [portf :- String]
+      (ok  (positionapi/getBloombergPortfolio (nth (str/split authorization #" ") 1) portf)))
+
+    (OPTIONS "/bloomberg_portf" []
+      :summary  "Allows OPTIONS requests"
+      (ok "")
+    )
+
+
+    (GET "/bloomberg_trans" []
+      :header-params [authorization :- String]
+      :summary "Generate Bloomberg Transactions file"
+      :query-params [portf :- String]
+      (ok  (positionapi/getBloombergTransactions (nth (str/split authorization #" ") 1) portf)))
+
+    (OPTIONS "/bloomberg_trans" []
+      :summary  "Allows OPTIONS requests"
+      (ok "")
+    )
+  )
+
+
+  (context "/api" []
     :tags ["client"]
 
     (GET "/client" []

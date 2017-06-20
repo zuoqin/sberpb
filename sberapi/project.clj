@@ -34,6 +34,11 @@
                  [jumblerg/ring.middleware.cors "1.0.1"]
                  [org.clojure/data.codec "0.1.0"]
                  [digest "1.4.5"]
+
+
+                 [dk.ative/docjure "1.11.0"]
+
+                 ;;[incanter "1.5.7"]
 		]
 
   :min-lein-version "2.0.0"

@@ -1,4 +1,8 @@
 (ns sberapi.routes.position
+  (:gen-class)
+  (use dk.ative.docjure.spreadsheet)
+  ;(use (incanter core charts excel))
+
   (:require [ring.util.http-response :refer :all]
             [compojure.api.sweet :refer :all]
             [schema.core :as s]
@@ -17,7 +21,14 @@
             [sberapi.db.client :as clients]
             [postal.core :as postal]
             [clojure.string :as str]
+
+            [sberapi.config :refer [env]]
 ))
+
+(def custom-formatter (f/formatter "dd/MM/yyyy"))
+(def build-in-basicdate-formatter (f/formatters :basic-date))
+(def build-in-date-formatter (f/formatters :date))
+
 
 (defn sort-tran-from-db [tran1 tran2]
   (let [
@@ -31,7 +42,7 @@
         ]
     
     (if (or  (< dt1  dt2)
-	  (and (= dt1 dt2)(< (:id tran1) (:id tran2))))
+	  (and (= dt1 dt2)(< (:id tran1) (:id tran2) )))
     true
     false)
   )
@@ -471,5 +482,212 @@
     ;;                         :body "Test."
     ;;                         :X-Tra "Something else"})
     ;(println (str clients))
+  )
+)
+
+
+
+
+
+
+(defn append-position-to-file [client position dt]
+  (let [
+        ;;tr1 (println position)
+        str1 (str client "," (name (first position)) "," (format "%.1f" (/ (:amount (second position)) (if (str/includes? (name (first position)) "LKOH=") 10.0 1.0))) "," (:price (second position)) "," (f/unparse build-in-basicdate-formatter (c/from-long (c/to-long dt)) ) "\n")
+        ]
+    ;;(println str1)
+    (spit (str (-> env :drive) ":/DEV/output/" client ".txt") str1 :append true)
+  )
+)
+
+
+(defn get-secid-by-isin [isin]
+  (let [secs (secs/get-securities)
+        sec (first (filter (fn [x] (if (= (compare (:isin x) isin) 0) true false)) secs))
+        ]
+    (:id sec)
+  )
+)
+
+(defn save-positions-bloomberg [client positions dt]
+  (let [
+    positions1 (map (fn [x] (let [
+                             sec (db/ent [[(get-secid-by-isin (name (first x)) )]])
+                             assettype (second (first (filter (fn [y] (if (= (first y) :security/assettype) true false)) sec ) ))
+                             currency (second (first (filter (fn [y] (if (= (first y) :security/currency) true false)) sec ) ))
+                             isrussian (if (and 
+
+;; Check ISIN starts with RU
+(= (compare (subs  (second (first (filter (fn [y] (if (= (first y) :security/isin) true false)) sec) )) 0 2) "RU") 0 ) 
+;; Check currency = RUB
+(= (compare (subs  (second (first (filter (fn [y] (if (= (first y) :security/isin) true false)) sec) )) 0 2) "RU") 0 ) 
+)  true false)
+
+
+                              ;tr1 (if (= (name (first x)) "GB0032360173") (println (str "x=" x " currency=" currency ""))) 
+                              ]
+                          [(name (first x))  {:amount (if (and (= assettype 5) (= isrussian true)) (* 1000 (:amount (second x))) (:amount (second x)))  :price (:price (second x))  }]
+                          )) positions)
+
+
+    ;tr1 (println (first (into [] positions)))
+    newpositions (filter (fn [x] (if (> (:amount (second x)) 0.0) true false )) (into [] positions1))
+
+    ;tr1 (println (str (first newpositions)))
+    ;changecurrencyprice (map (fn [x] [(first x) {:amount (:amount (second x)) ()}]) newpositions)
+
+
+    t2 (spit (str (-> env :drive) ":/DEV/output/" client ".txt")  ",,,,\n" :append true)
+    t3 (doall (map (fn [x] (append-position-to-file client x dt)) (if (> (count newpositions) 0) newpositions (into [] positions))))
+    ;; t4 (if (not (nil? selectfile)) (doall (map (fn [x] (let [
+    ;;                                            str1 (str client "," (str (if (= "RUR" (:currency x)) "RUB" (:currency x))  " Curncy")  "," (format "%.2f" (:amount x))  ","  "," (f/unparse build-in-basicdate-formatter (c/from-long (+  (* 3600000 6) (c/to-long (:date x))) )) "\n")
+    ;;                                            ]
+    ;;                                        ;;(println str1)
+    ;;                                        (spit (str drive ":/DEV/output/" client ".txt") str1 :append true)
+    ;;                                        )) (filter (fn [y] (if (= client (:account y)) true false)) cash))))
+    ]
+  )
+)
+
+
+(defn sort-transactions-from-db [tran1 tran2]
+  (let [
+        ;tr1 (println tran1)
+        ;tr2 (println tran2)
+
+        
+        dt1 (c/to-long (:valuedate tran1))
+        dt2 (c/to-long (:valuedate tran2))
+
+        ]
+    
+    (if (or  (< dt1  dt2)
+	  (and (= dt1 dt2)(< (compare (:id tran1) (:id tran2)) 0 )))
+    true
+    false)
+  )
+)
+
+(defn getBloombergPortfolio [token client]
+  (let [
+
+    ;res1 (spit (str "C:/DEV/clojure/sberpb/sberapi/DB/" client ".txt")  ",,,,\n" :append false)
+    transactions (sort (comp sort-transactions-from-db) (db/get-transactions-from-db client (java.util.Date.)))
+    res1 (spit (str (-> env :drive) ":/DEV/output/" client ".txt") (str "Portfolio Name,Security ID,Position/Quantity/Nominal,Cost Px asset Currency,Date\n")  :append false)
+    securities (secs/get-securities)
+    lastpositions (loop
+      [positions {} valuedate nil trans transactions]
+      (if (seq trans)
+        (let [
+          
+          tran (first trans)
+          newvaluedate (java.util.Date. (c/to-long (f/parse custom-formatter (f/unparse custom-formatter (c/from-long (c/to-long (:valuedate tran)))))))
+          tr1 (if (and (> (count positions) 0) (not= newvaluedate valuedate))  (save-positions-bloomberg client positions valuedate))
+          ;tr1 (println (str tran) )           
+          sec (first (filter (fn [y] (if (= (:security tran) (:acode y)) true false)) securities))
+
+          ;tr1 (println (str "sec=" sec) )
+          isin (:isin sec)
+          acode (:acode sec)
+          assettype (:assettype sec)
+
+          tranamnt (if (= "B" (:direction tran)) (:nominal tran) (- 0 (:nominal tran)))
+
+          ;tr1 (println (str "tranamnt=" tranamnt) )
+          amnt (if (nil? (:amount ( (keyword isin) positions )) ) 0.0 (:amount ( (keyword isin) positions )))
+
+          ;tr1 (println (str "amnt=" amnt) )
+          newamnt (+ amnt tranamnt) 
+
+
+          prevpr (if (nil? (:price ((keyword isin) positions))) 0 (:price ((keyword isin) positions)))
+                        
+          tranprice (* (:price tran) )
+
+          ;tr1 (println (str "tran=" tran " tranprice=" tranprice " tranamnt=" tranamnt " prevpr=" prevpr " amnt=" amnt))
+          wap (if (= amnt 0.0) tranprice (if (>= amnt 0.0)
+            (if (> tranamnt 0.0) (/ (+ (* prevpr amnt) (* tranprice tranamnt)) newamnt)  prevpr)
+            (if (> tranamnt 0.0) prevpr (/ (+ (* prevpr amnt) (* tranprice tranamnt)) newamnt))
+            )
+          )
+          ;tr1 (println positions)
+          ;tr1 (println (str "newamnt=" newamnt " seckey=" (keyword (:acode sec))) )
+      ]
+      (recur (assoc-in positions [(keyword isin) ] {:amount newamnt :price wap} ) newvaluedate (rest trans))
+      )
+      {:positions positions :lastdate valuedate} )
+    )
+
+    lastday (if (and (> (count lastpositions) 0))  (save-positions-bloomberg client (:positions lastpositions) (:lastdate lastpositions)))
+    ;days (doall (map (fn [x] (get-portf-by-num client x)) (range 0 2500 1))) 
+    ]
+    
+    "Success"
+  )
+)
+
+
+
+(defn getBloombergTransactions [token client]
+  (let [
+    transactions (sort (comp sort-tran-from-db) (db/get-transactions-from-db client (java.util.Date.)))
+
+    ;tr1 (println (first transactions))
+    securities (secs/get-securities)
+    
+    newtransactions (loop
+      [result [] amounts {} trans transactions]
+      (if (seq trans)
+        (let [
+          
+          tran (first trans)
+          ;tr1 (println (str tran) )
+          sec (first (filter (fn [y] (if (= (:security tran) (:acode y)) true false)) securities))
+
+          ;tr1 (println (str "sec=" sec) )
+          isin (:isin sec)
+          assettype (:assettype sec)
+
+
+
+
+          tranamnt (if (= "B" (:direction tran)) (:nominal tran) (- 0 (:nominal tran)))
+
+          ;tr1 (println (str "tranamnt=" tranamnt) )
+          amnt (:amount ( (keyword (:acode sec)) amounts ))
+
+          ;tr1 (println (str "amnt=" amnt) )
+          newamnt (if (nil? amnt ) tranamnt (+ amnt tranamnt) )
+          
+          ;tr1 (if (= isin "GB0032360173") (println (str "price= " (:price tran) "fullprice=" (:price tran) " fx=" (:fx tran)) )) 
+      ]
+      (recur (conj result {:portfolio client :isin isin :quantity (/ (:nominal tran) (if (str/includes? isin "LKOH=") 10.0 1.0))  :price (:price tran) :date (f/unparse build-in-basicdate-formatter (c/from-long (c/to-long (:valuedate tran))) ) :type (if (> tranamnt 0) (if (> newamnt 0) "BUY LONG" "BUY TO COVER") (if (< newamnt 0) "SELL SHORT" "SELL LONG")) }) (assoc-in amounts [(keyword (:acode sec)) ] {:amount newamnt} ) (rest trans))
+      )
+      result)
+    )
+
+    newtrans (map (fn [x] (let [
+
+       sec (db/ent [[(get-secid-by-isin (:isin x) )]])
+       ;;tr1 (println (str x))
+       assettype (second (first (filter (fn [y] (if (= (first y) :security/assettype) true false)) sec ) ))
+       currency (second (first (filter (fn [y] (if (= (first y) :security/currency) true false)) sec ) ))
+       isrussian (if (and 
+
+;; Check ISIN starts with RU
+(= (compare (subs  (second (first (filter (fn [y] (if (= (first y) :security/isin) true false)) sec) )) 0 2) "RU") 0 ) 
+;; Check currency = RUB
+(= (compare (subs  (second (first (filter (fn [y] (if (= (first y) :security/isin) true false)) sec) )) 0 2) "RU") 0 ) 
+)  true false)
+    ]
+    [(:portfolio x)  (:isin x) (if (and (= assettype 5) (= isrussian true)) (* 1000 (:quantity x)) (:quantity x)) (:price x)  (:date x) (:type x)] 
+)) newtransactions)
+
+    ;tr1 (println (str (nth newtrans 1)))
+    wb (create-workbook "transactions" (reduce conj [["portfolio" "isin" "quantity" "price" "date" "type"]]  newtrans) )
+    ]
+    (do (save-workbook! (str (-> env :drive) ":/dev/java/" client ".xlsx")  wb))
+    ;(save-xls ["sheet1" (dataset [:portfolio :isin :quantity :price :date :type] newtrans)] (str drive ":/DEV/Java/" client "_trans.xlsx") )
+    "Success"
   )
 )

@@ -145,3 +145,70 @@
     positions
   )
 )
+
+
+
+
+(defn tran-to-map [tran]
+  (let [
+        ;tr0 (println tran)
+        client (:db/id (second (first (filter (fn [x] (if (= (first x) (keyword "transaction/client")) true false)) tran))) ) ;(ent [[(:db/id (nth (nth tran 0) 1))]]  )
+        
+        security (ent [[(:db/id (second (first (filter (fn [x] (if (= (first x) (keyword "transaction/security")) true false)) tran))) )]] ) ;;(ent [[(:db/id (nth (nth tran 1) 1))]]  )
+
+        acode (second (first (filter (fn [x] (if (= (first x) (keyword "security/acode")) true false)) security) ))
+        ;; ;tr1 (println security)
+       
+        ;; security currency
+        currency (second (first (filter (fn [x] (if (= (first x) (keyword "security/currency")) true false)) security)))
+
+
+        fx_sec_currency  (if (or (= "RUR" currency) (= "RUB" currency))  1 (get-fxrate-by-date currency (nth (nth tran 5) 1)))
+
+
+        fx_tran_currency (if (or (= "RUR" (nth (nth tran 5) 1)) (= "RUB" (nth (nth tran 5) 1)))  1 (get-fxrate-by-date (nth (nth tran 6) 1) (nth (nth tran 5) 1)))
+
+        newprice (* (nth (nth tran 3) 1) (/ fx_tran_currency fx_sec_currency) (if (= "GBX" currency) 1.0 1.0))
+
+        ;tr1 (if (= acode "HGMLN") (println (str "fxtran=" fx_tran_currency " fxsec=" fx_sec_currency " price=" (nth (nth tran 3) 1))))
+        ;;
+        newtran {:client client :security acode  :nominal (nth (nth tran 2) 1) :price newprice :direction (nth (nth tran 4) 1) :valuedate (nth (nth tran 5) 1) :currency currency :comment (if (> (count (nth tran 7)) 1) (nth (nth tran 7) 1) "")  :fx (/ fx_tran_currency fx_sec_currency) :id (nth (nth tran 8) 1)}
+        ;tr1 (if (= (compare acode "HMSGLI" ) 0) (println (str (nth (nth tran 6) 1) " fx1: " fx_tran_currency " " currency " fx2: " fx_sec_currency " fx: " (:fx newtran) " date: " (:valuedate newtran) "\n")) ) 
+        ]
+    newtran
+  )
+)
+
+(defn get-transactions-from-db [client dt]
+  (let [
+        dt1 (java.util.Date. (c/to-long (f/parse custom-formatter (f/unparse custom-formatter (c/from-long (c/to-long #inst "2000-01-01T00:00:00.000-00:00" ))))))
+        dt2 (java.util.Date. (c/to-long (f/parse custom-formatter (f/unparse custom-formatter (c/from-long (+ (c/to-long dt) (* 1000 24 3600)))))))
+
+
+        ;tr1 (println (str client " " dt))
+        trans (d/q '[:find ?e
+                      :in $ ?client ?dt1 ?dt2
+                      :where
+                      [?e :transaction/client ?c]
+                      [?c :client/code ?client]
+                      [?e :transaction/currency ?currency]
+                      [?e :transaction/direction ?direction]
+                      [?e :transaction/valuedate ?dt]
+                      [(< ?dt ?dt2)]
+                      [(> ?dt ?dt1)]
+                     ] (d/db conn) client dt1 dt2)
+
+        ;tr2 (println (str client " " dt))
+        newtrans  (map (fn [x] ( concat (ent [x]) [[:id (first x)]] ) ) trans)
+
+        ;tr3 (println (str client " " dt))
+        newtrans2 (map (fn [x] (tran-to-map x)) newtrans)
+
+
+        ;tr5 (println newtrans2)
+    ]
+    ;(first newtrans2)
+    ;(count newtrans2)
+    newtrans2
+  )
+)

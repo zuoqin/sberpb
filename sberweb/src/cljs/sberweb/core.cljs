@@ -649,6 +649,14 @@
   (aset js/window "location" (str "/clientexcel/" (:selectedclient @app-state)))
 )
 
+(defn downloadBloombergPortfolio [e]
+  (aset js/window "location" (str "/clientbloombergportf/" (:selectedclient @app-state)))
+)
+
+(defn downloadBloombergTransactions [e]
+  (aset js/window "location" (str "/clientbloombergtrans/" (:selectedclient @app-state)))
+)
+
 
 
 (defn calculatetotallimit []
@@ -736,6 +744,27 @@
                     )
                   )
                 )
+
+                (dom/li {:className "divider"})
+
+                (dom/li 
+                  (dom/a {:style {:cursor "pointer" :pointer-events (if (nil? (:selectedclient @app-state)) "none" "all")} :onClick (fn [e] (downloadBloombergPortfolio e) )}
+                    (dom/div
+                      (dom/i {:className "fa fa-bank"})
+                     "Сохранить Портфель Bloomberg"
+                    )
+                  )
+                )
+
+                (dom/li 
+                  (dom/a {:style {:cursor "pointer" :pointer-events (if (nil? (:selectedclient @app-state)) "none" "all")} :onClick (fn [e] (downloadBloombergTransactions e) )}
+                    (dom/div
+                      (dom/i {:className "fa fa-bars"})
+                     "Сохранить Транзакции Bloomberg"
+                    )
+                  )
+                )
+
                 (dom/li {:className "divider"})
                 (dom/li 
                   (dom/a {:style {:cursor "pointer" :pointer-events (if (nil? (:selectedclient @app-state)) "none" "all")} :onClick (fn [e] (printMonth) )}
@@ -776,6 +805,20 @@
                     (dom/div
                       (dom/i {:className "fa fa-tasks fa-fw"})
                       "Расчеты"
+                    )
+                  )
+                )
+
+
+
+
+
+                (dom/li {:className "divider"})
+                (dom/li
+                  (dom/a {:href "/tradeidea/YRT" :target "_blank"}
+                    (dom/div
+                      (dom/i {:className "fa fa-desktop fa-fw"})
+                      "Редактор торговой идеи"
                     )
                   )
                 )
