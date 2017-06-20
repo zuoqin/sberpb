@@ -1,0 +1,120 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h1>Редактировать текст торговой идеи</h1>
+
+<form action="/tradeidea" method="post">
+  <textarea id="mytextarea">{{original_idea}}</textarea>
+  
+  <iframe id="form_target" name="form_target" style="display:none"></iframe>
+  
+  <input type="hidden" id="full_html" name="full_html" />
+
+  <input type="hidden" id="mytoken" name="mytoken" />
+  <input type="submit" value="Сохранить" style="margin-top: 5px">
+
+  <input type="button" id="close" onclick="window.close()" />
+</form>
+<div class="row">
+  <div class="col-sm-12">
+    {{docs|markdown}}
+  </div>
+</div>
+
+<!-- scripts -->
+{% script "../assets/jquery/jquery.min.js" %}
+{% script "../assets/tether/dist/js/tether.min.js" %}
+{% script "../assets/bootstrap/js/bootstrap.min.js" %}
+{% script "/js/tinymce/tinymce.min.js" %}
+
+<script type="text/javascript">
+  // @grant window.close
+  $(document).ready(function() {
+    var token = window.location.href.substr(window.location.href.lastIndexOf("/") + 1);
+    $('#mytoken').val(token);
+
+    if (token === "1") {
+
+      var retVal = confirm("Данные сохранены, вернуться в обратно в систему управления активами?");
+      if( retVal == true ){
+        //document.write ("User wants to continue!");
+        // @grant        window.close
+        window.close();
+        return true;
+      }
+      else{
+        //document.write ("User does not want to continue!");
+        return false;
+      }
+    }   
+  });
+   
+</script>
+
+<script type="text/javascript">
+ var context = "{{servlet-context}}";
+ tinymce.init({
+   selector: '#mytextarea',
+
+   height: "480",
+
+   relative_urls: false,
+   remove_script_host: false,
+   document_base_url: "http://localhost:3000/",
+   images_upload_base_path: '/img/tradeidea',
+   images_upload_credentials: true,
+   file_picker_types: 'image',
+   plugins: "image imagetools",
+   imagetools_cors_hosts: ['mydomain.com', 'otherdomain.com'],
+   imagetools_proxy: 'proxy.php',
+   toolbar: "image",
+
+   // Support automatic image upload
+   images_upload_url: 'imageupload',
+   automatic_uploads: true,
+
+   setup: function (editor) {
+     editor.on('change', function (e) {
+       console.log('change event', e);
+       tinymce.triggerSave();
+       editor.save();
+       $('#full_html').val(tinymce.get('mytextarea').getContent());
+     });
+     editor.on('submit', function (e) {
+       console.log('submit event', e);
+       //editor.save();
+     });
+   },
+
+   
+   file_picker_callback: function(callback, value, meta) {
+     var input = document.createElement('input');
+     input.setAttribute('type', 'file');
+     input.setAttribute('accept', 'image/*');
+
+     input.onchange = function() {
+       var file = this.files[0];
+       
+       var reader = new FileReader();
+       reader.readAsDataURL(file);
+       reader.onload = function () {
+         // Note: Now we need to register the blob in TinyMCEs image blob
+         // registry. In the next release this part hopefully won't be
+         // necessary, as we are looking to handle it internally.
+         var id = 'blobid' + (new Date()).getTime();
+         var blobCache =  tinymce.activeEditor.editorUpload.blobCache;
+         var blobInfo = blobCache.create(id, file, reader.result);
+         blobCache.add(blobInfo);
+
+         // call the callback and populate the Title field with the file name
+         callback(blobInfo.blobUri(), { title: file.name });
+       };
+     };
+
+     input.click();
+   }
+ });
+
+ 
+</script>
+{% endblock %}

@@ -328,9 +328,10 @@
         )
 
            (sort (comp comp-portfs) (filter (fn [x] (let [
-               portfname (:client x)
+               portfname (:code (first (filter (fn [y] (if (= (:client x) (:code y)) true false)) (:clients @sbercore/app-state))))
+               
                ]
-               (if (or (= false (str/includes? portfname (str/upper-case (:search @sbercore/app-state)))) (and (= 1 (:noholders @sbercore/app-state)) (> (:shares x) 0.0)))  false true)) ) (:calcportfs ((keyword (str (:selectedsec @sbercore/app-state))) @sbercore/app-state))))
+               (if (or (nil? portfname ) (= false (str/includes? portfname (str/upper-case (:search @sbercore/app-state)))) (and (= 1 (:noholders @sbercore/app-state)) (> (:shares x) 0.0)))  false true)) ) (:calcportfs ((keyword (str (:selectedsec @sbercore/app-state))) @sbercore/app-state))))
         )
       )
 

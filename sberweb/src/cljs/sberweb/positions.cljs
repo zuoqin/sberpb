@@ -80,7 +80,7 @@
       (if (or
            (< (:currency sec1) (:currency sec2))
            (and (= (:currency sec1) (:currency sec2)) (< (:duration sec1) (:duration sec2))) 
-           (and (= (:duration sec1) (:duration sec2)) (> (compare (:acode (first (filter (fn[x] (if (= (:id x) (:id position1) ) true false)) (:securities @sbercore/app-state)))) (:acode (first (filter (fn[x] (if (= (:id x) (:id position2) ) true false)) (:securities @sbercore/app-state))))) 0))
+           (and (= (:duration sec1) (:duration sec2)) (= (:currency sec1) (:currency sec2)) (> (compare (:acode (first (filter (fn[x] (if (= (:id x) (:id position1) ) true false)) (:securities @sbercore/app-state)))) (:acode (first (filter (fn[x] (if (= (:id x) (:id position2) ) true false)) (:securities @sbercore/app-state))))) 0))
         ) 
           true
           false

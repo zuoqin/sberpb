@@ -58,7 +58,7 @@
 
 (defn append-position-to-file [client position dt]
   (let [
-        ;tr1 (println position)
+        ;;tr1 (println position)
         str1 (str client "," (name (first position)) "," (format "%.1f" (/ (:amount (second position)) (if (str/includes? (name (first position)) "LKOH=") 10.0 1.0))) "," (:price (second position)) "," (f/unparse build-in-basicdate-formatter (c/from-long (c/to-long dt)) ) "\n")
         ]
     ;;(println str1)
@@ -175,9 +175,7 @@
   (let [
      conn (d/connect uri)
      ]
-    (d/transact-async conn [{ :security/acode "PETBRA22A", :security/assettype 5, :security/bcode "US71647NAR08 Corp", :security/isin "US71647NAR08", :security/exchange "MOSCOW", :security/currency "USD", :db/id #db/id[:db.part/user -100629] }
-
-{ :security/acode "SISIOAALX", :security/assettype 1, :security/bcode "LU0959626531 Equity", :security/isin "LU0959626531", :security/exchange "MOSCOW", :security/currency "USD", :db/id #db/id[:db.part/user -100630] }]
+    (d/transact-async conn [{ :security/acode "TINCREPERP", :security/assettype 1, :security/bcode "XS1631338495 Corp", :security/isin "XS1631338495", :security/exchange "MOSCOW", :security/currency "USD", :db/id #db/id[:db.part/user -100631] }]
     )
     ; To insert new entity:
     ;(d/transact conn [{ :transaction/client #db/id[:db.part/user 17592186045573] :transaction/security #db/id[:db.part/user 17592186065674], :transaction/nominal 108000.0 :transaction/price 100.0 :transaction/direction "S" :transaction/valuedate #inst "2014-04-22T00:00:00.0000000Z", :transaction/currency "RUB" :transaction/comment "", :db/id #db/id[:db.part/user -110002] }])
@@ -357,7 +355,7 @@
   (let [
     dt (java.util.Date.)
 
-    ;tr1 (println quote)
+    tr1 (println quote)
     price (double (:price quote))
     target (double (:target quote))
     anr (double (:anr quote))
@@ -373,7 +371,7 @@
     newputdt (if (> (count (:putdate quote)) 0 ) (java.util.Date. (c/to-long (f/parse custom-formatter (:putdate quote)))) (java.util.Date. (c/to-long (f/parse custom-formatter "01/01/1900"))))
     secid (get-secid-by-isin (:isin quote))
     ;tr1 (println quote)
-    ;tr2 (println secid)
+    tr2 (println secid)
     conn (d/connect uri)
 
     tr1 (ffirst (d/q '[:find ?e
@@ -629,6 +627,9 @@
                   )                  
                   result)
                 ) 
+
+
+       tr1 (println (first positions))
     ]
     (filter (fn [x] (if (= 0.0 (:amount (second x) )) false true))  positions) 
   )
@@ -653,9 +654,9 @@
 
         fx_tran_currency (if (or (= "RUR" (nth (nth tran 5) 1)) (= "RUB" (nth (nth tran 5) 1)))  1 (get-fxrate-by-date (nth (nth tran 6) 1) (nth (nth tran 5) 1)))
 
-        newprice (* (nth (nth tran 3) 1) (/ fx_tran_currency fx_sec_currency))
+        newprice (* (nth (nth tran 3) 1) (/ fx_tran_currency fx_sec_currency) (if (= "GBX" currency) 1.0 1.0))
 
-
+        ;tr1 (if (= acode "HGMLN") (println (str "fxtran=" fx_tran_currency " fxsec=" fx_sec_currency " price=" (nth (nth tran 3) 1))))
         ;;
         newtran {:client client :security acode  :nominal (nth (nth tran 2) 1) :price newprice :direction (nth (nth tran 4) 1) :valuedate (nth (nth tran 5) 1) :currency currency :comment (if (> (count (nth tran 7)) 1) (nth (nth tran 7) 1) "")  :fx (/ fx_tran_currency fx_sec_currency) :id (nth (nth tran 8) 1)}
         ;tr1 (if (= (compare acode "HMSGLI" ) 0) (println (str (nth (nth tran 6) 1) " fx1: " fx_tran_currency " " currency " fx2: " fx_sec_currency " fx: " (:fx newtran) " date: " (:valuedate newtran) "\n")) ) 
@@ -862,28 +863,28 @@
           ;tr1 (println (str "amnt=" amnt) )
           newamnt (if (nil? amnt ) tranamnt (+ amnt tranamnt) )
           
-          ;tr1 (println (str "newamnt=" newamnt " seckey=" (keyword (:acode sec))) )
+          ;tr1 (if (= isin "GB0032360173") (println (str "price= " (:price tran) "fullprice=" (:price tran) " fx=" (:fx tran)) )) 
       ]
-      (recur (conj result {:portfolio client :isin isin :quantity (/ (:nominal tran) (if (str/includes? isin "LKOH=") 10.0 1.0))  :price (* (:price tran) (if (= 5 assettype) 1.0 (:fx tran))) :date (f/unparse build-in-basicdate-formatter (c/from-long (c/to-long (:valuedate tran))) ) :type (if (> tranamnt 0) (if (> newamnt 0) "BUY LONG" "BUY TO COVER") (if (< newamnt 0) "SELL SHORT" "SELL LONG")) }) (assoc-in amounts [(keyword (:acode sec)) ] {:amount newamnt} ) (rest trans))
+      (recur (conj result {:portfolio client :isin isin :quantity (/ (:nominal tran) (if (str/includes? isin "LKOH=") 10.0 1.0))  :price (:price tran) :date (f/unparse build-in-basicdate-formatter (c/from-long (c/to-long (:valuedate tran))) ) :type (if (> tranamnt 0) (if (> newamnt 0) "BUY LONG" "BUY TO COVER") (if (< newamnt 0) "SELL SHORT" "SELL LONG")) }) (assoc-in amounts [(keyword (:acode sec)) ] {:amount newamnt} ) (rest trans))
       )
       result)
     )
 
     newtrans (map (fn [x] (let [
 
-
+       sec (ent [[(get-secid-by-isin (:isin x) )]])
        ;;tr1 (println (str x))
-       assettype (second (first (filter (fn [y] (if (= (first y) :security/assettype) true false))(ent [[(get-secid-by-isin (:isin x))]]) ) ))
-
+       assettype (second (first (filter (fn [y] (if (= (first y) :security/assettype) true false)) sec ) ))
+       currency (second (first (filter (fn [y] (if (= (first y) :security/currency) true false)) sec ) ))
        isrussian (if (and 
 
 ;; Check ISIN starts with RU
-(= (compare (subs  (second (first (filter (fn [y] (if (= (first y) :security/isin) true false)) (ent [[(get-secid-by-isin (:isin x) )]])) )) 0 2) "RU") 0 ) 
+(= (compare (subs  (second (first (filter (fn [y] (if (= (first y) :security/isin) true false)) sec) )) 0 2) "RU") 0 ) 
 ;; Check currency = RUB
-(= (compare (subs  (second (first (filter (fn [y] (if (= (first y) :security/isin) true false)) (ent [[(get-secid-by-isin (:isin x ))]])) )) 0 2) "RU") 0 ) 
+(= (compare (subs  (second (first (filter (fn [y] (if (= (first y) :security/isin) true false)) sec) )) 0 2) "RU") 0 ) 
 )  true false)
     ]
-    {:portfolio (:portfolio x)  :isin (:isin x) :quantity (if (and (= assettype 5) (= isrussian true)) (* 1000 (:quantity x)) (:quantity x)) :price (:price x) :date (:date x) :type (:type x)} 
+    {:portfolio (:portfolio x)  :isin (:isin x) :quantity (if (and (= assettype 5) (= isrussian true)) (* 1000 (:quantity x)) (:quantity x)) :price (:price x)  :date (:date x) :type (:type x)} 
 )) newtransactions)
     ]
     (save-xls ["sheet1" (dataset [:portfolio :isin :quantity :price :date :type] newtrans)] (str drive ":/DEV/Java/" client "_trans.xlsx") )
@@ -942,7 +943,7 @@
 
                         wapusd (if (or (nil? amnt) (= 0.0 amnt))  usdprice (if (> (* tranamnt amnt) 0.0) (/ (+ (* prevusdprice amnt) (* usdprice tranamnt)) newamnt) prevusdprice))
 
-                        tr3 (if (= (compare (:security tran) "MFON") 0) (println (str "amnt= " amnt " tranamnt=" tranamnt " wapseccurr=" wapseccurr " wapusd=" wapusd " usdprice=" usdprice " rubprice=" rubprice " usdrate=" usdrate " pricetr=" (:price tran) " currencytr=" (:currency tran) " fxtran=" (:fx tran))))
+                        ;tr3 (if (= (compare (:security tran) "MFON") 0) (println (str "amnt= " amnt " tranamnt=" tranamnt " wapseccurr=" wapseccurr " wapusd=" wapusd " usdprice=" usdprice " rubprice=" rubprice " usdrate=" usdrate " pricetr=" (:price tran) " currencytr=" (:currency tran) " fxtran=" (:fx tran))))
                         ]
                     (recur (assoc-in result [(keyword isin) ] {:amount newamnt :wapseccurr wapseccurr :waprub waprub :wapusd wapusd} )
                          (rest trans))
@@ -1190,24 +1191,31 @@
                  (select-columns {:A :date, :B :account :C :currency :D :amount})) (println (str "file with cash balances not found for date: " (f/unparse build-in-date-formatter (c/from-long (+ (c/to-long dt) (* 3600000 24)) )))))
 
     positions1 (map (fn [x] (let [
-                             assettype (second (first (filter (fn [y] (if (= (first y) :security/assettype) true false))(ent [[(get-secid-by-isin (name (first x)) )]]) ) ))
+                             sec (ent [[(get-secid-by-isin (name (first x)) )]])
+                             assettype (second (first (filter (fn [y] (if (= (first y) :security/assettype) true false)) sec ) ))
+                             currency (second (first (filter (fn [y] (if (= (first y) :security/currency) true false)) sec ) ))
                              isrussian (if (and 
 
 ;; Check ISIN starts with RU
-(= (compare (subs  (second (first (filter (fn [y] (if (= (first y) :security/isin) true false)) (ent [[(get-secid-by-isin (name (first x)) )]])) )) 0 2) "RU") 0 ) 
+(= (compare (subs  (second (first (filter (fn [y] (if (= (first y) :security/isin) true false)) sec) )) 0 2) "RU") 0 ) 
 ;; Check currency = RUB
-(= (compare (subs  (second (first (filter (fn [y] (if (= (first y) :security/isin) true false)) (ent [[(get-secid-by-isin (name (first x)) )]])) )) 0 2) "RU") 0 ) 
+(= (compare (subs  (second (first (filter (fn [y] (if (= (first y) :security/isin) true false)) sec) )) 0 2) "RU") 0 ) 
 )  true false)
 
 
-                              ;tr1 (println (str "x=" x " isrussian=" isrussian " assettype=" assettype))
+                              ;tr1 (if (= (name (first x)) "GB0032360173") (println (str "x=" x " currency=" currency ""))) 
                               ]
-                          [(name (first x))  {:amount (if (and (= assettype 5) (= isrussian true)) (* 1000 (:amount (second x))) (:amount (second x)))  :price (:price (second x)) }]
+                          [(name (first x))  {:amount (if (and (= assettype 5) (= isrussian true)) (* 1000 (:amount (second x))) (:amount (second x)))  :price (:price (second x))  }]
                           )) positions)
 
 
     ;tr1 (println (first (into [] positions)))
     newpositions (filter (fn [x] (if (> (:amount (second x)) 0.0) true false )) (into [] positions1))
+
+    ;tr1 (println (str (first newpositions)))
+    ;changecurrencyprice (map (fn [x] [(first x) {:amount (:amount (second x)) ()}]) newpositions)
+
+
     t2 (spit (str drive ":/DEV/output/" client ".txt")  ",,,,\n" :append true)
     t3 (doall (map (fn [x] (append-position-to-file client x dt)) (if (> (count newpositions) 0) newpositions (into [] positions))))
     ;; t4 (if (not (nil? selectfile)) (doall (map (fn [x] (let [
@@ -1347,7 +1355,7 @@
 
           prevpr (if (nil? (:price ((keyword isin) positions))) 0 (:price ((keyword isin) positions)))
                         
-          tranprice (* (:price tran) (if (= 5 assettype) 1.0 (:fx tran))  )
+          tranprice (* (:price tran) )
 
           ;tr1 (println (str "tran=" tran " tranprice=" tranprice " tranamnt=" tranamnt " prevpr=" prevpr " amnt=" amnt))
           wap (if (= amnt 0.0) tranprice (if (>= amnt 0.0)
