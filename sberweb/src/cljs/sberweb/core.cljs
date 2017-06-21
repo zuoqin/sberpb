@@ -75,8 +75,8 @@
 )
 
 (defn goSettings [data]
-  ;;(swap! app-state assoc-in [:view] 5 )
-  (.open js/window (str "http://localhost:3000/tradeidea/" (:token (:token @app-state))))
+  ;;(swap! app-state assoc-in [:view] 5 ) settings/apipath
+  (.open js/window (str settings/apipath "tradeidea/" (:token (:token @app-state))))
 )
 
 
@@ -815,7 +815,7 @@
 
                 (dom/li {:className "divider"})
                 (dom/li
-                  (dom/a {:href "/tradeidea/YRT" :target "_blank"}
+                  (dom/a {:href (str settings/apipath "tradeidea/" (:token (:token @app-state)))  :target "_blank"}
                     (dom/div
                       (dom/i {:className "fa fa-desktop fa-fw"})
                       "Редактор торговой идеи"

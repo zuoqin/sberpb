@@ -13,7 +13,7 @@
   <input type="hidden" id="mytoken" name="mytoken" />
   <input type="submit" value="Сохранить" style="margin-top: 5px">
 
-  <input type="button" id="close" onclick="window.close()" />
+  <input type="button" id="close" value="Закрыть"onclick="window.close()" />
 </form>
 <div class="row">
   <div class="col-sm-12">
@@ -56,21 +56,26 @@
  tinymce.init({
    selector: '#mytextarea',
 
-   height: "480",
+   height: "600",
 
    relative_urls: false,
    remove_script_host: false,
-   document_base_url: "http://localhost:3000/",
-   images_upload_base_path: '/img/tradeidea',
+   document_base_url: 'http://10.20.35.21:3000/',
+   images_upload_base_path: 'http://10.20.35.21/img/tradeidea',
    images_upload_credentials: true,
    file_picker_types: 'image',
-   plugins: "image imagetools",
+   plugins: ['advlist autolink lists link image imagetools charmap print preview hr anchor pagebreak',
+             'searchreplace wordcount visualblocks visualchars code fullscreen',
+             'insertdatetime nonbreaking save table contextmenu directionality',
+             'emoticons template paste textcolor colorpicker textpattern imagetools codesample toc help'
+   ],
    imagetools_cors_hosts: ['mydomain.com', 'otherdomain.com'],
    imagetools_proxy: 'proxy.php',
-   toolbar: "image",
+   toolbar1: 'undo redo | insert | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | image',
+   toolbar2: 'print preview media | forecolor backcolor emoticons | codesample help',
 
    // Support automatic image upload
-   images_upload_url: 'imageupload',
+   images_upload_url: '/imageupload',
    automatic_uploads: true,
 
    setup: function (editor) {

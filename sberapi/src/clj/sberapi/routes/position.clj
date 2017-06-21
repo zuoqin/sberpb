@@ -408,12 +408,12 @@
 
            clienttotalrub (+ (* (:usd client) usdrate) (* (:rub client) 1.0) (* (:eur client) eurrate) (* (:gbp client) gbprate))
 
-           seclimitinrub (/ (* fxrate (:signedadvisory client)  (if (= (:assettype sec) 5) (* (:bondshare client) percentage) (* (:stockshare client) percentage)) ) 10.0 )
+           seclimitinrub (/ (* fxrate (:signedadvisory client)  (if (= (:assettype sec) 5) (* (:bondshare client) percentage) (* (:stockshare client) percentage)) ) 10000.0 )
 
            ;tr1 (println client)
-           ;tr1 (if (= "GBCJF" (:code client)) (println (str "fxrate: " fxrate " seclimitinrub: " seclimitinrub " calcusedlimit=" calcusedlimit " usedlimit" usedlimit " seclastrubprice=" seclastrubprice))) 
+           ;tr1 (if (= "MADUN2" (:code client)) (println (str "fxrate: " fxrate " seclimitinrub: " seclimitinrub " calcusedlimit=" calcusedlimit " usedlimit" usedlimit " seclastrubprice=" seclastrubprice))) 
 
-           ;tr1 (if (= "GBCJF" (:code client)) (println (str "client: " client " sec last price: " seclastrubprice) " usedlimit: " usedlimit " secrubprice=" secrubprice)) 
+           ;tr1 (if (= "MADUN2" (:code client)) (println (str "client: " client " sec last price: " seclastrubprice) " usedlimit: " usedlimit " secrubprice=" secrubprice)) 
      ]
       {:client (:code client) :usd (:usd client) :rub (:rub client) :eur (:eur client) :gbp (:gbp client) :currency (:currency client) :shares (if (nil? usedlimit) 0 (:amount usedlimit))
 
@@ -453,8 +453,10 @@
     isin (:isin sec)
     assettype (:assettype sec)
     texttosend (str "Прошу согласовать покупку " (if (= (:assettype sec) 1) "акций " "облигаций ") seccode " (ISIN: " isin ") для клиента " (:code clientdata) " в количестве " (:amount clientdata) " штук." "\r\n\r\n" txtdata)
+
+
     ;tr1 (println (str "sending email to: ") email)
-    ;tr1 (println (str "sending text: ") texttosend)
+    ;;tr1 (println (str "sending text: ") texttosend)
     ]
     (postal/send-message {:host "psmtp.sberbank-cib.ru"} ;:user "alexey@sberpb.com" :pass "password"
       {:from "tradeidea@sberpb.com"
@@ -462,7 +464,8 @@
        :cc ["Alexey_Zorchenkov@sberbank-pb.ru" "Rustam_Nazimanov@sberbank-pb.ru" "Alexey_Koshkin@sberbank-pb.ru"
          ]
        :subject (str "Trade idea: " seccode) 
-       :body texttosend}
+       :body [{:type "text/html; charset=utf-8"
+                 :content texttosend}] }
     )
     ;email
   )

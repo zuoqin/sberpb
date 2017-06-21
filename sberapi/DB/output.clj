@@ -2913,7 +2913,7 @@
 
 { :transaction/client #db/id[:db.part/user -102062], :transaction/security #db/id[:db.part/user -100499], :transaction/nominal 1500.0, :transaction/price 86.5976, :transaction/direction "B",:transaction/valuedate #inst "2014-09-16T10:00:00.0000000Z", :transaction/currency "USD", :transaction/comment "Transfer in", :db/id #db/id[:db.part/user -110669] }
 
-{ :transaction/client #db/id[:db.part/user -102062], :transaction/security #db/id[:db.part/user -100249], :transaction/nominal 1500.0, :transaction/price 7.77, :transaction/direction "B",:transaction/valuedate #inst "2016-05-17T10:00:00.0000000Z", :transaction/currency "USD", :transaction/comment "Transfer in", :db/id #db/id[:db.part/user -110697] }
+{ :transaction/client #db/id[:db.part/user -102062], :transaction/security #db/id[:db.part/user -100249], :transaction/nominal 5000.0, :transaction/price 7.77, :transaction/direction "B",:transaction/valuedate #inst "2016-05-17T10:00:00.0000000Z", :transaction/currency "USD", :transaction/comment "Transfer in", :db/id #db/id[:db.part/user -110697] }
 
 { :transaction/client #db/id[:db.part/user -102062], :transaction/security #db/id[:db.part/user -100494], :transaction/nominal 2600.0, :transaction/price 60.35, :transaction/direction "B",:transaction/valuedate #inst "2013-06-13T10:00:00.0000000Z", :transaction/currency "USD", :transaction/comment "Transfer in", :db/id #db/id[:db.part/user -110670] }
 
@@ -2971,7 +2971,15 @@
 
 { :transaction/client #db/id[:db.part/user -102062], :transaction/security #db/id[:db.part/user -100503], :transaction/nominal 300.0, :transaction/price 10266.33, :transaction/direction "B",:transaction/valuedate #inst "2014-05-29T10:00:00.0000000Z", :transaction/currency "RUB", :transaction/comment "Transfer in", :db/id #db/id[:db.part/user -110698] }
 
+{ :transaction/client #db/id[:db.part/user -102062], :transaction/security #db/id[:db.part/user -100464], :transaction/nominal 420.0, :transaction/price 104.95, :transaction/direction "B",:transaction/valuedate #inst "2014-09-16T10:00:00.0000000Z", :transaction/currency "EUR", :transaction/comment "Transfer in", :db/id #db/id[:db.part/user -110699] }
 
+{ :transaction/client #db/id[:db.part/user -102062], :transaction/security #db/id[:db.part/user -100474], :transaction/nominal 1500.0, :transaction/price 20.50, :transaction/direction "B",:transaction/valuedate #inst "2013-06-17T10:00:00.0000000Z", :transaction/currency "EUR", :transaction/comment "Transfer in", :db/id #db/id[:db.part/user -110700] }
+
+{ :transaction/client #db/id[:db.part/user -102003], :transaction/security #db/id[:db.part/user -100045], :transaction/nominal 125000.0, :transaction/price 100.00, :transaction/direction "B",:transaction/valuedate #inst "2017-06-19T10:00:00.0000000Z", :transaction/currency "USD", :transaction/comment "Worst of Issuer Callable Barrier Reverse Convertible on Johnson & Johnson, Merck & Pfizer", :db/id #db/id[:db.part/user -110701] }
+
+{ :transaction/client #db/id[:db.part/user -102116], :transaction/security #db/id[:db.part/user -100045], :transaction/nominal 110000.0, :transaction/price 100.00, :transaction/direction "B",:transaction/valuedate #inst "2017-06-19T10:00:00.0000000Z", :transaction/currency "USD", :transaction/comment "Worst of Issuer Callable Barrier Reverse Convertible on Johnson & Johnson, Merck & Pfizer", :db/id #db/id[:db.part/user -110702] }
+
+{ :transaction/client #db/id[:db.part/user -102116], :transaction/security #db/id[:db.part/user -102086], :transaction/nominal 97000.0, :transaction/price 100.00, :transaction/direction "B",:transaction/valuedate #inst "2017-06-19T10:00:00.0000000Z", :transaction/currency "USD", :transaction/comment "Worst of Issuer Callable Barrier Reverse Convertible on Johnson & Johnson, Merck & Pfizer", :db/id #db/id[:db.part/user -110703] }
 
 
 

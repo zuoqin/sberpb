@@ -184,7 +184,7 @@
                 newfxrate (if (= 0 (compare "GBX" seccurrency)) (/ fxrate 100.) fxrate)
                 totalcash (sbercore/calc_cashusdvalue (:client item))
 
-                sharestobuy (case (:selectedcurrency @sbercore/app-state) "all" (+ (:maxusdshares item) (:maxrubshares item) (:maxeurshares item) (:maxgbpshares item)) ((keyword (str "max" (:selectedcurrency @sbercore/app-state) "shares") ) item))
+                sharestobuy (case (:selectedcurrency @sbercore/app-state) "all" (if (< (:freelimit item) 0.0) (:freelimit item) (if (< (:freelimit item) (+ (:maxusdshares item) (:maxrubshares item) (:maxeurshares item) (:maxgbpshares item))) (:freelimit item) (+ (:maxusdshares item) (:maxrubshares item) (:maxeurshares item) (:maxgbpshares item))))  ((keyword (str "max" (:selectedcurrency @sbercore/app-state) "shares") ) item))
                ]
 
           

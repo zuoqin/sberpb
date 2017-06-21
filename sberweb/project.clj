@@ -7,7 +7,7 @@
   :dependencies [[org.clojure/clojure "1.8.0"]
                  [org.clojure/clojurescript "1.9.89" :scope "provided"]
                  [com.cognitect/transit-clj "0.8.285"]
-                 [ring "1.6.1"]
+                 [ring "1.4.0"]
                  [ring/ring-defaults "0.2.0"]
                  [bk/ring-gzip "0.1.1"]
                  [ring.middleware.logger "0.5.0"]
@@ -15,8 +15,8 @@
                  [environ "1.0.3"]
 
                  [prismatic/om-tools "0.4.0"]
-                 [secretary "1.2.3"]                 
-                 [metosin/ring-http-response "0.9.0"]
+                 [secretary "1.2.3"]   
+              
                  [racehub/om-bootstrap "0.6.1"]
                  [org.omcljs/om "1.0.0-alpha41"]
                  [cljs-ajax "0.5.8"]
@@ -58,8 +58,8 @@
 
                 :compiler {:main sberweb.login
                            :asset-path "js/compiled/out"
-                           :output-to "resources/public/js/compiled/sberweb.js"
-                           :output-dir "resources/public/js/compiled/out"
+                           :output-to "resources/public/js/compiled2/sberweb.js"
+                           :output-dir "resources/public/js/compiled2/out"
                            :source-map-timestamp true
                            :optimizations :none
                            :pretty-print true}}
@@ -94,8 +94,8 @@
                 :jar true
                 :compiler {:main sberweb.login
                            :asset-path "js/compiled/out"
-                           :output-to "resources/public/js/compiled2/sberweb.js"
-                           :output-dir "resources/public/js/compiled2/out"
+                           :output-to "resources/public/js/compiled/sberweb.js"
+                           :output-dir "resources/public/js/compiled/out"
                            :source-map-timestamp false
                            :optimizations :simple
                            :closure-warnings {:externs-validation :off}
