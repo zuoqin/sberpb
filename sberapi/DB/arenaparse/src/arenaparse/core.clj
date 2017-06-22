@@ -175,7 +175,7 @@
   (let [
      conn (d/connect uri)
      ]
-    (d/transact-async conn [{ :security/acode "TINCREPERP", :security/assettype 1, :security/bcode "XS1631338495 Corp", :security/isin "XS1631338495", :security/exchange "MOSCOW", :security/currency "USD", :db/id #db/id[:db.part/user -100631] }]
+    (d/transact-async conn [{ :security/acode "EU47REGS", :security/assettype 5, :security/bcode "RU000A0JXU14 Corp", :security/isin "RU000A0JXU14", :security/exchange "MOSCOW", :security/currency "USD", :db/id #db/id[:db.part/user -100631] }]
     )
     ; To insert new entity:
     ;(d/transact conn [{ :transaction/client #db/id[:db.part/user 17592186045573] :transaction/security #db/id[:db.part/user 17592186065674], :transaction/nominal 108000.0 :transaction/price 100.0 :transaction/direction "S" :transaction/valuedate #inst "2014-04-22T00:00:00.0000000Z", :transaction/currency "RUB" :transaction/comment "", :db/id #db/id[:db.part/user -110002] }])
@@ -895,7 +895,7 @@
     ;;   sheet (select-sheet "Price List" wb)
     ;;   header-row (first (row-seq sheet)
     ]
-    ;(save-xls ["sheet1" (dataset [:portfolio :isin :quantity :price :date :type] newtrans)] (str drive ":/DEV/Java/" client "_trans.xlsx") )
+    (save-xls ["sheet1" (dataset [:portfolio :isin :quantity :price :date :type] newtrans)] (str drive ":/DEV/Java/" client "_trans.xlsx") )
     "Success"
   )
 )
@@ -1031,7 +1031,8 @@
             (if (seq clients) 
               (let [
                     client (first clients)
-
+                    
+                    tr1 (println (str client))
                     positions (sort (comp sort-positions-by-isin) (build-excel-positions client))
                     newpositions (map (fn [x] {:client client :isin (name (first x)) :acode (get-secattr-by-isin (name (first x)) "acode") :nominal (:amount (second x)) :waprub (:waprub (second x)) :wapusd (:wapusd (second x))} ) positions)                    
                     ]
@@ -1040,7 +1041,7 @@
               )                  
               result)
             )
-    newpositions (flatten positions)
+    newpositions (sort (comp sort-portfs-to-excel) (flatten positions))
     ]
     ;
     (save-xls ["sheet1" (dataset [:client :isin :acode :nominal :waprub :wapusd] newpositions)] "c:/DEV/Java/yyy.xlsx")

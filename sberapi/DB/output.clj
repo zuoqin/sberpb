@@ -34,7 +34,7 @@
 
 { :security/acode "HCFN19" :security/isin "RU000A0JX3X7", :security/exchange "OTC", :security/assettype 5, :security/bcode "RU000A0JX3X7 Corp", :security/currency "RUB", :db/id #db/id[:db.part/user -100012] }
 
-{ :security/acode "POLYLN", :security/isin "JE00B6T5S470", :security/bcode "POLY RX Equity", :security/assettype  1, :security/exchange "MICEX", :security/currency "GBX", :db/id #db/id[:db.part/user -100019] }
+{ :security/acode "POLYLN", :security/isin "JE00B6T5S470", :security/bcode "POLY LN Equity", :security/assettype  1, :security/exchange "MICEX", :security/currency "GBX", :db/id #db/id[:db.part/user -100019] }
 
 { :security/acode "FKEC01", :security/assettype 5, :security/bcode "RU000A0JP039 Corp", :security/isin "RU000A0JP039", :security/exchange "MOSCOW", :security/currency "RUB", :db/id #db/id[:db.part/user -100020] }
 
@@ -470,7 +470,7 @@
 
 { :security/acode "NOMUR21A", :security/isin  "XS1542704421", :security/bcode "XS1542704421 Corp", :security/assettype 5, :security/name "Yandex NV", :security/exchange "NYSE", :security/currency "USD", :db/id #db/id[:db.part/user -100230]}
 
-{ :security/acode "AGROLI", :security/isin  "US7496552057", :security/bcode "AGRO EB Equity", :security/assettype 1, :security/name "Yandex NV", :security/exchange "EB", :security/currency "USD", :db/id #db/id[:db.part/user -100231]}
+{ :security/acode "AGROLI", :security/isin  "US7496552057", :security/bcode "AGRO LI Equity", :security/assettype 1, :security/name "Yandex NV", :security/exchange "EB", :security/currency "USD", :db/id #db/id[:db.part/user -100231]}
 
 { :security/acode "GMSS27", :security/isin  "RU000A0JXJE0", :security/bcode "AM562901     Corp", :security/assettype 5, :security/name "Yandex NV", :security/exchange "MICB", :security/currency "RUB", :db/id #db/id[:db.part/user -100232]}
 
@@ -1273,9 +1273,12 @@
 
 { :security/acode "SISIOAALX", :security/assettype 1, :security/bcode "LU0959626531 Equity", :security/isin "LU0959626531", :security/exchange "MOSCOW", :security/currency "USD", :db/id #db/id[:db.part/user -100630] }
 
-;{ :security/acode "TINCREPERP", :security/assettype 5, :security/bcode "XS1631338495 Corp", :security/isin "XS1631338495", :security/exchange "MOSCOW", :security/currency "USD", :db/id #db/id[:db.part/user -100631] }
+{ :security/acode "EU47REGS", :security/assettype 5, :security/bcode "RU000A0JXU14 Corp", :security/isin "RU000A0JXU14", :security/exchange "MOSCOW", :security/currency "USD", :db/id #db/id[:db.part/user -100631] }
 
 { :security/acode "YAHOO1", :security/isin "US0213461017", :security/bcode "AABA US Equity", :security/assettype 1, :security/name "", :security/exchange "", :security/currency "USD", :db/id #db/id[:db.part/user -100632]}
+
+{ :security/acode "EU47REGS", :security/assettype 5, :security/bcode "RU000A0JXU14 Corp", :security/isin "RU000A0JXU14", :security/exchange "MOSCOW", :security/currency "USD", :db/id #db/id[:db.part/user -100631] }
+
 
 
 ;;FORTS contracts
@@ -2847,7 +2850,7 @@
 
 { :transaction/client #db/id[:db.part/user -102006], :transaction/security #db/id[:db.part/user -100042], :transaction/nominal 403.0, :transaction/price 10003.3821, :transaction/direction "B",:transaction/valuedate #inst "2017-02-13T10:00:00.0000000Z", :transaction/currency "RUB", :transaction/comment "Transfer in", :db/id #db/id[:db.part/user -110629] }
 
-{ :transaction/client #db/id[:db.part/user -102006], :transaction/security #db/id[:db.part/user -100125], :transaction/nominal 17720.0, :transaction/price 1.731215, :transaction/direction "B",:transaction/valuedate #inst "2017-02-13T10:00:00.0000000Z", :transaction/currency "USD", :transaction/comment "Transfer in", :db/id #db/id[:db.part/user -110630] }
+{ :transaction/client #db/id[:db.part/user -102006], :transaction/security #db/id[:db.part/user -100125], :transaction/nominal 17720.0, :transaction/price 1.731215, :transaction/direction "B",:transaction/valuedate #inst "2016-11-10T10:00:00.0000000Z", :transaction/currency "USD", :transaction/comment "Transfer in", :db/id #db/id[:db.part/user -110630] }
 
 { :transaction/client #db/id[:db.part/user -102006], :transaction/security #db/id[:db.part/user -100127], :transaction/nominal 2270.0, :transaction/price 5.870883, :transaction/direction "B",:transaction/valuedate #inst "2016-11-10T10:00:00.0000000Z", :transaction/currency "USD", :transaction/comment "Transfer in", :db/id #db/id[:db.part/user -110631] }
 
@@ -2857,7 +2860,7 @@
 
 { :transaction/client #db/id[:db.part/user -102006], :transaction/security #db/id[:db.part/user -100074], :transaction/nominal 8960.0, :transaction/price 3.662, :transaction/direction "B",:transaction/valuedate #inst "2016-08-31T10:00:00.0000000Z", :transaction/currency "USD", :transaction/comment "Transfer in", :db/id #db/id[:db.part/user -110634] }
 
-{ :transaction/client #db/id[:db.part/user -102006], :transaction/security #db/id[:db.part/user -100128], :transaction/nominal 4180.0, :transaction/price 5.870883, :transaction/direction "B",:transaction/valuedate #inst "2016-11-10T10:00:00.0000000Z", :transaction/currency "USD", :transaction/comment "Transfer in", :db/id #db/id[:db.part/user -110635] }
+{ :transaction/client #db/id[:db.part/user -102006], :transaction/security #db/id[:db.part/user -100128], :transaction/nominal 4180.0, :transaction/price 177.03, :transaction/direction "B",:transaction/valuedate #inst "2016-09-26T10:00:00.0000000Z", :transaction/currency "RUB", :transaction/comment "Transfer in", :db/id #db/id[:db.part/user -110635] }
 
 { :transaction/client #db/id[:db.part/user -102004], :transaction/security #db/id[:db.part/user -100071], :transaction/nominal 6447000.0, :transaction/price 0.5302, :transaction/direction "B",:transaction/valuedate #inst "2015-02-11T10:00:00.0000000Z", :transaction/currency "RUB", :transaction/comment "Transfer in", :db/id #db/id[:db.part/user -110636] }
 
@@ -2975,13 +2978,25 @@
 
 { :transaction/client #db/id[:db.part/user -102062], :transaction/security #db/id[:db.part/user -100474], :transaction/nominal 1500.0, :transaction/price 20.50, :transaction/direction "B",:transaction/valuedate #inst "2013-06-17T10:00:00.0000000Z", :transaction/currency "EUR", :transaction/comment "Transfer in", :db/id #db/id[:db.part/user -110700] }
 
-{ :transaction/client #db/id[:db.part/user -102003], :transaction/security #db/id[:db.part/user -100045], :transaction/nominal 125000.0, :transaction/price 100.00, :transaction/direction "B",:transaction/valuedate #inst "2017-06-19T10:00:00.0000000Z", :transaction/currency "USD", :transaction/comment "Worst of Issuer Callable Barrier Reverse Convertible on Johnson & Johnson, Merck & Pfizer", :db/id #db/id[:db.part/user -110701] }
+{ :transaction/client #db/id[:db.part/user -102003], :transaction/security #db/id[:db.part/user -100045], :transaction/nominal 125000.0, :transaction/price 100.00, :transaction/direction "S",:transaction/valuedate #inst "2017-06-19T10:00:00.0000000Z", :transaction/currency "USD", :transaction/comment "Worst of Issuer Callable Barrier Reverse Convertible on Johnson & Johnson, Merck & Pfizer", :db/id #db/id[:db.part/user -110701] }
 
-{ :transaction/client #db/id[:db.part/user -102116], :transaction/security #db/id[:db.part/user -100045], :transaction/nominal 110000.0, :transaction/price 100.00, :transaction/direction "B",:transaction/valuedate #inst "2017-06-19T10:00:00.0000000Z", :transaction/currency "USD", :transaction/comment "Worst of Issuer Callable Barrier Reverse Convertible on Johnson & Johnson, Merck & Pfizer", :db/id #db/id[:db.part/user -110702] }
+{ :transaction/client #db/id[:db.part/user -102116], :transaction/security #db/id[:db.part/user -100045], :transaction/nominal 110000.0, :transaction/price 100.00, :transaction/direction "S",:transaction/valuedate #inst "2017-06-19T10:00:00.0000000Z", :transaction/currency "USD", :transaction/comment "Worst of Issuer Callable Barrier Reverse Convertible on Johnson & Johnson, Merck & Pfizer", :db/id #db/id[:db.part/user -110702] }
 
-{ :transaction/client #db/id[:db.part/user -102116], :transaction/security #db/id[:db.part/user -102086], :transaction/nominal 97000.0, :transaction/price 100.00, :transaction/direction "B",:transaction/valuedate #inst "2017-06-19T10:00:00.0000000Z", :transaction/currency "USD", :transaction/comment "Worst of Issuer Callable Barrier Reverse Convertible on Johnson & Johnson, Merck & Pfizer", :db/id #db/id[:db.part/user -110703] }
+{ :transaction/client #db/id[:db.part/user -102086], :transaction/security #db/id[:db.part/user -100045], :transaction/nominal 97000.0, :transaction/price 100.00, :transaction/direction "S",:transaction/valuedate #inst "2017-06-19T10:00:00.0000000Z", :transaction/currency "USD", :transaction/comment "Worst of Issuer Callable Barrier Reverse Convertible on Johnson & Johnson, Merck & Pfizer", :db/id #db/id[:db.part/user -110703] }
 
+{ :transaction/client #db/id[:db.part/user -102060], :transaction/security #db/id[:db.part/user -100209], :transaction/nominal 1003000.0, :transaction/price 23.08, :transaction/direction "B", :transaction/valuedate #inst "2017-04-21T10:00:00.0000000Z", :transaction/currency "USD", :transaction/comment "Transfer In", :db/id #db/id[:db.part/user -110704] }
 
+{ :transaction/client #db/id[:db.part/user -102004], :transaction/security #db/id[:db.part/user -100014], :transaction/nominal 200000.0, :transaction/price 112.63, :transaction/direction "S", :transaction/valuedate #inst "2017-06-27T10:00:00.0000000Z", :transaction/currency "USD", :transaction/comment "Оферта Вымпелком, 7.5043% 1mar2022", :db/id #db/id[:db.part/user -110705] }
+
+{ :transaction/client #db/id[:db.part/user -102011], :transaction/security #db/id[:db.part/user -100014], :transaction/nominal 550000.0, :transaction/price 112.63, :transaction/direction "S", :transaction/valuedate #inst "2017-06-27T10:00:00.0000000Z", :transaction/currency "USD", :transaction/comment "Оферта Вымпелком, 7.5043% 1mar2022", :db/id #db/id[:db.part/user -110706] }
+
+{ :transaction/client #db/id[:db.part/user -102088], :transaction/security #db/id[:db.part/user -100014], :transaction/nominal 200000.0, :transaction/price 112.63, :transaction/direction "S", :transaction/valuedate #inst "2017-06-27T10:00:00.0000000Z", :transaction/currency "USD", :transaction/comment "Оферта Вымпелком, 7.5043% 1mar2022", :db/id #db/id[:db.part/user -110707] }
+
+{ :transaction/client #db/id[:db.part/user -102044], :transaction/security #db/id[:db.part/user -100014], :transaction/nominal 200000.0, :transaction/price 112.63, :transaction/direction "S", :transaction/valuedate #inst "2017-06-27T10:00:00.0000000Z", :transaction/currency "USD", :transaction/comment "Оферта Вымпелком, 7.5043% 1mar2022", :db/id #db/id[:db.part/user -110708] }
+
+{ :transaction/client #db/id[:db.part/user -102046], :transaction/security #db/id[:db.part/user -100014], :transaction/nominal 200000.0, :transaction/price 112.63, :transaction/direction "S", :transaction/valuedate #inst "2017-06-27T10:00:00.0000000Z", :transaction/currency "USD", :transaction/comment "Оферта Вымпелком, 7.5043% 1mar2022", :db/id #db/id[:db.part/user -110709] }
+
+{ :transaction/client #db/id[:db.part/user -102038], :transaction/security #db/id[:db.part/user -100014], :transaction/nominal 200000.0, :transaction/price 112.63, :transaction/direction "S", :transaction/valuedate #inst "2017-06-27T10:00:00.0000000Z", :transaction/currency "USD", :transaction/comment "Оферта Вымпелком, 7.5043% 1mar2022", :db/id #db/id[:db.part/user -110710] }
 
 
 
