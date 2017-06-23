@@ -223,7 +223,7 @@
     clientcurrencyrate (:price (first (filter (fn [x] (if (= (str/upper-case (:currency client)) (:acode x)) true false)) (:securities @app-state))))
 
     isrusbond (if (and (= 5 (:assettype security)) 
-                       (= "RU" (subs (:isin security) 0 2))
+                       (= "RUB" (:currency security))
                        )  true false)
     isbond (if (and (= 5 (:assettype security)) 
                    ;(= "RU" (subs (:isin security) 0 2))
@@ -259,7 +259,7 @@
     newfxrate (if (= 0 (compare "GBX" (:currency security))) (/ fxrate 100.) fxrate)
 
     isrusbond (if (and (= 5 (:assettype security)) 
-                       (= "RU" (subs (:isin security) 0 2))
+                       (= "RUB" (:currency security))
                        )  true false)
     isbond (if (and (= 5 (:assettype security)) 
                    ;(= "RU" (subs (:isin security) 0 2))

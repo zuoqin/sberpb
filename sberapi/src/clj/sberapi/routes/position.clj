@@ -334,8 +334,9 @@
     sec (first (filter (fn [x] (if (= security (:id x)) true false)) securities))
 
     isrusbond (if (and (= 5 (:assettype sec))
-                                   (= "RU" (subs (:isin sec) 0 2))
+                                   (= "RUB" (:currency sec))
                                    )  true false)
+
     isbond (if (and (= 5 (:assettype sec))
                                    ;(= "RU" (subs (:isin security) 0 2))
                                    )  true false)
@@ -521,9 +522,9 @@
                              isrussian (if (and 
 
 ;; Check ISIN starts with RU
-(= (compare (subs  (second (first (filter (fn [y] (if (= (first y) :security/isin) true false)) sec) )) 0 2) "RU") 0 ) 
+(= (compare (second (first (filter (fn [y] (if (= (first y) :security/currency) true false)) sec) )) "RUB") 0 )
 ;; Check currency = RUB
-(= (compare (subs  (second (first (filter (fn [y] (if (= (first y) :security/isin) true false)) sec) )) 0 2) "RU") 0 ) 
+(= (compare (second (first (filter (fn [y] (if (= (first y) :security/currency) true false)) sec) )) "RUB") 0 ) 
 )  true false)
 
 
@@ -678,9 +679,9 @@
        isrussian (if (and 
 
 ;; Check ISIN starts with RU
-(= (compare (subs  (second (first (filter (fn [y] (if (= (first y) :security/isin) true false)) sec) )) 0 2) "RU") 0 ) 
+(= (compare (second (first (filter (fn [y] (if (= (first y) :security/currency) true false)) sec) )) "RUB") 0 ) 
 ;; Check currency = RUB
-(= (compare (subs  (second (first (filter (fn [y] (if (= (first y) :security/isin) true false)) sec) )) 0 2) "RU") 0 ) 
+(= (compare (second (first (filter (fn [y] (if (= (first y) :security/currency) true false)) sec) )) "RUB") 0 ) 
 )  true false)
     ]
     [(:portfolio x)  (:isin x) (if (and (= assettype 5) (= isrussian true)) (* 1000 (:quantity x)) (:quantity x)) (:price x)  (:date x) (:type x)] 

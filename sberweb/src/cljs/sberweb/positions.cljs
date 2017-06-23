@@ -484,7 +484,7 @@
                 fxrate (if (or (= "RUB" seccur) (= "RUR" seccur)) 1 (:price  (first (filter (fn[x] (if( = (:acode x) (if (= seccur "GBX") "GBP" seccur)) true false)) (:securities @sbercore/app-state)))))
 
                 isrusbond (if (and (= 5 (:assettype sec))
-                                   (= "RU" (subs (:isin sec) 0 2))
+                                   (= "RUB" (:currency sec))
                                    )  true false)
 
                 isbond (if (and (= 5 (:assettype sec))
@@ -694,7 +694,7 @@
                 fxrate (if (or (= "RUB" seccur) (= "RUR" seccur)) 1 (:price  (first (filter (fn[x] (if( = (:acode x) (if (= seccur "GBX") "GBP" seccur)) true false)) (:securities @sbercore/app-state)))))
 
                 isrusbond (if (and (= 5 (:assettype sec))
-                                   (= "RU" (subs (:isin sec) 0 2))
+                                   (= "RUB" (:currency sec))
                                    )  true false)
 
                 usdcosts (* (if (= isrusbond true) 10.0 0.01) (:amount item) (:wapusd item))
@@ -997,7 +997,7 @@
 (defn showtran [item]
   (let [sec (first (filter (fn[x] (if (= (:id x) (:security item) ) true false)) (:securities @sbercore/app-state)))
         isrusbond (if (and (= 5 (:assettype sec))
-                           (= "RU" (subs (:isin sec) 0 2))
+                           (= "RUB" (:currency sec))
                            )  true false)
         isbond (if (and (= 5 (:assettype sec))
                                         ;(= "RU" (subs (:isin security) 0 2))

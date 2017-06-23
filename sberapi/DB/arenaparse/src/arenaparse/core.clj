@@ -175,7 +175,7 @@
   (let [
      conn (d/connect uri)
      ]
-    (d/transact-async conn [{ :security/acode "EU47REGS", :security/assettype 5, :security/bcode "RU000A0JXU14 Corp", :security/isin "RU000A0JXU14", :security/exchange "MOSCOW", :security/currency "USD", :db/id #db/id[:db.part/user -100631] }]
+    (d/transact-async conn [{ :security/acode "GAZPRU22", :security/assettype 2, :security/bcode "XS0290580595 Corp", :security/isin "XS0290580595", :security/exchange "", :security/currency "USD", :db/id #db/id[:db.part/user -100652] }]
     )
     ; To insert new entity:
     ;(d/transact conn [{ :transaction/client #db/id[:db.part/user 17592186045573] :transaction/security #db/id[:db.part/user 17592186065674], :transaction/nominal 108000.0 :transaction/price 100.0 :transaction/direction "S" :transaction/valuedate #inst "2014-04-22T00:00:00.0000000Z", :transaction/currency "RUB" :transaction/comment "", :db/id #db/id[:db.part/user -110002] }])

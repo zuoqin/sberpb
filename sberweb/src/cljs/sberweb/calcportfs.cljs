@@ -173,7 +173,7 @@
                 seccurrency (:currency sec)
 
                 isrusbond (if (and (= 5 (:assettype sec))
-                                   (= "RU" (subs (:isin sec) 0 2))
+                                   (= "RUB" (:isin sec))
                                    )  true false)
 
                 isbond (if (and (= 5 (:assettype sec))
