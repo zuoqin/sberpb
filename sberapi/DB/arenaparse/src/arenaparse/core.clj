@@ -175,7 +175,7 @@
   (let [
      conn (d/connect uri)
      ]
-    (d/transact-async conn [{ :security/acode "GAZPRU22", :security/assettype 2, :security/bcode "XS0290580595 Corp", :security/isin "XS0290580595", :security/exchange "", :security/currency "USD", :db/id #db/id[:db.part/user -100652] }]
+    (d/transact-async conn [{ :security/acode "BR-8.17", :security/isin "B5Q7 Comdty", :security/bcode "B5Q7 Comdty", :security/assettype 15, :security/name "Brent Crude Futs  Aug17", :security/multiple 10.0, :security/exchange "RTS", :security/currency "USD", :db/id #db/id[:db.part/user -101021] }]
     )
     ; To insert new entity:
     ;(d/transact conn [{ :transaction/client #db/id[:db.part/user 17592186045573] :transaction/security #db/id[:db.part/user 17592186065674], :transaction/nominal 108000.0 :transaction/price 100.0 :transaction/direction "S" :transaction/valuedate #inst "2014-04-22T00:00:00.0000000Z", :transaction/currency "RUB" :transaction/comment "", :db/id #db/id[:db.part/user -110002] }])
@@ -648,13 +648,15 @@
         ;; security currency
         currency (second (first (filter (fn [x] (if (= (first x) (keyword "security/currency")) true false)) security)))
 
+        assettype (second (first (filter (fn [x] (if (= (first x) (keyword "security/assettype")) true false)) security) ))
+
 
         fx_sec_currency  (if (or (= "RUR" currency) (= "RUB" currency))  1 (get-fxrate-by-date currency (nth (nth tran 5) 1)))
 
 
         fx_tran_currency (if (or (= "RUR" (nth (nth tran 5) 1)) (= "RUB" (nth (nth tran 5) 1)))  1 (get-fxrate-by-date (nth (nth tran 6) 1) (nth (nth tran 5) 1)))
 
-        newprice (* (nth (nth tran 3) 1) (/ fx_tran_currency fx_sec_currency) (if (= "GBX" currency) 1.0 1.0))
+        newprice (* (nth (nth tran 3) 1) (if (= assettype 5) 1.0 (/ fx_tran_currency fx_sec_currency))  (if (= "GBX" currency) 1.0 1.0))
 
         ;tr1 (if (= acode "HGMLN") (println (str "fxtran=" fx_tran_currency " fxsec=" fx_sec_currency " price=" (nth (nth tran 3) 1))))
         ;;
@@ -845,7 +847,7 @@
         (let [
           
           tran (first trans)
-          ;tr1 (println (str tran) )
+          tr1 (println (str tran) )
           sec (first (filter (fn [y] (if (= (:security tran) (:acode y)) true false)) securities))
 
           ;tr1 (println (str "sec=" sec) )
@@ -876,15 +878,17 @@
        ;;tr1 (println (str x))
        assettype (second (first (filter (fn [y] (if (= (first y) :security/assettype) true false)) sec ) ))
        currency (second (first (filter (fn [y] (if (= (first y) :security/currency) true false)) sec ) ))
-       isrussian (if (and 
 
-;; Check ISIN starts with RU
-(= (compare (subs  (second (first (filter (fn [y] (if (= (first y) :security/isin) true false)) sec) )) 0 2) "RU") 0 ) 
-;; Check currency = RUB
-(= (compare (subs  (second (first (filter (fn [y] (if (= (first y) :security/isin) true false)) sec) )) 0 2) "RU") 0 ) 
-)  true false)
+       multiple (if (nil? (second (first (filter (fn [y] (if (= (first y) :security/multiple) true false)) sec ) ))) 1.0 (second (first (filter (fn [y] (if (= (first y) :security/multiple) true false)) sec ) ))) 
+;;        isrussian (if (and 
+
+;; ;; Check ISIN starts with RU
+;; (= (compare (subs  (second (first (filter (fn [y] (if (= (first y) :security/isin) true false)) sec) )) 0 2) "RU") 0 ) 
+;; ;; Check currency = RUB
+;; (= (compare (subs  (second (first (filter (fn [y] (if (= (first y) :security/isin) true false)) sec) )) 0 2) "RU") 0 ) 
+;; )  true false)
     ]
-    {:portfolio (:portfolio x)  :isin (:isin x) :quantity (if (and (= assettype 5) (= isrussian true)) (* 1000 (:quantity x)) (:quantity x)) :price (:price x)  :date (:date x) :type (:type x)} 
+    {:portfolio (:portfolio x)  :isin (:isin x) :quantity (if (= assettype 5) (* multiple (:quantity x)) (:quantity x)) :price (:price x)  :date (:date x) :type (:type x)} 
 )) newtransactions)
 
 
@@ -1108,16 +1112,18 @@
     filterpos newpositions ;(filter (fn [x] (if (= 0.0 (:amount (second x)) ) false true)) newpositions)
 
     result (map (fn [x] (let [
-                             assettype (second (first (filter (fn [y] (if (= (first y) :security/assettype) true false))(ent [[(get-secid-by-isin (first x))]]) ) ))
-                             isrussian (if (and 
+                             sec (ent [[(get-secid-by-isin (first x))]])
+                             assettype (second (first (filter (fn [y] (if (= (first y) :security/assettype) true false))  sec) ))
+                             multiple (if (nil? (second (first (filter (fn [y] (if (= (first y) :security/multiple) true false)) sec) ))) 1.0 (second (first (filter (fn [y] (if (= (first y) :security/multiple) true false)) sec) ))) 
+;;                              isrussian (if (and 
 
-;; Check ISIN starts with RU
-(= (compare (subs  (second (first (filter (fn [y] (if (= (first y) :security/isin) true false)) (ent [[(get-secid-by-isin (first x))]])) )) 0 2) "RU") 0 ) 
-;; Check currency = RUB
-(= (compare (subs  (second (first (filter (fn [y] (if (= (first y) :security/isin) true false)) (ent [[(get-secid-by-isin (first x))]])) )) 0 2) "RU") 0 ) 
-)  true false)
+;; ;; Check ISIN starts with RU
+;; (= (compare (subs  (second (first (filter (fn [y] (if (= (first y) :security/isin) true false)) (ent [[(get-secid-by-isin (first x))]])) )) 0 2) "RU") 0 ) 
+;; ;; Check currency = RUB
+;; (= (compare (subs  (second (first (filter (fn [y] (if (= (first y) :security/isin) true false)) (ent [[(get-secid-by-isin (first x))]])) )) 0 2) "RU") 0 ) 
+;; )  true false)
                               ]
-                          [(first x) {:amount (if (and (= assettype 5) (= isrussian true)) (* 1000 (:amount (second x))) (:amount (second x)))  :price (:price (second x)) }]
+                          [(first x) {:amount (if (= assettype 5) (* multiple (:amount (second x))) (:amount (second x)))  :price (:price (second x)) }]
                           )) filterpos)
     ]
     result
@@ -1203,18 +1209,19 @@
                              sec (ent [[(get-secid-by-isin (name (first x)) )]])
                              assettype (second (first (filter (fn [y] (if (= (first y) :security/assettype) true false)) sec ) ))
                              currency (second (first (filter (fn [y] (if (= (first y) :security/currency) true false)) sec ) ))
-                             isrussian (if (and 
+                             multiple (if (nil? (second (first (filter (fn [y] (if (= (first y) :security/multiple) true false)) sec ) ))) 1.0 (second (first (filter (fn [y] (if (= (first y) :security/multiple) true false)) sec ) ))) 
+;;                              isrussian (if (and 
 
-;; Check ISIN starts with RU
-(= (compare (subs  (second (first (filter (fn [y] (if (= (first y) :security/isin) true false)) sec) )) 0 2) "RU") 0 ) 
-;; Check currency = RUB
-(= (compare (subs  (second (first (filter (fn [y] (if (= (first y) :security/isin) true false)) sec) )) 0 2) "RU") 0 ) 
-)  true false)
+;; ;; Check ISIN starts with RU
+;; (= (compare (subs  (second (first (filter (fn [y] (if (= (first y) :security/isin) true false)) sec) )) 0 2) "RU") 0 ) 
+;; ;; Check currency = RUB
+;; (= (compare (subs  (second (first (filter (fn [y] (if (= (first y) :security/isin) true false)) sec) )) 0 2) "RU") 0 ) 
+;; )  true false)
 
 
                               ;tr1 (if (= (name (first x)) "GB0032360173") (println (str "x=" x " currency=" currency ""))) 
                               ]
-                          [(name (first x))  {:amount (if (and (= assettype 5) (= isrussian true)) (* 1000 (:amount (second x))) (:amount (second x)))  :price (:price (second x))  }]
+                          [(name (first x))  {:amount (if (= assettype 5) (* multiple (:amount (second x))) (:amount (second x))) :price (:price (second x))}]
                           )) positions)
 
 
@@ -1713,7 +1720,7 @@
     ;(first filtertran)
     ;(filter (fn [x] (if (= 110.75 (:price x)) true false)) filtertran)
     (doseq [trans filtertran] (insert-new-tran-to-db trans))
-    ;(insert-new-tran-to-db (nth filtertran 15))
+    ;(insert-new-tran-to-db (nth filtertБran 15))
   )
 )
 

@@ -333,10 +333,7 @@
         
     sec (first (filter (fn [x] (if (= security (:id x)) true false)) securities))
 
-    isrusbond (if (and (= 5 (:assettype sec))
-                                   (= "RUB" (:currency sec))
-                                   )  true false)
-
+    multiple (:multiple sec)
     isbond (if (and (= 5 (:assettype sec))
                                    ;(= "RU" (subs (:isin security) 0 2))
                                    )  true false)
@@ -399,7 +396,7 @@
 
            seclastrubprice (if (= secrubprice 0.0) (if (nil? usedlimit) 0.0 (:rubprice usedlimit) ) secrubprice)
 
-           calcusedlimit (if (nil? usedlimit) 0 (* (if isrusbond 10.0 (if isbond 0.01 1.0)) (:amount usedlimit) seclastrubprice))
+           calcusedlimit (if (nil? usedlimit) 0 (* (if isbond (* 0.01 multiple) 1.0) (:amount usedlimit) seclastrubprice))
 
            usdrate (db/get-fxrate-by-date "USD" (java.util.Date.))
            eurrate (db/get-fxrate-by-date "EUR" (java.util.Date.))
@@ -419,21 +416,21 @@
       {:client (:code client) :usd (:usd client) :rub (:rub client) :eur (:eur client) :gbp (:gbp client) :currency (:currency client) :shares (if (nil? usedlimit) 0 (:amount usedlimit))
 
  ;; Максимальный лимит на ценную бумагу
- :maxlimit (long (/ seclimitinrub (* (if (= 0.0 seclastrubprice) 1.0 seclastrubprice) (if isrusbond 10.0 (if isbond 0.01 1.0)))))
+ :maxlimit (long (/ seclimitinrub (* (if (= 0.0 seclastrubprice) 1.0 seclastrubprice) (if isbond (* multiple 0.01) 1.0))))
 
  ;; Свободный лимит на покупку ценных бумаг:
  ;; для иностранных облигаций - в номинале бумаги
  ;; для российских облигаций - в тысячах рублей номинала (как в Арене)
  ;; для акций - штук
- :freelimit (long (/ (- seclimitinrub calcusedlimit) (* (if (= 0.0 seclastrubprice) 1.0 seclastrubprice) (if isrusbond 10.0 (if isbond 0.01 1.0))))) 
+ :freelimit (long (/ (- seclimitinrub calcusedlimit) (* (if (= 0.0 seclastrubprice) 1.0 seclastrubprice) (if isbond (* multiple 0.01) 1.0)))) 
 
- :maxusdshares (long (/ (if (> (* usdrate (:usd client))  (- seclimitinrub calcusedlimit)) (- seclimitinrub calcusedlimit) (* usdrate (:usd client))) (* (if (= 0.0 seclastrubprice) 1.0 seclastrubprice) (if isrusbond 10.0 (if isbond 0.01 1.0)))))
+ :maxusdshares (long (/ (if (> (* usdrate (:usd client))  (- seclimitinrub calcusedlimit)) (- seclimitinrub calcusedlimit) (* usdrate (:usd client))) (* (if (= 0.0 seclastrubprice) 1.0 seclastrubprice) (if isbond (* multiple 0.01) 1.0))))
 
- :maxrubshares (long (/ (if (> (* 1.0 (:rub client))  (- seclimitinrub calcusedlimit)) (- seclimitinrub calcusedlimit) (* 1.0 (:rub client))) (* (if (= 0.0 seclastrubprice) 1.0 seclastrubprice) (if isrusbond 10.0 (if isbond 0.01 1.0)))))
+ :maxrubshares (long (/ (if (> (* 1.0 (:rub client))  (- seclimitinrub calcusedlimit)) (- seclimitinrub calcusedlimit) (* 1.0 (:rub client))) (* (if (= 0.0 seclastrubprice) 1.0 seclastrubprice) (if isbond (* multiple 0.01) 1.0))))
 
- :maxeurshares (long (/ (if (> (* eurrate (:eur client))  (- seclimitinrub calcusedlimit)) (- seclimitinrub calcusedlimit) (* eurrate (:eur client))) (* (if (= 0.0 seclastrubprice) 1.0 seclastrubprice) (if isrusbond 10.0 (if isbond 0.01 1.0)))))
+ :maxeurshares (long (/ (if (> (* eurrate (:eur client))  (- seclimitinrub calcusedlimit)) (- seclimitinrub calcusedlimit) (* eurrate (:eur client))) (* (if (= 0.0 seclastrubprice) 1.0 seclastrubprice) (if isbond (* multiple 0.01) 1.0))))
 
- :maxgbpshares (long (/ (if (> (* gbprate (:gbp client))  (- seclimitinrub calcusedlimit)) (- seclimitinrub calcusedlimit) (* gbprate (:gbp client)))  (* (if (= 0.0 seclastrubprice) 1.0 seclastrubprice) (if isrusbond 10.0 (if isbond 0.01 1.0))))) 
+ :maxgbpshares (long (/ (if (> (* gbprate (:gbp client))  (- seclimitinrub calcusedlimit)) (- seclimitinrub calcusedlimit) (* gbprate (:gbp client)))  (* (if (= 0.0 seclastrubprice) 1.0 seclastrubprice) (if isbond (* multiple 0.01) 1.0)))) 
       }
       ))   clients)
     ]
@@ -519,18 +516,21 @@
                              sec (db/ent [[(get-secid-by-isin (name (first x)) )]])
                              assettype (second (first (filter (fn [y] (if (= (first y) :security/assettype) true false)) sec ) ))
                              currency (second (first (filter (fn [y] (if (= (first y) :security/currency) true false)) sec ) ))
-                             isrussian (if (and 
 
-;; Check ISIN starts with RU
-(= (compare (second (first (filter (fn [y] (if (= (first y) :security/currency) true false)) sec) )) "RUB") 0 )
-;; Check currency = RUB
-(= (compare (second (first (filter (fn [y] (if (= (first y) :security/currency) true false)) sec) )) "RUB") 0 ) 
-)  true false)
+                             multiple (second (first (filter (fn [y] (if (= (first y) :security/multiple) true false)) sec) ))
+
+;;                              isrussian (if (and 
+
+;; ;; Check ISIN starts with RU
+;; (= (compare (second (first (filter (fn [y] (if (= (first y) :security/currency) true false)) sec) )) "RUB") 0 )
+;; ;; Check currency = RUB
+;; (= (compare (second (first (filter (fn [y] (if (= (first y) :security/currency) true false)) sec) )) "RUB") 0 ) 
+;; )  true false)
 
 
                               ;tr1 (if (= (name (first x)) "GB0032360173") (println (str "x=" x " currency=" currency ""))) 
                               ]
-                          [(name (first x))  {:amount (if (and (= assettype 5) (= isrussian true)) (* 1000 (:amount (second x))) (:amount (second x)))  :price (:price (second x))  }]
+                          [(name (first x))  {:amount (* multiple (:amount (second x)))  :price (:price (second x))  }]
                           )) positions)
 
 

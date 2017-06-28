@@ -222,15 +222,13 @@
     ;;tr1 (.log js/console (str "client currency: " (:currency client) "position=" (nth position 1)))
     clientcurrencyrate (:price (first (filter (fn [x] (if (= (str/upper-case (:currency client)) (:acode x)) true false)) (:securities @app-state))))
 
-    isrusbond (if (and (= 5 (:assettype security)) 
-                       (= "RUB" (:currency security))
-                       )  true false)
+    ;;isrusbond (if (and (= 5 (:assettype security))  (= "RUB" (:currency security)))  true false)
     isbond (if (and (= 5 (:assettype security)) 
                    ;(= "RU" (subs (:isin security) 0 2))
                    )  true false)
     newfxrate (if (= 0 (compare "GBX" (:currency security))) (/ fxrate 100.) fxrate)
 
-    result {:id secid :currency (:currency security) :amount (:amount (nth position 1)) :wap posprice :price price :waprub (:rubprice (nth position 1)) :currubprice (* price newfxrate) :wapusd (:wapusd (nth position 1)) :usdvalue (/ (* (:amount (nth position 1)) (:price security)  (if (= isrusbond true) 10.0 (if (= isbond true) (/ newfxrate 100.0 ) newfxrate ) ) ) usdrate) :posvalue (/ (* (:amount (nth position 1)) (:price security)  (if (= isrusbond true) 10.0 (if (= isbond true) (/ newfxrate 100.0 ) newfxrate ) ) ) clientcurrencyrate) }
+    result {:id secid :currency (:currency security) :amount (:amount (nth position 1)) :wap posprice :price price :waprub (:rubprice (nth position 1)) :currubprice (* price newfxrate) :wapusd (:wapusd (nth position 1)) :usdvalue (/ (* (:amount (nth position 1)) (:price security)  (if (= isbond true) (* newfxrate (:multiple security) 0.01 ) newfxrate )  ) usdrate) :posvalue (/ (* (:amount (nth position 1)) (:price security)  (if (= isbond true) (* newfxrate 0.01 (:multiple security)) newfxrate )  ) clientcurrencyrate) }
 
 
 
@@ -258,14 +256,12 @@
 
     newfxrate (if (= 0 (compare "GBX" (:currency security))) (/ fxrate 100.) fxrate)
 
-    isrusbond (if (and (= 5 (:assettype security)) 
-                       (= "RUB" (:currency security))
-                       )  true false)
+    ;;isrusbond (if (and (= 5 (:assettype security)) (= "RUB" (:currency security)))  true false)
     isbond (if (and (= 5 (:assettype security)) 
                    ;(= "RU" (subs (:isin security) 0 2))
                    )  true false)
 
-    result {:id (:id portfolio) :amount (:amount (nth item 1) ) :wapcur (:price (nth item 1) ) :wapusd (:wapusd (nth item 1) ) :waprub (:rubprice (nth item 1) ) :currubprice (* price newfxrate) :usdvalue (/ (* (:amount (nth item 1)) (:price security)  (if (= isrusbond true) 10.0 (if (= isbond true) (/ newfxrate 100.0 ) newfxrate ) ) ) usdrate) }
+    result {:id (:id portfolio) :amount (:amount (nth item 1) ) :wapcur (:price (nth item 1) ) :wapusd (:wapusd (nth item 1) ) :waprub (:rubprice (nth item 1) ) :currubprice (* price newfxrate) :usdvalue (/ (* (:amount (nth item 1)) (:price security)  (if (= isbond true) (* newfxrate 0.01 (:multiple security)) newfxrate )  ) usdrate) }
 
     ]
     result
