@@ -252,6 +252,14 @@
 
 
  {:db/id #db/id[:db.part/db]
+  :db/ident :transaction/tradedate
+  :db/valueType :db.type/instant
+  :db/cardinality :db.cardinality/one
+  :db/doc "Transaction book/value date"
+  :db.install/_attribute :db.part/db}
+
+
+ {:db/id #db/id[:db.part/db]
   :db/ident :transaction/valuedate
   :db/valueType :db.type/instant
   :db/cardinality :db.cardinality/one
