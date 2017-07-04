@@ -56,8 +56,9 @@
 (defn trans-to-map [tran tranid]
 
   (let [
-        client (ent [[(:db/id (nth (nth tran 0) 1))]]  )
-        security (ent [[(:db/id (nth (nth tran 1) 1))]]  )
+        ;tr1 (println tran)
+        client (ent [[(:db/id (second (first (filter (fn [x] (if (= (first x) (keyword "transaction/client")) true false)) tran))))]]  )
+        security (ent [[(:db/id (second (first (filter (fn [x] (if (= (first x) (keyword "transaction/security")) true false)) tran))))]]  )
 
         ;tr1 (println (str "client in map= " client) )
         currency (second (first (filter (fn [x] (if (= (first x) (keyword "transaction/currency")) true false)) tran)))   ;(second (first (filter (fn [x] (if (= (first x) (keyword "security/currency")) true false)) security)))
@@ -165,16 +166,16 @@
         currency (second (first (filter (fn [x] (if (= (first x) (keyword "security/currency")) true false)) security)))
 
 
-        fx_sec_currency  (if (or (= "RUR" currency) (= "RUB" currency))  1 (get-fxrate-by-date currency (nth (nth tran 5) 1)))
+        fx_sec_currency  (if (or (= "RUR" currency) (= "RUB" currency))  1 (get-fxrate-by-date currency (second (first (filter (fn [x] (if (= (first x) (keyword "transaction/valuedate")) true false)) tran)))))
 
 
-        fx_tran_currency (if (or (= "RUR" (nth (nth tran 5) 1)) (= "RUB" (nth (nth tran 5) 1)))  1 (get-fxrate-by-date (nth (nth tran 6) 1) (nth (nth tran 5) 1)))
+        fx_tran_currency (if (or (= "RUR" (second (first (filter (fn [x] (if (= (first x) (keyword "transaction/currency")) true false)) tran)))) (= "RUB" (second (first (filter (fn [x] (if (= (first x) (keyword "transaction/currency")) true false)) tran)))))  1 (get-fxrate-by-date (second (first (filter (fn [x] (if (= (first x) (keyword "transaction/currency")) true false)) tran))) (second (first (filter (fn [x] (if (= (first x) (keyword "transaction/valuedate")) true false)) tran)))))
 
-        newprice (* (nth (nth tran 3) 1) (/ fx_tran_currency fx_sec_currency) (if (= "GBX" currency) 1.0 1.0))
+        newprice (* (second (first (filter (fn [x] (if (= (first x) (keyword "transaction/price")) true false)) tran))) (/ fx_tran_currency fx_sec_currency) (if (= "GBX" currency) 1.0 1.0))
 
         ;tr1 (if (= acode "HGMLN") (println (str "fxtran=" fx_tran_currency " fxsec=" fx_sec_currency " price=" (nth (nth tran 3) 1))))
         ;;
-        newtran {:client client :security acode  :nominal (nth (nth tran 2) 1) :price newprice :direction (nth (nth tran 4) 1) :valuedate (nth (nth tran 5) 1) :currency currency :comment (if (> (count (nth tran 7)) 1) (nth (nth tran 7) 1) "")  :fx (/ fx_tran_currency fx_sec_currency) :id (nth (nth tran 8) 1)}
+        newtran {:client client :security acode  :nominal (second (first (filter (fn [x] (if (= (first x) (keyword "transaction/nominal")) true false)) tran))) :price newprice :direction (second (first (filter (fn [x] (if (= (first x) (keyword "transaction/direction")) true false)) tran))) :valuedate (second (first (filter (fn [x] (if (= (first x) (keyword "transaction/valuedate")) true false)) tran))) :currency currency :comment (if (> (count (second (first (filter (fn [x] (if (= (first x) (keyword "transaction/comment")) true false)) tran)))) 1) (second (first (filter (fn [x] (if (= (first x) (keyword "transaction/comment")) true false)) tran))) "")  :fx (/ fx_tran_currency fx_sec_currency) :id (second (first (filter (fn [x] (if (= (first x) (keyword "transaction/refnum")) true false)) tran)))}
         ;tr1 (if (= (compare acode "HMSGLI" ) 0) (println (str (nth (nth tran 6) 1) " fx1: " fx_tran_currency " " currency " fx2: " fx_sec_currency " fx: " (:fx newtran) " date: " (:valuedate newtran) "\n")) ) 
         ]
     newtran

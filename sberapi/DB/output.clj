@@ -995,7 +995,7 @@
 
 { :security/acode "SAPAG", :security/assettype 1, :security/isin "DE0007164600", :security/bcode "SAP GY Equity", :security/exchange "XETRA", :security/currency "EUR", :db/id #db/id[:db.part/user -100491] }
 
-{ :security/acode "SDEXGY", :security/assettype 1, :security/isin "DE0002635281", :security/bcode "SDEX GY Equity", :security/exchange "XETRA", :security/currency "EUR", :db/id #db/id[:db.part/user -100492] }
+{ :security/acode "SDEXGY", :security/assettype 1, :security/isin "DE0002635281", :security/bcode "SD3EEX GY Equity", :security/exchange "XETRA", :security/currency "EUR", :db/id #db/id[:db.part/user -100492] }
 
 { :security/acode "SDIVUS", :security/assettype 1, :security/isin "US37950E5490", :security/bcode "SDIV US Equity", :security/exchange "XETRA", :security/currency "USD", :db/id #db/id[:db.part/user -100493] }
 
@@ -1115,7 +1115,7 @@
 
 { :security/acode "EFGIF_0419B", :security/isin "CH0361710855", :security/bcode "CH0361710855 Corp", :security/assettype 5, :security/multiple 1.0, :security/name "Yandex NV", :security/exchange "NYSE", :security/currency "EUR", :db/id #db/id[:db.part/user -100551] }
 
-{ :security/acode "IHYGLN", :security/isin "IE00B66F4759", :security/bcode "IHYG LN Equity", :security/assettype 1, :security/name "Yandex NV", :security/exchange "NYSE", :security/currency "USD", :db/id #db/id[:db.part/user -100552] }
+{ :security/acode "IHYGLN", :security/isin "IE00B66F4759", :security/bcode "IHYG LN Equity", :security/assettype 1, :security/name "", :security/exchange "NYSE", :security/currency "EUR", :db/id #db/id[:db.part/user -100552] }
 
 { :security/acode "KAZNMH23", :security/isin "XS0934609016", :security/bcode "XS0934609016 Corp", :security/assettype 5, :security/multiple 1.0, :security/name "Yandex NV", :security/exchange "NYSE", :security/currency "USD", :db/id #db/id[:db.part/user -100553] }
 
@@ -1323,6 +1323,25 @@
 { :security/acode "ROSBNBO2R2", :security/assettype 5, :security/multiple 1000.0, :security/bcode "RU000A0JXUH0 Corp", :security/isin "RU000A0JXUH0", :security/exchange "MICEX", :security/currency "RUB", :db/id #db/id[:db.part/user -100653] }
 
 { :security/acode "ANGSJ22", :security/assettype 5, :security/multiple 1.0, :security/bcode "US03512TAC53 Corp", :security/isin "US03512TAC53", :security/exchange "", :security/currency "USD", :db/id #db/id[:db.part/user -100654] }
+
+{ :security/acode "EFGIF_0119A", :security/assettype 5, :security/multiple 1.0, :security/bcode "CH0370470269 Corp", :security/isin "CH0370470269", :security/exchange "", :security/currency "USD", :db/id #db/id[:db.part/user -100655] }
+
+{ :security/acode "DEUTBK25", :security/assettype 5, :security/multiple 1.0, :security/bcode "US251525AP63 Corp", :security/isin "US251525AP63", :security/exchange "", :security/currency "USD", :db/id #db/id[:db.part/user -100656] }
+
+{ :security/acode "ESV24", :security/assettype 5, :security/multiple 1.0, :security/bcode "US29358QAC33 Corp", :security/isin "US29358QAC33", :security/exchange "", :security/currency "USD", :db/id #db/id[:db.part/user -100657] }
+
+{ :security/acode "FTR20", :security/assettype 5, :security/multiple 1.0, :security/bcode "US35906AAH14 Corp", :security/isin "US35906AAH14", :security/exchange "", :security/currency "USD", :db/id #db/id[:db.part/user -100658] }
+
+{ :security/acode "FTR21A", :security/assettype 5, :security/multiple 1.0, :security/bcode "US35906AAP30 Corp", :security/isin "US35906AAP30", :security/exchange "", :security/currency "USD", :db/id #db/id[:db.part/user -100659] }
+
+{ :security/acode "HECKKO18", :security/assettype 5, :security/multiple 1.0, :security/bcode "XS0626438112 Corp", :security/isin "XS0626438112", :security/exchange "", :security/currency "EUR", :db/id #db/id[:db.part/user -100660] }
+
+{ :security/acode "RBIAV23E", :security/assettype 5, :security/multiple 1.0, :security/bcode "XS0981632804 Corp", :security/isin "XS0981632804", :security/exchange "", :security/currency "EUR", :db/id #db/id[:db.part/user -100661] }
+
+{ :security/acode "SAMMIN23", :security/assettype 5, :security/multiple 1.0, :security/bcode "USP84050AB29 Corp", :security/isin "USP84050AB29", :security/exchange "", :security/currency "USD", :db/id #db/id[:db.part/user -100662] }
+
+{ :security/acode "PLZL", :security/assettype 1, :security/multiple 1.0, :security/bcode "PLZL RX Equity", :security/isin "RU000A0JNAA8", :security/exchange "", :security/currency "RUB", :db/id #db/id[:db.part/user -100663] }
+
 
 ;;FORTS contracts
 
@@ -3071,20 +3090,31 @@
 { :transaction/client #db/id[:db.part/user -102078], :transaction/security #db/id[:db.part/user -100236], :transaction/nominal 247000.0, :transaction/price 14.10, :transaction/direction "B", :transaction/tradedate #inst "2016-12-15T10:00:00.0000000Z", :transaction/valuedate #inst "2016-12-15T10:00:00.0000000Z", :transaction/currency "USD", :transaction/comment "Transfer In", :db/id #db/id[:db.part/user -110715] }
 ,
 { :transaction/client #db/id[:db.part/user -102078], :transaction/security #db/id[:db.part/user -100187], :transaction/nominal 1198000.0, :transaction/price 114.50, :transaction/direction "S", :transaction/tradedate #inst "2017-03-28T10:00:00.0000000Z", :transaction/valuedate #inst "2017-03-28T10:00:00.0000000Z", :transaction/currency "USD", :transaction/comment "Transfer Out", :db/id #db/id[:db.part/user -110716] }
-,
+
 { :transaction/client #db/id[:db.part/user -102078], :transaction/security #db/id[:db.part/user -100574], :transaction/nominal 1000000.0, :transaction/price 111.885, :transaction/direction "S", :transaction/tradedate #inst "2017-04-04T10:00:00.0000000Z", :transaction/valuedate #inst "2017-04-04T10:00:00.0000000Z", :transaction/currency "USD", :transaction/comment "Transfer Out", :db/id #db/id[:db.part/user -110717] }
-,
+
 { :transaction/client #db/id[:db.part/user -102078], :transaction/security #db/id[:db.part/user -100651], :transaction/nominal 50390.0, :transaction/price 5.095, :transaction/direction "B", :transaction/tradedate #inst "2016-06-30T10:00:00.0000000Z", :transaction/valuedate #inst "2016-06-30T10:00:00.0000000Z", :transaction/currency "USD", :transaction/comment "Transfer In", :db/id #db/id[:db.part/user -110718] }
-,
+
 { :transaction/client #db/id[:db.part/user -102078], :transaction/security #db/id[:db.part/user -100066], :transaction/nominal 2485000.0, :transaction/price 113.26, :transaction/direction "S", :transaction/tradedate #inst "2017-04-25T10:00:00.0000000Z", :transaction/valuedate #inst "2017-04-25T10:00:00.0000000Z", :transaction/currency "USD", :transaction/comment "Transfer Out", :db/id #db/id[:db.part/user -110719] }
-,
+
 { :transaction/client #db/id[:db.part/user -102018], :transaction/security #db/id[:db.part/user -100216], :transaction/nominal 447200.0, :transaction/price 70.3767, :transaction/direction "B",:transaction/tradedate #inst "2015-11-03T10:00:00.0000000Z",:transaction/valuedate #inst "2015-11-03T10:00:00.0000000Z", :transaction/currency "RUB", :transaction/comment "Transfer in", :db/id #db/id[:db.part/user -110598] }
-,
+
 { :transaction/client #db/id[:db.part/user -102127], :transaction/security #db/id[:db.part/user -100098], :transaction/nominal 8421.0, :transaction/price 3706.41, :transaction/direction "S", :transaction/tradedate #inst "2017-02-20T10:00:00.0000000Z", :transaction/valuedate #inst "2017-02-20T10:00:00.0000000Z", :transaction/currency "RUB", :transaction/comment "Оферта", :db/id #db/id[:db.part/user -110720] }
-,
+
 { :transaction/client #db/id[:db.part/user -102088], :transaction/security #db/id[:db.part/user -100584], :transaction/nominal 460.0, :transaction/price 75.32, :transaction/direction "S", :transaction/tradedate #inst "2017-02-17T10:00:00.0000000Z", :transaction/valuedate #inst "2017-02-17T10:00:00.0000000Z", :transaction/currency "USD", :transaction/comment "Stock Split", :db/id #db/id[:db.part/user -110721] }
-,
+
 { :transaction/client #db/id[:db.part/user -102088], :transaction/security #db/id[:db.part/user -100584], :transaction/nominal 920.0, :transaction/price 37.66, :transaction/direction "B", :transaction/tradedate #inst "2017-02-21T10:00:00.0000000Z", :transaction/valuedate #inst "2017-02-21T10:00:00.0000000Z", :transaction/currency "USD", :transaction/comment "Stock Split", :db/id #db/id[:db.part/user -110722] }
+
+{ :transaction/client #db/id[:db.part/user -102040], :transaction/security #db/id[:db.part/user -100656], :transaction/nominal 200000.0, :transaction/price 97.654, :transaction/direction "B",:transaction/tradedate #inst "2017-04-13T10:00:00.0000000Z",:transaction/valuedate #inst "2017-04-13T10:00:00.0000000Z", :transaction/currency "USD", :transaction/comment "Transfer in", :db/id #db/id[:db.part/user -110723] }
+
+{ :transaction/client #db/id[:db.part/user -102040], :transaction/security #db/id[:db.part/user -100660], :transaction/nominal 328000.0, :transaction/price 100.492, :transaction/direction "B",:transaction/tradedate #inst "2017-04-13T10:00:00.0000000Z",:transaction/valuedate #inst "2017-04-13T10:00:00.0000000Z", :transaction/currency "EUR", :transaction/comment "Transfer in", :db/id #db/id[:db.part/user -110724] }
+
+{ :transaction/client #db/id[:db.part/user -102040], :transaction/security #db/id[:db.part/user -100661], :transaction/nominal 100000.0, :transaction/price 116.411, :transaction/direction "B",:transaction/tradedate #inst "2017-04-13T10:00:00.0000000Z",:transaction/valuedate #inst "2017-04-13T10:00:00.0000000Z", :transaction/currency "EUR", :transaction/comment "Transfer in", :db/id #db/id[:db.part/user -110725] }
+
+;{ :transaction/client #db/id[:db.part/user -102040], :transaction/security #db/id[:db.part/user -100661], :transaction/nominal 100000.0, :transaction/price 116.411, :transaction/direction "B",:transaction/tradedate #inst "2017-04-13T10:00:00.0000000Z",:transaction/valuedate #inst "2017-04-13T10:00:00.0000000Z", :transaction/currency "usd", :transaction/comment "Transfer in", :db/id #db/id[:db.part/user -110725] }
+
+
+
 
 
 

@@ -75,7 +75,7 @@
 
     newdate (java.util.Date. (c/to-long (f/parse custom-formatter (f/unparse custom-formatter (c/from-long (c/to-long dt))))))
 
-    newcurrency (if (= currency "GBX") "GBP" (if (= "PTS" currency) "RUB" (if (nil? currency) "RUB" currency)))
+    newcurrency (if (= currency "GBX") "GBP" (if (= "PTS" currency) "RUB" (if (nil? currency) "RUB" (str/upper-case currency))))
 
  
     security (ffirst (d/q '[:find ?e
@@ -178,7 +178,7 @@
   (let [
      conn (d/connect uri)
      ]
-    (d/transact-async conn [{ :security/acode "ANGSJ22", :security/assettype 5, :security/multiple 1.0, :security/bcode "US03512TAC53 Corp", :security/isin "US03512TAC53", :security/exchange "", :security/currency "USD", :db/id #db/id[:db.part/user -100654] }]
+    (d/transact-async conn [{ :security/acode "PLZL", :security/assettype 1, :security/multiple 1.0, :security/bcode "PLZL RX Equity", :security/isin "RU000A0JNAA8", :security/exchange "", :security/currency "RUB", :db/id #db/id[:db.part/user -100663] }]
     )
     ; To insert new entity:
     ;(d/transact conn [{ :transaction/client #db/id[:db.part/user 17592186045573] :transaction/security #db/id[:db.part/user 17592186065674], :transaction/nominal 108000.0 :transaction/price 100.0 :transaction/direction "S" :transaction/valuedate #inst "2014-04-22T00:00:00.0000000Z", :transaction/currency "RUB" :transaction/comment "", :db/id #db/id[:db.part/user -110002] }])
@@ -327,7 +327,10 @@
   (let [
     dt1 (java.util.Date.)
     conn (d/connect uri)
-    dt2 (java.util.Date. (c/to-long (f/parse custom-formatter (f/unparse custom-formatter (c/from-long (- (c/to-long dt1) (* 1000 24 3600 2)))))))
+    dt2 (java.util.Date. (c/to-long (f/parse custom-formatter (f/unparse custom-formatter (c/from-long (- (c/to-long dt1) (* 1000 24 3600 3)))))))
+
+    ;dt3 (java.util.Date. (c/to-long (f/parse custom-formatter (f/unparse custom-formatter (c/from-long (+ (c/to-long dt1) (* 1000 24 3600 3)))))))
+    
     clients (d/q '[:find ?client
         :in $ ?dt1 ?dt2
         :where
@@ -338,12 +341,11 @@
         [?c :client/advisors ?u]
         [(< ?dt ?dt1)]
         [(> ?dt ?dt2)]
-      ] (d/db conn) dt1 dt2)      
+      ] (d/db conn) dt1 dt2)
     ]
     (distinct (map (fn [x] (first x)) clients)) 
     ;(ent client)
   )
-
 )
 
 
@@ -777,25 +779,30 @@
   )
 )
 
-(defn get-transactions-from-db [client dt]
+(defn get-transactions-from-db [client dt & [in-currencies]]
   (let [
+        currencies (if (nil? in-currencies) ["USD" "EUR" "RUB" "GBP" "RUR" "GBX"] in-currencies)
+
+        
         dt1 (java.util.Date. (c/to-long (f/parse custom-formatter (f/unparse custom-formatter (c/from-long (c/to-long #inst "2000-01-01T00:00:00.000-00:00" ))))))
         conn (d/connect uri)
         dt2 (java.util.Date. (c/to-long (f/parse custom-formatter (f/unparse custom-formatter (c/from-long (+ (c/to-long dt) (* 1000 24 3600)))))))
 
 
-        ;tr1 (println (str client " " dt2))
+        ;tr1 (println (str  "currencies= " currencies))
 
         trans (d/q '[:find ?e
-                      :in $ ?client ?dt2
+                      :in $ ?client ?dt2 [?currency ...] 
                       :where
                       [?e :transaction/client ?c]
                       [?c :client/code ?client]
                       [?e :transaction/valuedate ?dt]
+                      [?e :transaction/security ?s]
+                      [?s :security/currency ?currency]
                       [(< ?dt ?dt2)]
-                     ] (d/db conn) client dt2)
+                     ] (d/db conn) client dt2 currencies)
 
-        ;tr2 (println (str client " " dt))
+        ;tr2 (println (str "count trans= " (count trans)))
         newtrans  (map (fn [x] ( concat (ent [x]) [[:id (first x)]] ) ) trans)
 
         ;tr3 (println (str client " " dt))
@@ -866,33 +873,31 @@
 	;;tr2 (println (filter (fn [x] (if (= "UPRO" (:security x)) true false)) tranmap))
         ;tr5 (println (filter (fn [x] (if (= "GMST" (:security x)) true false)) tranmap ) )
         
-    ]Б
-    ;; (filter (fn [x] (let [
-    ;;   tr3 (println x)
-    ;;   ] (if (or 
-    ;;       (> (c/to-long (:tradedate x)) (c/to-long dt)) 
-    ;;       (not (str/includes? (str/lower-case (:status x)) "valid") ) 
-    ;;       (= "RUR" (:security x))
-    ;;       (= "GBP/RUR" (:security x))
-    ;;       (= "USD/RUR" (:security x))
-    ;;       (= "GBP/USD" (:security x))
-    ;;       (= "GBP/EUR" (:security x))
-    ;;       (= "EUR/USD" (:security x))
-    ;;       (= "EUR/RUR" (:security x))
-    ;;       (= "USD" (:security x))
-    ;;       (nil? (:client x))
-    ;;       (nil? (:currency x))
-    ;;       (= "R" (:direction x))
-    ;;       ) false true)) ) tranmap)
-
-    tranmap
+    ]
+    (filter (fn [x] (let [
+      ;tr3 (println x)
+      ] (if (or 
+          (> (c/to-long (:tradedate x)) (c/to-long dt)) 
+          (not (str/includes? (str/lower-case (:status x)) "valid") ) 
+          (= "RUR" (:security x))
+          (= "GBP/RUR" (:security x))
+          (= "USD/RUR" (:security x))
+          (= "GBP/USD" (:security x))
+          (= "GBP/EUR" (:security x))
+          (= "EUR/USD" (:security x))
+          (= "EUR/RUR" (:security x))
+          (= "USD" (:security x))
+          (nil? (:client x))
+          (nil? (:currency x))
+          (= "R" (:direction x))
+          ) false true)) ) tranmap)
   )
 )
 
 
-(defn build-excel-transactions [client]
+(defn build-excel-transactions [client & [currencies]]
   (let [
-    transactions (sort (comp sort-tran-from-db) (get-transactions-from-db client (java.util.Date.)))
+    transactions (sort (comp sort-tran-from-db) (get-transactions-from-db client (java.util.Date.) currencies))
 
     ;tr1 (println (first transactions))
     securities (get-securities)
@@ -1399,11 +1404,11 @@
   )
 )
 
-(defn generateportfs [client]
+(defn generateportfs [client & [currencies]]
   (let [
 
     ;res1 (spit (str "C:/DEV/clojure/sberpb/sberapi/DB/" client ".txt")  ",,,,\n" :append false)
-    transactions (sort (comp sort-tran-from-db) (get-transactions-from-db client (java.util.Date.)))
+    transactions (sort (comp sort-tran-from-db) (get-transactions-from-db client (java.util.Date.) currencies))
     res1 (spit (str drive ":/DEV/output/" client ".txt") (str "Portfolio Name,Security ID,Position/Quantity/Nominal,Cost Px asset Currency,Date\n")  :append false)
     securities (get-securities)
 
@@ -1527,7 +1532,7 @@
 )
 
 (defn create-tran-files []
-  (let [Б
+  (let [
         conn (d/connect uri)
         clients (d/q '[:find ?e
                        :in $ 
@@ -1786,7 +1791,7 @@
 
 (defn recent-deals-to-db []
   (let [
-    files [3 4 5 6]
+    files [3 4 5 6 7]
     trans (doall (map (fn [x] (recent-deals-to-db-by-num x))  files )) 
     ]
     ;(count secs)
