@@ -713,7 +713,7 @@
 
         newprice (* tranprice (if (= assettype 5) 1.0 (/ fx_tran_currency fx_sec_currency))  (if (= "GBX" currency) 1.0 1.0))
 
-        ;tr1 (if (= acode "HGMLN") (println (str "fxtran=" fx_tran_currency " fxsec=" fx_sec_currency " price=" (nth (nth tran 3) 1))))
+        ;tr1 (if (= acode "AALLN") (println (str "fxtran=" fx_tran_currency " fxsec=" fx_sec_currency " price=" newprice)))
         ;;
         newtran {:client client :security acode  :nominal nominal :price newprice :direction direction :valuedate tranvaluedate :currency currency :comment (if (> (count comment) 1) comment "")  :fx (/ fx_tran_currency fx_sec_currency) :id (nth (nth tran 9) 1)}
         ;tr1 (if (= (compare acode "HMSGLI" ) 0) (println (str (nth (nth tran 6) 1) " fx1: " fx_tran_currency " " currency " fx2: " fx_sec_currency " fx: " (:fx newtran) " date: " (:valuedate newtran) "\n")) ) 
@@ -781,7 +781,7 @@
 
 (defn get-transactions-from-db [client dt & [in-currencies]]
   (let [
-        currencies (if (nil? in-currencies) ["USD" "EUR" "RUB" "GBP" "RUR" "GBX"] in-currencies)
+        currencies (if (nil? in-currencies) ["USD" "EUR" "RUB" "GBP" "RUR" "GBX" "CHF" "HKD"] in-currencies)
 
         
         dt1 (java.util.Date. (c/to-long (f/parse custom-formatter (f/unparse custom-formatter (c/from-long (c/to-long #inst "2000-01-01T00:00:00.000-00:00" ))))))
