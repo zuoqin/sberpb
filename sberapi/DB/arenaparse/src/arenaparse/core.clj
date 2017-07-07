@@ -779,9 +779,11 @@
   )
 )
 
-(defn get-transactions-from-db [client dt & [in-currencies]]
+(defn get-transactions-from-db [client dt & [in-currencies in-types]]
   (let [
         currencies (if (nil? in-currencies) ["USD" "EUR" "RUB" "GBP" "RUR" "GBX" "CHF" "HKD"] in-currencies)
+
+        types (if (nil? in-types) [0 1 5 10 15] in-types)
 
         
         dt1 (java.util.Date. (c/to-long (f/parse custom-formatter (f/unparse custom-formatter (c/from-long (c/to-long #inst "2000-01-01T00:00:00.000-00:00" ))))))
@@ -789,18 +791,19 @@
         dt2 (java.util.Date. (c/to-long (f/parse custom-formatter (f/unparse custom-formatter (c/from-long (+ (c/to-long dt) (* 1000 24 3600)))))))
 
 
-        ;tr1 (println (str  "currencies= " currencies))
+        ;;tr1 (println (str  "types= " types))
 
         trans (d/q '[:find ?e
-                      :in $ ?client ?dt2 [?currency ...] 
+                      :in $ ?client ?dt2 [?currency ...] [?type ...]
                       :where
                       [?e :transaction/client ?c]
                       [?c :client/code ?client]
                       [?e :transaction/valuedate ?dt]
                       [?e :transaction/security ?s]
                       [?s :security/currency ?currency]
+                      [?s :security/assettype ?type]
                       [(< ?dt ?dt2)]
-                     ] (d/db conn) client dt2 currencies)
+                     ] (d/db conn) client dt2 currencies types)
 
         ;tr2 (println (str "count trans= " (count trans)))
         newtrans  (map (fn [x] ( concat (ent [x]) [[:id (first x)]] ) ) trans)
@@ -897,7 +900,7 @@
 
 (defn build-excel-transactions [client & [currencies]]
   (let [
-    transactions (sort (comp sort-tran-from-db) (get-transactions-from-db client (java.util.Date.) currencies))
+    transactions (sort (comp sort-tran-from-db) (get-transactions-from-db client (java.util.Date.) currencies [0 1 5 15]))
 
     ;tr1 (println (first transactions))
     securities (get-securities)
@@ -1408,7 +1411,7 @@
   (let [
 
     ;res1 (spit (str "C:/DEV/clojure/sberpb/sberapi/DB/" client ".txt")  ",,,,\n" :append false)
-    transactions (sort (comp sort-tran-from-db) (get-transactions-from-db client (java.util.Date.) currencies))
+    transactions (sort (comp sort-tran-from-db) (get-transactions-from-db client (java.util.Date.) currencies [0 1 5 10 15]))
     res1 (spit (str drive ":/DEV/output/" client ".txt") (str "Portfolio Name,Security ID,Position/Quantity/Nominal,Cost Px asset Currency,Date\n")  :append false)
     securities (get-securities)
 
