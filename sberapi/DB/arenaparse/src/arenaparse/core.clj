@@ -1890,6 +1890,57 @@
   )
 )
 
+(defn price-to-map [price]
+
+)
+
+
+(defn deleteprice [isin]
+  (let [
+    conn (d/connect uri)
+
+    dt (java.util.Date.)
+    dttxt (f/unparse build-in-basicdate-formatter (c/from-long (c/to-long dt)))
+    sec (first (filter (fn [x] (if (= (compare (:isin x) isin) 0) true false)) (get-securities)))   
+    priceid (d/q '[:find ?e ;?t ?a ?y ?d ?p ?dur
+             :in $ ?sec
+             :where
+             [?e :price/targetprice ?t]
+             [?e :price/analystrating ?a]
+             [?e :price/yield ?y]
+             [?e :price/dvddate ?d]
+             [?e :price/putdate ?p]
+             [?e :price/duration ?dur]
+             [?e :price/security ?sec]
+             ] (d/db conn) (:id sec))
+    price (ent priceid)
+
+
+    target (second (first (filter (fn [x] (if (= (first x) (keyword "price/targetprice")) true false)) price) ))
+
+    anr (second (first (filter (fn [x] (if (= (first x) (keyword "price/analystrating")) true false)) price) ))
+
+    yield (second (first (filter (fn [x] (if (= (first x) (keyword "price/yield")) true false)) price) ))
+
+    dvddate (second (first (filter (fn [x] (if (= (first x) (keyword "price/dvddate")) true false)) price) ))
+
+    putdate (second (first (filter (fn [x] (if (= (first x) (keyword "price/putdate")) true false)) price) ))
+
+    duration (second (first (filter (fn [x] (if (= (first x) (keyword "price/duration")) true false)) price) ))
+
+    tr1 (println (str "priceid=" priceid))
+    tr1 (if (nil? sec) (println (str "ISIN: " isin " not found")) (d/transact conn [[:db.fn/retractEntity (ffirst priceid)]]))
+     ]
+    ;;(d/transact-async conn [{ :security/acode "PLZL", :security/assettype 1, :security/multiple 1.0, :security/bcode "PLZL RX Equity", :security/isin "RU000A0JNAA8", :security/exchange "", :security/currency "RUB", :db/id #db/id[:db.part/user -100663] }])
+    ; To insert new entity:
+    ;(d/transact conn [{ :transaction/client #db/id[:db.part/user 17592186045573] :transaction/security #db/id[:db.part/user 17592186065674], :transaction/nominal 108000.0 :transaction/price 100.0 :transaction/direction "S" :transaction/valuedate #inst "2014-04-22T00:00:00.0000000Z", :transaction/currency "RUB" :transaction/comment "", :db/id #db/id[:db.part/user -110002] }])
+     ; To delete entity by id:
+     ;(d/transact conn [[:db.fn/retractEntity 17592186045577]])
+  (d/transact-async conn  [{ :price/security (:id sec) :price/lastprice 20.51 :price/valuedate dt  :price/source "Excel import" :price/comment (str "Import from Bllomberg API output on " dttxt) :price/targetprice target :price/analystrating anr :price/yield yield :price/dvddate dvddate :price/putdate putdate :price/duration duration :db/id #db/id[:db.part/user -100001 ]}])
+  )
+)
+
+
 (defn upload-to-bloomberg []
   (let [
     ;; portfs (->> (load-workbook (str  drive ":/DEV/Java/" "CheckNewTransactions.xlsx") )
@@ -1904,6 +1955,7 @@
     (doall (map (fn [x] (build-excel-transactions x)) portfs ))
   )
 )
+
 
 
 (defn -main 

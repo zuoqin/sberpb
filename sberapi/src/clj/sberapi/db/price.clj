@@ -7,9 +7,20 @@
             [clj-time.format :as f]
             [clj-time.local :as l]
             [clj-time.coerce :as c]
+ 
+            [sberapi.db.security :as sec]
 ))
 
 (def custom-formatter (f/formatter "dd/MM/yyyy"))
+(def build-in-basicdate-formatter (f/formatters :basic-date))
+
+
+(defn ent [id]
+  (let [
+   
+  ]
+  (seq (d/entity (d/db conn) (ffirst id))) )
+)
 
 (defn find-setting [code]
   (let [settings (d/q '[:find ?code 
@@ -50,37 +61,47 @@
 (defn update-price [quote]
   (let [
     ;tr1 (println (str quote))
+    sec (first (filter (fn [x] (if (= (compare (:isin x) (:isin quote)) 0) true false)) (sec/get-securities)))
     dt (java.util.Date.)
-
+    dttxt (f/unparse build-in-basicdate-formatter (c/from-long (c/to-long dt)))
     ;tr1 (println quote)
     price (double (:price quote))
-    target (double (:target quote))
-    anr (double (:anr quote))
 
-    ;tr1 (:yield quote)
-    yield (double (:yield quote))
-    duration (double (:duration quote))
 
-    dvddt (:dvddate quote)
-    
-    newdvddt (if (> (count dvddt) 0 ) (java.util.Date. (c/to-long (f/parse custom-formatter dvddt))) (java.util.Date. (c/to-long (f/parse custom-formatter "01/01/1900"))))
-    
-    ;tr1 (println (str "dvddate=" dvddt " newdvddt=" newdvddt) )
-    newputdt (if (> (count (:putdate quote)) 0 ) (java.util.Date. (c/to-long (f/parse custom-formatter (:putdate quote)))) (java.util.Date. (c/to-long (f/parse custom-formatter "01/01/1900"))))
-    secid (:secid quote)
-    ;tr1 (println quote)
-    ;tr2 (println secid)
+    priceid (d/q '[:find ?e ;?t ?a ?y ?d ?p ?dur
+             :in $ ?sec
+             :where
+             [?e :price/targetprice ?t]
+             [?e :price/analystrating ?a]
+             [?e :price/yield ?y]
+             [?e :price/dvddate ?d]
+             [?e :price/putdate ?p]
+             [?e :price/duration ?dur]
+             [?e :price/security ?sec]
+             ] (d/db conn) (:id sec))
+    price (ent priceid)
 
-    tr1 (ffirst (d/q '[:find ?e
-                       :in $ ?sec
-                       :where
-                       [?e :price/security ?sec]
-                      ] (d/db conn) secid))
 
-    tr2 (if (not (nil? tr1)) (d/transact conn [[:db.fn/retractEntity tr1]])) 
+    target (second (first (filter (fn [x] (if (= (first x) (keyword "price/targetprice")) true false)) price) ))
+
+    anr (second (first (filter (fn [x] (if (= (first x) (keyword "price/analystrating")) true false)) price) ))
+
+    yield (second (first (filter (fn [x] (if (= (first x) (keyword "price/yield")) true false)) price) ))
+
+    dvddate (second (first (filter (fn [x] (if (= (first x) (keyword "price/dvddate")) true false)) price) ))
+
+    putdate (second (first (filter (fn [x] (if (= (first x) (keyword "price/putdate")) true false)) price) ))
+
+    duration (second (first (filter (fn [x] (if (= (first x) (keyword "price/duration")) true false)) price) ))
+
+
+    tr2 (if (not (nil? priceid)) (d/transact conn [[:db.fn/retractEntity (ffirst priceid)]])) 
         
   ]
-  (d/transact-async conn  [{ :price/security secid :price/lastprice price :price/valuedate dt :price/targetprice target :price/analystrating anr :price/yield yield :price/dvddate newdvddt :price/putdate newputdt :price/duration duration :price/source "Excel import" :price/comment "Import from Bllomberg Excel output on 2017-03-10" :db/id #db/id[:db.part/user -100001 ]}]))
+
+  ;;:price/targetprice target :price/analystrating anr :price/yield yield :price/dvddate newdvddt :price/putdate newputdt :price/duration duration
+  (d/transact-async conn  [{ :price/security (:id sec) :price/lastprice (double (:price quote)) :price/valuedate dt  :price/source "Excel import" :price/comment (str "Import from Bllomberg API output on " dttxt) :price/targetprice target :price/analystrating anr :price/yield yield :price/dvddate dvddate :price/putdate putdate :price/duration duration :db/id #db/id[:db.part/user -100001 ]}])
+)
 )
 
 

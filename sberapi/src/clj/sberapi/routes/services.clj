@@ -221,12 +221,12 @@
 
     (POST "/price" []
         :header-params [authorization :- String]
-        :query-params [secid :- Long, price :- Double, target :- Double, anr :- Double, yield :- Double, duration :- Double, dvddate :- String, putdate :- String]
-        :summary     "Create new system setting"
+        :query-params [isin :- String, price :- Double] ;;, target :- Double, anr :- Double, yield :- Double, duration :- Double, dvddate :- String, putdate :- String
+        :summary     "Update price for the security"
 
       (let [
         ;tr1 (println (str "secid=" secid " price=" price " target=" target " anr=" anr " yield=" yield " duration=" duration " dvddate=" dvddate " putdate=" putdate))
-        result (priceapi/updatePrice (nth (str/split authorization #" ") 1) {:secid secid :price price :target target :anr anr :yield yield :duration duration :dvddate dvddate :putdate putdate} )]
+        result (priceapi/updatePrice (nth (str/split authorization #" ") 1) {:isin isin :price price} )] ;; :target target :anr anr :yield yield :duration duration :dvddate dvddate :putdate putdate
         ;;:return      Long
         (if (nil? (:error result)) (ok result) (bad-request result))
       )
