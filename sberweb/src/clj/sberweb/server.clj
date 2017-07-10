@@ -145,9 +145,7 @@
       isbond (if (and (= 5 (get sec "assettype"))
                                  ;(= "RU" (subs (:isin security) 0 2))
                                  )  true false)
-      isrusbond (if (and (= 5 (get sec "assettype"))
-                                 (= "RU" (subs (get sec "isin") 0 2))
-                                 )  true false)
+      ;;isrusbond (if (and (= 5 (get sec "assettype")) (= "RU" (subs (get sec "isin") 0 2)))  true false)
       usdrate (get (first (filter (fn [z] (if (= "USD" (get z "acode")) true false)) securities) ) "price")
 
       ;tr1 (println (str "usdrate " usdrate))
@@ -164,7 +162,8 @@
       duration (get sec "duration")
 
       ;tr1 (println (str "seccurrency " seccurrency))
-      secprice (if (nil? (get sec "price")) 0.0 (get sec "price")) 
+      secprice (if (nil? (get sec "price")) 0.0 (get sec "price"))
+      multiple (get sec "multiple")
       ;tr1 (println (str "secprice " secprice))
       
       fxrate (get (first (filter (fn [z] (if (= (if (= seccurrency "GBX") "GBP" (if (= seccurrency "RUR") "RUB" seccurrency)) (get z "acode")) true false)) securities) ) "price")
@@ -180,11 +179,11 @@
       curusdprice (/ (* secprice newfxrate) usdrate)
       amount (get (second x) "amount")
       
-      rubvalue (if (= isrusbond true) (/ (* 1000.0 currubprice amount)  100.0)  (if (= isbond true) (/ (* currubprice amount)  100.0)  (if (= assettype 15) (* multiple amount secprice (if (= seccurrency "USD") usdrate 1.0)) (* currubprice amount))))
+      rubvalue (if (= isbond true) (/ (* currubprice amount multiple)  100.0)  (if (= assettype 15) (* multiple amount secprice (if (= seccurrency "USD") usdrate 1.0)) (* currubprice amount)))
 
-      rubcosts (if (= isrusbond true) (/ (* 1000.0 waprub amount)  100.0)  (if (= isbond true) (/ (* waprub amount)  100.0)  (if (= assettype 15) (* multiple amount (if (= seccurrency "USD") (* usdrate wapusd) waprub)) (* multiple waprub amount))))
+      rubcosts (if (= isbond true) (/ (* waprub amount multiple)  100.0)  (if (= assettype 15) (* multiple amount (if (= seccurrency "USD") (* usdrate wapusd) waprub)) (* multiple waprub amount)))
 
-      usdcosts (if (= isrusbond true) (/ (* 1000.0 wapusd amount)  100.0)  (if (= isbond true) (/ (* wapusd amount)  100.0)  (if (= assettype 15) (* multiple amount (if (= seccurrency "USD") wapusd (/  waprub usdrate))) (* multiple wapusd amount))))
+      usdcosts (if (= isbond true) (/ (* wapusd amount multiple)  100.0)  (if (= assettype 15) (* multiple amount (if (= seccurrency "USD") wapusd (/  waprub usdrate))) (* multiple wapusd amount)))
 
       usdvalue (/ rubvalue usdrate)     
 
