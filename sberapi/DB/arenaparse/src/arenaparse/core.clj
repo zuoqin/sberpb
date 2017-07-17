@@ -178,7 +178,7 @@
   (let [
      conn (d/connect uri)
      ]
-    (d/transact-async conn [{ :security/acode "PLZL", :security/assettype 1, :security/multiple 1.0, :security/bcode "PLZL RX Equity", :security/isin "RU000A0JNAA8", :security/exchange "", :security/currency "RUB", :db/id #db/id[:db.part/user -100663] }]
+    (d/transact-async conn [{ :security/acode "NOMOS19S", :security/assettype 5, :security/multiple 1.0, :security/bcode "XS0940730228 Corp", :security/isin "XS0940730228", :security/exchange "", :security/currency "USD", :db/id #db/id[:db.part/user -100664] }]
     )
     ; To insert new entity:
     ;(d/transact conn [{ :transaction/client #db/id[:db.part/user 17592186045573] :transaction/security #db/id[:db.part/user 17592186065674], :transaction/nominal 108000.0 :transaction/price 100.0 :transaction/direction "S" :transaction/valuedate #inst "2014-04-22T00:00:00.0000000Z", :transaction/currency "RUB" :transaction/comment "", :db/id #db/id[:db.part/user -110002] }])
@@ -1279,14 +1279,9 @@
                              assettype (second (first (filter (fn [y] (if (= (first y) :security/assettype) true false)) sec ) ))
                              currency (second (first (filter (fn [y] (if (= (first y) :security/currency) true false)) sec ) ))
                              multiple (if (nil? (second (first (filter (fn [y] (if (= (first y) :security/multiple) true false)) sec ) ))) 1.0 (second (first (filter (fn [y] (if (= (first y) :security/multiple) true false)) sec ) )))
-                             bcode (second (first (filter (fn [y] (if (= (first y) :security/bcode) true false)) sec ) ))
-;;                              isrussian (if (and 
 
-;; ;; Check ISIN starts with RU
-;; (= (compare (subs  (second (first (filter (fn [y] (if (= (first y) :security/isin) true false)) sec) )) 0 2) "RU") 0 ) 
-;; ;; Check currency = RUB
-;; (= (compare (subs  (second (first (filter (fn [y] (if (= (first y) :security/isin) true false)) sec) )) 0 2) "RU") 0 ) 
-;; )  true false)
+                             bcode (second (first (filter (fn [y] (if (= (first y) :security/isin) true false)) sec ) ))
+
 
 
                               ;tr1 (if (= (name (first x)) "GB0032360173") (println (str "x=" x " currency=" currency ""))) 
