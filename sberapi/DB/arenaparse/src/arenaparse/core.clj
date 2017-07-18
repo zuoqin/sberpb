@@ -38,13 +38,17 @@
         ;tr2 (println tran2)
 
         
-        dt1 (c/to-long (:valuedate tran1))
-        dt2 (c/to-long (:valuedate tran2))
+        dtv1 (c/to-long (:valuedate tran1))
+        dtv2 (c/to-long (:valuedate tran2))
+
+        dtt1 (c/to-long (:tradedate tran1))
+        dtt2 (c/to-long (:tradedate tran2))
 
         ]
     
-    (if (or  (< dt1  dt2)
-	  (and (= dt1 dt2) (< (compare (:direction tran1) (:direction tran2)) 0) ))
+    (if (or  (< dtt1  dtt2)
+          (and (= dtt1 dtt2) (< dtv1 dtv2) )
+	  (and (= dtt1 dtt2) (= dtv1 dtv2) (< (compare (:direction tran1) (:direction tran2)) 0) ))
     true
     false)
   )
@@ -698,6 +702,8 @@
 
         tranvaluedate (second (first (filter (fn [x] (if (= (first x) (keyword "transaction/valuedate")) true false)) tran) ))
 
+        trantradedate (second (first (filter (fn [x] (if (= (first x) (keyword "transaction/tradedate")) true false)) tran) ))
+
         tranprice (second (first (filter (fn [x] (if (= (first x) (keyword "transaction/price")) true false)) tran) ))
 
         nominal (second (first (filter (fn [x] (if (= (first x) (keyword "transaction/nominal")) true false)) tran) ))
@@ -715,7 +721,7 @@
 
         ;tr1 (if (= acode "AALLN") (println (str "fxtran=" fx_tran_currency " fxsec=" fx_sec_currency " price=" newprice)))
         ;;
-        newtran {:client client :security acode  :nominal nominal :price newprice :direction direction :valuedate tranvaluedate :currency currency :comment (if (> (count comment) 1) comment "")  :fx (/ fx_tran_currency fx_sec_currency) :id (nth (nth tran 9) 1)}
+        newtran {:client client :security acode  :nominal nominal :price newprice :direction direction :valuedate tranvaluedate :tradedate trantradedate :currency currency :comment (if (> (count comment) 1) comment "")  :fx (/ fx_tran_currency fx_sec_currency) :id (nth (nth tran 9) 1)}
         ;tr1 (if (= (compare acode "HMSGLI" ) 0) (println (str (nth (nth tran 6) 1) " fx1: " fx_tran_currency " " currency " fx2: " fx_sec_currency " fx: " (:fx newtran) " date: " (:valuedate newtran) "\n")) ) 
         ]
     newtran
@@ -1280,7 +1286,7 @@
                              currency (second (first (filter (fn [y] (if (= (first y) :security/currency) true false)) sec ) ))
                              multiple (if (nil? (second (first (filter (fn [y] (if (= (first y) :security/multiple) true false)) sec ) ))) 1.0 (second (first (filter (fn [y] (if (= (first y) :security/multiple) true false)) sec ) )))
 
-                             bcode (second (first (filter (fn [y] (if (= (first y) :security/isin) true false)) sec ) ))
+                             bcode (second (first (filter (fn [y] (if (= (first y) :security/bcode) true false)) sec ) ))
 
 
 

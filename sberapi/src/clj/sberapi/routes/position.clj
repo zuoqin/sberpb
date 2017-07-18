@@ -36,13 +36,17 @@
         ;tr2 (println tran2)
 
         
-        dt1 (c/to-long (:valuedate tran1))
-        dt2 (c/to-long (:valuedate tran2))
+        dtv1 (c/to-long (:valuedate tran1))
+        dtv2 (c/to-long (:valuedate tran2))
+
+        dtt1 (c/to-long (:tradedate tran1))
+        dtt2 (c/to-long (:tradedate tran2))
 
         ]
     
-    (if (or  (< dt1  dt2)
-	  (and (= dt1 dt2)(< (:id tran1) (:id tran2) )))
+    (if (or  (< dtv1  dtv2)
+          (and (= dtv1 dtv2)(< dtt1 dtt2 ))
+	  (and (= dtv1 dtv2) (= dtt1 dtt2 ) (< (:id tran1) (:id tran2) )))
     true
     false)
   )
@@ -165,7 +169,7 @@
     
 
 
-    ;tr1 (println (str (first newtransactions) " sec= " thecursec))
+    ;;tr1 (println (str "newtrans= "(first newtransactions)))
     theusdrate (db/get-fxrate-by-date "USD" (:valuedate (first newtransactions)))
     theseccurrate (db/get-fxrate-by-date (:currency thecursec) (:valuedate (first newtransactions)))
     ;tr1 (println (str "777777"))
