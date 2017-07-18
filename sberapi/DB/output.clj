@@ -1429,6 +1429,8 @@
 
 { :security/acode "MOSOBL2016", :security/assettype 5, :security/multiple 1000.0, :security/bcode "RU000A0JX0B9 Corp", :security/isin "RU000A0JX0B9", :security/exchange "IMM", :security/currency "RUB", :db/id #db/id[:db.part/user -100708] }
 
+{ :security/acode "TRANSMBO01", :security/assettype 5, :security/multiple 1000.0, :security/bcode "RU000A0JXD07 Corp", :security/isin "RU000A0JXD07", :security/exchange "IMM", :security/currency "RUB", :db/id #db/id[:db.part/user -100709] }
+
 
 ;;FORTS contracts
 
@@ -3349,7 +3351,6 @@
 { :transaction/client #db/id[:db.part/user -102057], :transaction/security #db/id[:db.part/user -100703], :transaction/nominal 200000.0, :transaction/price 1.0, :transaction/direction "S", :transaction/tradedate #inst "2016-08-26T01:00:00.0000000Z", :transaction/valuedate #inst "2016-08-26T01:00:00.0000000Z", :transaction/currency "USD", :transaction/comment "Transfer Out", :db/id #db/id[:db.part/user -110774] }
 ;;;
 
-
 ;; KDFWF Offset Arena trades
 { :transaction/client #db/id[:db.part/user -102080], :transaction/security #db/id[:db.part/user -100704], :transaction/nominal 100000.0, :transaction/price 102.25, :transaction/direction "S", :transaction/tradedate #inst "2017-04-03T01:00:00.0000000Z", :transaction/valuedate #inst "2017-04-03T01:00:00.0000000Z", :transaction/currency "USD", :transaction/comment "Offset trade in Arena", :db/id #db/id[:db.part/user -110775] }
 
@@ -3393,6 +3394,33 @@
 { :transaction/client #db/id[:db.part/user -102143], :transaction/security #db/id[:db.part/user -100702], :transaction/nominal 50000000.0, :transaction/price 1.0, :transaction/direction "B", :transaction/tradedate #inst "2016-03-22T01:00:00.0000000Z", :transaction/valuedate #inst "2016-03-22T01:00:00.0000000Z", :transaction/currency "USD", :transaction/comment "Transfer In", :db/id #db/id[:db.part/user -110793] }
 
 { :transaction/client #db/id[:db.part/user -102143], :transaction/security #db/id[:db.part/user -100702], :transaction/nominal 50000000.0, :transaction/price 1.0, :transaction/direction "S", :transaction/tradedate #inst "2016-03-23T01:00:00.0000000Z", :transaction/valuedate #inst "2016-03-23T01:00:00.0000000Z", :transaction/currency "USD", :transaction/comment "Transfer Out", :db/id #db/id[:db.part/user -110794] }
+
+
+
+;; KDBRF initial CASH position
+{ :transaction/client #db/id[:db.part/user -102031], :transaction/security #db/id[:db.part/user -100702], :transaction/nominal 3010000.0, :transaction/price 1.0, :transaction/direction "B", :transaction/tradedate #inst "2013-12-19T01:00:00.0000000Z", :transaction/valuedate #inst "2013-12-19T01:00:00.0000000Z", :transaction/currency "USD", :transaction/comment "Transfer In", :db/id #db/id[:db.part/user -110795] }
+
+{ :transaction/client #db/id[:db.part/user -102031], :transaction/security #db/id[:db.part/user -100702], :transaction/nominal 3010000.0, :transaction/price 1.0, :transaction/direction "S", :transaction/tradedate #inst "2013-12-23T01:00:00.0000000Z", :transaction/valuedate #inst "2013-12-23T01:00:00.0000000Z", :transaction/currency "USD", :transaction/comment "Transfer Out", :db/id #db/id[:db.part/user -110796] }
+;;;
+
+;; AQLON initial CASH position
+{ :transaction/client #db/id[:db.part/user -102071], :transaction/security #db/id[:db.part/user -100702], :transaction/nominal 20000000.0, :transaction/price 1.0, :transaction/direction "B", :transaction/tradedate #inst "2014-05-19T01:00:00.0000000Z", :transaction/valuedate #inst "2014-05-19T01:00:00.0000000Z", :transaction/currency "USD", :transaction/comment "Transfer In", :db/id #db/id[:db.part/user -110797] }
+
+{ :transaction/client #db/id[:db.part/user -102071], :transaction/security #db/id[:db.part/user -100702], :transaction/nominal 20000000.0, :transaction/price 1.0, :transaction/direction "S", :transaction/tradedate #inst "2014-05-20T01:00:00.0000000Z", :transaction/valuedate #inst "2014-05-20T01:00:00.0000000Z", :transaction/currency "USD", :transaction/comment "Transfer Out", :db/id #db/id[:db.part/user -110798] }
+;;;
+
+;; AQLON1 initial CASH position
+{ :transaction/client #db/id[:db.part/user -102019], :transaction/security #db/id[:db.part/user -100702], :transaction/nominal 6000000.0, :transaction/price 1.0, :transaction/direction "B", :transaction/tradedate #inst "2014-07-18T01:00:00.0000000Z", :transaction/valuedate #inst "2014-07-18T01:00:00.0000000Z", :transaction/currency "USD", :transaction/comment "Transfer In", :db/id #db/id[:db.part/user -110799] }
+
+{ :transaction/client #db/id[:db.part/user -102019], :transaction/security #db/id[:db.part/user -100702], :transaction/nominal 6000000.0, :transaction/price 1.0, :transaction/direction "S", :transaction/tradedate #inst "2014-07-21T01:00:00.0000000Z", :transaction/valuedate #inst "2014-07-21T01:00:00.0000000Z", :transaction/currency "USD", :transaction/comment "Transfer Out", :db/id #db/id[:db.part/user -110800] }
+;;;
+
+;; NIKAO initial CASH position
+{ :transaction/client #db/id[:db.part/user -102070], :transaction/security #db/id[:db.part/user -100702], :transaction/nominal 42000000.0, :transaction/price 1.0, :transaction/direction "B", :transaction/tradedate #inst "2016-11-23T01:00:00.0000000Z", :transaction/valuedate #inst "2016-11-23T01:00:00.0000000Z", :transaction/currency "USD", :transaction/comment "Transfer In", :db/id #db/id[:db.part/user -110801] }
+
+{ :transaction/client #db/id[:db.part/user -102019], :transaction/security #db/id[:db.part/user -100702], :transaction/nominal 42000000.0, :transaction/price 1.0, :transaction/direction "S", :transaction/tradedate #inst "2016-11-24T01:00:00.0000000Z", :transaction/valuedate #inst "2016-11-24T01:00:00.0000000Z", :transaction/currency "USD", :transaction/comment "Transfer Out", :db/id #db/id[:db.part/user -110802] }
+;;;
+
 
 ;; PRICES
 { :price/security #db/id[:db.part/user -100133], :price/lastprice 1.0, :price/valuedate #inst "2000-01-01T10:00:00.0000000Z", :price/analystrating 0.0, :price/targetprice 1.0, :price/yield 0.0, :price/dvddate #inst "1900-01-01T00:00:00.0000000Z", :price/duration 0.0, :price/comment "manual", :price/source "test data", :db/id #db/id[:db.part/user -200001] }

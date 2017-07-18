@@ -127,10 +127,10 @@
 
     (GET "/deals" []
       :header-params [authorization :- String]
-      :query-params [client :- String]
+      :query-params [client :- String, page :- Long]
       :summary      "retrieve all transactions for given client"
 
-      (ok  (positionapi/getDeals (nth (str/split authorization #" ") 1) client)))
+      (ok  (positionapi/getDeals (nth (str/split authorization #" ") 1) client page)))
 
     (OPTIONS "/deals" []
       :summary  "Allows OPTIONS requests"

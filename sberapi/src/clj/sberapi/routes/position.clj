@@ -143,18 +143,34 @@
         ]
     
     (if (or  (< (:security deal1) (:security deal2))
-	  (and (= (:security deal1) (:security deal2))(< (c/to-long (:valuedate deal1))  (c/to-long (:valuedate deal2)) )))
+	  (and (= (:security deal1) (:security deal2)) (< (c/to-long (:tradedate deal1))  (c/to-long (:tradedate deal2)) ))
+
+         (and (= (:security deal1) (:security deal2)) (= (c/to-long (:tradedate deal1))  (c/to-long (:tradedate deal2)) ) (< (c/to-long (:valuedate deal1))  (c/to-long (:valuedate deal2)) ))
+        )
     true
     false)
   )
 )
 
+(defn sort-dates [date1 date2]
+  (let [
+        ;tr1 (println date1)
+        ;tr2 (println date2)
+        ]
+    
+    (if (< (c/to-long date1) (c/to-long date2))
+    false
+    true
+    )
+  )
+)
 
-(defn getDeals [token client]
+
+(defn getDeals [token client page]
   (let [
     ;usercode (:iss (-> token str->jwt :claims)  ) 
     transactions (into [] (db/get-transactions-by-client client))
-    newtransactions (sort (comp sort-deals) (map (fn [x]
+    thetransactions (sort (comp sort-deals) (map (fn [x]
         (let [tran x
               newvaluedate (java.util.Date. (c/to-long (f/parse db/custom-formatter (f/unparse db/custom-formatter (c/from-long (c/to-long (:valuedate x)))))))  
               newtran (assoc tran :valuedate newvaluedate)
@@ -164,16 +180,24 @@
         )
       ) transactions))
 
+    trandates (distinct (map (fn [x] (:valuedate x)) thetransactions))
+    selecteddates (take 5 (drop (* page 5) (sort (comp sort-dates) trandates)))
+
+    ;tr1 (println (str "dates count=" (count selecteddates)))
+    newtransactions (filter (fn [x] (some #(= (:valuedate x) %) selecteddates)) thetransactions)
+
+
     thecursec (first (filter (fn [x] (if (= (:security (first newtransactions)) (:id x)) true false)) (secs/get-securities)))
     thedirection (:direction (first newtransactions))
     
 
 
     ;;tr1 (println (str "newtrans= "(first newtransactions)))
-    theusdrate (db/get-fxrate-by-date "USD" (:valuedate (first newtransactions)))
-    theseccurrate (db/get-fxrate-by-date (:currency thecursec) (:valuedate (first newtransactions)))
+    theusdrate (db/get-fxrate-by-date "USD" (if (nil? (:valuedate (first newtransactions))) (java.util.Date.) (:valuedate (first newtransactions))))
+
+    theseccurrate (if (nil? (:currency thecursec)) 1.0 (db/get-fxrate-by-date (:currency thecursec) (if (nil? (:valuedate (first newtransactions))) (java.util.Date.) (:valuedate (first newtransactions))))) 
     ;tr1 (println (str "777777"))
-    thetrancurrate (db/get-fxrate-by-date (:currency (first newtransactions)) (:valuedate (first newtransactions)))
+    thetrancurrate (if (nil? (:currency (first newtransactions))) 1.0 (db/get-fxrate-by-date (:currency (first newtransactions)) (if (nil? (:valuedate (first newtransactions))) (java.util.Date.) (:valuedate (first newtransactions)))))
     thecurdate (:valuedate (first newtransactions))
     ;tr1 (println (str "8888888888"))
     ;securities (distinct (map (fn [x] (:security x)) transactions))
@@ -238,7 +262,7 @@
 
     ;tr1 (println (str "Total deals: " (count transbysecs)))
 
-    result (into [] transbysecs)
+    result (if (> (count newtransactions) 0) (into [] transbysecs) []) 
     ;tr1 (println (str "deal1  " (first result)))
     ]
     result

@@ -199,7 +199,6 @@
             (dom/div {:className "col-xs-1 col-md-1" :style {:padding-left "0px" :padding-right "0px" :text-align "right" :font-weight "700"}}            
               (dom/h4 {:className "list-group-item-heading" :style {:margin-left "10px" :font-weight "700" :margin-right "10px"}} (sbercore/split-thousands 
                 (gstring/format "%.2f" (/ (:posvalue (reduce (fn [x y] {:posvalue (+ (:posvalue x) (:posvalue y))} ) (filter (fn [x] (if (= (:assettype (first (filter (fn [y] (if (= (:id y) (:id x)) true false)) (:securities @sbercore/app-state))) ) 1) true false) ) (:positions ((keyword (:selectedclient @sbercore/app-state)) @sbercore/app-state))))) portfvalue 0.01)))))
-
             ;Amount
             ;;(dom/div {:className "col-xs-1 col-md-1" :style {:padding-left "0px" :padding-right "0px"}})
 
@@ -1067,12 +1066,17 @@
 )
 
 
+(defn load-deals []
+  (let []    
+    (sbercore/getDeals)
+  )
+)
 
 (defcomponent showdeals-view [data owner]
   (render
     [_]
     (if (or (> (count (:deals ((keyword (:selectedclient @sbercore/app-state)) @sbercore/app-state) )) 0)
-      )
+      )      
       (dom/div {:className "list-group" :style {:display "block"}}
         (map (fn [item]
           (let [
@@ -1088,6 +1092,10 @@
             ; 
             (if (and (= true (str/includes? seccode (str/upper-case (:search @sbercore/app-state)) )) (> (:wap x) (- 0 (:column (:sort-deals-list @app-state)))  ))   true false) ) ) (:deals ((keyword (:selectedclient @sbercore/app-state)) @sbercore/app-state)))) 
         )
+        (dom/div {:className "panel-footer"}
+          (b/button {:className (if (= 2 (:state @data)) "btn btn-info m-progress" "btn btn-info") :disabled? (:nomoredeals @data) :style {:width "100%"} :onClick (fn [e] (load-deals))} (if (:nomoredeals @data) "Все сделки загружены" "Загрузить ещё..."))
+        )
+        
       )
       (dom/div {:style {:background "white"}}
         (dom/p {:style {:text-align "center"}}

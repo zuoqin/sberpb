@@ -20,7 +20,7 @@
 
 (enable-console-print!)
 
-(defonce app-state (atom {:state 0 :percentage "5.00" :noholders 0 :selectedclient nil :search "" :selectedcurrency "all" :user {:role "admin"} }))
+(defonce app-state (atom {:state 0 :percentage "5.00" :noholders 0 :selectedclient nil :search "" :selectedcurrency "all" :user {:role "admin"} :dealspage -1 :nomoredeals false}))
 
 
 
@@ -317,7 +317,15 @@
 )
 
 (defn OnGetDeals [response]
-   (swap! app-state assoc-in [(keyword (:selectedclient @app-state)) :deals] (flatten (map (fn [x] (map-deal x)) (filter (fn [x] (if (> 1 1) true true)) response) )))
+  (let [
+    deals (:deals ((keyword (:selectedclient @app-state)) @app-state))
+    ]
+    (swap! app-state assoc :state 1 )
+    (if (> (count response) 0)
+      (swap! app-state assoc-in [(keyword (:selectedclient @app-state)) :deals] (concat deals (flatten (map (fn [x] (map-deal x)) (filter (fn [x] (if (> 1 1) true true)) response) ))))
+      (swap! app-state assoc-in [:nomoredeals] true)
+    )    
+  )
 )
 
 
@@ -341,8 +349,10 @@
   })
 )
 
-(defn getDeals [] 
-  (GET (str settings/apipath "api/deals?client=" (:selectedclient @app-state) ) {
+(defn getDeals []
+  (swap! app-state update-in [:dealspage] inc)
+  (swap! app-state assoc :state 2 )
+  (GET (str settings/apipath "api/deals?client=" (:selectedclient @app-state) "&page=" (:dealspage @app-state)) {
     :handler OnGetDeals
     :error-handler error-handler
     :headers {
@@ -418,7 +428,9 @@
   (let [
         code (:code (first (filter (fn[x] (if (= (:id x) (js/parseInt value) ) true false)) (:clients @app-state)))  )
         ]
-
+    (swap! app-state assoc :state 1 )
+    (swap! app-state assoc-in [:dealspage] -1)
+    (swap! app-state assoc-in [:nomoredeals] false)
     (swap! app-state assoc-in [:selectedclient] code)
     (if (nil? (:positions ((keyword value) @app-state)))
       (getPositions)
