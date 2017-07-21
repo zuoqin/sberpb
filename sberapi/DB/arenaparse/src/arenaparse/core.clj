@@ -41,8 +41,8 @@
         dtv1 (c/to-long (:valuedate tran1))
         dtv2 (c/to-long (:valuedate tran2))
 
-        dtt1 (c/to-long (:tradedate tran1))
-        dtt2 (c/to-long (:tradedate tran2))
+        dtt1 (c/to-long (:valuedate tran1))
+        dtt2 (c/to-long (:valuedate tran2))
 
         ]
     

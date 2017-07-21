@@ -76,10 +76,16 @@
 (defn handle-chkbsend-change [e]
   (let [
         code (str/join (drop 9 (.. e -currentTarget -id)))
+        
         letters (:letters @app-state)
         letter (first (filter (fn [x] (if (= code (:code x)) true false)) letters))
 
-        amount (if (nil? letter) 0 (:amount letter))
+        client (first (filter (fn [x] (if (= code (:client x)) true false)) (:calcportfs ((keyword (str (:selectedsec @sbercore/app-state))) @sbercore/app-state))))
+
+        amount1 (case (:selectedcurrency @sbercore/app-state) "all" (if (< (:freelimit client) 0.0) (:freelimit client) (if (< (:freelimit client) (+ (:maxusdshares client) (:maxrubshares client) (:maxeurshares client) (:maxgbpshares client))) (:freelimit client) (+ (:maxusdshares client) (:maxrubshares client) (:maxeurshares client) (:maxgbpshares client))))  ((keyword (str "max" (:selectedcurrency @sbercore/app-state) "shares") ) client))
+
+        ;tr1 (.log js/console (str "amount1=" amount1 " client=" client))
+        amount (if (nil? letter) amount1 (:amount letter))
         delletter (remove (fn [letter] (if (= (:code letter) code ) true false  )) letters)
         addletter (into [] (conj delletter {:code code :amount amount :issend (.. e -currentTarget -checked) }  )) 
     ]

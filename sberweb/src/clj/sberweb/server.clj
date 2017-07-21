@@ -137,8 +137,8 @@
     url (str apipath "api/position?client=" client )
     positions (filter (fn [x] (if (> (get (second x) "amount") 0) true false)) (json/read-str (:body (client/get url {:headers {"authorization" "Bearer TheBearer"}})))) 
 
-    url (str apipath "api/deals?client=" client )
-    deals (flatten (map (fn [x] (map-deal x)) (filter (fn [x] (if (= 1 1) true false)) (json/read-str (:body (client/get url {:headers {"authorization" "Bearer TheBearer"}}))))))
+    ;url (str apipath "api/deals?client=" client )
+    ;deals (flatten (map (fn [x] (map-deal x)) (filter (fn [x] (if (= 1 1) true false)) (json/read-str (:body (client/get url {:headers {"authorization" "Bearer TheBearer"}}))))))
     ;tr1 (println (str "deals= " (first deals)))
     newpositions (map (fn [x] (let [
       sec (first (filter (fn [sec] (if (= (get sec "id") (Long/parseLong (first x))) true false)) securities))
@@ -190,14 +190,15 @@
 ] {:security (get sec "bcode") :isin (get sec "isin") :price (get sec "price") :wap (get (second x) "price") :amount amount :usdvalue usdvalue :rubvalue rubvalue :usdcosts usdcosts :rubcosts rubcosts :assettype (case assettype 1 "Equity" 5 "Bond" 15 "Derivatives" "Other")  :currency seccurrency :anr anr :target target :duration duration :yield yield :dvddate dvddate :putdate putdate})) positions)
     ;positions (sort (comp sort-portfs-by-name) portfs)
 
-    newdeals (map (fn [x] (let [sec (first (filter (fn [sec] (if (= (get sec "id") (:security x)) true false)) securities))]
-      {:security (get sec "acode") :isin (get sec "isin") :date (+ (/ (c/to-long (f/parse custom-formatter (:date x))) (* 24 3600 1000)) 25569)   :direction (:direction x) :nominal (:nominal x) :wap (:wap x) :wapusd (:wapusd x) :waprub (:waprub x)}
-      )) deals)
+    ;; newdeals (map (fn [x] (let [sec (first (filter (fn [sec] (if (= (get sec "id") (:security x)) true false)) securities))]
+    ;;   {:security (get sec "acode") :isin (get sec "isin") :date (+ (/ (c/to-long (f/parse custom-formatter (:date x))) (* 24 3600 1000)) 25569)   :direction (:direction x) :nominal (:nominal x) :wap (:wap x) :wapusd (:wapusd x) :waprub (:waprub x)}
+    ;;   )) deals)
 
     ;tr1 (println (str "deal = " (first newdeals)))
     ]
-    (save-xls ["positions" (dataset [:security :isin :price :wap :amount :usdvalue :rubvalue :usdcosts :rubcosts :assettype :currency :anr :target :duration :yield :dvddate :putdate] (sort (comp comp-positions) newpositions)) "transactions" (dataset [:security :isin :direction :nominal :wap :wapusd :waprub :date] (sort (comp comp-deals) newdeals)
-) ] (str xlsdir client ".xlsx"))
+    (save-xls ["positions" (dataset [:security :isin :price :wap :amount :usdvalue :rubvalue :usdcosts :rubcosts :assettype :currency :anr :target :duration :yield :dvddate :putdate] (sort (comp comp-positions) newpositions)) 
+               ;;"transactions" (dataset [:security :isin :direction :nominal :wap :wapusd :waprub :date] (sort (comp comp-deals) newdeals))
+    ] (str xlsdir client ".xlsx"))
     "Success"
   )
 )
