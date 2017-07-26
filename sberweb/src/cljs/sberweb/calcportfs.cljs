@@ -187,6 +187,7 @@
                 fxrate (if (or (= "RUB" seccurrency) (= "RUR" seccurrency)) 1 (:price (first (filter (fn[x] (if( = (:acode x) (if (= seccurrency "GBX") "GBP" seccurrency)) true false)) (:securities @sbercore/app-state)))))
                 newfxrate (if (= 0 (compare "GBX" seccurrency)) (/ fxrate 100.) fxrate)
                 totalcash (sbercore/calc_cashusdvalue (:client item))
+                totalfreecash (- totalcash (if (nil? (:margin client)) 0.0 (/ (:margin client) usdrate)))
 
                 sharestobuy (case (:selectedcurrency @sbercore/app-state) "all" (if (< (:freelimit item) 0.0) (:freelimit item) (if (< (:freelimit item) (+ (:maxusdshares item) (:maxrubshares item) (:maxeurshares item) (:maxgbpshares item))) (:freelimit item) (+ (:maxusdshares item) (:maxrubshares item) (:maxeurshares item) (:maxgbpshares item))))  ((keyword (str "max" (:selectedcurrency @sbercore/app-state) "shares") ) item))
                ]
@@ -232,11 +233,12 @@
               ;;Денежная позиция
               (dom/div {:className "col-xs-3 col-md-3 clientcash" :style {:padding-left "0px" :padding-right "0px"}}            
                 (dom/a {:className "list-group-item" :style {:padding-left "3px" :padding-right "3px" :text-align "right"} :href (str  "#/postrans/" (:id item) "/" (:selectedsec @sbercore/app-state)) }
-                  (dom/h4 {:className "list-group-item-heading"} (sbercore/split-thousands (gstring/format "%.0f" (case (:selectedcurrency @sbercore/app-state) "all" totalcash ((keyword (:selectedcurrency @sbercore/app-state)) item)))))
+                  (dom/h4 {:className "list-group-item-heading"} (sbercore/split-thousands (gstring/format "%.0f" (case (:selectedcurrency @sbercore/app-state) "all" totalfreecash "rub" (- (:rub item) (:margin client)) ((keyword (:selectedcurrency @sbercore/app-state)) item)))))
 
                   (dom/span {:className "cashinfo"} 
                     (dom/p (str "USD: " (sbercore/split-thousands (gstring/format "%.0f" (:usd item)))))
-                    (dom/p (str "RUB: " (sbercore/split-thousands (gstring/format "%.0f" (- (:rub item) (:margin item)) ))))
+                    (dom/p (str "RUB: " (sbercore/split-thousands (gstring/format "%.0f" (:rub item) ))))
+                    (if (> (:margin client) 1.0) (dom/p (str "Margin: " (sbercore/split-thousands (gstring/format "%.0f" (:margin client) ))))) 
                     (dom/p (str "EUR: " (sbercore/split-thousands (gstring/format "%.0f" (:eur item)))))
                     (dom/p (str "GBP: " (sbercore/split-thousands (gstring/format "%.0f" (:gbp item)))))
                   )

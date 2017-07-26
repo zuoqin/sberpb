@@ -1512,6 +1512,8 @@
 
 { :security/acode "RTS-9.17", :security/isin "VEU7 Index", :security/bcode "VEU7 Index", :security/assettype 15, :security/name "RTS INDEX FUTURE  Sep17", :security/multiple 2.0, :security/exchange "RTS", :security/currency "USD", :db/id #db/id[:db.part/user -101022] }
 
+{ :security/acode "BR-9.17", :security/isin "B5U7 Comdty", :security/bcode "B5U7 Comdty", :security/assettype 15, :security/name "Brent Crude Futs  Sept17", :security/multiple 10.0, :security/exchange "RTS", :security/currency "USD", :db/id #db/id[:db.part/user -101023] }
+
 ;; ISSUERS
 ;; { :issuer/code "Mail.Ru Group Ltd" :db/id #db/id[:db.part/user -101001] }
 ;; { :issuer/code "Magnit PJSC" :db/id #db/id[:db.part/user -101002] }

@@ -1174,7 +1174,7 @@
 
         (if (not (nil? (:selectedclient @sbercore/app-state)))
           (if (or (> (count (:positions ((keyword (:selectedclient @sbercore/app-state)) @sbercore/app-state) )) 0)
-                  (> (count (:deals ((keyword (:selectedclient @sbercore/app-state)) @sbercore/app-state) )) 0)
+                  ;(> (count (:deals ((keyword (:selectedclient @sbercore/app-state)) @sbercore/app-state) )) 0)
             )
             (dom/div
               (dom/div {:style {:margin-top "70px"} :className "panel panel-info"}
