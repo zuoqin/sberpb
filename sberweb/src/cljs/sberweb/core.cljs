@@ -427,6 +427,8 @@
 (defn onDropDownChange [id value]
   (let [
         code (:code (first (filter (fn[x] (if (= (:id x) (js/parseInt value) ) true false)) (:clients @app-state)))  )
+        ;;tr1 (.log js/console (str "value=" value " code=" code))
+        
         ]
     (swap! app-state assoc :state 1 )
     (swap! app-state assoc-in [:dealspage] -1)
@@ -436,7 +438,7 @@
       (getPositions)
     )
 
-    (if (nil? (:deals ((keyword value) @app-state)))
+    (if (nil? (:deals ((keyword code) @app-state)))
       (getDeals)
     )
   )

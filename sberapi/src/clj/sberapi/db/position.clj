@@ -173,9 +173,11 @@
 
         newprice (* (second (first (filter (fn [x] (if (= (first x) (keyword "transaction/price")) true false)) tran))) (/ fx_tran_currency fx_sec_currency) (if (= "GBX" currency) 1.0 1.0))
 
+
+        id (if (nil? (second (first (filter (fn [x] (if (= (first x) (keyword "transaction/refnum")) true false)) tran)))) "" (second (first (filter (fn [x] (if (= (first x) (keyword "transaction/refnum")) true false)) tran))))
         ;tr1 (if (= acode "HGMLN") (println (str "fxtran=" fx_tran_currency " fxsec=" fx_sec_currency " price=" (nth (nth tran 3) 1))))
         ;;
-        newtran {:client client :security acode  :nominal (second (first (filter (fn [x] (if (= (first x) (keyword "transaction/nominal")) true false)) tran))) :price newprice :direction (second (first (filter (fn [x] (if (= (first x) (keyword "transaction/direction")) true false)) tran))) :valuedate (second (first (filter (fn [x] (if (= (first x) (keyword "transaction/valuedate")) true false)) tran))) :currency currency :comment (if (> (count (second (first (filter (fn [x] (if (= (first x) (keyword "transaction/comment")) true false)) tran)))) 1) (second (first (filter (fn [x] (if (= (first x) (keyword "transaction/comment")) true false)) tran))) "")  :fx (/ fx_tran_currency fx_sec_currency) :id (second (first (filter (fn [x] (if (= (first x) (keyword "transaction/refnum")) true false)) tran)))}
+        newtran {:client client :security acode  :nominal (second (first (filter (fn [x] (if (= (first x) (keyword "transaction/nominal")) true false)) tran))) :price newprice :direction (second (first (filter (fn [x] (if (= (first x) (keyword "transaction/direction")) true false)) tran))) :valuedate (second (first (filter (fn [x] (if (= (first x) (keyword "transaction/valuedate")) true false)) tran))) :currency currency :comment (if (> (count (second (first (filter (fn [x] (if (= (first x) (keyword "transaction/comment")) true false)) tran)))) 1) (second (first (filter (fn [x] (if (= (first x) (keyword "transaction/comment")) true false)) tran))) "")  :fx (/ fx_tran_currency fx_sec_currency) :id id}
         ;tr1 (if (= (compare acode "HMSGLI" ) 0) (println (str (nth (nth tran 6) 1) " fx1: " fx_tran_currency " " currency " fx2: " fx_sec_currency " fx: " (:fx newtran) " date: " (:valuedate newtran) "\n")) ) 
         ]
     newtran

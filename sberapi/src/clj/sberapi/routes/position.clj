@@ -39,14 +39,14 @@
         dtv1 (c/to-long (:valuedate tran1))
         dtv2 (c/to-long (:valuedate tran2))
 
-        dtt1 (c/to-long (:tradedate tran1))
-        dtt2 (c/to-long (:tradedate tran2))
+        ;dtt1 (c/to-long (:tradedate tran1))
+        ;dtt2 (c/to-long (:tradedate tran2))
 
         ]
     
     (if (or  (< dtv1  dtv2)
-          (and (= dtv1 dtv2)(< dtt1 dtt2 ))
-	  (and (= dtv1 dtv2) (= dtt1 dtt2 ) (< (:id tran1) (:id tran2) )))
+          ;(and (= dtv1 dtv2)(< dtt1 dtt2 ))
+	  (and (= dtv1 dtv2) (< (compare (:id tran1) (:id tran2)) 0)))
     true
     false)
   )
@@ -435,6 +435,7 @@
            clienttotalrub (+ (* (:usd client) usdrate) (* (:rub client) 1.0) (* (:eur client) eurrate) (* (:gbp client) gbprate))
 
            seclimitinrub (/ (* fxrate (:signedadvisory client)  (if (= (:assettype sec) 5) (* (:bondshare client) percentage) (* (:stockshare client) percentage)) ) 10000.0 )
+           margin (:margin client)
 
            ;tr1 (println client)
            ;tr1 (if (= "MADUN2" (:code client)) (println (str "fxrate: " fxrate " seclimitinrub: " seclimitinrub " calcusedlimit=" calcusedlimit " usedlimit" usedlimit " seclastrubprice=" seclastrubprice))) 
@@ -454,7 +455,7 @@
 
  :maxusdshares (long (/ (if (> (* usdrate (:usd client))  (- seclimitinrub calcusedlimit)) (- seclimitinrub calcusedlimit) (* usdrate (:usd client))) (* (if (= 0.0 seclastrubprice) 1.0 seclastrubprice) (if isbond (* multiple 0.01) 1.0))))
 
- :maxrubshares (long (/ (if (> (* 1.0 (:rub client))  (- seclimitinrub calcusedlimit)) (- seclimitinrub calcusedlimit) (* 1.0 (:rub client))) (* (if (= 0.0 seclastrubprice) 1.0 seclastrubprice) (if isbond (* multiple 0.01) 1.0))))
+ :maxrubshares (long (/ (if (> (- (:rub client) margin)  (- seclimitinrub calcusedlimit)) (- seclimitinrub calcusedlimit) (- (:rub client) margin)) (* (if (= 0.0 seclastrubprice) 1.0 seclastrubprice) (if isbond (* multiple 0.01) 1.0))))
 
  :maxeurshares (long (/ (if (> (* eurrate (:eur client))  (- seclimitinrub calcusedlimit)) (- seclimitinrub calcusedlimit) (* eurrate (:eur client))) (* (if (= 0.0 seclastrubprice) 1.0 seclastrubprice) (if isbond (* multiple 0.01) 1.0))))
 
@@ -540,26 +541,21 @@
 
 (defn save-positions-bloomberg [client positions dt]
   (let [
-    positions1 (map (fn [x] (let [
-                             sec (db/ent [[(get-secid-by-isin (name (first x)) )]])
-                             assettype (second (first (filter (fn [y] (if (= (first y) :security/assettype) true false)) sec ) ))
-                             currency (second (first (filter (fn [y] (if (= (first y) :security/currency) true false)) sec ) ))
+    positions1 (map (fn [x]
+      (let [
+             sec (db/ent [[(get-secid-by-isin (name (first x)) )]])
 
-                             multiple (second (first (filter (fn [y] (if (= (first y) :security/multiple) true false)) sec) ))
+             assettype (second (first (filter (fn [y] (if (= (first y) :security/assettype) true false)) sec ) ))
+             currency (second (first (filter (fn [y] (if (= (first y) :security/currency) true false)) sec ) ))
 
-;;                              isrussian (if (and 
+             multiple (if (nil? (second (first (filter (fn [y] (if (= (first y) :security/multiple) true false)) sec) ))) 1.0 (second (first (filter (fn [y] (if (= (first y) :security/multiple) true false)) sec) )))
 
-;; ;; Check ISIN starts with RU
-;; (= (compare (second (first (filter (fn [y] (if (= (first y) :security/currency) true false)) sec) )) "RUB") 0 )
-;; ;; Check currency = RUB
-;; (= (compare (second (first (filter (fn [y] (if (= (first y) :security/currency) true false)) sec) )) "RUB") 0 ) 
-;; )  true false)
-
-
-                              ;tr1 (if (= (name (first x)) "GB0032360173") (println (str "x=" x " currency=" currency ""))) 
-                              ]
-                          [(name (first x))  {:amount (* multiple (:amount (second x)))  :price (:price (second x))  }]
-                          )) positions)
+             ;tr1 (if (= (name (first x)) "GB0032360173") (println (str "x=" x " currency=" currency ""))) 
+             ;tr1 (println (str "sec=" sec))
+          ]
+          [(name (first x)) {:amount (* multiple (:amount (second x))) :price (:price (second x))}]
+      )
+      ) positions)
 
 
     ;tr1 (println (first (into [] positions)))

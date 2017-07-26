@@ -182,7 +182,7 @@
   (let [
      conn (d/connect uri)
      ]
-    (d/transact-async conn [{ :security/acode "NOMOS19S", :security/assettype 5, :security/multiple 1.0, :security/bcode "XS0940730228 Corp", :security/isin "XS0940730228", :security/exchange "", :security/currency "USD", :db/id #db/id[:db.part/user -100664] }]
+    (d/transact-async conn [{ :security/acode "EURONAT20Y", :security/assettype 5, :security/multiple 1.0, :security/bcode "XS1581926083 Corp", :security/isin "XS1581926083", :security/exchange "", :security/currency "USD", :db/id #db/id[:db.part/user -100721] }]
     )
     ; To insert new entity:
     ;(d/transact conn [{ :transaction/client #db/id[:db.part/user 17592186045573] :transaction/security #db/id[:db.part/user 17592186065674], :transaction/nominal 108000.0 :transaction/price 100.0 :transaction/direction "S" :transaction/valuedate #inst "2014-04-22T00:00:00.0000000Z", :transaction/currency "RUB" :transaction/comment "", :db/id #db/id[:db.part/user -110002] }])
@@ -1210,8 +1210,9 @@
 (defn update-client-cash [client currency amount]
   (let [
     conn (d/connect uri)
+    ;tr1 (if (= currency "margin") (println (str "client=" client " amount=" amount))) 
     ]
-    ;(println (str "client=" client " amount=" amount))
+    
     (d/transact-async conn [
       {(keyword (str "client/" currency)) amount,
        :client/code client ;; this finds the existing entity
@@ -1254,18 +1255,32 @@
       tr1 (update-client-cash (:code x) "rub" 0.0)
       tr1 (update-client-cash (:code x) "eur" 0.0)
       tr1 (update-client-cash (:code x) "gbp" 0.0)
+      tr1 (update-client-cash (:code x) "margin" 0.0)
 ])) (get-clients)))
 
 
     cashbycurrency (if (not (nil? selectfile)) (doall (map (fn [x] (let [
       ;tr1 (println (str "x= " x))
 ] (if (not (nil? x)) (update-client-cash (:code x)  (str/lower-case (if (= (:currency x) "RUR") "RUB" (:currency x)))  (:amount x))) ) ) cash)))
+
+
+    margin (drop 1 (if (not (nil? selectfile)) (->> (load-workbook (str "R:/MIS_PB/Advisory/" (.getName selectfile)))
+                                             (select-sheet "Balances-Currency FORTS_GO")
+                                             (select-columns {:A :date, :B :code :C :currency :D :amount :F :usd :G :margin})) (println (str "file with cash balances not found for date: " (f/unparse build-in-date-formatter (c/from-long (+ (c/to-long dt) (* 0 24)) )))))) 
+
+    margintodb (if (not (nil? selectfile)) (doall (map (fn [x] (let [
+      ;tr1 (println (str "x= " x))
+] (if (not (nil? x)) (update-client-cash (:code x) "margin" (:amount x))) ) ) margin)))
+
+    
     ]
     ;cashbyclient
     ;result1
+    ;;(first margin)
     "Success"
   )
 )
+
 
 (defn save-positions-bloomberg [client positions dt]
   (let [

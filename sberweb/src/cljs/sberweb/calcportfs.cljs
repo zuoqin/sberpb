@@ -236,7 +236,7 @@
 
                   (dom/span {:className "cashinfo"} 
                     (dom/p (str "USD: " (sbercore/split-thousands (gstring/format "%.0f" (:usd item)))))
-                    (dom/p (str "RUB: " (sbercore/split-thousands (gstring/format "%.0f" (:rub item)))))
+                    (dom/p (str "RUB: " (sbercore/split-thousands (gstring/format "%.0f" (- (:rub item) (:margin item)) ))))
                     (dom/p (str "EUR: " (sbercore/split-thousands (gstring/format "%.0f" (:eur item)))))
                     (dom/p (str "GBP: " (sbercore/split-thousands (gstring/format "%.0f" (:gbp item)))))
                   )
