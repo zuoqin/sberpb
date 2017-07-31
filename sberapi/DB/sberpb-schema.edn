@@ -108,6 +108,13 @@
   :db/doc "Multiple for futures"
   :db.install/_attribute :db.part/db}
 
+{:db/id #db/id[:db.part/db]
+  :db/ident :security/ismatured
+  :db/valueType :db.type/boolean
+  :db/cardinality :db.cardinality/one
+  :db/doc "Flag indicator whether security matured, dafault false"
+  :db.install/_attribute :db.part/db}
+
  ;; issuer
  {:db/id #db/id[:db.part/db]
   :db/ident :issuer/code

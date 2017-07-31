@@ -30,6 +30,11 @@
 (def build-in-date-formatter (f/formatters :date))
 
 
+(def client_state (atom {}))
+
+(def sec_state (atom {}))
+
+
 (defn sort-tran-from-db [tran1 tran2]
   (let [
         ;tr1 (println tran1)
@@ -71,7 +76,16 @@
   )
 )
 
+
 (defn getPositions [token client]
+  (let [
+    result (if (nil? (:positions ((keyword client) @client_state))) (retrievePositions token client) (:positions ((keyword client) @client_state)))
+    ]
+    result
+  )
+)
+
+(defn retrievePositions [token client]
   (let [
     ;usercode (:iss (-> token str->jwt :claims)  ) 
     transactions (sort (comp sort-tran-from-db) (db/get-transactions client))
@@ -92,7 +106,7 @@
 
                         currency (:currency security)
 
-                        ;;tr1 (if (= (:id security) 17592186046065) (println (str tran)))
+                        ;tr1 (println (str "sec currency=" security " tran currency=" tran))
                         amnt (if (nil? (:amount ( (keyword sec) result ))) 0.0 (:amount ( (keyword sec) result ))) 
                         prevpr (if (nil? (:price ((keyword sec) result))) 0.0 (:price ((keyword sec) result)))                       
 
@@ -127,10 +141,13 @@
                 )
 
 
-    ;result (map (fn [x] (let [y (name (first x))   z (if (< (second x) 0) 0 (second x)) ] [y z] ))  positions) 
-    
+    result (filter (fn [x] (if (= 0.0 (:amount (second x))) false true)) positions)
+
+
+    ;tr1 (println (str "client= " client))
+    tr1 (swap! client_state assoc-in [(keyword client) :positions] result)
     ]
-    (filter (fn [x] (if (= 0.0 (:amount (second x))) false true)) positions)
+    result
     ;positions
     ;(first positions)
   )
@@ -165,8 +182,15 @@
   )
 )
 
-
 (defn getDeals [token client page]
+  (let [
+    result (if (nil? (:deals ((keyword client) @client_state))) (retrieveDeals token client page) ((keyword (str page)) (:deals ((keyword client) @client_state))))
+    ]
+    result
+  )
+)
+
+(defn retrieveDeals [token client page]
   (let [
     ;usercode (:iss (-> token str->jwt :claims)  ) 
     transactions (into [] (db/get-transactions-by-client client))
@@ -262,7 +286,10 @@
 
     ;tr1 (println (str "Total deals: " (count transbysecs)))
 
-    result (if (> (count newtransactions) 0) (into [] transbysecs) []) 
+    
+    result (if (> (count newtransactions) 0) (into [] transbysecs) [])
+
+    tr1 (swap! client_state assoc-in [(keyword client) :deals (keyword (str page))] result)
     ;tr1 (println (str "deal1  " (first result)))
     ]
     result
@@ -275,14 +302,22 @@
     ;usercode (:iss (-> token str->jwt :claims))
     transactions (into [] (db/get-transactions-by-client-security client security))
 
-    result transactions    
+    result transactions
     ]
     result
   )
 )
 
-
 (defn getPortfolios [token security]
+  (let [
+      newsec (str security)
+      result (if (nil? ((keyword newsec) @sec_state)) (retrievePortfolios token security) (:portfolios ((keyword newsec) @sec_state)))
+    ]
+    result
+  )
+)
+
+(defn retrievePortfolios [token security]
   (let [
     ;usercode (:iss (-> token str->jwt :claims)  ) 
     transactions (sort (comp sort-trans-from-db) (db/get-transactions-by-security security))
@@ -340,15 +375,23 @@
                         ;tr1 (println (str "y: " y " z: " z))
                        ] {(keyword y) z}))  filter_portfs)
 
+    tr1 (swap! sec_state assoc-in [(keyword (str security)) :portfolios] result)
     ]
     (into {} result)
     ;filter_portfs
   )
 )
 
-
-
 (defn calcPortfolios [token security percentage]
+  (let [
+    newsec (str security)
+    result (if (nil? ((keyword (str percentage)) (:calcportfs ((keyword newsec) @sec_state)))) (retrievePortfolios token security percentage) ((keyword (str percentage)) (:calcportfs ((keyword newsec) @sec_state))))
+    ]
+    result
+  )
+)
+
+(defn retrievePortfolios [token security percentage]
   (let [
     usercode "zuoqin" ;(:iss (-> token str->jwt :claims)  ) 
     transactions (into [] (db/get-transactions-by-security security))
@@ -462,6 +505,10 @@
  :maxgbpshares (long (/ (if (> (* gbprate (:gbp client))  (- seclimitinrub calcusedlimit)) (- seclimitinrub calcusedlimit) (* gbprate (:gbp client)))  (* (if (= 0.0 seclastrubprice) 1.0 seclastrubprice) (if isbond (* multiple 0.01) 1.0)))) 
       }
       ))   clients)
+
+
+
+    tr1 (swap! sec_state assoc-in [(keyword (str security)) :calcportfs (keyword (str percentage))] calc_portfs)
     ]
     calc_portfs
   )

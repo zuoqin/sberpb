@@ -483,7 +483,7 @@
       (dom/option {:key (:id text) :value (:id text)
                     :onChange #(handle-change % owner)} (:acode text))
     )
-    (sort (comp comp-secs) (:securities @app-state ))
+    (sort (comp comp-secs) (filter (fn [x] (if (= 10 (:assettype x)) false true)) (:securities @app-state )))
   )
 )
 

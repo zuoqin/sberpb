@@ -354,7 +354,7 @@
 
 { :security/acode "AFLT", :security/isin "RU0009062285", :security/bcode "AFLT RX Equity", :security/assettype 1, :security/name "", :security/exchange "RX", :security/currency "RUB", :db/id #db/id[:db.part/user -100171]}
 
-{ :security/acode "MVID", :security/isin "RU000A0JPGA0", :security/bcode "MVID RX Equity", :security/assettype 1, :security/name "Yandex NV", :security/exchange "RX", :security/currency "RUB", :db/id #db/id[:db.part/user -100172]}
+{ :security/acode "MVID", :security/isin "RU000A0JPGA0", :security/bcode "MVID RX Equity", :security/assettype 1, :security/name "Yandex NV", :security/ismatured true, :security/currency "RUB", :db/id #db/id[:db.part/user -100172]}
 
 { :security/acode "VIP21", :security/isin  "XS0587031096", :security/bcode "XS0587031096 Corp", :security/assettype 5, :security/multiple 1.0, :security/name "Yandex NV", :security/exchange "TRDB", :security/currency "USD", :db/id #db/id[:db.part/user -100173]}
 
@@ -1465,6 +1465,8 @@
 
 { :security/acode "BRASKM2021", :security/assettype 5, :security/multiple 1.0, :security/bcode "USG1315RAD38 Corp", :security/isin "USG1315RAD38", :security/exchange "", :security/currency "USD", :db/id #db/id[:db.part/user -100726] }
 
+{ :security/acode "PROMSVBBO8", :security/assettype 5, :security/multiple 1000.0, :security/bcode "RU000A0JUVG6 Corp", :security/isin "RU000A0JUVG6", :security/exchange "", :security/currency "USD", :db/id #db/id[:db.part/user -100727] }
+
 
 ;;FORTS contracts
 
@@ -1480,7 +1482,7 @@
 
 { :security/acode "LKOH-6.17", :security/isin "LKOH=M7 RU Equity", :security/bcode "LKOH=M7 RU Equity", :security/assettype 15, :security/name "LUKOIL Jun17", :security/multiple 10.0, :security/exchange "RTS", :security/currency "RUB", :db/id #db/id[:db.part/user -101007] }
 
-{ :security/acode "RTS-9.14", :security/isin "VEU14 Index", :security/bcode "VEU14 Index", :security/assettype 15, :security/name "RTS INDEX FUTURE  Sep14", :security/multiple 2.0, :security/exchange "RTS", :security/currency "USD", :db/id #db/id[:db.part/user -101006] }
+{ :security/acode "RTS-9.14", :security/isin "VEU14 Index", :security/bcode "VEU14 Index", :security/assettype 15, :security/name "RTS INDEX FUTURE  Sep14", :security/multiple 0.02, :security/exchange "RTS", :security/currency "USD", :db/id #db/id[:db.part/user -101006] }
 
 { :security/acode "VTBR-9.14", :security/isin "VTBU14 Index", :security/bcode "VTBU14 Index", :security/assettype 15, :security/name "VTBR Future Sep14", :security/multiple 10.0, :security/exchange "RTS", :security/currency "RUB", :db/id #db/id[:db.part/user -101008] }
 
@@ -1488,7 +1490,7 @@
 
 { :security/acode "SI-6.17/C F60000 ACR 15JUN17", :security/isin "URM7C 60000 Curncy", :security/bcode "URM7C 60000 Curncy", :security/assettype 15, :security/name "USD/RUB Fut Opt   Jun17C", :security/multiple 1.0, :security/exchange "RTS", :security/currency "RUB", :db/id #db/id[:db.part/user -101010] }
 
-{ :security/acode "RTS-3.17/P O110000 ACU 16MAR17", :security/isin "VEH7C 11000 Index", :security/bcode "VEH7C 11000 Index", :security/assettype 15, :security/name "VEH7C 110000.00 Index	RTS INDEX OPTIONS Mar17C", :security/multiple 2.0, :security/exchange "RTS", :security/currency "USD", :db/id #db/id[:db.part/user -101011] }
+{ :security/acode "RTS-3.17/P O110000 ACU 16MAR17", :security/isin "VEH7C 11000 Index", :security/bcode "VEH7C 11000 Index", :security/assettype 15, :security/name "VEH7C 110000.00 Index	RTS INDEX OPTIONS Mar17C", :security/multiple 0.02, :security/exchange "RTS", :security/currency "USD", :db/id #db/id[:db.part/user -101011] }
 
 { :security/acode "SI-3.15", :security/isin "URH15 Curncy", :security/bcode "URH15 Curncy", :security/assettype 15, :security/name "Futures on USD/RUB Exchange Rate", :security/multiple 1.0, :security/exchange "RTS", :security/currency "RUB", :db/id #db/id[:db.part/user -101012] }
 
@@ -1510,7 +1512,7 @@
 
 { :security/acode "BR-8.17", :security/isin "B5Q7 Comdty", :security/bcode "B5Q7 Comdty", :security/assettype 15, :security/name "Brent Crude Futs  Aug17", :security/multiple 10.0, :security/exchange "RTS", :security/currency "USD", :db/id #db/id[:db.part/user -101021] }
 
-{ :security/acode "RTS-9.17", :security/isin "VEU7 Index", :security/bcode "VEU7 Index", :security/assettype 15, :security/name "RTS INDEX FUTURE  Sep17", :security/multiple 2.0, :security/exchange "RTS", :security/currency "USD", :db/id #db/id[:db.part/user -101022] }
+{ :security/acode "RTS-9.17", :security/isin "VEU7 Index", :security/bcode "VEU7 Index", :security/assettype 15, :security/name "RTS INDEX FUTURE  Sep17", :security/multiple 0.02, :security/exchange "RTS", :security/currency "USD", :db/id #db/id[:db.part/user -101022] }
 
 { :security/acode "BR-9.17", :security/isin "B5U7 Comdty", :security/bcode "B5U7 Comdty", :security/assettype 15, :security/name "Brent Crude Futs  Sept17", :security/multiple 10.0, :security/exchange "RTS", :security/currency "USD", :db/id #db/id[:db.part/user -101023] }
 
@@ -1831,6 +1833,8 @@
 { :client/code "CONSERVATIVE", :client/name "CONSERVATIVE PORTFOLIO", :client/currency "USD", :client/stockshare 50.0 :client/bondshare 50.0, :client/usd 100000.0, :client/rub 100000.0, :client/eur 100000.0, :client/gbp 100000.0, :client/signedadvisory 5000001.0, :client/advemail "", :client/email "", :client/advisors [ #db/id[:db.part/user -105001] #db/id[:db.part/user -105009] #db/id[:db.part/user -105013]], :db/id #db/id[:db.part/user -102148]}
 
 { :client/code "AGGRESSIVE", :client/name "AGGRESSIVE PORTFOLIO", :client/currency "USD", :client/stockshare 50.0 :client/bondshare 50.0, :client/usd 100000.0, :client/rub 100000.0, :client/eur 100000.0, :client/gbp 100000.0, :client/signedadvisory 5000001.0, :client/advemail "", :client/email "", :client/advisors [ #db/id[:db.part/user -105001]  #db/id[:db.part/user -105009] #db/id[:db.part/user -105013]], :db/id #db/id[:db.part/user -102149]}
+
+{ :client/code "MBMSF", :client/name "Клиент MBMSF", :client/currency "USD", :client/stockshare 50.0 :client/bondshare 50.0, :client/usd 100000.0, :client/rub 100000.0, :client/eur 100000.0, :client/gbp 100000.0, :client/signedadvisory 5000001.0, :client/advemail "TmF0YWxpYV9Ub2xwZXpobmlrb3ZhQHNiZXJiYW5rLXBiLnJ1", :client/email "dmFtYXRpMTZAZ21haWwuY29t", :client/advisors [ #db/id[:db.part/user -105001] #db/id[:db.part/user -105002] #db/id[:db.part/user -105003] #db/id[:db.part/user -105013]], :db/id #db/id[:db.part/user -102150]}
 
 
 
@@ -3752,6 +3756,36 @@
 { :transaction/client #db/id[:db.part/user -102149], :transaction/security #db/id[:db.part/user -100703], :transaction/nominal 450000.0, :transaction/price 1.0, :transaction/direction "S", :transaction/tradedate #inst "2017-06-08T01:00:00.0000000Z", :transaction/valuedate #inst "2017-06-08T01:00:00.0000000Z", :transaction/currency "USD", :transaction/comment "Transfer In", :db/id #db/id[:db.part/user -110939] }
 
 ;;;;;;;;
+;; Выкуп МВидео
+
+{ :transaction/client #db/id[:db.part/user -102019], :transaction/security #db/id[:db.part/user -100172], :transaction/nominal 10100.0, :transaction/price 398.55, :transaction/direction "S", :transaction/tradedate #inst "2017-07-26T01:00:00.0000000Z", :transaction/valuedate #inst "2017-07-26T01:00:00.0000000Z", :transaction/currency "RUB", :transaction/comment "Оферта М Видео", :db/id #db/id[:db.part/user -110940] }
+
+{ :transaction/client #db/id[:db.part/user -102007], :transaction/security #db/id[:db.part/user -100172], :transaction/nominal 343230.0, :transaction/price 398.55, :transaction/direction "S", :transaction/tradedate #inst "2017-07-26T01:00:00.0000000Z", :transaction/valuedate #inst "2017-07-26T01:00:00.0000000Z", :transaction/currency "RUB", :transaction/comment "Оферта М Видео", :db/id #db/id[:db.part/user -110941] }
+
+{ :transaction/client #db/id[:db.part/user -102012], :transaction/security #db/id[:db.part/user -100172], :transaction/nominal 148090.0, :transaction/price 398.55, :transaction/direction "S", :transaction/tradedate #inst "2017-07-26T01:00:00.0000000Z", :transaction/valuedate #inst "2017-07-26T01:00:00.0000000Z", :transaction/currency "RUB", :transaction/comment "Оферта М Видео", :db/id #db/id[:db.part/user -110942] }
+
+{ :transaction/client #db/id[:db.part/user -102069], :transaction/security #db/id[:db.part/user -100172], :transaction/nominal 129850.0, :transaction/price 398.55, :transaction/direction "S", :transaction/tradedate #inst "2017-07-26T01:00:00.0000000Z", :transaction/valuedate #inst "2017-07-26T01:00:00.0000000Z", :transaction/currency "RUB", :transaction/comment "Оферта М Видео", :db/id #db/id[:db.part/user -110943] }
+
+{ :transaction/client #db/id[:db.part/user -102112], :transaction/security #db/id[:db.part/user -100172], :transaction/nominal 74500.0, :transaction/price 398.55, :transaction/direction "S", :transaction/tradedate #inst "2017-07-26T01:00:00.0000000Z", :transaction/valuedate #inst "2017-07-26T01:00:00.0000000Z", :transaction/currency "RUB", :transaction/comment "Оферта М Видео", :db/id #db/id[:db.part/user -110944] }
+
+{ :transaction/client #db/id[:db.part/user -102021], :transaction/security #db/id[:db.part/user -100172], :transaction/nominal 70150.0, :transaction/price 398.55, :transaction/direction "S", :transaction/tradedate #inst "2017-07-26T01:00:00.0000000Z", :transaction/valuedate #inst "2017-07-26T01:00:00.0000000Z", :transaction/currency "RUB", :transaction/comment "Оферта М Видео", :db/id #db/id[:db.part/user -110945] }
+
+{ :transaction/client #db/id[:db.part/user -102100], :transaction/security #db/id[:db.part/user -100172], :transaction/nominal 50240.0, :transaction/price 398.55, :transaction/direction "S", :transaction/tradedate #inst "2017-07-26T01:00:00.0000000Z", :transaction/valuedate #inst "2017-07-26T01:00:00.0000000Z", :transaction/currency "RUB", :transaction/comment "Оферта М Видео", :db/id #db/id[:db.part/user -110946] }
+
+{ :transaction/client #db/id[:db.part/user -102017], :transaction/security #db/id[:db.part/user -100172], :transaction/nominal 36000.0, :transaction/price 398.55, :transaction/direction "S", :transaction/tradedate #inst "2017-07-26T01:00:00.0000000Z", :transaction/valuedate #inst "2017-07-26T01:00:00.0000000Z", :transaction/currency "RUB", :transaction/comment "Оферта М Видео", :db/id #db/id[:db.part/user -110947] }
+
+{ :transaction/client #db/id[:db.part/user -102096], :transaction/security #db/id[:db.part/user -100172], :transaction/nominal 20910.0, :transaction/price 398.55, :transaction/direction "S", :transaction/tradedate #inst "2017-07-26T01:00:00.0000000Z", :transaction/valuedate #inst "2017-07-26T01:00:00.0000000Z", :transaction/currency "RUB", :transaction/comment "Оферта М Видео", :db/id #db/id[:db.part/user -110948] }
+
+{ :transaction/client #db/id[:db.part/user -102068], :transaction/security #db/id[:db.part/user -100172], :transaction/nominal 11760.0, :transaction/price 398.55, :transaction/direction "S", :transaction/tradedate #inst "2017-07-26T01:00:00.0000000Z", :transaction/valuedate #inst "2017-07-26T01:00:00.0000000Z", :transaction/currency "RUB", :transaction/comment "Оферта М Видео", :db/id #db/id[:db.part/user -110949] }
+
+{ :transaction/client #db/id[:db.part/user -102090], :transaction/security #db/id[:db.part/user -100172], :transaction/nominal 9210.0, :transaction/price 398.55, :transaction/direction "S", :transaction/tradedate #inst "2017-07-26T01:00:00.0000000Z", :transaction/valuedate #inst "2017-07-26T01:00:00.0000000Z", :transaction/currency "RUB", :transaction/comment "Оферта М Видео", :db/id #db/id[:db.part/user -110950] }
+
+{ :transaction/client #db/id[:db.part/user -102102], :transaction/security #db/id[:db.part/user -100172], :transaction/nominal 5180.0, :transaction/price 398.55, :transaction/direction "S", :transaction/tradedate #inst "2017-07-26T01:00:00.0000000Z", :transaction/valuedate #inst "2017-07-26T01:00:00.0000000Z", :transaction/currency "RUB", :transaction/comment "Оферта М Видео", :db/id #db/id[:db.part/user -110951] }
+
+
+;;{ :transaction/client #db/id[:db.part/user -102111], :transaction/security #db/id[:db.part/user -100612], :transaction/nominal 0, :transaction/price 398.55, :transaction/direction "S", :transaction/tradedate #inst "2017-07-26T01:00:00.0000000Z", :transaction/valuedate #inst "2017-07-26T01:00:00.0000000Z", :transaction/currency "RUB", :transaction/comment "Оферта М Видео", :db/id #db/id[:db.part/user -110951] }
+
+
 
 
 
