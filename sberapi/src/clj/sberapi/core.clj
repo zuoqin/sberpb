@@ -5,8 +5,13 @@
             [sberapi.config :refer [env]]
             [clojure.tools.cli :refer [parse-opts]]
             [clojure.tools.logging :as log]
-            [mount.core :as mount])
-  (:gen-class))
+            [mount.core :as mount]
+            [clojurewerkz.quartzite.scheduler :as qs]
+
+            [sberapi.routes.position :as position]
+  )
+  (:gen-class)
+)
 
 (def cli-options
   [["-p" "--port PORT" "Port number"
@@ -46,4 +51,16 @@
   (.addShutdownHook (Runtime/getRuntime) (Thread. stop-app)))
 
 (defn -main [& args]
-  (start-app args))
+  (let [
+    ;s (qs/initialize)
+    ;; trigger (t/build
+    ;;   (t/with-identity (t/key "triggers.1"))
+    ;;   (t/start-now)
+    ;;   (t/with-schedule (schedule
+    ;;     (with-repeat-count 1)
+    ;;     (with-interval-in-milliseconds 20000))))
+    ]
+  )
+  (start-app args)
+  (position/loadallpositions)
+)

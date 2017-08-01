@@ -1909,8 +1909,12 @@
   )
 )
 
-(defn price-to-map [price]
-
+(defn export-securities []
+  (let [
+    secs (filter (fn [x] (if (= 5 (:assettype x)) true false)) (get-securities))
+    ]
+    (save-xls ["sheet1" (dataset [:bcode :isin] secs)] (str drive ":/DEV/Java/" "securiites.xlsx") )
+  )
 )
 
 

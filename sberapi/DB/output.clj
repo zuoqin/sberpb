@@ -40,9 +40,9 @@
 
 { :security/acode "FKEC01", :security/assettype 5, :security/multiple 1000.0, :security/bcode "RU000A0JP039 Corp", :security/isin "RU000A0JP039", :security/exchange "MOSCOW", :security/currency "RUB", :db/id #db/id[:db.part/user -100020] }
 
-{ :security/acode "FKEC03", :security/assettype 5, :security/multiple 1000.0, :security/bcode "RU000A0JPB25 Corp", :security/isin "RU000A0JPB25", :security/exchange "MOSCOW", :security/currency "RUB", :db/id #db/id[:db.part/user -100021] }
+{ :security/acode "FKEC03", :security/assettype 5, :security/multiple 1000.0, :security/bcode "RU000A0JPB25 Corp", :security/isin "RU000A0JPB25", :security/ismatured true, :security/currency "RUB", :db/id #db/id[:db.part/user -100021] }
 
-{ :security/acode "FKEC05", :security/assettype 5, :security/multiple 1000.0, :security/bcode "RU000A0JPP11 Corp", :security/isin "RU000A0JPP11", :security/exchange "MOSCOW", :security/currency "RUB", :db/id #db/id[:db.part/user -100022] }
+{ :security/acode "FKEC05", :security/assettype 5, :security/multiple 1000.0, :security/bcode "RU000A0JPP11 Corp", :security/isin "RU000A0JPP11", :security/ismatured true, :security/currency "RUB", :db/id #db/id[:db.part/user -100022] }
 
 { :security/acode "GTLKBO01", :security/assettype 5, :security/multiple 400.0, :security/bcode "RU000A0JU5S5 Corp", :security/isin "RU000A0JU5S5", :security/exchange "MOSCOW", :security/currency "RUB", :db/id #db/id[:db.part/user -100023] }
 
@@ -122,7 +122,7 @@
 
 { :security/acode "RRAIL23", :security/assettype 5, :security/multiple 1.0, :security/bcode "XS1041815116 Corp", :security/isin "XS1041815116", :security/exchange "XETRA", :security/currency "USD", :db/id #db/id[:db.part/user -100061] }
 
-{ :security/acode "RTKM10", :security/assettype 5, :security/multiple 1000.0, :security/bcode "RU000A0JRDQ9 Corp", :security/isin "RU000A0JRDQ9", :security/exchange "MOSCOW", :security/currency "RUB", :db/id #db/id[:db.part/user -100062] }
+{ :security/acode "RTKM10", :security/assettype 5, :security/multiple 1000.0, :security/bcode "RU000A0JRDQ9 Corp", :security/isin "RU000A0JRDQ9", :security/ismatured true, :security/currency "RUB", :db/id #db/id[:db.part/user -100062] }
 
 { :security/acode "SBER24", :security/isin "XS1032750165", :security/bcode    "XS1032750165 Corp", :security/assettype 5, :security/multiple 1.0, :security/name "Yandex NV", :security/exchange "XETRA", :security/currency "USD", :db/id #db/id[:db.part/user -100063] }
 
@@ -154,21 +154,21 @@
 
 { :security/acode "VTBR", :security/assettype 1, :security/bcode "VTBR RX Equity", :security/isin "RU000A0JP5V6", :security/exchange "MOSCOW", :security/currency "RUB", :db/id #db/id[:db.part/user -100077] }
 
-{ :security/acode "25080", :security/isin "RU000A0JS751", :security/exchange "MOSCOW", :security/assettype 5, :security/multiple 1000.0, :security/name "Yandex NV", :security/bcode "EJ142417 Corp", :security/currency "RUB", :db/id #db/id[:db.part/user -100078] }
+{ :security/acode "25080", :security/isin "RU000A0JS751", :security/ismatured true, :security/assettype 5, :security/multiple 1000.0, :security/name "", :security/bcode "EJ142417 Corp", :security/currency "RUB", :db/id #db/id[:db.part/user -100078] }
 
 { :security/acode "25081", :security/isin "RU000A0JTKZ1", :security/exchange "MOSCOW", :security/assettype 5, :security/multiple 1000.0, :security/name "Yandex NV", :security/bcode "EJ545131 Corp", :security/currency "RUB", :db/id #db/id[:db.part/user -100079] }
 
-{ :security/acode "25082", :security/assettype 5, :security/multiple 1000.0, :security/bcode "25082 Corp" :security/isin "RU000A0JTWW3", :security/exchange "MOSCOW", :security/currency "RUB", :db/id #db/id[:db.part/user -100080] }
+{ :security/acode "25082", :security/assettype 5, :security/multiple 1000.0, :security/bcode "RU000A0JTWW3 Corp" :security/isin "RU000A0JTWW3", :security/ismatured true, :security/currency "RUB", :db/id #db/id[:db.part/user -100080] }
 
-{ :security/acode "26203", :security/assettype 5, :security/multiple 1000.0, :security/bcode "RU000A0JQZ18", :security/isin "RU000A0JQZ18", :security/exchange "MOSCOW", :security/currency "RUB", :db/id #db/id[:db.part/user -100081] }
+{ :security/acode "26203", :security/assettype 5, :security/multiple 1000.0, :security/bcode "RU000A0JQZ18 Corp", :security/isin "RU000A0JQZ18", :security/ismatured true, :security/currency "RUB", :db/id #db/id[:db.part/user -100081] }
 
 { :security/acode "26204", :security/assettype 5, :security/multiple 1000.0, :security/bcode "RU000A0JRCJ6 Corp", :security/isin "RU000A0JRCJ6", :security/exchange "MOSCOW", :security/currency "RUB", :db/id #db/id[:db.part/user -100082] }
 
-{ :security/acode "26206", :security/assettype 5, :security/multiple 1000.0, :security/bcode "RU000A0JRJU8 Corp", :security/isin "RU000A0JRJU8", :security/exchange "MOSCOW", :security/currency "RUB", :db/id #db/id[:db.part/user -100083] }
+{ :security/acode "26206", :security/assettype 5, :security/multiple 1000.0, :security/bcode "RU000A0JRJU8 Corp", :security/isin "RU000A0JRJU8", :security/ismatured true, :security/currency "RUB", :db/id #db/id[:db.part/user -100083] }
 
 { :security/acode "26216", :security/assettype 5, :security/multiple 1000.0, :security/bcode "RU000A0JU9V1 Corp", :security/isin "RU000A0JU9V1", :security/exchange "MOSCOW", :security/currency "RUB", :db/id #db/id[:db.part/user -100084] }
 
-{ :security/acode "EFGIF_0616", :security/isin "CH0279929233", :security/bcode "CH0279929233 Corp", :security/assettype 5, :security/multiple 1.0, :security/name "Yandex NV",:security/exchange "SWISS", :security/currency "USD", :db/id #db/id[:db.part/user -100085] }
+{ :security/acode "EFGIF_0616", :security/isin "CH0279929233", :security/bcode "CH0279929233 Corp", :security/assettype 5, :security/multiple 1.0, :security/name "",:security/ismatured true, :security/currency "USD", :db/id #db/id[:db.part/user -100085] }
 
 { :security/acode "EVRAZ18N", :security/isin "XS0618905219", :security/bcode "XS0618905219 Corp", :security/assettype 5, :security/multiple 1.0, :security/name "Yandex NV", :security/exchange "XETRA", :security/currency "USD", :db/id #db/id[:db.part/user -100086] }
 
@@ -182,9 +182,9 @@
 
 { :security/acode "PGILLN20", :security/isin "XS0922301717", :security/bcode "EJ644860 Corp", :security/assettype 5, :security/multiple 1.0, :security/exchange "XETRA", :security/currency "USD", :db/id #db/id[:db.part/user -100092] }
 
-{ :security/acode "RUSAG17R", :security/isin "XS0748114005", :security/bcode "XS0748114005 Corp", :security/assettype 5, :security/multiple 1.0, :security/name "Yandex NV", :security/exchange "XETRA", :security/currency "RUB", :db/id #db/id[:db.part/user -100093] }
+{ :security/acode "RUSAG17R", :security/isin "XS0748114005", :security/bcode "XS0748114005 Corp", :security/assettype 5, :security/multiple 1.0, :security/name "", :security/ismatured true, :security/currency "RUB", :db/id #db/id[:db.part/user -100093] }
 
-{ :security/acode "SBER16R", :security/isin "XS0882561821", :security/bcode "XS0882561821 Corp", :security/assettype 5, :security/multiple 1.0, :security/exchange "XETRA", :security/currency "RUB", :db/id #db/id[:db.part/user -100094] }
+{ :security/acode "SBER16R", :security/isin "XS0882561821", :security/bcode "XS0882561821 Corp", :security/assettype 5, :security/multiple 1.0, :security/ismatured true, :security/currency "RUB", :db/id #db/id[:db.part/user -100094] }
 
 { :security/acode "UCGIM23", :security/isin "XS0925177130", :security/bcode "XS0925177130 Corp", :security/assettype 5, :security/multiple 1.0, :security/exchange "XETRA", :security/currency "USD", :db/id #db/id[:db.part/user -100095] }
 
@@ -282,9 +282,9 @@
 
 { :security/acode "NOK", :security/isin "NOKRUB ISIN", :security/bcode "NOKRUB Curncy", :security/assettype 10, :security/name "Yandex NV", :security/exchange "IMM", :security/currency "RUB", :db/id #db/id[:db.part/user -100320] }
 
-{ :security/acode "ALFARU15N", :security/isin "XS0494933806", :security/bcode "XS0494933806 Corp", :security/assettype 5, :security/multiple 1.0, :security/exchange "XETRA", :security/currency "USD", :db/id #db/id[:db.part/user -100137] }
+{ :security/acode "ALFARU15N", :security/isin "XS0494933806", :security/bcode "XS0494933806 Corp", :security/assettype 5, :security/multiple 1.0, :security/ismatured true, :security/currency "USD", :db/id #db/id[:db.part/user -100137] }
 
-{ :security/acode "MGNTBO06", :security/isin "RU000A0JRFQ4", :security/bcode "RU000A0JRFQ4 Corp", :security/assettype 5, :security/multiple 1000.0, :security/exchange "MICEX", :security/currency "RUB", :db/id #db/id[:db.part/user -100138] }
+{ :security/acode "MGNTBO06", :security/isin "RU000A0JRFQ4", :security/bcode "RU000A0JRFQ4 Corp", :security/assettype 5, :security/multiple 1000.0, :security/ismatured true, :security/currency "RUB", :db/id #db/id[:db.part/user -100138] }
 
 { :security/acode "NILSY_OLD2", :security/isin "US46626D1081", :security/bcode "US46626D1081 Corp", :security/assettype 1, :security/name "MMC Norilsk Nickel PJSC", :security/exchange "XETRA", :security/currency "USD", :db/id #db/id[:db.part/user -100139] }
 
@@ -310,23 +310,23 @@
 
 { :security/acode "RUSST22", :security/isin "XS1117280625", :security/bcode "XS1117280625 Corp", :security/assettype 5, :security/multiple 1.0, :security/name "Yandex NV", :security/exchange "XETRA", :security/currency "USD", :db/id #db/id[:db.part/user -100151] }
 
-{ :security/acode "NOTFG_1216", :security/isin "CH0326739403", :security/bcode "CH0326739403 Corp", :security/assettype 5, :security/multiple 1.0, :security/name "Yandex NV", :security/exchange "XETRA", :security/currency "USD", :db/id #db/id[:db.part/user -100011] }
+{ :security/acode "NOTFG_1216", :security/isin "CH0326739403", :security/bcode "CH0326739403 Corp", :security/assettype 5, :security/multiple 1.0, :security/name "", :security/ismatured true, :security/currency "USD", :db/id #db/id[:db.part/user -100011] }
 
-{ :security/acode "HYDR15", :security/isin "XS0553072611", :security/bcode "XS0553072611 Corp", :security/assettype 5, :security/multiple 1.0, :security/name "Yandex NV", :security/exchange "XETRA", :security/currency "RUB", :db/id #db/id[:db.part/user -100152] }
+{ :security/acode "HYDR15", :security/isin "XS0553072611", :security/bcode "XS0553072611 Corp", :security/assettype 5, :security/multiple 1.0, :security/name "", :security/ismatured true, :security/currency "RUB", :db/id #db/id[:db.part/user -100152] }
 
-{ :security/acode "EVRAZ15", :security/isin "XS0234987153", :security/bcode "XS0234987153 Corp", :security/assettype 5, :security/multiple 1.0, :security/name "Yandex NV", :security/exchange "XETRA", :security/currency "USD", :db/id #db/id[:db.part/user -100153] }
+{ :security/acode "EVRAZ15", :security/isin "XS0234987153", :security/bcode "XS0234987153 Corp", :security/assettype 5, :security/multiple 1.0, :security/name "", :security/ismatured true, :security/currency "USD", :db/id #db/id[:db.part/user -100153] }
 
-{ :security/acode "KOKS16", :security/isin "XS0640334768", :security/bcode "XS0640334768 Corp", :security/assettype 5, :security/multiple 1.0, :security/name "", :security/exchange "XETRA", :security/currency "USD", :db/id #db/id[:db.part/user -100154] }
+{ :security/acode "KOKS16", :security/isin "XS0640334768", :security/bcode "XS0640334768 Corp", :security/assettype 5, :security/multiple 1.0, :security/name "", :security/ismatured true, :security/currency "USD", :db/id #db/id[:db.part/user -100154] }
 
 { :security/acode "ALFARU19", :security/isin "XS0832412505", :security/bcode "XS0832412505 Corp", :security/assettype 5, :security/multiple 1.0, :security/name "Yandex NV", :security/exchange "XETRA", :security/currency "USD", :db/id #db/id[:db.part/user -100155] }
 
 { :security/acode "EFGIF_1017A", :security/isin "CH0340808473", :security/bcode "CH0340808473 Corp", :security/assettype 5, :security/multiple 1.0, :security/name "", :security/exchange "XETRA", :security/currency "EUR", :db/id #db/id[:db.part/user -100156] }
 
-{ :security/acode "ALFARU17", :security/isin  "XS0288690539", :security/bcode "XS0288690539 CBBT Corp", :security/assettype 5, :security/multiple 1.0, :security/name "Yandex NV", :security/exchange "TRDB", :security/currency "USD", :db/id #db/id[:db.part/user -100157]}
+{ :security/acode "ALFARU17", :security/isin  "XS0288690539", :security/bcode "XS0288690539 Corp", :security/assettype 5, :security/multiple 1.0, :security/name "", :security/ismatured true, :security/currency "USD", :db/id #db/id[:db.part/user -100157]}
 
-{ :security/acode "BKMOS17", :security/isin  "XS0299183250", :security/bcode "XS0299183250 Corp", :security/assettype 5, :security/multiple 1.0, :security/name "Yandex NV", :security/exchange "GERM", :security/currency "USD", :db/id #db/id[:db.part/user -100158]}
+{ :security/acode "BKMOS17", :security/isin  "XS0299183250", :security/bcode "XS0299183250 Corp", :security/assettype 5, :security/multiple 1.0, :security/name "", :security/ismatured true, :security/currency "USD", :db/id #db/id[:db.part/user -100158]}
 
-{ :security/acode "GAZBK17", :security/isin  "XS0783291221", :security/bcode "XS0783291221 CBBT Corp", :security/assettype 5, :security/multiple 1.0, :security/name "Газпромбанк, 5.625% 17may2017", :security/exchange "CBBT", :security/currency "USD", :db/id #db/id[:db.part/user -100159]}
+{ :security/acode "GAZBK17", :security/isin  "XS0783291221", :security/bcode "XS0783291221 CBBT Corp", :security/assettype 5, :security/multiple 1.0, :security/name "Газпромбанк, 5.625% 17may2017", :security/ismatured true, :security/currency "USD", :db/id #db/id[:db.part/user -100159]}
 
 { :security/acode "GZPN23", :security/isin "XS0997544860", :security/bcode "EJ951547 Corp", :security/assettype 5, :security/multiple 1.0, :security/exchange "", :security/currency "USD", :db/id #db/id[:db.part/user -100160]}
 
@@ -338,7 +338,7 @@
 
 { :security/acode "SIBUR18", :security/isin "XS0878855773", :security/bcode "XS0878855773 CBBT Corp", :security/assettype 5, :security/multiple 1.0, :security/name "", :security/exchange "NYSE", :security/currency "USD", :db/id #db/id[:db.part/user -100164]}
 
-{ :security/acode "TNK20", :security/isin  "XS0484209159", :security/bcode "XS0484209159 TRDB Corp", :security/assettype 5, :security/multiple 1.0, :security/name "Yandex NV", :security/exchange "NYSE", :security/currency "USD", :db/id #db/id[:db.part/user -100165]}
+{ :security/acode "TNK20", :security/isin  "XS0484209159", :security/bcode "XS0484209159 Corp", :security/assettype 5, :security/multiple 1.0, :security/name "Yandex NV", :security/exchange "NYSE", :security/currency "USD", :db/id #db/id[:db.part/user -100165]}
 
 { :security/acode "VEB18", :security/isin  "XS0993162170", :security/bcode "XS0993162170 Corp", :security/assettype 5, :security/multiple 1.0, :security/name "Yandex NV", :security/exchange "NYSE", :security/currency "USD", :db/id #db/id[:db.part/user -100166]}
 
@@ -348,7 +348,7 @@
 
 { :security/acode "VIP18", :security/isin  "XS0361041808", :security/bcode "XS0361041808 TRDB Corp", :security/assettype 5, :security/multiple 1.0, :security/name "Yandex NV", :security/exchange "NYSE", :security/currency "USD", :db/id #db/id[:db.part/user -100169]}
 
-{ :security/acode "VTB18", :security/isin  "XS0365923977", :security/bcode "XS0365923977 TRDB Corp", :security/assettype 5, :security/multiple 1.0, :security/name "Yandex NV", :security/exchange "NYSE", :security/currency "USD", :db/id #db/id[:db.part/user -100170]}
+{ :security/acode "VTB18", :security/isin  "XS0365923977", :security/bcode "XS0365923977 Corp", :security/assettype 5, :security/multiple 1.0, :security/name "", :security/exchange "NYSE", :security/currency "USD", :db/id #db/id[:db.part/user -100170]}
 
 { :security/acode "VIP22", :security/isin "XS0643183220", :security/bcode "XS0643183220 Corp", :security/assettype 5, :security/multiple 1.0, :security/name "", :security/exchange "NYSE", :security/currency "USD", :db/id #db/id[:db.part/user -100014]}
 
@@ -402,7 +402,7 @@
 
 { :security/acode "DMEA18", :security/isin  "XS0995845566", :security/bcode "XS0995845566 CBBT Corp", :security/assettype 5, :security/multiple 1.0, :security/name "Yandex NV", :security/exchange "CBBT", :security/currency "USD", :db/id #db/id[:db.part/user -100196]}
 
-{ :security/acode "GAZPRU20N", :security/isin  "XS0885733153", :security/bcode "XS0885733153", :security/assettype 5, :security/multiple 1.0, :security/name "", :security/exchange "GERM", :security/currency "USD", :db/id #db/id[:db.part/user -100197]}
+{ :security/acode "GAZPRU20N", :security/isin  "XS0885733153", :security/bcode "XS0885733153 Corp", :security/assettype 5, :security/multiple 1.0, :security/name "", :security/exchange "", :security/currency "USD", :db/id #db/id[:db.part/user -100197]}
 
 { :security/acode "GFISJ20", :security/isin  "XS0547082973", :security/bcode "XS0547082973 Corp", :security/assettype 5, :security/multiple 1.0, :security/name "Yandex NV", :security/exchange "CBBT", :security/currency "USD", :db/id #db/id[:db.part/user -100198]}
 
@@ -458,9 +458,9 @@
 
 { :security/acode "486HK", :security/isin  "JE00B5BCW814", :security/bcode "486 HK Equity", :security/assettype 1, :security/name "Yandex NV", :security/exchange "HK", :security/currency "HKD", :db/id #db/id[:db.part/user -100222]}
 
-{ :security/acode "25079", :security/isin  "RU000A0JRHZ1", :security/bcode "RU000A0JRHZ1 MICX Corp", :security/assettype 5, :security/multiple 1000.0, :security/name "Yandex NV", :security/exchange "MICX", :security/currency "RUB", :db/id #db/id[:db.part/user -100224]}
+{ :security/acode "25079", :security/isin  "RU000A0JRHZ1", :security/bcode "RU000A0JRHZ1 Corp", :security/assettype 5, :security/multiple 1000.0, :security/name "", :security/ismatured true, :security/currency "RUB", :db/id #db/id[:db.part/user -100224]}
 
-{ :security/acode "GAZBK15R", :security/isin "XS0833264335", :security/bcode "XS0833264335 Corp", :security/assettype 5, :security/multiple 1.0, :security/name "Yandex NV", :security/exchange "SBER", :security/currency "RUB", :db/id #db/id[:db.part/user -100225]}
+{ :security/acode "GAZBK15R", :security/isin "XS0833264335", :security/bcode "XS0833264335 Corp", :security/assettype 5, :security/multiple 1.0, :security/name "Yandex NV", :security/ismatured true, :security/currency "RUB", :db/id #db/id[:db.part/user -100225]}
 
 { :security/acode "LSRG", :security/isin  "RU000A0JPFP0", :security/bcode "LSRG RX Equity", :security/assettype  1, :security/exchange "RX", :security/currency "RUB", :db/id #db/id[:db.part/user -100226]}
 
@@ -492,19 +492,19 @@
 
 { :security/acode "SBER22S", :security/isin "XS0848530977", :security/bcode "XS0848530977 Corp", :security/assettype 5, :security/multiple 1.0, :security/name "Сбербанк России, 5.125% 29oct2022, USD", :security/exchange "IRSE", :security/currency "USD", :db/id #db/id[:db.part/user -100240]}
 
-{ :security/acode "MOSTREST-8", :security/isin "RU000A0JWN89", :security/bcode "RU000A0JWN89 Corp", :security/assettype 5, :security/multiple 1000.0, :security/name "Yandex NV", :security/exchange "MICX", :security/currency "RUB", :db/id #db/id[:db.part/user -100241]}
+{ :security/acode "MOSTREST-8", :security/isin "RU000A0JWN89", :security/bcode "RU000A0JWN89 Corp", :security/assettype 5, :security/multiple 1000.0, :security/name "", :security/exchange "MICX", :security/currency "RUB", :db/id #db/id[:db.part/user -100241]}
 
 { :security/acode "SUEK-FIN01R", :security/isin "RU000A0JWWW7", :security/bcode "QZ914276 Corp", :security/assettype 5, :security/multiple 1000.0, :security/name "Yandex NV", :security/exchange "MICB", :security/currency "RUB", :db/id #db/id[:db.part/user -100242]}
 
-{ :security/acode "EVRAZ17", :security/isin "XS0652913558", :security/bcode "XS0652913558 GERM Corp", :security/assettype 5, :security/multiple 1.0, :security/name "Yandex NV", :security/exchange "GERM", :security/currency "USD", :db/id #db/id[:db.part/user -100243]}
+{ :security/acode "EVRAZ17", :security/isin "XS0652913558", :security/bcode "XS0652913558 Corp", :security/assettype 5, :security/multiple 1.0, :security/name "", :security/ismatured true, :security/currency "USD", :db/id #db/id[:db.part/user -100243]}
 
-{ :security/acode "NOMOS15", :security/isin "XS0503839622", :security/bcode "EI2227078 Corp", :security/assettype 5, :security/multiple 1.0, :security/name "Yandex NV", :security/exchange "TRDB", :security/currency "USD", :db/id #db/id[:db.part/user -100244]}
+{ :security/acode "NOMOS15", :security/isin "XS0503839622", :security/bcode "EI2227078 Corp", :security/assettype 5, :security/multiple 1.0, :security/name "", :security/ismatured true, :security/currency "USD", :db/id #db/id[:db.part/user -100244]}
 
-{ :security/acode "PROMBK16", :security/isin "XS0524658852", :security/bcode "XS0524658852 BGN Corp", :security/assettype 5, :security/multiple 1.0, :security/name "Yandex NV", :security/exchange "TRAC", :security/currency "USD", :db/id #db/id[:db.part/user -100245]}
+{ :security/acode "PROMBK16", :security/isin "XS0524658852", :security/bcode "XS0524658852 Corp", :security/assettype 5, :security/multiple 1.0, :security/name "", :security/ismatured true, :security/currency "USD", :db/id #db/id[:db.part/user -100245]}
 
-{ :security/acode "PROMBK17", :security/isin "XS0775984213", :security/bcode "XS0775984213 SBER Corp", :security/assettype 5, :security/multiple 1.0, :security/name "Yandex NV", :security/exchange "SBER", :security/currency "USD", :db/id #db/id[:db.part/user -100246]}
+{ :security/acode "PROMBK17", :security/isin "XS0775984213", :security/bcode "XS0775984213 Corp", :security/assettype 5, :security/multiple 1.0, :security/name "", :security/ismatured true, :security/currency "USD", :db/id #db/id[:db.part/user -100246]}
 
-{ :security/acode "RUSST17", :security/isin "XS0802648955", :security/bcode "XS0802648955 Corp", :security/assettype 5, :security/multiple 1.0, :security/name "Yandex NV", :security/exchange "TRDB", :security/currency "USD", :db/id #db/id[:db.part/user -100247]}
+{ :security/acode "RUSST17", :security/isin "XS0802648955", :security/bcode "XS0802648955 Corp", :security/assettype 5, :security/multiple 1.0, :security/name "", :security/ismatured true, :security/currency "USD", :db/id #db/id[:db.part/user -100247]}
 
 { :security/acode "EVRLN", :security/isin "GB00B71N6K86", :security/bcode "EVZ GR Equity", :security/assettype 1, :security/name "", :security/exchange "GR", :security/currency "GBX", :db/id #db/id[:db.part/user -100248]}
 
@@ -512,9 +512,9 @@
 
 { :security/acode "URKLI", :security/isin  "US91688E2063", :security/bcode "URKA S1 Equity", :security/assettype 1, :security/name "", :security/exchange "S1", :security/currency "USD", :db/id #db/id[:db.part/user -100250]}
 
-{ :security/acode "EFGIF_1215", :security/isin "CH0279928706", :security/bcode "CH0279928706 Corp", :security/assettype 5, :security/multiple 1.0, :security/name "Yandex NV", :security/exchange "BVAL", :security/currency "USD", :db/id #db/id[:db.part/user -100251]}
+{ :security/acode "EFGIF_1215", :security/isin "CH0279928706", :security/bcode "CH0279928706 Corp", :security/assettype 5, :security/multiple 1.0, :security/name "", :security/ismatured true, :security/currency "USD", :db/id #db/id[:db.part/user -100251]}
 
-{ :security/acode "GAZBK16R", :security/isin "XS0877983642", :security/bcode "XS0877983642 Corp", :security/assettype 5, :security/multiple 1.0, :security/name "Yandex NV", :security/exchange "CBBT", :security/currency "RUB", :db/id #db/id[:db.part/user -100252]}
+{ :security/acode "GAZBK16R", :security/isin "XS0877983642", :security/bcode "XS0877983642 Corp", :security/assettype 5, :security/multiple 1.0, :security/name "Yandex NV", :security/ismatured true, :security/currency "RUB", :db/id #db/id[:db.part/user -100252]}
 
 { :security/acode "CAT", :security/isin  "US1491231015", :security/bcode "CAT1 EB Equity", :security/assettype 1, :security/name "Yandex NV", :security/exchange "EB", :security/currency "USD", :db/id #db/id[:db.part/user -100253]}
 
@@ -548,7 +548,7 @@
 
 { :security/acode "LNIKLN", :security/isin "JE00BDD9QB77", :security/bcode "LNIK LN Equity", :security/assettype 1, :security/name "Yandex NV", :security/exchange "B3", :security/currency "EUR", :db/id #db/id[:db.part/user -100268]}
 
-{ :security/acode "25076", :security/isin "RU000A0JR779", :security/bcode "RU000A0JR779 Corp", :security/assettype 5, :security/multiple 1000.0, :security/name "Yandex NV", :security/exchange "BGN", :security/currency "RUB", :db/id #db/id[:db.part/user -100269]}
+{ :security/acode "25076", :security/isin "RU000A0JR779", :security/bcode "RU000A0JR779 Corp", :security/assettype 5, :security/multiple 1000.0, :security/name "", :security/ismatured true, :security/currency "RUB", :db/id #db/id[:db.part/user -100269]}
 
 { :security/acode "GLENLN2.87", :security/isin "XS1218432000", :security/bcode "XS1218432000 Corp", :security/assettype 5, :security/multiple 1.0, :security/name "Yandex NV", :security/exchange "NYSE", :security/currency "USD", :db/id #db/id[:db.part/user -100270]}
 
@@ -594,7 +594,7 @@
 
 { :security/acode "KAISAG19", :security/isin "XS1071368861", :security/bcode "XS1071368861 Corp", :security/assettype 5, :security/multiple 1.0, :security/name "Yandex NV", :security/exchange "", :security/currency "USD", :db/id #db/id[:db.part/user -100292]}
 
-{ :security/acode "MTNA17", :security/isin "US03938LAW46", :security/bcode "US03938LAW46 Corp", :security/assettype 5, :security/multiple 1.0, :security/name "Yandex NV", :security/exchange "CBBT", :security/currency "USD", :db/id #db/id[:db.part/user -100293]}
+{ :security/acode "MTNA17", :security/isin "US03938LAW46", :security/bcode "US03938LAW46 Corp", :security/assettype 5, :security/multiple 1.0, :security/name "", :security/ismatured true, :security/currency "USD", :db/id #db/id[:db.part/user -100293]}
 
 { :security/acode "OASCBZ19", :security/isin "USA57902AA51", :security/bcode "USA57902AA51 Corp", :security/assettype 5, :security/multiple 1.0, :security/name "Yandex NV", :security/exchange "BVAL", :security/currency "USD", :db/id #db/id[:db.part/user -100294]}
 
@@ -606,7 +606,7 @@
 
 { :security/acode "TUPRST18", :security/isin "XS0849020556", :security/bcode "XS0849020556 Corp", :security/assettype 5, :security/multiple 1.0, :security/name "Yandex NV", :security/exchange "BVAL", :security/currency "USD", :db/id #db/id[:db.part/user -100298]}
 
-{ :security/acode "UKRGB20", :security/isin "XS0543783194", :security/bcode "XS0543783194 TRDB Corp", :security/assettype 5, :security/multiple 1.0, :security/name "Yandex NV", :security/exchange "TRDB", :security/currency "USD", :db/id #db/id[:db.part/user -100299]}
+{ :security/acode "UKRGB20", :security/isin "XS0543783194", :security/bcode "XS0543783194 Corp", :security/assettype 5, :security/multiple 1.0, :security/name "Yandex NV", :security/exchange "TRDB", :security/currency "USD", :db/id #db/id[:db.part/user -100299]}
 
 { :security/acode "VIP19", :security/isin "XS0889401054", :security/bcode "XS0889401054 Corp", :security/assettype 5, :security/multiple 1.0, :security/name "Yandex NV", :security/exchange "", :security/currency "USD", :db/id #db/id[:db.part/user -100300]}
 
@@ -672,7 +672,7 @@
 
 { :security/acode "OOGCOR49", :security/isin "USG6712EAA67", :security/bcode "USG6712EAA67 Corp", :security/assettype 5, :security/multiple 1.0, :security/name "Yandex NV", :security/exchange "BVAL", :security/currency "USD", :db/id #db/id[:db.part/user -100332]}
 
-{ :security/acode "ALFARU16R", :security/isin "XS0922142574", :security/bcode "XS0922142574 Corp", :security/assettype 5, :security/multiple 1.0, :security/name "Yandex NV", :security/exchange "", :security/currency "RUB", :db/id #db/id[:db.part/user -100333]}
+{ :security/acode "ALFARU16R", :security/isin "XS0922142574", :security/bcode "XS0922142574 Corp", :security/assettype 5, :security/multiple 1.0, :security/name "", :security/ismatured true, :security/currency "RUB", :db/id #db/id[:db.part/user -100333]}
 
 { :security/acode "ALOC15", :security/isin "XS0493579238", :security/bcode "EI178316 Corp", :security/assettype 5, :security/multiple 1.0, :security/name "Yandex NV", :security/exchange "TRDB", :security/currency "USD", :db/id #db/id[:db.part/user -100334]}
 
@@ -694,7 +694,7 @@
 
 { :security/acode "IKS5FINBO6", :security/isin "RU000A0JWG05", :security/bcode "JK907252 Corp", :security/assettype 5, :security/multiple 1000.0, :security/name "Yandex NV", :security/exchange "MICX", :security/currency "RUB", :db/id #db/id[:db.part/user -100343]}
 
-{ :security/acode "LUKOIL15", :security/isin "XS0563898062", :security/bcode "XS0563898062 Corp", :security/assettype 5, :security/multiple 1.0, :security/name "Yandex NV", :security/exchange "", :security/currency "USD", :db/id #db/id[:db.part/user -100344]}
+{ :security/acode "LUKOIL15", :security/isin "XS0563898062", :security/bcode "XS0563898062 Corp", :security/assettype 5, :security/multiple 1.0, :security/name "", :security/ismatured true, :security/currency "USD", :db/id #db/id[:db.part/user -100344]}
 
 { :security/acode "LUKOIL17", :security/isin "XS0304273948", :security/bcode "XS0304273948 Corp", :security/assettype 5, :security/multiple 1.0, :security/name "Yandex NV", :security/exchange "", :security/currency "USD", :db/id #db/id[:db.part/user -100345]}
 
@@ -702,11 +702,11 @@
 
 { :security/acode "METINV18", :security/isin "XS0591549232", :security/bcode "XS0591549232 GERM Corp", :security/assettype 5, :security/multiple 1.0, :security/name "Yandex NV", :security/exchange "GERM", :security/currency "USD", :db/id #db/id[:db.part/user -100347]}
 
-{ :security/acode "NOVT16", :security/isin "XS0588436799", :security/bcode "XS0588436799 Corp", :security/assettype 5, :security/multiple 1.0, :security/name "Yandex NV", :security/exchange "TRDB", :security/currency "GBX", :db/id #db/id[:db.part/user -100348]}
+{ :security/acode "NOVT16", :security/isin "XS0588436799", :security/bcode "XS0588436799 Corp", :security/assettype 5, :security/multiple 1.0, :security/name "", :security/ismatured true, :security/currency "GBX", :db/id #db/id[:db.part/user -100348]}
 
 { :security/acode "PKT-01", :security/isin "RU000A0JW0S4", :security/bcode "JV410549 Corp", :security/assettype 5, :security/multiple 1000.0, :security/name "Yandex NV", :security/exchange "MICX", :security/currency "RUB", :db/id #db/id[:db.part/user -100349]}
 
-{ :security/acode "RUSAG16R", :security/isin "XS0605637056", :security/bcode "XS0605637056 Corp", :security/assettype 5, :security/multiple 1.0, :security/name "Yandex NV", :security/exchange "TRDB", :security/currency "RUB", :db/id #db/id[:db.part/user -100350]}
+{ :security/acode "RUSAG16R", :security/isin "XS0605637056", :security/bcode "XS0605637056 Corp", :security/assettype 5, :security/multiple 1.0, :security/name "", :security/ismatured true, :security/currency "RUB", :db/id #db/id[:db.part/user -100350]}
 
 { :security/acode "RUSAG18R", :security/isin "XS0884734343", :security/bcode "EJ536591 Corp", :security/assettype 5, :security/multiple 1.0, :security/name "", :security/exchange "", :security/currency "RUB", :db/id #db/id[:db.part/user -100351]}
 
@@ -791,7 +791,7 @@
 
 { :security/acode "GAZBKPERP", :security/isin "XS0848137708", :security/bcode "XS0848137708 Corp", :security/assettype 5, :security/multiple 1.0, :security/name "Yandex NV", :security/exchange "NY", :security/currency "USD", :db/id #db/id[:db.part/user -100391]}
 
-{ :security/acode "METINR16", :security/isin "XS0650962185", :security/bcode "XS0650962185 Corp", :security/assettype 5, :security/multiple 1.0, :security/name "Yandex NV", :security/exchange "NY", :security/currency "USD", :db/id #db/id[:db.part/user -100392]}
+{ :security/acode "METINR16", :security/isin "XS0650962185", :security/bcode "XS0650962185 Corp", :security/assettype 5, :security/multiple 1.0, :security/name "", :security/ismatured true, :security/currency "USD", :db/id #db/id[:db.part/user -100392]}
 
 { :security/acode "MAGNIT1P02", :security/isin "RU000A0JW662", :security/bcode "RU000A0JW662 Corp", :security/assettype 5, :security/multiple 1000.0, :security/name "Yandex NV", :security/exchange "MICEX", :security/currency "RUB", :db/id #db/id[:db.part/user -100393]}
 
@@ -865,7 +865,7 @@
 
 { :security/acode "GLENCF18", :security/isin  "XS1218431705", :security/bcode "XS1218431705 Corp", :security/assettype 5, :security/multiple 1.0, :security/name "Yandex NV", :security/exchange "CBBT", :security/currency "USD", :db/id #db/id[:db.part/user -100186]}
 
-{ :security/acode "PETBRA17", :security/isin  "US71645WAU53", :security/bcode "US71645WAU53 Corp", :security/assettype 5, :security/multiple 1.0, :security/name "Yandex NV", :security/exchange "CBBT", :security/currency "USD", :db/id #db/id[:db.part/user -100427]}
+{ :security/acode "PETBRA17", :security/isin  "US71645WAU53", :security/bcode "US71645WAU53 Corp", :security/assettype 5, :security/multiple 1.0, :security/name "", :security/ismatured true, :security/currency "USD", :db/id #db/id[:db.part/user -100427]}
 
 { :security/acode "VEDLN22", :security/isin  "USG9328DAM23", :security/bcode "USG9328DAM23 Corp", :security/assettype 5, :security/multiple 1.0, :security/name "Yandex NV", :security/exchange "CBBT", :security/currency "USD", :db/id #db/id[:db.part/user -100428]}
 
@@ -909,15 +909,15 @@
 
 { :security/acode "EFGIF_0122C", :security/assettype 5, :security/multiple 1.0, :security/isin "CH0355509487", :security/bcode "CH0355509487 Corp", :security/exchange "XETRA", :security/currency "USD", :db/id #db/id[:db.part/user -100448] }
 
-{ :security/acode "EFGIF_0316", :security/assettype 5, :security/multiple 1.0, :security/isin "CH0273394384", :security/bcode "CH0273394384 Corp", :security/exchange "XETRA", :security/currency "USD", :db/id #db/id[:db.part/user -100449] }
+{ :security/acode "EFGIF_0316", :security/assettype 5, :security/multiple 1.0, :security/isin "CH0273394384", :security/bcode "CH0273394384 Corp", :security/ismatured true, :security/currency "USD", :db/id #db/id[:db.part/user -100449] }
 
-{ :security/acode "EFGIF_0417", :security/assettype 5, :security/multiple 1.0, :security/isin "CH0340808259", :security/bcode "CH0340808259 Corp", :security/exchange "XETRA", :security/currency "USD", :db/id #db/id[:db.part/user -100450] }
+{ :security/acode "EFGIF_0417", :security/assettype 5, :security/multiple 1.0, :security/isin "CH0340808259", :security/bcode "CH0340808259 Corp", :security/ismatured true, :security/currency "USD", :db/id #db/id[:db.part/user -100450] }
 
-{ :security/acode "EFGIF_1216", :security/assettype 5, :security/multiple 1.0, :security/isin "CH0283709266", :security/bcode "CH0283709266 Corp", :security/exchange "XETRA", :security/currency "USD", :db/id #db/id[:db.part/user -100451] }
+{ :security/acode "EFGIF_1216", :security/assettype 5, :security/multiple 1.0, :security/isin "CH0283709266", :security/bcode "CH0283709266 Corp", :security/ismatured true, :security/currency "USD", :db/id #db/id[:db.part/user -100451] }
 
 { :security/acode "EURONAT15E", :security/assettype 5, :security/multiple 1.0, :security/isin "XS1035504247", :security/bcode "XS1035504247 Corp", :security/exchange "XETRA", :security/currency "USD", :db/id #db/id[:db.part/user -100452] }
 
-{ :security/acode "GLENCF17", :security/assettype 5, :security/multiple 1.0, :security/isin "XS0495973470", :security/bcode "XS0495973470 Corp", :security/exchange "XETRA", :security/currency "USD", :db/id #db/id[:db.part/user -100453] }
+{ :security/acode "GLENCF17", :security/assettype 5, :security/multiple 1.0, :security/isin "XS0495973470", :security/bcode "XS0495973470 Corp", :security/ismatured true, :security/currency "USD", :db/id #db/id[:db.part/user -100453] }
 
 { :security/acode "NOTFG_1116", :security/assettype 5, :security/multiple 1.0, :security/isin "CH0283715164", :security/bcode "CH0283715164 Corp", :security/exchange "XETRA", :security/currency "USD", :db/id #db/id[:db.part/user -100454] }
 
@@ -1223,11 +1223,11 @@
 
 { :security/acode "MTNSJ22", :security/isin "XS1503116912", :security/bcode "XS1503116912 Corp", :security/assettype 5, :security/multiple 1.0, :security/name "", :security/exchange "NYSE", :security/currency "USD", :db/id #db/id[:db.part/user -100605] }
 
-{ :security/acode "GPBRU16", :security/isin "XS0426517701", :security/bcode "XS0426517701 Corp", :security/assettype 5, :security/multiple 1.0, :security/name "", :security/exchange "NYSE", :security/currency "USD", :db/id #db/id[:db.part/user -100606] }
+{ :security/acode "GPBRU16", :security/isin "XS0426517701", :security/bcode "XS0426517701 Corp", :security/assettype 5, :security/multiple 1.0, :security/name "", :security/ismatured true, :security/currency "USD", :db/id #db/id[:db.part/user -100606] }
 
 { :security/acode "PETBRA18A", :security/isin "US71645WAM38", :security/bcode "US71645WAM38 Corp", :security/assettype 5, :security/multiple 1.0, :security/name "", :security/exchange "NYSE", :security/currency "USD", :db/id #db/id[:db.part/user -100607] }
 
-{ :security/acode "VEB17N", :security/isin "XS0719009754", :security/bcode "XS0719009754 Corp", :security/assettype 5, :security/multiple 1.0, :security/name "", :security/exchange "NYSE", :security/currency "USD", :db/id #db/id[:db.part/user -100608] }
+{ :security/acode "VEB17N", :security/isin "XS0719009754", :security/bcode "XS0719009754 Corp", :security/assettype 5, :security/multiple 1.0, :security/name "", :security/ismatured true, :security/currency "USD", :db/id #db/id[:db.part/user -100608] }
 
 { :security/acode "EFGIF_0219", :security/isin "CH0355508588", :security/bcode "CH0355508588 Corp", :security/assettype 5, :security/multiple 1.0, :security/name "", :security/exchange "NYSE", :security/currency "USD", :db/id #db/id[:db.part/user -100609] }
 
@@ -1289,7 +1289,7 @@
 
 { :security/acode "MKRB11", :security/assettype 5, :security/multiple 1000.0, :security/bcode "RU000A0JTF50 Corp", :security/isin "RU000A0JTF50", :security/exchange "MOSCOW", :security/currency "RUB", :db/id #db/id[:db.part/user -100639] }
 
-{ :security/acode "MOSTREST-7", :security/assettype 5, :security/multiple 1000.0, :security/bcode "RU000A0JWN63 Corp", :security/isin "RU000A0JWN63", :security/exchange "MOSCOW", :security/currency "RUB", :db/id #db/id[:db.part/user -100640] }
+{ :security/acode "MOSTREST-7", :security/assettype 5, :security/multiple 1000.0, :security/bcode "RU000A0JWN63 Corp", :security/isin "RU000A0JWN63", :security/exchange "", :security/currency "RUB", :db/id #db/id[:db.part/user -100640] }
 
 { :security/acode "OTKRFKBOP3", :security/assettype 5, :security/multiple 1000.0, :security/bcode "RU000A0JXLR8 Corp", :security/isin "RU000A0JXLR8", :security/exchange "MOSCOW", :security/currency "RUB", :db/id #db/id[:db.part/user -100641] }
 
@@ -1349,7 +1349,7 @@
 
 { :security/acode "RSHB08", :security/assettype 5, :security/multiple 1000.0, :security/bcode "RU000A0JQK64 Corp", :security/isin "RU000A0JQK64", :security/exchange "", :security/currency "RUB", :db/id #db/id[:db.part/user -100668] }
 
-{ :security/acode "VTBRBO04", :security/assettype 5, :security/multiple 1000.0, :security/bcode "RU000A0JS1P4 Corp", :security/isin "RU000A0JS1P4", :security/exchange "", :security/currency "RUB", :db/id #db/id[:db.part/user -100669] }
+{ :security/acode "VTBRBO04", :security/assettype 5, :security/multiple 1000.0, :security/bcode "RU000A0JS1P4 Corp", :security/isin "RU000A0JS1P4", :security/ismatured true, :security/currency "RUB", :db/id #db/id[:db.part/user -100669] }
 
 { :security/acode "ACNUS", :security/assettype 1, :security/multiple 1.0, :security/bcode "ACN US Equity", :security/isin "IE00B4BNMY34", :security/exchange "", :security/currency "USD", :db/id #db/id[:db.part/user -100670] }
 
@@ -1435,7 +1435,7 @@
 
 { :security/acode "CEMEX25A", :security/assettype 5, :security/multiple 1.0, :security/bcode "USP2253TJE03 Corp", :security/isin "USP2253TJE03", :security/exchange "", :security/currency "USD", :db/id #db/id[:db.part/user -100711] }
 
-{ :security/acode "ALFAUA12NN", :security/assettype 5, :security/multiple 1.0, :security/bcode "XS0441089926 Corp", :security/isin "XS0441089926", :security/exchange "", :security/currency "USD", :db/id #db/id[:db.part/user -100712] }
+{ :security/acode "ALFAUA12NN", :security/assettype 5, :security/multiple 1.0, :security/bcode "XS0441089926 Corp", :security/isin "XS0441089926", :security/ismatured true, :security/currency "USD", :db/id #db/id[:db.part/user -100712] }
 
 { :security/acode "PROMBK18", :security/assettype 5, :security/multiple 1.0, :security/bcode "XS0343690466 Corp", :security/isin "XS0343690466", :security/exchange "", :security/currency "USD", :db/id #db/id[:db.part/user -100713] }
 
@@ -3782,6 +3782,10 @@
 
 { :transaction/client #db/id[:db.part/user -102102], :transaction/security #db/id[:db.part/user -100172], :transaction/nominal 5180.0, :transaction/price 398.55, :transaction/direction "S", :transaction/tradedate #inst "2017-07-26T01:00:00.0000000Z", :transaction/valuedate #inst "2017-07-26T01:00:00.0000000Z", :transaction/currency "RUB", :transaction/comment "Оферта М Видео", :db/id #db/id[:db.part/user -110951] }
 
+;; KARIS Initial CASH position
+{ :transaction/client #db/id[:db.part/user -102094], :transaction/security #db/id[:db.part/user -100703], :transaction/nominal 8200000.0, :transaction/price 1.0, :transaction/direction "B", :transaction/tradedate #inst "2017-05-23T01:00:00.0000000Z", :transaction/valuedate #inst "2017-05-23T01:00:00.0000000Z", :transaction/currency "USD", :transaction/comment "Transfer In", :db/id #db/id[:db.part/user -110952] }
+
+{ :transaction/client #db/id[:db.part/user -102094], :transaction/security #db/id[:db.part/user -100703], :transaction/nominal 8200000.0, :transaction/price 1.0, :transaction/direction "S", :transaction/tradedate #inst "2017-05-24T01:00:00.0000000Z", :transaction/valuedate #inst "2017-05-24T01:00:00.0000000Z", :transaction/currency "USD", :transaction/comment "Transfer Out", :db/id #db/id[:db.part/user -110953] }
 
 ;;{ :transaction/client #db/id[:db.part/user -102111], :transaction/security #db/id[:db.part/user -100612], :transaction/nominal 0, :transaction/price 398.55, :transaction/direction "S", :transaction/tradedate #inst "2017-07-26T01:00:00.0000000Z", :transaction/valuedate #inst "2017-07-26T01:00:00.0000000Z", :transaction/currency "RUB", :transaction/comment "Оферта М Видео", :db/id #db/id[:db.part/user -110951] }
 

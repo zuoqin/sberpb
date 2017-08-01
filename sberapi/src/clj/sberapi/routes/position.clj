@@ -34,6 +34,32 @@
 
 (def sec_state (atom {}))
 
+(defn sort-clients [client1 client2]
+  (let [
+        ;dtt1 (c/to-long (:tradedate tran1))
+        ;dtt2 (c/to-long (:tradedate tran2))
+
+        ]
+    
+    (if (or (< (compare (:code client1) (:code client2)) 0))
+    true
+    false)
+  )
+)
+
+(defn sort-securities [sec1 sec2]
+  (let [
+        ;dtt1 (c/to-long (:tradedate tran1))
+        ;dtt2 (c/to-long (:tradedate tran2))
+
+        ]
+    
+    (if (or (< (compare (:acode sec1) (:acode sec2)) 0))
+    true
+    false)
+  )
+)
+
 
 (defn sort-tran-from-db [tran1 tran2]
   (let [
@@ -76,14 +102,6 @@
   )
 )
 
-
-(defn getPositions [token client]
-  (let [
-    result (if (nil? (:positions ((keyword client) @client_state))) (retrievePositions token client) (:positions ((keyword client) @client_state)))
-    ]
-    result
-  )
-)
 
 (defn retrievePositions [token client]
   (let [
@@ -153,6 +171,15 @@
   )
 )
 
+(defn getPositions [token client]
+  (let [
+    result (if (nil? (:positions ((keyword client) @client_state))) (retrievePositions token client) (:positions ((keyword client) @client_state)))
+    ]
+    result
+  )
+)
+
+
 (defn sort-deals [deal1 deal2]
   (let [
         ;tr1 (println tran1)
@@ -182,13 +209,6 @@
   )
 )
 
-(defn getDeals [token client page]
-  (let [
-    result (if (nil? (:deals ((keyword client) @client_state))) (retrieveDeals token client page) ((keyword (str page)) (:deals ((keyword client) @client_state))))
-    ]
-    result
-  )
-)
 
 (defn retrieveDeals [token client page]
   (let [
@@ -296,6 +316,13 @@
   )
 )
 
+(defn getDeals [token client page]
+  (let [
+    result (if (nil? (:deals ((keyword client) @client_state))) (retrieveDeals token client page) ((keyword (str page)) (:deals ((keyword client) @client_state))))
+    ]
+    result
+  )
+)
 
 (defn getPostrans [token client security]
   (let [
@@ -308,14 +335,6 @@
   )
 )
 
-(defn getPortfolios [token security]
-  (let [
-      newsec (str security)
-      result (if (nil? ((keyword newsec) @sec_state)) (retrievePortfolios token security) (:portfolios ((keyword newsec) @sec_state)))
-    ]
-    result
-  )
-)
 
 (defn retrievePortfolios [token security]
   (let [
@@ -382,16 +401,8 @@
   )
 )
 
-(defn calcPortfolios [token security percentage]
-  (let [
-    newsec (str security)
-    result (if (nil? ((keyword (str percentage)) (:calcportfs ((keyword newsec) @sec_state)))) (retrievePortfolios token security percentage) ((keyword (str percentage)) (:calcportfs ((keyword newsec) @sec_state))))
-    ]
-    result
-  )
-)
 
-(defn retrievePortfolios [token security percentage]
+(defn getCalcPortfolios [token security percentage]
   (let [
     usercode "zuoqin" ;(:iss (-> token str->jwt :claims)  ) 
     transactions (into [] (db/get-transactions-by-security security))
@@ -511,6 +522,24 @@
     tr1 (swap! sec_state assoc-in [(keyword (str security)) :calcportfs (keyword (str percentage))] calc_portfs)
     ]
     calc_portfs
+  )
+)
+
+(defn calcPortfolios [token security percentage]
+  (let [
+    newsec (str security)
+    result (if (nil? ((keyword (str percentage)) (:calcportfs ((keyword newsec) @sec_state)))) (getCalcPortfolios token security percentage) ((keyword (str percentage)) (:calcportfs ((keyword newsec) @sec_state))))
+    ]
+    result
+  )
+)
+
+(defn getPortfolios [token security]
+  (let [
+      newsec (str security)
+      result (if (nil? ((keyword newsec) @sec_state)) (retrievePortfolios token security) (:portfolios ((keyword newsec) @sec_state)))
+    ]
+    result
   )
 )
 
@@ -764,5 +793,38 @@
     (do (save-workbook! (str (-> env :drive) ":/dev/java/" client ".xlsx")  wb))
     ;(save-xls ["sheet1" (dataset [:portfolio :isin :quantity :price :date :type] newtrans)] (str drive ":/DEV/Java/" client "_trans.xlsx") )
     "Success"
+  )
+)
+
+(defn loadallpositions []
+  (let [
+    clients (sort (comp sort-clients) (clients/get-clients "zuoqin"))
+
+
+    allsecs (sort (comp sort-securities) (secs/get-securities))
+    secs (map (fn [x] (:isin x)) (drop 0 (->> (load-workbook (str (-> env :drive) ":/DEV/clojure/sberpb/sberapi/DB/quotes.xlsx") )
+                               (select-sheet "Data")
+                               (select-columns {:A :isin})))) 
+
+    securities (filter (fn [x] (some  #(= (:isin x) %) secs)) allsecs)
+
+    ]
+    (doseq [client clients]
+      (println (str "retrieveing positions for portfolio: " (:code client)))
+      (getPositions "" (:code client))
+      (Thread/sleep 3000)
+    )
+
+    (doseq [client clients]
+      (println (str "retrieveing deals for portfolio: " (:code client)))
+      (getDeals "" (:code client) 0)
+      (Thread/sleep 3000)
+    )
+
+    (doseq [sec securities]
+      (println (str "retrieveing portfolios for security: " (:acode sec)))
+      (getPortfolios "" (:id sec))
+      (Thread/sleep 3000)
+    )
   )
 )
