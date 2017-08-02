@@ -387,29 +387,39 @@
 
     filter_portfs (filter (fn [x] (if (> (:amount (second x)) 0) true false))  portfolios) 
     
-    result (map (fn [x]
-                  (let [
-                        y (name (first x))
-                        z (second x) 
-                        ;tr1 (println (str "y: " y " z: " z))
-                       ] {(keyword y) z}))  filter_portfs)
+    result (into {} (map (fn [x]
+                            (let [
+                                  y (name (first x))
+                                  z (second x) 
+                                        ;tr1 (println (str "y: " y " z: " z))
+                                  ] {(keyword y) z}))  filter_portfs)) 
 
     tr1 (swap! sec_state assoc-in [(keyword (str security)) :portfolios] result)
     ]
-    (into {} result)
+    result
     ;filter_portfs
+  )
+)
+
+(defn getPortfolios [token security]
+  (let [
+      newsec (str security)
+      result (if (nil? ((keyword newsec) @sec_state)) (retrievePortfolios token security) (:portfolios ((keyword newsec) @sec_state)))
+    ]
+    result
   )
 )
 
 
 (defn getCalcPortfolios [token security percentage]
   (let [
-    usercode "zuoqin" ;(:iss (-> token str->jwt :claims)  ) 
-    transactions (into [] (db/get-transactions-by-security security))
-    clients (clients/get-clients usercode)
-    
+    ;; We need to calculate used limits for all portfolios, so use admin as user
+    ;;usercode (:iss (-> token str->jwt :claims))
+    usercode "zuoqin" 
+    ;transactions (into [] (db/get-transactions-by-security security))
 
-    ;tr1 (println (first transactions))
+
+    clients (clients/get-clients usercode)
     securities (secs/get-securities)
 
         
@@ -423,49 +433,8 @@
     lastprice (db/get-fxrate-by-date (:acode sec) (java.util.Date.))
 
     secrubprice (* secfxrate (if (nil? lastprice) 0 lastprice) )
-    portfolios (loop [result {} trans transactions]
-                (if (seq trans) 
-                  (let [
-                        tran (first trans)
-                        client (:client tran)
-                        
 
-                        
-                        currency (:currency sec)
-                        amnt (if (nil? (:amount ( (keyword client) result ))) 0.0 (:amount ( (keyword client) result )))
-                        prevpr (:price ((keyword client) result))
-                        
-                        usdrate (db/get-fxrate-by-date "USD" (:valuedate tran))
-                        seccurfxrate (db/get-fxrate-by-date currency (:valuedate tran))
-                        trancurfxrate (db/get-fxrate-by-date (:currency tran) (:valuedate tran))
-                        rubprice (if (= 5 (:assettype sec)) (* seccurfxrate (:price tran)) (* trancurfxrate (:price tran))) 
-                        usdprice (/ rubprice usdrate)
-                        seccurprice (/ rubprice seccurfxrate)
-
-                        
-                        prevrubprice (:rubprice ((keyword client) result))
-                        prevusdprice (:wapusd ((keyword client) result))
-
-                        tranamnt (if (= "B" (:direction tran)) (:nominal tran) (- 0 (:nominal tran)))
-                        newamnt (if (nil? amnt ) tranamnt (+ amnt tranamnt) )
-
-                        ;tr1 (if (= (:client tran) "GBCJF") (println (str "secfx= " seccurfxrate " usdprice=" usdprice " rubprice=" rubprice " assetprice=" (:assettype thesecurity)))) 
-                        ;tr1 (if (= client "PYUMF") (println (str "prevpr= " prevpr " amnt= " amnt " tranamnt= " tranamnt " newamnt= " newamnt))) 
-                        
-                        wap (if (= 0.0 amnt ) seccurprice  (if (> newamnt 0.0) (if (> tranamnt 0.0) (/ (+ (* prevpr amnt) (* seccurprice tranamnt)) newamnt)  prevpr)  0.0))
-
-                        waprub (if (= amnt 0.0)  rubprice (if (= "S" (:direction tran)) prevrubprice (if (> newamnt 0.0) (/ (+ (* prevrubprice amnt) (* rubprice tranamnt)) newamnt) 0.0)) )
-                        wapusd (if (= amnt 0.0) usdprice (if (= "S" (:direction tran)) prevusdprice (if (> newamnt 0.0) (/ (+ (* prevusdprice amnt) (* usdprice tranamnt)) newamnt) 0.0)))
-                        ]
-                    (recur (assoc-in result [(keyword client) ] {:amount newamnt :price wap :rubprice waprub :wapusd wapusd} )
-                         (rest trans))
-                  )                  
-                  result)
-                )     
-
-
-
-    filter_portfs (filter (fn [x] (if (> (:amount (second x)) 0) true false))  portfolios)
+    filter_portfs (getPortfolios token security )
     ;;tr1 (println (first filter_portfs))
 
     
@@ -529,15 +498,6 @@
   (let [
     newsec (str security)
     result (if (nil? ((keyword (str percentage)) (:calcportfs ((keyword newsec) @sec_state)))) (getCalcPortfolios token security percentage) ((keyword (str percentage)) (:calcportfs ((keyword newsec) @sec_state))))
-    ]
-    result
-  )
-)
-
-(defn getPortfolios [token security]
-  (let [
-      newsec (str security)
-      result (if (nil? ((keyword newsec) @sec_state)) (retrievePortfolios token security) (:portfolios ((keyword newsec) @sec_state)))
     ]
     result
   )

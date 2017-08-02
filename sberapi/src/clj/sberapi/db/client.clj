@@ -37,7 +37,7 @@
                         [?e :client/rub ?rub]
                         [?e :client/eur ?eur]
                         [?e :client/gbp ?gbp]
-                        [?e :client/margin ?m]
+                        [(get-else $ ?e :client/margin 0.0) ?m]
                         [?e :client/stockshare ?ss]
                         [?e :client/bondshare ?bs]
                         [?e :client/signedadvisory ?sa]

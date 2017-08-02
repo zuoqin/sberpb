@@ -313,7 +313,8 @@
 )
 
 (defn OnGetPositions [response]
-   (swap! app-state assoc-in [(keyword (:selectedclient @app-state)) :positions] (map (fn [x] (map-position x)) (filter (fn [x] (if (= (:amount (nth x 1)) 0.0) false true)) response) ) )
+  (swap! app-state assoc :state 1 )
+  (swap! app-state assoc-in [(keyword (:selectedclient @app-state)) :positions] (map (fn [x] (map-position x)) (filter (fn [x] (if (= (:amount (nth x 1)) 0.0) false true)) response) ) )
 )
 
 (defn OnGetDeals [response]
@@ -339,7 +340,8 @@
 ,
 
 
-(defn getPositions [] 
+(defn getPositions []
+  (swap! app-state assoc :state 2 )
   (GET (str settings/apipath "api/position?client=" (:selectedclient @app-state) ) {
     :handler OnGetPositions
     :error-handler error-handler

@@ -550,7 +550,7 @@
               )
 
               ;; Потенциал роста
-              (dom/div {:className "plprdiv col-xs-1 col-md-1"}
+              (dom/div {:className "plprdiv col-xs-1 col-md-1" :style {:padding-top "5px"}}
                 (dom/div {:className "progress"}
                   (dom/div {:className (str "progress-bar" (if (< (if (nil? (:target sec)) 0.0 (:target sec)) (:price item)) " progress-bar-danger" ""))  :role "progresbar" :aria-valuenow (str (.round js/Math (* 100.0 (/ (- (if (nil? (:target sec)) 0.0 (:target sec)) (:price item)) (:price item))  ))) :aria-valuemin "0" :aria-valuemax (str maxpotential) :style {:color "black" :width (str (gstring/format "%.0f" (abs (* 100.0 (/ potential maxpotential))) ) "%") }}
                     (dom/span {:className "plprogress" :style {:position "absolute" :display "block" :width (if (> (/ potential maxpotential) 0.1) (str (gstring/format "%.0f" (abs (* 100.0 (/ potential maxpotential))) ) "%") "100%" )  :color (if (and (> potential 0) (> (/ potential maxpotential) 0.1) )  "white" "black") :font-weight "700"} } (str (.round js/Math potential) "%") )
@@ -591,7 +591,7 @@
                   )
                 )
               )
-              (dom/div {:className "plprdiv hidden-xs col-md-1"}
+              (dom/div {:className "plprdiv hidden-xs col-md-1" :style {:padding-top "5px"}}
                 (dom/div {:className "col-md-6" :style {:padding-left "0px" :padding-right "0px"}}
                   (dom/div {:className "progress"}
                     (dom/div {:className (str "progress-bar" (if (< (:currubprice item) (:waprub item)) " progress-bar-danger" ""))  :role "progresbar" :aria-valuenow (str (.round js/Math (.abs js/Math (* 100.0 (/ (-  (:currubprice item) (:waprub item)) (:waprub item)))))) :aria-valuemin "0" :aria-valuemax "100" :style {:color "black" :width (str (.round js/Math (.abs js/Math (* 100.0 (/ (-  (:currubprice item) (:waprub item)) (:waprub item))))) "%") }}
@@ -609,7 +609,7 @@
               )
 
               ;; RUB P/L
-              (dom/div {:className "hidden-xs col-md-1" :style {:padding-left "0px" :padding-right "0px" :padding-top "10px"}}
+              (dom/div {:className "hidden-xs col-md-1" :style {:padding-left "0px" :padding-right "0px" :padding-top "5px"}}
                 (dom/div {:className "col-md-6" :style {:padding-left "0px" :padding-right "0px"}}
                   (dom/span {:style {:position "absolute" :padding-right "5px" :text-align "right" :display "block" :width "100%" :white-space "nowrap" :background-color (if (> (:currubprice item) (:waprub item)) "lightgreen" "lightpink")}} (sbercore/split-thousands (str (.round js/Math  (* (-  (:currubprice item) (:waprub item)) (:amount item))))))
                 )
@@ -780,7 +780,7 @@
                   )
                 )
               )
-              (dom/div {:className "plprdiv hidden-xs col-md-1" :style {:padding-left "0px" :padding-right "0px"}}
+              (dom/div {:className "plprdiv hidden-xs col-md-1" :style {:padding-left "0px" :padding-right "0px" :padding-top "5px"}}
                 (dom/div {:className "col-md-6" :style {:padding-left "0px" :padding-right "0px"}}
                   (dom/div {:className "progress"}
                     (dom/div {:className (str "progress-bar" (if (< (:currubprice item) (:waprub item)) " progress-bar-danger" ""))  :role "progresbar" :aria-valuenow (str (.round js/Math (.abs js/Math (* 100.0 (/ (-  (:currubprice item) (:waprub item)) (:waprub item)))))) :aria-valuemin "0" :aria-valuemax "100" :style {:color "black" :width (str (.round js/Math (.abs js/Math (* 100.0 (/ (-  (:currubprice item) (:waprub item)) (:waprub item))))) "%") }}
@@ -799,8 +799,8 @@
 
 
               ;; USD RUB P/L
-              (dom/div {:className "hidden-xs col-md-1" :style {:padding-left "0px" :padding-right "0px" :padding-top "10px"}}                
-                (dom/div {:className "col-md-6" :style {:padding-left "0px" :padding-right "0px"}}
+              (dom/div {:className "hidden-xs col-md-1" :style {:padding-left "0px" :padding-right "0px" :padding-top "5px"}}                
+                (dom/div {:className "col-md-6" :style {:padding-left "0px" :padding-right "0px" }}
                   (dom/span {:style {:position "absolute" :padding-right "5px" :text-align "right" :display "block" :width "100%" :background-color (if (> (:currubprice item) (:waprub item)) "lightgreen" "lightpink") :white-space "nowrap" }} (sbercore/split-thousands (str (.round js/Math  (/ (* multiple (-  (:currubprice item) (:waprub item)) (:amount item))  100.0)))))
                 )
                 (dom/div {:className "col-md-6" :style {:padding-left "0px" :padding-right "0px"}}
@@ -811,7 +811,7 @@
               )
 
               ;;;Yield
-              (dom/div {:className "col-xs-1 col-md-1" :style {:padding-left "0px" :padding-right "0px"}}
+              (dom/div {:className "col-xs-1 col-md-1" :style {:padding-left "0px" :padding-right "0px" :padding-top "5px"}}
 
                 (dom/a {:className "list-group-item" :style {:text-align "right"} :href (str  "#/postrans/" (:id (first (filter (fn [x] (if (= (compare (:code x) (:selectedclient @sbercore/app-state)) 0) true false)) (:clients @sbercore/app-state)))) "/" (:id item) ) }
                   (dom/h4 {:className "list-group-item-heading"} (gstring/format "%.2f" (if (nil? (:yield sec)) 0 (:yield sec))))
@@ -1174,7 +1174,7 @@
 
         (if (not (nil? (:selectedclient @sbercore/app-state)))
           (if (or (> (count (:positions ((keyword (:selectedclient @sbercore/app-state)) @sbercore/app-state) )) 0)
-                  ;(> (count (:deals ((keyword (:selectedclient @sbercore/app-state)) @sbercore/app-state) )) 0)
+                  (= (:state @data ) 1)
             )
             (dom/div
               (dom/div {:style {:margin-top "70px"} :className "panel panel-info"}
