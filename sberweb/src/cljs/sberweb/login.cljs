@@ -19,6 +19,7 @@
             [sberweb.portfolios :as portfolios]
             [sberweb.calcportfs :as calcportfs]
             [sberweb.postrans :as postrans]
+            [sberweb.securities :as assets]
             [sberweb.syssettings :as syssettings]
             [cljs.core.async :refer [put! dropping-buffer chan take! <!]]
   )
@@ -265,7 +266,7 @@
         
       )
       (addModal)
-      (dom/div {:style {:margin-bottom "200px"}})
+      (dom/div {:style {:margin-bottom "700px"}})
     )
   )
 )

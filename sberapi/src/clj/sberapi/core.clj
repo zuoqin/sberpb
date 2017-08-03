@@ -62,5 +62,6 @@
     ]
   )
   (start-app args)
-  (position/loadallpositions)
+  ;(println "no loading")
+  (if (and (> (count args) 0) (= "-noload" (nth args 0))) (println "no loading") (position/loadallpositions))
 )

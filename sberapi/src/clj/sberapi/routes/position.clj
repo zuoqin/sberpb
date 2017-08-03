@@ -401,6 +401,68 @@
   )
 )
 
+(defn retrieveAssets [token]
+  (let [
+    usercode (:iss (-> token str->jwt :claims))
+    allclients (take 2 (clients/get-clients usercode)) 
+
+    totalassets (loop
+      [assets {} clients allclients]
+      (if (seq clients)
+        (let [
+          
+          client (first clients)
+
+
+          thepositions (getPositions token (:code client))
+
+
+          newassets (loop
+            [allassets assets positions thepositions]
+            (if (seq positions)
+              (let [
+
+                position (first positions)
+
+                id (first position)
+
+                amount (if (nil? (:amount (id assets))) 0.0 (:amount (id assets)))
+
+
+                ;tr1 (println (str "position=" position " id=" id " amount=" amount))
+                newamnt (+ amount (:amount (second position)))
+
+                ;tr1 (println positions)
+                ;tr1 (println (str "newamnt=" newamnt " seckey=" (keyword (:acode sec))) )
+            ]
+            (recur (assoc-in allassets [id] {:amount newamnt} ) (rest positions))
+            )
+            allassets)
+          )
+
+          ;tr1 (println positions)
+          ;tr1 (println (str "newamnt=" newamnt " seckey=" (keyword (:acode sec))) )
+      ]
+      (recur newassets (rest clients))
+      )
+      assets)
+    )
+    
+    result totalassets
+    ]
+    result
+  )
+)
+
+(defn getAssets [token]
+  (let [
+      usercode (:iss (-> token str->jwt :claims))
+      result (if (nil? ((keyword usercode) (:assets @sec_state))) (retrieveAssets token) ((keyword usercode) (:assets @sec_state)))
+    ]
+    result
+  )
+)
+
 (defn getPortfolios [token security]
   (let [
       newsec (str security)

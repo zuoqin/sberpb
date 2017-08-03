@@ -60,6 +60,11 @@
   (swap! app-state assoc-in [:view] 2 )
 )
 
+(defn goAssets [e]
+  (aset js/window "location" "#/assets")
+  (swap! app-state assoc-in [:view] 7 )
+)
+
 (defn goPositions [e]
   (aset js/window "location" "#/positions")
   (swap! app-state assoc-in [:view] 1 )
@@ -485,7 +490,7 @@
       (dom/option {:key (:id text) :value (:id text)
                     :onChange #(handle-change % owner)} (:acode text))
     )
-    (sort (comp comp-secs) (filter (fn [x] (if (= 10 (:assettype x)) false true)) (:securities @app-state )))
+    (sort (comp comp-secs) (filter (fn [x] (if (or (= 10 (:assettype x)) (= true (:ismatured x)))  false true)) (:securities @app-state )))
   )
 )
 
@@ -722,7 +727,7 @@
         (dom/div {:className "collapse navbar-collapse navbar-ex1-collapse" :id "menu"}
           (dom/ul {:className "nav navbar-nav" :style {:padding-top "17px" :visibility (if (= (compare (:name (:current @data))  "Positions") 0 ) "visible" "hidden")}}
             (dom/li
-              (dom/div {:style {:margin-right "10px" :visibility (if (and (= (compare (:name (:current @data)) "Positions") 0) (or (= (:role (:user @data)) "admin") (= (:role (:user @data)) "admin")) ) "visible" "hidden")}} 
+              (dom/div {:style {:margin-right "10px" :visibility (if (and (= (compare (:name (:current @data)) "Positions") 0) (or (= (:role (:user @data)) "admin") (= (:role (:user @data)) "admin")) ) "visible" "hidden")}}
                 (omdom/select #js {:id "clients"
                                    :className "selectpicker"
                                    :data-show-subtext "true"
@@ -820,7 +825,15 @@
                     )
                   )
                 )
-
+                (dom/li {:className "divider"})
+                (dom/li
+                  (dom/a {:href "#/assets" :onClick (fn [e] (goAssets e))}
+                    (dom/div
+                      (dom/i {:className "fa fa-twitter fa-fw"})
+                      "Все активы"
+                    )
+                  )
+                )
 
 
 
@@ -882,7 +895,9 @@
         (dom/div {:className "collapse navbar-collapse navbar-ex1-collapse" :id "menu"}
           (dom/ul {:className "nav navbar-nav" :style {:padding-top "17px" :visibility (if (= (compare (:name (:current @data))  "Portfolios") 0) "visible" "hidden")}}
             (dom/li
-              (dom/div {:style {:margin-right "10px" :visibility (if (and (= (compare (:name (:current @app-state)) "Portfolios") 0) (or (= (:role (:user @app-state)) "admin") (= (:role (:user @app-state)) "admin")) ) "visible" "hidden")}} 
+              (dom/div {:style {:margin-right "10px" :visibility (if (and (= (compare (:name (:current @app-state)) "Portfolios") 0) (or (= (:role (:user @app-state)) "admin") (= (:role (:user @app-state)) "admin")) ) "visible" "hidden")
+
+}} 
                 (omdom/select #js {:id "securities"
                                    :className "selectpicker"
                                    :data-show-subtext "true"
@@ -1192,6 +1207,125 @@
 
 
 
+(defcomponent assets-navigation-view [data owner]
+  (render [_]
+    (let [style {:style {:margin "10px" :padding-bottom "0px"}}
+      stylehome {:style {:margin-top "10px"} }
+      currency (:currency (first (filter (fn [x] (if (= (:selectedclient @app-state) (:code x)) true false)) (:clients @app-state))))
+
+      portfvalue (calc_portfvalue)
+
+
+      totallimit (calculatetotallimit)
+      ]
+      (dom/nav {:className "navbar navbar-default navbar-fixed-top" :role "navigation"}
+        (dom/div {:className "navbar-header"}
+          (dom/button {:type "button" :className "navbar-toggle"
+            :data-toggle "collapse" :data-target ".navbar-ex1-collapse"}
+            (dom/span {:className "sr-only"} "Toggle navigation")
+            (dom/span {:className "icon-bar"})
+            (dom/span {:className "icon-bar"})
+            (dom/span {:className "icon-bar"})
+          )
+          (dom/a  (assoc stylehome :className "navbar-brand")
+            (dom/span {:id "pageTitle"} (:text (:current @data)) )
+          )
+        )
+        (dom/div {:className "collapse navbar-collapse navbar-ex1-collapse" :id "menu"}
+          (dom/ul {:className "nav navbar-nav" :style {:padding-top "17px" :visibility (if (= (compare (:name (:current @data))  "Positions") 0 ) "visible" "hidden")}}
+            (dom/li
+              (dom/h5 {:style {:margin-left "5px" :margin-right "5px" :height "32px" :margin-top "1px"}} " "
+      (dom/input {:id "search" :type "text" :placeholder "Search" :style {:height "32px" :margin-top "1px"} :value  (:search @data) :onChange (fn [e] (handleChange e )) })  )
+            )
+            (if (= (nil? (:selectedclient @app-state)) false) (dom/li
+                (dom/h5 {:style {:margin-left "5px" :margin-right "5px" :height "32px" :margin-top "10px"}} (str "Всего лимит инвестирования: " (split-thousands (gstring/format "%.0f" totallimit))  " " currency (if (> (- totallimit portfvalue) 1000.0) (str " Не инвестировано: " (split-thousands (gstring/format "%.0f" (- totallimit portfvalue))) " " currency) " Все средства инвестированы.")  ) )))
+
+          )
+          (dom/ul {:className "nav navbar-nav navbar-right"}
+            (dom/li {:className "dropdown"}
+              (dom/a {:className "dropdown-toggle" :data-toggle "dropdown"  :aria-expanded "false" }
+                 (dom/i {:className "fa fa-exchange"})
+                 (dom/i {:className "fa fa-caret-down"})
+              )
+              (dom/ul {:className "dropdown-menu dropdown-messages"}
+                (dom/li 
+                  (dom/a {:style {:cursor "pointer" :pointer-events (if (nil? (:selectedclient @app-state)) "none" "all")} :onClick (fn [e] (printMonth) )}
+                    (dom/div
+                      (dom/i {:className "fa fa-print"})
+                      "Печать"
+                    )
+                  )
+                )
+              )
+            )
+            (dom/li {:className "dropdown"}
+              (dom/a {:className "dropdown-toggle" :data-toggle "dropdown"  :aria-expanded "false" }
+                 (dom/i {:className "fa fa-tasks fa-fw"})
+                 (dom/i {:className "fa fa-caret-down"})
+              )
+              (dom/ul {:className "dropdown-menu dropdown-tasks"}
+                (dom/li
+                  (dom/a {:href "#/positions" :onClick (fn [e] (goPositions e))}
+                    (dom/div
+                      (dom/i {:className "fa fa-comment fa-fw"})
+                      "Позиции"
+                    )
+                  )
+                )
+                (dom/li {:className "divider"})
+                (dom/li
+                  (dom/a {:href "#/portfolios" :onClick (fn [e] (goPortfolios e))}
+                    (dom/div
+                      (dom/i {:className "fa fa-twitter fa-fw"})
+                      "Держатели бумаги"
+                    )
+                  )
+                )
+                (dom/li {:className "divider"})
+                (dom/li
+                  (dom/a {:href "#/calcportfs" :onClick (fn [e] (goCalcPortfs e))}
+                    (dom/div
+                      (dom/i {:className "fa fa-tasks fa-fw"})
+                      "Расчеты"
+                    )
+                  )
+                )
+
+
+                (dom/li {:className "divider"})
+                (dom/li
+                  (dom/a {:href (str settings/apipath "tradeidea/" (:token (:token @app-state)))  :target "_blank"}
+                    (dom/div
+                      (dom/i {:className "fa fa-desktop fa-fw"})
+                      "Редактор торговой идеи"
+                    )
+                  )
+                )
+              )
+            )
+
+            (dom/li {:className "dropdown"}
+              (dom/a {:className "dropdown-toggle" :data-toggle "dropdown"  :aria-expanded "false" }
+                 (dom/i {:className "fa fa-user fa-fw"})
+                 (dom/i {:className "fa fa-caret-down"})
+              )
+              (dom/ul {:className "dropdown-menu dropdown-user"}
+                (dom/li
+                  (dom/a {:href "#/login"}
+                    (dom/div
+                      (dom/i {:className "fa fa-sign-out fa-fw"})
+                      "Выход"
+                    )
+                  )
+                )
+              )
+            )
+          )
+        )
+      )
+    )
+  )
+)
 
 
 (defmulti website-view
@@ -1244,4 +1378,10 @@
   [data owner] 
   ;(.log js/console "One is found in view")
   (settings-navigation-view data owner)
+)
+
+(defmethod website-view 7
+  [data owner] 
+  ;(.log js/console "One is found in view")
+  (assets-navigation-view data owner)
 )

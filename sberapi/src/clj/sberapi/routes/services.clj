@@ -55,6 +55,21 @@
   )
 
   (context "/api" []
+    :tags ["assets"]
+
+    (GET "/assets" []
+      :header-params [authorization :- String]
+      :summary      "retrieve all clients assets"
+
+      (ok  (positionapi/getAssets (nth (str/split authorization #" ") 1))))
+
+    (OPTIONS "/assets" []
+      :summary  "Allows OPTIONS requests"
+      (ok "")
+    )    
+  )
+
+  (context "/api" []
     :tags ["bloomberg"]
 
     (GET "/bloomberg_portf" []

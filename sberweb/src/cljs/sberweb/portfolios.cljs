@@ -252,13 +252,19 @@
               (dom/div {:className "col-xs-2 col-md-2" :style {:text-align "center"}} "P/L USD")
             )
           )
-          (if (or (nil? (:selectedsec @sbercore/app-state)) (> (count (:portfolios ((keyword (str (:selectedsec @sbercore/app-state))) @sbercore/app-state))) 0))
-            (dom/div {:className "panel-body"}
-              (om/build showportfs-view  data {})
-            )
-            (dom/div {:style {:background "white"}}
-              (dom/p {:style {:text-align "center"}}
-                (dom/img {:src "images/loader.gif"})
+          (if (not (nil? (:selectedsec @sbercore/app-state)))
+            (if (or  (> (count (:portfolios ((keyword (str (:selectedsec @sbercore/app-state))) @sbercore/app-state))) 0)
+                (= (:state @data ) 1)
+              )
+
+              (dom/div {:className "panel-body"}
+                (om/build showportfs-view  data {})
+              )
+
+              (dom/div {:style {:background "white"}}
+                (dom/p {:style {:text-align "center"}}
+                  (dom/img {:src "images/loader.gif"})
+                )
               )
             )
           )
@@ -271,7 +277,22 @@
 
 
 
-(sec/defroute portfolios-page "/portfolios" []
-  (om/root portfolios-view
-           sbercore/app-state
-           {:target (. js/document (getElementById "app"))}))
+;; (sec/defroute portfolios-page "/portfolios" []
+;;   (om/root portfolios-view
+;;            sbercore/app-state
+;;            {:target (. js/document (getElementById "app"))}))
+
+
+(sec/defroute portfolios-page-byid "/portfolios/:secid" [secid]
+  (let [
+    ;;tr1 (swap! app-state assoc-in [:secid]  (js/parseInt secid)  )
+    ]
+    (swap! sbercore/app-state assoc-in [:current] {:name "Portfolios" :text "Portfolios with this security111: "} )
+    (swap! sbercore/app-state assoc-in [:selectedsec]  (js/parseInt secid))
+    (swap! sbercore/app-state assoc-in [:view] 2)
+    ;;(sbercore/goPortfolios "")
+    (om/root portfolios-view
+             sbercore/app-state
+             {:target (. js/document (getElementById "app"))})
+  )
+)
