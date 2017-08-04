@@ -145,21 +145,21 @@
 
             ;; Количество бумаг
             (dom/div {:className "col-xs-2 col-md-2" :style {:padding-left "0px" :padding-right "0px"}}
-              (dom/a {:className "list-group-item" :style {:padding-left "3px" :padding-right "3px" :text-align "right"} :href (str  "#/postrans/" (:id item) "/" (:selectedsec @sbercore/app-state))}
+              (dom/a {:className "list-group-item" :style {:padding-left "3px" :padding-right "3px" :text-align "right"} :href (str  "#/portfolios/" (:id sec))}
                 (dom/h4 {:className "list-group-item-heading"} (sbercore/split-thousands (str (second item))))
               )
             )
 
             ;; Текущая рыночная цена 
             (dom/div {:className "col-xs-1 col-md-1" :style {:padding-left "0px" :padding-right "0px"}}
-              (dom/a {:className "list-group-item" :style {:text-align "right"} :href (str  "#/postrans/" (:id item)  "/" (:selectedsec @sbercore/app-state)  ) }
+              (dom/a {:className "list-group-item" :style {:text-align "right"} :href (str "#/portfolios/" (:id sec))}
                 (dom/h4 {:className "list-group-item-heading"} (if (> (:price sec) 1) (gstring/format "%.2f" (if (nil? (:price sec)) 0.00 (:price sec)) )  (subs (str (if (nil? (:price sec)) 0.00 (:price sec))) 0 5)))
                )
             )
 
             ;; Валюта
             (dom/div {:className "col-xs-1 col-md-1" :style {:padding-left "0px" :padding-right "0px"}}
-              (dom/a {:className "list-group-item" :style {:text-align "right"} :href (str  "#/postrans/" (:id (first (filter (fn [x] (if (= (compare (:code x) (:selectedclient @sbercore/app-state)) 0) true false)) (:clients @sbercore/app-state)))) "/" (:id item) ) }
+              (dom/a {:className "list-group-item" :style {:text-align "right"} }
                 (dom/h4 {:className "list-group-item-heading"} (str  (case (:currency sec) "USD" "$" "GBP" "£" "GBX" "£p" "EUR" "€" "RUB" "₽" "RUR" "₽" ""))     )
               )            
             )
@@ -208,7 +208,7 @@
            (sort (comp comp-assets) (filter (fn [x] (let [
 
                ]
-               (if (or (= false (str/includes? (name (first x)) (str/lower-case (:search @sbercore/app-state)))))  false true)) ) (:assets @sbercore/app-state)))
+               (if (or (= false (str/includes? (str/lower-case (name (first x))) (str/lower-case (:search @sbercore/app-state)))))  false true)) ) (:assets @sbercore/app-state)))
       )
     )
   )
@@ -216,11 +216,12 @@
 
 
 (defn onMount [data]
-  (swap! sbercore/app-state assoc-in [:view] 7)
   (swap! sbercore/app-state assoc :state 2 )
   (getAssets)
   (put! ch 42)
   (swap! sbercore/app-state assoc-in [:current] {:name "Assets" :text "Все активы клиентов"} )
+  (swap! sbercore/app-state assoc-in [:view] 7)
+  (swap! sbercore/app-state assoc-in [:search] "")
 )
 
 

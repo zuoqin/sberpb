@@ -33,7 +33,7 @@
 
 
 (defn tran-to-map [tran]
-  (let [newtran {:id (:id tran) :valuedate (:valuedate tran) :nominal (:nominal tran) :security (:security tran) :currency (:currency tran) :price (:price tran) :direction (:direction tran) :client (:client tran)}]
+  (let [newtran {:id (:id tran) :tradedate (:tradedate tran) :valuedate (:valuedate tran) :nominal (:nominal tran) :security (:security tran) :currency (:currency tran) :price (:price tran) :direction (:direction tran) :client (:client tran)}]
     newtran
   )
 )
@@ -93,11 +93,16 @@
     (dom/div {:className "list-group" :style {:display "block"}}
       (map (fn [item]
         (dom/div {:className "row" :style {:margin-left "0px" :margin-right "0px"}}
-          (dom/div {:className "col-xs-3 col-md-3"}
+
+          (dom/div {:className "col-xs-2 col-md-2"}
+            (dom/h4 {:className "list-group-item-heading"} (str (tf/unparse custom-formatter (tc/from-date (:tradedate item)))))
+          )
+
+          (dom/div {:className "col-xs-2 col-md-2"}
             (dom/h4 {:className "list-group-item-heading"} (str (tf/unparse custom-formatter (tc/from-date (:valuedate item)))))
           )
 
-          (dom/div {:className "col-xs-3 col-md-3"} 
+          (dom/div {:className "col-xs-2 col-md-2"} 
             (dom/h4 {:className "list-group-item-heading" :style {:text-align "center"}} (if (= (:direction item) "B") "Buy" "Sell"))
           )
 
@@ -164,8 +169,9 @@
         (dom/div  (assoc styleprimary :className "panel panel-primary")
           (dom/div {:className "panel-heading"}
             (dom/div (assoc stylerow  :className "row" )
-              (dom/div {:className "col-xs-3 col-md-3" :style {:text-align "center"}} "Date")
-              (dom/div {:className "col-xs-3 col-md-3" :style {:text-align "center"}} "Buy/Sell")
+              (dom/div {:className "col-xs-2 col-md-2" :style {:text-align "center"}} "Trade Date")
+              (dom/div {:className "col-xs-2 col-md-2" :style {:text-align "center"}} "Value Date")
+              (dom/div {:className "col-xs-2 col-md-2" :style {:text-align "center"}} "Buy/Sell")
               (dom/div {:className "col-xs-3 col-md-3" :style {:text-align "center"}} "Amount")
               (dom/div {:className "col-xs-2 col-md-2" :style {:text-align "center"}} "Price")
               (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "Currency")

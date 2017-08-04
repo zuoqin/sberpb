@@ -199,6 +199,9 @@
   (getPortfolios)
   (put! ch 42)
   (swap! sbercore/app-state assoc-in [:current] {:name "Portfolios" :text "Portfolios with this security: "} )
+
+  (swap! sbercore/app-state assoc-in [:view] 2)
+  (swap! sbercore/app-state assoc-in [:search] "")
 )
 
 
@@ -285,9 +288,10 @@
 
 (sec/defroute portfolios-page-byid "/portfolios/:secid" [secid]
   (let [
+    ;;tr1 (.log js/console (str "secid=" secid))
     ;;tr1 (swap! app-state assoc-in [:secid]  (js/parseInt secid)  )
     ]
-    (swap! sbercore/app-state assoc-in [:current] {:name "Portfolios" :text "Portfolios with this security111: "} )
+    (swap! sbercore/app-state assoc-in [:current] {:name "Portfolios" :text "Portfolios with this security: "})
     (swap! sbercore/app-state assoc-in [:selectedsec]  (js/parseInt secid))
     (swap! sbercore/app-state assoc-in [:view] 2)
     ;;(sbercore/goPortfolios "")

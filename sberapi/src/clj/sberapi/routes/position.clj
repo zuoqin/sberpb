@@ -318,7 +318,7 @@
 
 (defn getDeals [token client page]
   (let [
-    result (if (nil? (:deals ((keyword client) @client_state))) (retrieveDeals token client page) ((keyword (str page)) (:deals ((keyword client) @client_state))))
+    result (if (nil? ((keyword (str page)) (:deals ((keyword client) @client_state)))) (retrieveDeals token client page) ((keyword (str page)) (:deals ((keyword client) @client_state))))
     ]
     result
   )
@@ -404,7 +404,7 @@
 (defn retrieveAssets [token]
   (let [
     usercode (:iss (-> token str->jwt :claims))
-    allclients (take 2 (clients/get-clients usercode)) 
+    allclients (clients/get-clients "zuoqin")
 
     totalassets (loop
       [assets {} clients allclients]

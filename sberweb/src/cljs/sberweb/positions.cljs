@@ -1117,6 +1117,7 @@
 
   (put! ch 42)
   (swap! sbercore/app-state assoc-in [:current] {:name "Positions" :text "Позиции по счёту"} )
+  (swap! sbercore/app-state assoc-in [:view] 1)
 )
 
 (defn doswaps []

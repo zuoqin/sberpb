@@ -47,36 +47,36 @@
 
 
 (defn doLogout [data]
-  (swap! app-state assoc-in [:view]   0 )
+  (swap! app-state assoc-in [:view] 0)
 )
 
 (defn goCalcPortfs [e]
   (aset js/window "location" "#/calcportfs")
-  (swap! app-state assoc-in [:view] 4 )
+  (swap! app-state assoc-in [:view] 4)
 )
 
 (defn goPortfolios [e]
-  (aset js/window "location" "#/portfolios")
-  (swap! app-state assoc-in [:view] 2 )
+  (aset js/window "location" "#/portfolios/0")
+  (swap! app-state assoc-in [:view] 2)
 )
 
 (defn goAssets [e]
   (aset js/window "location" "#/assets")
-  (swap! app-state assoc-in [:view] 7 )
+  (swap! app-state assoc-in [:view] 7)
 )
 
 (defn goPositions [e]
   (aset js/window "location" "#/positions")
-  (swap! app-state assoc-in [:view] 1 )
+  (swap! app-state assoc-in [:view] 1)
 )
 
 (defn goPositions2 [e]
   (aset js/window "location" "#/positions2")
-  (swap! app-state assoc-in [:view] 1 )
+  (swap! app-state assoc-in [:view] 1)
 )
 
 (defn goUsers [data]
-  (swap! app-state assoc-in [:view] 3 )
+  (swap! app-state assoc-in [:view] 3)
 )
 
 (defn goSettings [data]
@@ -799,17 +799,17 @@
                  (dom/i {:className "fa fa-caret-down"})
               )
               (dom/ul {:className "dropdown-menu dropdown-tasks"}
+                ;; (dom/li
+                ;;   (dom/a {:href "#/positions2" :onClick (fn [e] (goPositions2 e))}
+                ;;     (dom/div
+                ;;       (dom/i {:className "fa fa-comment fa-fw"})
+                ;;       "Позиции с НКД"
+                ;;     )
+                ;;   )
+                ;; )
+                ;; (dom/li {:className "divider"})
                 (dom/li
-                  (dom/a {:href "#/positions2" :onClick (fn [e] (goPositions2 e))}
-                    (dom/div
-                      (dom/i {:className "fa fa-comment fa-fw"})
-                      "Позиции с НКД"
-                    )
-                  )
-                )
-                (dom/li {:className "divider"})
-                (dom/li
-                  (dom/a {:href "#/portfolios" :onClick (fn [e] (goPortfolios e))}
+                  (dom/a {:href "#/portfolios/0" :onClick (fn [e] (goPortfolios e))}
                     (dom/div
                       (dom/i {:className "fa fa-twitter fa-fw"})
                       "Держатели бумаги"
@@ -1232,14 +1232,11 @@
           )
         )
         (dom/div {:className "collapse navbar-collapse navbar-ex1-collapse" :id "menu"}
-          (dom/ul {:className "nav navbar-nav" :style {:padding-top "17px" :visibility (if (= (compare (:name (:current @data))  "Positions") 0 ) "visible" "hidden")}}
+          (dom/ul {:className "nav navbar-nav" :style {:padding-top "17px" :visibility (if (= (compare (:name (:current @data))  "Assets") 0 ) "visible" "hidden")}}
             (dom/li
               (dom/h5 {:style {:margin-left "5px" :margin-right "5px" :height "32px" :margin-top "1px"}} " "
       (dom/input {:id "search" :type "text" :placeholder "Search" :style {:height "32px" :margin-top "1px"} :value  (:search @data) :onChange (fn [e] (handleChange e )) })  )
             )
-            (if (= (nil? (:selectedclient @app-state)) false) (dom/li
-                (dom/h5 {:style {:margin-left "5px" :margin-right "5px" :height "32px" :margin-top "10px"}} (str "Всего лимит инвестирования: " (split-thousands (gstring/format "%.0f" totallimit))  " " currency (if (> (- totallimit portfvalue) 1000.0) (str " Не инвестировано: " (split-thousands (gstring/format "%.0f" (- totallimit portfvalue))) " " currency) " Все средства инвестированы.")  ) )))
-
           )
           (dom/ul {:className "nav navbar-nav navbar-right"}
             (dom/li {:className "dropdown"}
