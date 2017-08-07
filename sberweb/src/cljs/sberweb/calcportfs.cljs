@@ -383,16 +383,6 @@
 (initqueue)
 
 
-(defn doswaps []
-  (let [a (rand-int 26)
-        b (rand-int 26)
-        c (rand-int 26)
-    ]
-    (swap! sbercore/app-state assoc-in [:fake] (str a b c))
-  )
-)
-
-
 (defcomponent portfolios-view [data owner]
   (will-mount [_]
     (onMount data)
@@ -413,7 +403,7 @@
               ;; (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "Всего в управлении")
               ;(dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "Доля акций")
               ;(dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "Доля Облигаций")
-              (dom/div {:className "col-xs-3 col-md-3" :style {:text-align "center"}} (b/button {:className "btn btn-primary colbtn" :onClick (fn [e] ((swap! app-state assoc-in [:sort-list] "cash") (doswaps)))} "Денежная позиция"))
+              (dom/div {:className "col-xs-3 col-md-3" :style {:text-align "center"}} (b/button {:className "btn btn-primary colbtn" :onClick (fn [e] ((swap! app-state assoc-in [:sort-list] "cash") (sbercore/doswaps)))} "Денежная позиция"))
 
               ;; (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} (b/button {:className "btn btn-primary colbtn" :onClick (fn [e] ((swap! app-state assoc-in [:sort-list] "rub") (swap! sbercore/app-state assoc-in [:percentage] (+ (:percentage @sbercore/app-state) 0.0))))} "RUB"))
 
@@ -427,7 +417,7 @@
               
               (dom/div {:className "col-xs-2 col-md-2" :style {:text-align "center"}} "Свободный лимит на бумагу, шт.")
 
-              (dom/div {:className "col-xs-2 col-md-2" :style {:text-align "center"}} (b/button {:className "btn btn-primary colbtn" :onClick (fn [e] ((swap! app-state assoc-in [:sort-list] "maxshares") (doswaps)))} "Купить кол-во"))
+              (dom/div {:className "col-xs-2 col-md-2" :style {:text-align "center"}} (b/button {:className "btn btn-primary colbtn" :onClick (fn [e] ((swap! app-state assoc-in [:sort-list] "maxshares") (sbercore/doswaps)))} "Купить кол-во"))
 
               ;; (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} (b/button {:className "btn btn-primary colbtn" :onClick (fn [e] ((swap! app-state assoc-in [:sort-list] "maxrubshares") (swap! sbercore/app-state assoc-in [:percentage] (+ (:percentage @sbercore/app-state) 0.0))))} "₽ кол-во"))
 

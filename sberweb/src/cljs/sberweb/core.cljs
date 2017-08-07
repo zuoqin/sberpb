@@ -28,6 +28,14 @@
 
 (def jquery (js* "$"))
 
+(defn doswaps []
+  (let [a (rand-int 26)
+        b (rand-int 26)
+        c (rand-int 26)
+    ]
+    (swap! app-state assoc-in [:fake] (str a b c))
+  )
+)
 
 (defn split-thousands [n-str]
   (let [index (str/index-of n-str ".")
@@ -77,6 +85,11 @@
 
 (defn goUsers [data]
   (swap! app-state assoc-in [:view] 3)
+)
+
+(defn goSysSettings [data]
+  ;(aset js/window "location" "#/syssettings")
+  (swap! app-state assoc-in [:view] 5)
 )
 
 (defn goSettings [data]
@@ -1104,7 +1117,7 @@
                 )
                 (dom/li {:className "divider"})
                 (dom/li
-                  (dom/a {:href "#/portfolios" :onClick (fn [e] (goPortfolios e))}
+                  (dom/a {:href "#/portfolios/0" :onClick (fn [e] (goPortfolios e))}
                     (dom/div
                       (dom/i {:className "fa fa-twitter fa-fw"})
                       "Держатели бумаги"
@@ -1113,7 +1126,7 @@
                 )
                 (dom/li {:className "divider"})
                 (dom/li
-                  (dom/a {:href "#/calcportfs" :onClick (fn [e] (goSettings e))}
+                  (dom/a {:href "#/syssettings" :onClick (fn [e] (goSysSettings e))}
                     (dom/div
                       (dom/i {:className "fa fa-tasks fa-fw"})
                       "Опции"
@@ -1172,30 +1185,83 @@
             )
           )
 
-
           (dom/ul {:className "nav navbar-nav navbar-right"}
-            (dom/li
-              (dom/a {:style {:margin "10px" :padding-bottom "0px"} :href "#/syssettings" :onClick (fn [e] (goPositions e))}
-                 (dom/span {:className "glyphicon glyphicon-book"})
-                 "Positions"
+            (dom/li {:className "dropdown"}
+              (dom/a {:className "dropdown-toggle" :data-toggle "dropdown"  :aria-expanded "false" }
+                 (dom/i {:className "fa fa-exchange"})
+                 (dom/i {:className "fa fa-caret-down"})
+              )
+              (dom/ul {:className "dropdown-menu dropdown-messages"}
+                (dom/li 
+                  (dom/a {:style {:cursor "pointer" :pointer-events (if (nil? (:selectedclient @app-state)) "none" "all")} :onClick (fn [e] (printMonth) )}
+                    (dom/div
+                      (dom/i {:className "fa fa-print"})
+                      "Печать"
+                    )
+                  )
+                )
               )
             )
-            (dom/li
-              (dom/a {:style {:margin "10px" :padding-bottom "0px"} :href "#/positions" :onClick (fn [e] (goPositions e))}
-                 (dom/span {:className "glyphicon glyphicon-cog"})
-                 "Positions"
+            (dom/li {:className "dropdown"}
+              (dom/a {:className "dropdown-toggle" :data-toggle "dropdown"  :aria-expanded "false" }
+                 (dom/i {:className "fa fa-tasks fa-fw"})
+                 (dom/i {:className "fa fa-caret-down"})
+              )
+              (dom/ul {:className "dropdown-menu dropdown-tasks"}
+                (dom/li
+                  (dom/a {:href "#/positions" :onClick (fn [e] (goPositions e))}
+                    (dom/div
+                      (dom/i {:className "fa fa-comment fa-fw"})
+                      "Позиции"
+                    )
+                  )
+                )
+                (dom/li {:className "divider"})
+                (dom/li
+                  (dom/a {:href "#/portfolios/0" :onClick (fn [e] (goPortfolios e))}
+                    (dom/div
+                      (dom/i {:className "fa fa-twitter fa-fw"})
+                      "Держатели бумаги"
+                    )
+                  )
+                )
+                (dom/li {:className "divider"})
+                (dom/li
+                  (dom/a {:href "#/calcportfs" :onClick (fn [e] (goCalcPortfs e))}
+                    (dom/div
+                      (dom/i {:className "fa fa-tasks fa-fw"})
+                      "Расчеты"
+                    )
+                  )
+                )
+
+
+                (dom/li {:className "divider"})
+                (dom/li
+                  (dom/a {:href (str settings/apipath "tradeidea/" (:token (:token @app-state)))  :target "_blank"}
+                    (dom/div
+                      (dom/i {:className "fa fa-desktop fa-fw"})
+                      "Редактор торговой идеи"
+                    )
+                  )
+                )
               )
             )
-            (dom/li
-              (dom/a {:style {:margin "10px" :padding-bottom "0px"} :href "#/calcportfs" :onClick (fn [e] (goCalcPortfs e))}
-                 (dom/span {:className "glyphicon glyphicon-wrench"})
-                 "Calculation"
+
+            (dom/li {:className "dropdown"}
+              (dom/a {:className "dropdown-toggle" :data-toggle "dropdown"  :aria-expanded "false" }
+                 (dom/i {:className "fa fa-user fa-fw"})
+                 (dom/i {:className "fa fa-caret-down"})
               )
-            )
-            (dom/li
-              (dom/a (assoc style :href "#/login")
-                (dom/i {:className "fa fa-sign-out fa-fw"})
-                "Exit"
+              (dom/ul {:className "dropdown-menu dropdown-user"}
+                (dom/li
+                  (dom/a {:href "#/login"}
+                    (dom/div
+                      (dom/i {:className "fa fa-sign-out fa-fw"})
+                      "Выход"
+                    )
+                  )
+                )
               )
             )
           )
@@ -1211,12 +1277,6 @@
   (render [_]
     (let [style {:style {:margin "10px" :padding-bottom "0px"}}
       stylehome {:style {:margin-top "10px"} }
-      currency (:currency (first (filter (fn [x] (if (= (:selectedclient @app-state) (:code x)) true false)) (:clients @app-state))))
-
-      portfvalue (calc_portfvalue)
-
-
-      totallimit (calculatetotallimit)
       ]
       (dom/nav {:className "navbar navbar-default navbar-fixed-top" :role "navigation"}
         (dom/div {:className "navbar-header"}
@@ -1271,7 +1331,7 @@
                 )
                 (dom/li {:className "divider"})
                 (dom/li
-                  (dom/a {:href "#/portfolios" :onClick (fn [e] (goPortfolios e))}
+                  (dom/a {:href "#/portfolios/0" :onClick (fn [e] (goPortfolios e))}
                     (dom/div
                       (dom/i {:className "fa fa-twitter fa-fw"})
                       "Держатели бумаги"
