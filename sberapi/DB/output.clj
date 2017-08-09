@@ -24,17 +24,17 @@
 
 
 ;; SECURITIES
-{ :security/bcode "RU000A0JTG59 Corp", :security/acode "26210" :security/isin "RU000A0JTG59", :security/exchange "MICEX", :security/currency "RUB", :security/assettype 5, :security/multiple 1000.0, :security/name "ОФЗ 26210" :db/id #db/id[:db.part/user -100016] }
-
-{ :security/bcode "RU000A0JXQ85 Corp", :security/acode "TINKOFF1R" :security/isin "RU000A0JXQ85", :security/assettype 5, :security/multiple 1000.0, :security/name "Тинькофф Банк, 001P-01R", :security/exchange "MICEX", :security/currency "RUB", :db/id #db/id[:db.part/user -100013] }
-
-{ :security/bcode "XS0776111188 Corp", :security/acode "AGROK19E" :security/isin "XS0776111188", :security/assettype 5, :security/multiple 1.0, :security/name "Agrokor, 9.875% 1may2019, EUR" :security/exchange "OTC", :security/currency "EUR", :db/id #db/id[:db.part/user -100010] }
-
-{ :security/acode "IM22", :security/isin "US457153AF18", :security/bcode "US457153AF18 Corp", :security/assettype 5, :security/multiple 1.0, :security/name "Ingram Micro, 5% 10aug2022, USD", :security/exchange "CBBT", :security/currency "USD", :db/id #db/id[:db.part/user -100324]}
+{ :security/acode "YAHOO", :security/isin "US9843321061", :security/bcode "YHOO US Equity", :security/assettype 1, :security/name "", :security/exchange "TE", :security/currency "USD", :db/id #db/id[:db.part/user -100004]}
 
 { :security/acode "MRFGBZ23" :security/bcode "USN54468AF52 Corp", :security/isin "USN54468AF52", :security/assettype 5, :security/multiple 1.0, :security/name "Yandex NV", :security/exchange "LONDON", :security/currency "USD", :db/id #db/id[:db.part/user -100006] }
 
 { :security/acode "HCFN19" :security/isin "RU000A0JX3X7", :security/exchange "OTC", :security/assettype 5, :security/multiple 1000.0, :security/bcode "RU000A0JX3X7 Corp", :security/currency "RUB", :db/id #db/id[:db.part/user -100012] }
+
+{ :security/bcode "RU000A0JXQ85 Corp", :security/acode "TINKOFF1R" :security/isin "RU000A0JXQ85", :security/assettype 5, :security/multiple 1000.0, :security/name "Тинькофф Банк, 001P-01R", :security/exchange "MICEX", :security/currency "RUB", :db/id #db/id[:db.part/user -100013] }
+
+{ :security/bcode "RU000A0JTG59 Corp", :security/acode "26210" :security/isin "RU000A0JTG59", :security/exchange "MICEX", :security/currency "RUB", :security/assettype 5, :security/multiple 1000.0, :security/name "ОФЗ 26210" :db/id #db/id[:db.part/user -100016] }
+
+{ :security/bcode "XS0776111188 Corp", :security/acode "AGROK19E" :security/isin "XS0776111188", :security/assettype 5, :security/multiple 1.0, :security/name "Agrokor, 9.875% 1may2019, EUR" :security/exchange "OTC", :security/currency "EUR", :db/id #db/id[:db.part/user -100010] }
 
 { :security/acode "POLYLN", :security/isin "JE00B6T5S470", :security/bcode "POLY LN Equity", :security/assettype  1, :security/exchange "MICEX", :security/currency "GBX", :db/id #db/id[:db.part/user -100019] }
 
@@ -194,7 +194,7 @@
 
 { :security/acode "BANE", :security/isin "RU0007976957", :security/bcode "BANE RX Equity", :security/assettype 1, :security/exchange "MOSCOW", :security/currency "RUB", :db/id #db/id[:db.part/user -100098] }
 
-{ :security/acode "DXJUS", :security/isin "US97717W8516", :security/bcode "DXJUS Equity", :security/assettype 1, :security/name "Yandex NV", :security/exchange "NYSE", :security/currency "USD", :db/id #db/id[:db.part/user -100099] }
+{ :security/acode "DXJUS", :security/isin "US97717W8516", :security/bcode "DXJ US Equity", :security/assettype 1, :security/name "Yandex NV", :security/exchange "NYSE", :security/currency "USD", :db/id #db/id[:db.part/user -100099] }
 
 { :security/acode "EDCLLI", :security/isin "US29843U2024", :security/bcode "EDCL LI Equity", :security/assettype 1, :security/name "Yandex NV", :security/ismatured true, :security/currency "USD", :db/id #db/id[:db.part/user -100100] }
 
@@ -279,8 +279,6 @@
 { :security/acode "CHF", :security/isin "CHFRUB ISIN", :security/bcode "CHFRUB Curncy", :security/assettype 10, :security/name "Yandex NV", :security/exchange "IMM", :security/currency "RUB", :db/id #db/id[:db.part/user -100144] }
 
 { :security/acode "HKD", :security/isin "HKDRUB ISIN", :security/bcode "HKDRUB Curncy", :security/assettype 10, :security/name "Yandex NV", :security/exchange "IMM", :security/currency "RUB", :db/id #db/id[:db.part/user -100223] }
-
-{ :security/acode "NOK", :security/isin "NOKRUB ISIN", :security/bcode "NOKRUB Curncy", :security/assettype 10, :security/name "Yandex NV", :security/exchange "IMM", :security/currency "RUB", :db/id #db/id[:db.part/user -100320] }
 
 { :security/acode "ALFARU15N", :security/isin "XS0494933806", :security/bcode "XS0494933806 Corp", :security/assettype 5, :security/multiple 1.0, :security/ismatured true, :security/currency "USD", :db/id #db/id[:db.part/user -100137] }
 
@@ -648,9 +646,23 @@
 
 { :security/acode "UBSUS", :security/isin "CH0024899483", :security/bcode "UBRA TH Equity", :security/assettype 1, :security/name "Yandex NV", :security/exchange "TH", :security/currency "EUR", :db/id #db/id[:db.part/user -100319]}
 
-{ :security/acode "YAHOO", :security/isin "US9843321061", :security/bcode "YHOO US Equity", :security/assettype 1, :security/name "", :security/exchange "TE", :security/currency "USD", :db/id #db/id[:db.part/user -100004]}
+{ :security/acode "NOK", :security/isin "NOKRUB ISIN", :security/bcode "NOKRUB Curncy", :security/assettype 10, :security/name "Yandex NV", :security/exchange "IMM", :security/currency "RUB", :db/id #db/id[:db.part/user -100320] }
 
 { :security/acode "WUS", :security/isin "US94419L1017", :security/bcode "W US Equity", :security/assettype 1, :security/name "Yandex NV", :security/exchange "US", :security/currency "USD", :db/id #db/id[:db.part/user -100321]}
+
+{ :security/acode "GTLKOA24", :security/isin "XS1577961516", :security/bcode "XS1577961516 Corp", :security/assettype 5, :security/name "", :security/multiple 1.0, :security/currency "USD", :db/id #db/id[:db.part/user -100322]}
+
+{ :security/acode "ROSNFT1P4", :security/isin "RU000A0JXQK2", :security/bcode "RU000A0JXQK2 Corp", :security/assettype 5, :security/multiple 1000.0, :security/currency "RUB", :db/id #db/id[:db.part/user -100323]}
+
+{ :security/acode "IM22", :security/isin "US457153AF18", :security/bcode "US457153AF18 Corp", :security/assettype 5, :security/multiple 1.0, :security/name "Ingram Micro, 5% 10aug2022, USD", :security/exchange "CBBT", :security/currency "USD", :db/id #db/id[:db.part/user -100324]}
+
+{ :security/acode "VEBRUBO04", :security/isin "RU000A0JUD83", :security/bcode "RU000A0JUD83 Corp", :security/assettype 5, :security/multiple 1000.0, :security/currency "RUB", :db/id #db/id[:db.part/user -100325]}
+
+{ :security/acode "GPBBO-13", :security/isin "RU000A0JXTF6", :security/bcode "RU000A0JXTF6 Corp", :security/assettype 5, :security/multiple 1000.0, :security/currency "RUB", :db/id #db/id[:db.part/user -100326]}
+
+{ :security/acode "MTNSJ24", :security/isin "XS1128996425", :security/bcode "XS1128996425 Corp", :security/assettype 5, :security/multiple 1.0, :security/currency "USD", :db/id #db/id[:db.part/user -100327]}
+
+{ :security/acode "26222", :security/isin "RU000A0JXQF2", :security/bcode "RU000A0JXQF2 Corp", :security/assettype 5, :security/multiple 1000.0, :security/currency "RUB", :db/id #db/id[:db.part/user -100328]}
 
 { :security/acode "ALFARU16R", :security/isin "XS0922142574", :security/bcode "XS0922142574 Corp", :security/assettype 5, :security/multiple 1.0, :security/name "", :security/ismatured true, :security/currency "RUB", :db/id #db/id[:db.part/user -100333]}
 
@@ -1150,7 +1162,7 @@
 
 { :security/acode "YPFDAR19", :security/assettype 5, :security/multiple 1.0, :security/isin "CH0336352825", :security/bcode "CH0336352825 Corp", :security/exchange "XETRA", :security/currency "CHF", :db/id #db/id[:db.part/user -100580] }
 
-;;{ :security/acode "BIVVUS", :security/assettype 1, :security/isin "US09075E1001", :security/bcode "BIVV Equity", :security/exchange "XETRA", :security/currency "USD", :db/id #db/id[:db.part/user -100581] }
+{ :security/acode "GTLK-1P-04", :security/assettype 5, :security/isin "RU000A0JXPG2", :security/bcode "RU000A0JXPG2 Corp", :security/multiple 1000.0, :security/currency "RUB", :db/id #db/id[:db.part/user -100581] }
 
 { :security/acode "PIK-BO-P02", :security/assettype 5, :security/multiple 1000.0, :security/isin "RU000A0JXQ93", :security/bcode "RU000A0JXQ93 Corp", :security/exchange "XETRA", :security/currency "RUB", :db/id #db/id[:db.part/user -100582] }
 
@@ -1224,7 +1236,7 @@
 
 { :security/acode "BISVP", :security/isin "RU0009100176", :security/bcode "BISVP RX Equity", :security/assettype 1, :security/name "", :security/exchange "NYSE", :security/currency "RUB", :db/id #db/id[:db.part/user -100616] }
 
-{ :security/acode "EONR", :security/isin  "ES0113790226", :security/bcode "EONR RX Equity", :security/assettype 1, :security/name "Fake isin", :security/exchange "RX", :security/currency "RUB", :db/id #db/id[:db.part/user -100617]}
+{ :security/acode "EONR", :security/isin  "ES0113790226", :security/bcode "UPRO RM Equity", :security/assettype 1, :security/name "Fake isin", :security/exchange "RX", :security/currency "RUB", :db/id #db/id[:db.part/user -100617]}
 
 { :security/acode "SMSNLI", :security/isin "US7960508882", :security/bcode "SMSN LI Equity", :security/assettype 1, :security/name "", :security/exchange "RX", :security/currency "USD", :db/id #db/id[:db.part/user -100618]}
 
@@ -1450,18 +1462,6 @@
 
 { :security/acode "MOUS", :security/isin "US02209S1033", :security/bcode "MO US Equity", :security/assettype 1, :security/multiple 1.0, :security/name "", :security/exchange "", :security/currency "USD", :db/id #db/id[:db.part/user -100330]}
 
-;;{ :security/acode "AALLNUS20", :security/isin "USG03762CE22", :security/bcode "USG03762CE22 Corp", :security/exchange "CBBT", :security/currency "USD", :db/id #db/id[:db.part/user -100322]}
-
-;;{ :security/acode "ALFARU21", :security/isin "XS0620695204", :security/bcode "XS0620695204 CBBT Corp", :security/exchange "TRDB", :security/currency "USD", :db/id #db/id[:db.part/user -100323]}
-
-;;{ :security/acode "CHIOIL20", :security/isin "XS1132375897", :security/bcode "XS1132375897 Corp", :security/exchange "BVAL", :security/currency "USD", :db/id #db/id[:db.part/user -100325]}
-
-;;{ :security/acode "DEUTBPERP", :security/isin "XS1071551474", :security/bcode "XS1071551474 Corp", :security/exchange "BVAL", :security/currency "USD", :db/id #db/id[:db.part/user -100326]}
-
-;;{ :security/acode "FMGAU19", :security/isin "USQ3919KAD39", :security/bcode "USQ3919KAD39 Corp", :security/exchange "BVAL", :security/currency "USD", :db/id #db/id[:db.part/user -100327]}
-
-;;{ :security/acode "GCX19", :security/isin "USG37767AA13", :security/bcode "USG37767AA13 Corp", :security/exchange "BVAL", :security/currency "USD", :db/id #db/id[:db.part/user -100328]}
-
 ;;{ :security/acode "KAISAG19", :security/isin "XS1071368861", :security/bcode "XS1071368861 Corp", :security/exchange "", :security/currency "USD", :db/id #db/id[:db.part/user -100329]}
 
 ;;{ :security/acode "OASCBZ19", :security/isin "USA57902AA51", :security/bcode "USA57902AA51 Corp", :security/assettype 5, :security/multiple 1.0, :security/name "Yandex NV", :security/exchange "BVAL", :security/currency "USD", :db/id #db/id[:db.part/user -100331]}
@@ -1552,9 +1552,9 @@
 
 { :client/code "RWVQF", :client/name "Клиент RWVQF", :client/currency "USD", :client/stockshare 25.0 :client/bondshare 75.0, :client/usd 100000.0, :client/rub 100000.0, :client/eur 100000.0, :client/gbp 100000.0, :client/signedadvisory 1840000.0, :client/advemail "aWdvcl9wcm9raGFldkBzYmVyYmFuay1wYi5ydQ==", :client/email "cnlia2luZGFAbWFpbC5ydQ==", :client/advisors [ #db/id[:db.part/user -105001] #db/id[:db.part/user -105013] #db/id[:db.part/user -105002] #db/id[:db.part/user -105003] #db/id[:db.part/user -105008] ], :db/id #db/id[:db.part/user -102010]}
 
-{ :client/code "XFLQF", :client/name "Клиент XFLQF", :client/currency "USD", :client/stockshare 50.0 :client/bondshare 50.0, :client/usd 100000.0, :client/rub 100000.0, :client/eur 100000.0, :client/gbp 100000.0, :client/signedadvisory 5000001.0, :client/advemail "ZWxlbmFfc2xvYm9kaW5hQHNiZXJiYW5rLXBiLnJ1", :client/email "c21pcm5vdmZ1bmRAZ21haWwuY29t", :client/advisors [ #db/id[:db.part/user -105001] #db/id[:db.part/user -105013] #db/id[:db.part/user -105010]], :db/id #db/id[:db.part/user -102011]}
+{ :client/code "XFLQF", :client/name "Клиент XFLQF", :client/currency "USD", :client/stockshare 50.0 :client/bondshare 50.0, :client/usd 100000.0, :client/rub 100000.0, :client/eur 100000.0, :client/gbp 100000.0, :client/signedadvisory 5000001.0, :client/advemail "ZWxlbmFfc2xvYm9kaW5hQHNiZXJiYW5rLXBiLnJ1", :client/email "c21pcm5vdmZ1bmRAZ21haWwuY29t", :client/advisors [ #db/id[:db.part/user -105001] #db/id[:db.part/user -105006] #db/id[:db.part/user -105010] #db/id[:db.part/user -105013]], :db/id #db/id[:db.part/user -102011]}
 
-{ :client/code "XFLQF1", :client/name "Клиент XFLQF1", :client/currency "USD", :client/stockshare 50.0 :client/bondshare 50.0, :client/usd 100000.0, :client/rub 100000.0, :client/eur 100000.0, :client/gbp 100000.0, :client/signedadvisory 5000001.0, :client/advemail "T2xlZ19ZZW1ldHNAc2JlcmJhbmstcGIucnU=", :client/email "a292YWxlbmtvQGlkYXkucHJv", :client/advisors [ #db/id[:db.part/user -105001] #db/id[:db.part/user -105013]], :db/id #db/id[:db.part/user -102012]}
+{ :client/code "XFLQF1", :client/name "Клиент XFLQF1", :client/currency "USD", :client/stockshare 50.0 :client/bondshare 50.0, :client/usd 100000.0, :client/rub 100000.0, :client/eur 100000.0, :client/gbp 100000.0, :client/signedadvisory 5000001.0, :client/advemail "T2xlZ19ZZW1ldHNAc2JlcmJhbmstcGIucnU=", :client/email "a292YWxlbmtvQGlkYXkucHJv", :client/advisors [ #db/id[:db.part/user -105001] #db/id[:db.part/user -105006] #db/id[:db.part/user -105012]], :db/id #db/id[:db.part/user -102012]}
 
 { :client/code "KDCTF", :client/name "Клиент KDCTF", :client/currency "USD", :client/stockshare 50.0, :client/bondshare 50.0, :client/usd 100000.0, :client/rub 100000.0, :client/eur 100000.0, :client/gbp 100000.0, :client/signedadvisory 5000001.0, :client/advemail "ZWxlbmFfc2xvYm9kaW5hQHNiZXJiYW5rLXBiLnJ1", :client/email "YmFyYWJ1cEBtYWlsLnJ1", :client/advisors [ #db/id[:db.part/user -105001] #db/id[:db.part/user -105013] ], :db/id #db/id[:db.part/user -102013]}
 
@@ -1726,7 +1726,7 @@
 
 { :client/code "ENJQF", :client/name "Клиент ENJQF", :client/currency "USD", :client/stockshare 50.0 :client/bondshare 50.0, :client/usd 100000.0, :client/rub 100000.0, :client/eur 100000.0, :client/gbp 100000.0, :client/signedadvisory 5000001.0, :client/advemail "VmxhZGltaXJfVXNwZW5za2l5QHNiZXJiYW5rLXBiLnJ1", :client/email "ZGVwMjg4QHlhbmRleC5ydQ==", :client/advisors [ #db/id[:db.part/user -105001] #db/id[:db.part/user -105013] #db/id[:db.part/user -105004]], :db/id #db/id[:db.part/user -102098]}
 
-{ :client/code "PYUUF", :client/name "Клиент PYUUF", :client/currency "USD", :client/stockshare 50.0 :client/bondshare 50.0, :client/usd 100000.0, :client/rub 100000.0, :client/eur 100000.0, :client/gbp 100000.0, :client/signedadvisory 5000001.0, :client/advemail "VmxhZGltaXJfVXNwZW5za2l5QHNiZXJiYW5rLXBiLnJ1", :client/email "VWxpeWFubmE4NkBtYWlsLnJ1", :client/advisors [ #db/id[:db.part/user -105001] #db/id[:db.part/user -105008] #db/id[:db.part/user -105013] ], :db/id #db/id[:db.part/user -102099]}
+{ :client/code "PYUUF", :client/name "Клиент PYUUF", :client/currency "USD", :client/stockshare 50.0 :client/bondshare 50.0, :client/usd 100000.0, :client/rub 100000.0, :client/eur 100000.0, :client/gbp 100000.0, :client/signedadvisory 5000001.0, :client/advemail "VmxhZGltaXJfVXNwZW5za2l5QHNiZXJiYW5rLXBiLnJ1", :client/email "VWxpeWFubmE4NkBtYWlsLnJ1", :client/advisors [ #db/id[:db.part/user -105001] #db/id[:db.part/user -105002] #db/id[:db.part/user -105003] #db/id[:db.part/user -105008] #db/id[:db.part/user -105013] ], :db/id #db/id[:db.part/user -102099]}
 
 { :client/code "XIKQF1", :client/name "Клиент XIKQF1", :client/currency "USD", :client/stockshare 50.0 :client/bondshare 50.0, :client/usd 100000.0, :client/rub 100000.0, :client/eur 100000.0, :client/gbp 100000.0, :client/signedadvisory 5000001.0, :client/advemail "VmxhZGltaXJfVXNwZW5za2l5QHNiZXJiYW5rLXBiLnJ1", :client/email "ZmFzdHVyQHlhLnJ1", :client/advisors [ #db/id[:db.part/user -105001] #db/id[:db.part/user -105013] #db/id[:db.part/user -105004]], :db/id #db/id[:db.part/user -102100]}
 
@@ -1837,6 +1837,10 @@
 { :client/code "CACFF", :client/name "Клиент CACFF", :client/currency "USD", :client/stockshare 50.0 :client/bondshare 50.0, :client/usd 100000.0, :client/rub 100000.0, :client/eur 100000.0, :client/gbp 100000.0, :client/signedadvisory 5000001.0, :client/advemail "TWFyaWFfU2h1aWRpbmFAc2JlcmJhbmstcGIucnU=", :client/email "SWdvci5DaGVrdW5vdkBrYXNwZXJza3kuY29t", :client/advisors [ #db/id[:db.part/user -105001] #db/id[:db.part/user -105006] #db/id[:db.part/user -105013]], :db/id #db/id[:db.part/user -102151]}
 
 { :client/code "MBMTF", :client/name "Клиент MBMTF", :client/currency "USD", :client/stockshare 50.0 :client/bondshare 50.0, :client/usd 100000.0, :client/rub 100000.0, :client/eur 100000.0, :client/gbp 100000.0, :client/signedadvisory 5000001.0, :client/advemail "TmF0YWxpYV9Ub2xwZXpobmlrb3ZhQHNiZXJiYW5rLXBiLnJ1", :client/email "TWFkaXZhbjIwMDZAeWFuZGV4LnJ1", :client/advisors [ #db/id[:db.part/user -105001] #db/id[:db.part/user -105012] #db/id[:db.part/user -105013]], :db/id #db/id[:db.part/user -102084]}
+
+{ :client/code "RMPQF", :client/name "Клиент RMPQF", :client/currency "USD", :client/stockshare 50.0 :client/bondshare 50.0, :client/usd 100000.0, :client/rub 100000.0, :client/eur 100000.0, :client/gbp 100000.0, :client/signedadvisory 5000001.0, :client/advemail "bWFyaW5hX2dhbHVzaGtpbmFAc2JlcmJhbmstcGIucnU=", :client/email "Z29uY2hhcmVua29AdG5jYXBpdGFsLnJ1", :client/advisors [ #db/id[:db.part/user -105001] #db/id[:db.part/user -105006] #db/id[:db.part/user -105007] #db/id[:db.part/user -105013]], :db/id #db/id[:db.part/user -102152]}
+
+{ :client/code "RMPQF1", :client/name "Клиент RMPQF1", :client/currency "USD", :client/stockshare 50.0 :client/bondshare 50.0, :client/usd 100000.0, :client/rub 100000.0, :client/eur 100000.0, :client/gbp 100000.0, :client/signedadvisory 5000001.0, :client/advemail "bWFyaW5hX2dhbHVzaGtpbmFAc2JlcmJhbmstcGIucnU=", :client/email "Z29uY2hhcmVua29AdG5jYXBpdGFsLnJ1", :client/advisors [ #db/id[:db.part/user -105001] #db/id[:db.part/user -105006] #db/id[:db.part/user -105007] #db/id[:db.part/user -105013]], :db/id #db/id[:db.part/user -102153]}
 
 
 ;; TRANSACTIONS
@@ -3839,6 +3843,12 @@
 { :transaction/client #db/id[:db.part/user -102062], :transaction/security #db/id[:db.part/user -100189], :transaction/nominal 200000.0, :transaction/price 111.75, :transaction/direction "S", :transaction/tradedate #inst "2017-08-03T10:00:00.0000000Z", :transaction/valuedate #inst "2017-08-03T10:00:00.0000000Z", :transaction/currency "USD", :transaction/comment "Оферта Vedanta, 8.250% 7jun2021", :db/id #db/id[:db.part/user -110977] }
 
 { :transaction/client #db/id[:db.part/user -102088], :transaction/security #db/id[:db.part/user -100189], :transaction/nominal 200000.0, :transaction/price 111.75, :transaction/direction "S", :transaction/tradedate #inst "2017-08-03T10:00:00.0000000Z", :transaction/valuedate #inst "2017-08-03T10:00:00.0000000Z", :transaction/currency "USD", :transaction/comment "Оферта Vedanta, 8.250% 7jun2021", :db/id #db/id[:db.part/user -110978] }
+
+;; PYUMF Initial CASH position
+{ :transaction/client #db/id[:db.part/user -102134], :transaction/security #db/id[:db.part/user -100703], :transaction/nominal 206000.0, :transaction/price 1.0, :transaction/direction "B", :transaction/tradedate #inst "2016-09-30T01:00:00.0000000Z", :transaction/valuedate #inst "2016-09-30T01:00:00.0000000Z", :transaction/currency "USD", :transaction/comment "Transfer In", :db/id #db/id[:db.part/user -110979] }
+
+{ :transaction/client #db/id[:db.part/user -102134], :transaction/security #db/id[:db.part/user -100703], :transaction/nominal 206000.0, :transaction/price 1.0, :transaction/direction "S", :transaction/tradedate #inst "2016-10-03T01:00:00.0000000Z", :transaction/valuedate #inst "2016-10-03T01:00:00.0000000Z", :transaction/currency "USD", :transaction/comment "Transfer Out", :db/id #db/id[:db.part/user -110980] }
+
 
 ;;{ :transaction/client #db/id[:db.part/user -102139], :transaction/security #db/id[:db.part/user -100189], :transaction/nominal 200000.0, :transaction/price 111.75, :transaction/direction "S", :transaction/tradedate #inst "2017-08-03T10:00:00.0000000Z", :transaction/valuedate #inst "2017-08-03T10:00:00.0000000Z", :transaction/currency "USD", :transaction/comment "Оферта Vedanta, 8.250% 7jun2021", :db/id #db/id[:db.part/user -110976] }
 

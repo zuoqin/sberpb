@@ -385,7 +385,7 @@
                 ) 
 
 
-    filter_portfs (filter (fn [x] (if (> (:amount (second x)) 0) true false))  portfolios) 
+    filter_portfs (filter (fn [x] (if (not= (:amount (second x)) 0.0) true false))  portfolios) 
     
     result (into {} (map (fn [x]
                             (let [

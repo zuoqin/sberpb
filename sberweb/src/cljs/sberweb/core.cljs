@@ -28,6 +28,62 @@
 
 (def jquery (js* "$"))
 
+
+(defn setVersionInfo [info]
+  (swap! app-state assoc-in [:verinfo] 
+    (:info info)
+  )
+
+  (swap! app-state assoc-in [:versionTitle]
+    (str "Информация о текущей версии")
+  ) 
+
+  (swap! app-state assoc-in [:versionText]
+    (str (:info info))
+  ) 
+
+  ;;(.log js/console (str  "In setLoginError" (:error error) ))
+  (jquery
+    (fn []
+      (-> (jquery "#versioninfoModal")
+        (.modal)
+      )
+    )
+  )
+)
+
+(defn onVersionInfo []
+  (let [     
+      newdata { :info "Global Asset Management System пользовательский интерфейс обновлен 07.08.2017 17:28" }
+    ]
+   
+    (setVersionInfo newdata)
+  )
+  ;(.log js/console (str  response ))
+)
+
+(defn addVersionInfo []
+  (dom/div
+    (dom/div {:id "versioninfoModal" :className "modal fade" :role "dialog"}
+      (dom/div {:className "modal-dialog"} 
+        ;;Modal content
+        (dom/div {:className "modal-content"} 
+          (dom/div {:className "modal-header"} 
+                   (b/button {:type "button" :className "close" :data-dismiss "modal"})
+                   (dom/h4 {:className "modal-title"} (:versionTitle @app-state) )
+                   )
+          (dom/div {:className "modal-body"}
+                   (dom/p (:versionText @app-state))
+                   )
+          (dom/div {:className "modal-footer"}
+                   (b/button {:type "button" :className "btn btn-default" :data-dismiss "modal"} "Close")
+          )
+        )
+      )
+    )
+  )
+)
+
 (defn doswaps []
   (let [a (rand-int 26)
         b (rand-int 26)
@@ -724,6 +780,7 @@
 
       totallimit (calculatetotallimit)
       ]
+      
       (dom/nav {:className "navbar navbar-default navbar-fixed-top" :role "navigation"}
         (dom/div {:className "navbar-header"}
           (dom/button {:type "button" :className "navbar-toggle"
@@ -736,8 +793,8 @@
           (dom/a  (assoc stylehome :className "navbar-brand")
             (dom/span {:id "pageTitle"} (:text (:current @data)) )
           )
-        )
-        (dom/div {:className "collapse navbar-collapse navbar-ex1-collapse" :id "menu"}
+        )        
+        (dom/div {:className "collapse navbar-collapse navbar-ex1-collapse" :id "menu"}          
           (dom/ul {:className "nav navbar-nav" :style {:padding-top "17px" :visibility (if (= (compare (:name (:current @data))  "Positions") 0 ) "visible" "hidden")}}
             (dom/li
               (dom/div {:style {:margin-right "10px" :visibility (if (and (= (compare (:name (:current @data)) "Positions") 0) (or (= (:role (:user @data)) "admin") (= (:role (:user @data)) "admin")) ) "visible" "hidden")}}
@@ -869,6 +926,16 @@
                  (dom/i {:className "fa fa-caret-down"})
               )
               (dom/ul {:className "dropdown-menu dropdown-user"}
+
+                (dom/li
+                  (dom/a {:href "#/positions" :onClick (fn [e] (onVersionInfo))}
+                    (dom/div
+                      (dom/i {:className "fa fa-desktop fa-fw"})
+                      "Информация о версии"
+                    )
+                  )
+                )
+                (dom/li {:className "divider"})
                 (dom/li
                   (dom/a {:href "#/login"}
                     (dom/div
@@ -881,7 +948,7 @@
             )
           )
         )
-      )
+      )     
     )
   )
 )
