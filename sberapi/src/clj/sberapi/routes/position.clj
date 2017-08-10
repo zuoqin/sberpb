@@ -519,7 +519,7 @@
 
            clienttotalrub (+ (* (:usd client) usdrate) (* (:rub client) 1.0) (* (:eur client) eurrate) (* (:gbp client) gbprate))
 
-           seclimitinrub (/ (* fxrate (:signedadvisory client)  (if (= (:assettype sec) 5) (* (:bondshare client) percentage) (* (:stockshare client) percentage)) ) 10000.0 )
+           seclimitinrub (/ (* fxrate (:signedadvisory client)  (if (= (:assettype sec) 5) (:bondshare client) (:stockshare client)) percentage) 10000.0 )
            margin (:margin client)
 
            ;tr1 (println client)
@@ -527,7 +527,7 @@
 
            ;tr1 (if (= "MADUN2" (:code client)) (println (str "client: " client " sec last price: " seclastrubprice) " usedlimit: " usedlimit " secrubprice=" secrubprice)) 
      ]
-      {:client (:code client) :usd (:usd client) :rub (:rub client) :eur (:eur client) :gbp (:gbp client) :currency (:currency client) :shares (if (nil? usedlimit) 0 (:amount usedlimit))
+      {:client (:code client) :usd (:usd client) :rub (:rub client) :eur (:eur client) :gbp (:gbp client) :currency (:currency client) :shares (if (nil? usedlimit) 0 (:amount usedlimit)) :calcusedlimit calcusedlimit :seclimitinrub seclimitinrub
 
  ;; Максимальный лимит на ценную бумагу
  :maxlimit (long (/ seclimitinrub (* (if (= 0.0 seclastrubprice) 1.0 seclastrubprice) (if isbond (* multiple 0.01) 1.0))))
@@ -556,10 +556,22 @@
   )
 )
 
+
+;; (defn map-cachedata [data newpercentage]
+;;   (let [
+;;     newdata (update data :freelimit (fn [x] (* newpercentage (/ x 10.0))))
+;;     newdata (update newdata :maxlimit (fn [x] (* newpercentage (/ x 10.0))))
+;;     ]
+;;     newdata
+;;   )
+;; )
+
 (defn calcPortfolios [token security percentage]
   (let [
     newsec (str security)
-    result (if (nil? ((keyword (str percentage)) (:calcportfs ((keyword newsec) @sec_state)))) (getCalcPortfolios token security percentage) ((keyword (str percentage)) (:calcportfs ((keyword newsec) @sec_state))))
+    cachedata (if (nil? ((keyword (str percentage)) (:calcportfs ((keyword newsec) @sec_state)))) (getCalcPortfolios token security percentage) ((keyword (str percentage)) (:calcportfs ((keyword newsec) @sec_state))))
+    ;;
+    result cachedata;;(map (fn [x] (map-cachedata x percentage)) cachedata)
     ]
     result
   )
@@ -832,20 +844,26 @@
 
     ]
     (doseq [client clients]
-      (println (str "retrieveing positions for portfolio: " (:code client)))
+      (println (str "retrieving positions for portfolio: " (:code client)))
       (getPositions "" (:code client))
       (Thread/sleep 3000)
     )
 
     (doseq [client clients]
-      (println (str "retrieveing deals for portfolio: " (:code client)))
+      (println (str "retrieving deals for portfolio: " (:code client)))
       (getDeals "" (:code client) 0)
       (Thread/sleep 3000)
     )
 
     (doseq [sec securities]
-      (println (str "retrieveing portfolios for security: " (:acode sec)))
+      (println (str "retrieving portfolios for security: " (:acode sec)))
       (getPortfolios "" (:id sec))
+      (Thread/sleep 3000)
+    )
+
+    (doseq [sec securities]
+      (println (str "calculating portfolios limits for security: " (:acode sec)))
+      (calcPortfolios "" (:id sec) 10.0)
       (Thread/sleep 3000)
     )
   )

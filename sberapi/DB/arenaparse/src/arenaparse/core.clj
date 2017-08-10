@@ -182,9 +182,10 @@
   (let [
      conn (d/connect uri)
      ]
-    (d/transact-async conn [{ :security/acode "MTNSJ24", :security/isin "XS1128996425", :security/bcode "XS1128996425 Corp", :security/assettype 5, :security/multiple 1.0, :security/currency "USD", :db/id #db/id[:db.part/user -100327]}
+    (d/transact-async conn [{ :security/acode "IPUS", :security/isin "US4601461035", :security/bcode "IP US Equity", :security/assettype 1, :security/multiple 1.0, :security/name "", :security/currency "USD", :db/id #db/id[:db.part/user -100331]}
+{ :security/acode "RTS-9.17/P T102500 ACU 17AUG17", :security/isin "VEU7P 102500.00 Index", :security/bcode "VEU7P 102500.00 Index", :security/assettype 15, :security/name "RTS INDEX OPTIONS Sep17P 102500", :security/multiple 0.02, :security/ismatured false, :security/currency "USD", :db/id #db/id[:db.part/user -101024] }
 
-{ :security/acode "26222", :security/isin "RU000A0JXQF2", :security/bcode "RU000A0JXQF2 Corp", :security/assettype 5, :security/multiple 1000.0, :security/currency "USD", :db/id #db/id[:db.part/user -100328]}]
+]
     )
     ; To insert new entity:
     ;(d/transact conn [{ :transaction/client #db/id[:db.part/user 17592186045573] :transaction/security #db/id[:db.part/user 17592186065674], :transaction/nominal 108000.0 :transaction/price 100.0 :transaction/direction "S" :transaction/valuedate #inst "2014-04-22T00:00:00.0000000Z", :transaction/currency "RUB" :transaction/comment "", :db/id #db/id[:db.part/user -110002] }])
@@ -1812,7 +1813,7 @@
 
 (defn recent-deals-to-db []
   (let [
-    files [3 4 5 6 7 8]
+    files [8]
     trans (doall (map (fn [x] (recent-deals-to-db-by-num x))  files )) 
     ]
     ;(count secs)

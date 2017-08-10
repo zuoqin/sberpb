@@ -204,7 +204,7 @@
             ;; Текущая рыночная цена 
             (dom/div {:className "col-xs-1 col-md-1" :style {:padding-left "0px" :padding-right "0px"}}
               (dom/a {:className "list-group-item" :style {:text-align "right"} :href (str "#/portfolios/" (:id sec))}
-                (dom/h4 {:className "list-group-item-heading"} (if (> (:price sec) 1) (gstring/format "%.2f" (if (nil? (:price sec)) 0.00 (:price sec)) )  (subs (str (if (nil? (:price sec)) 0.00 (:price sec))) 0 5)))
+                (dom/h4 {:className "list-group-item-heading"} (if (> (:price sec) 1) (sbercore/split-thousands (gstring/format "%.2f" (if (nil? (:price sec)) 0.00 (:price sec))))  (subs (str (if (nil? (:price sec)) 0.00 (:price sec))) 0 5)))
                )
             )
 

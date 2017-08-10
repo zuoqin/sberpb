@@ -543,7 +543,7 @@
               )
 
               ;; Last Price
-              (dom/div {:className "col-xs-1 col-md-1" :style {:padding-left "0px" :padding-right "0px"}}
+              (dom/div {:className "col-xs-1 col-md-1" :style {:padding-left "0px" :padding-right "3px"}}
                 (dom/a {:className "list-group-item" :style {:text-align "right"} :href (str  "#/postrans/" (:id (first (filter (fn [x] (if (= (compare (:code x) (:selectedclient @sbercore/app-state)) 0) true false)) (:clients @sbercore/app-state)))) "/" (:id item) ) }
                   (dom/h4 {:className "list-group-item-heading"} (sbercore/split-thousands (if (> (:price item) 1) (gstring/format "%.2f" (:price item))  (subs (str (:price item)) 0 5))) )
                 )

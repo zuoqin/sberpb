@@ -63,7 +63,7 @@
         name2 (first portf2)
         ]
     
-    (if (>  (compare name1  name2) 0)
+    (if (<  (compare name1  name2) 0)
     true
     false)
   )
@@ -209,9 +209,9 @@
     portfs (json/read-str (:body (client/get url {:headers {"authorization" "Bearer TheBearer"}})))
 
     positions (sort (comp sort-portfs-by-name) portfs)
-    newpositions (into [] (map (fn [x] [(first x)   (get (second x) "amount") (get (second x) "price") (get (second x) "rubprice")]) positions))
+    newpositions (into [] (map (fn [x] [(first x)   (get (second x) "amount") (get (second x) "price") (get (second x) "rubprice") (get (second x) "wapusd")]) positions))
     ]
-    (save-xls ["sheet1" (dataset [:portf :amount :price :rubprice] newpositions)] (str xlsdir sec ".xlsx"))
+    (save-xls ["sheet1" (dataset [:portf :amount :wapprice :rubprice :usdprice] newpositions)] (str xlsdir sec ".xlsx"))
     "Success"
     ;(first newpositions)
   )

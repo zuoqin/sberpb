@@ -448,16 +448,20 @@
   })
 )
 
-(defn getCalcPortfolios [] 
-  (swap! app-state assoc :state 2 )
-  ;(set! ( . (.getElementById js/document "btnrefresh") -disabled) true)
-  (GET (str settings/apipath "api/calcshares?security=" (:selectedsec @app-state) "&percentage=" (:percentage @app-state) ) {
-    :handler OnGetCalcPortfolios
-    :error-handler error-handler
-    :headers {
-      :content-type "application/json"
-      :Authorization (str "Bearer "  (:token (:token @app-state))) }
-  })
+(defn getCalcPortfolios []
+  (let [
+      percentage 10.0 ;;(:percentage @app-state)
+    ]
+    (swap! app-state assoc :state 2 )
+    ;(set! ( . (.getElementById js/document "btnrefresh") -disabled) true)
+    (GET (str settings/apipath "api/calcshares?security=" (:selectedsec @app-state) "&percentage=" percentage ) {
+      :handler OnGetCalcPortfolios
+      :error-handler error-handler
+      :headers {
+        :content-type "application/json"
+        :Authorization (str "Bearer "  (:token (:token @app-state))) }
+    })
+  )
 )
 
 (defn onSecsDropDownChange [id value]
@@ -735,6 +739,10 @@
   (aset js/window "location" (str "/clientexcel/" (:selectedclient @app-state)))
 )
 
+(defn downloadSecPortfolios [e]
+  (aset js/window "location" (str "/secexcel/" (:selectedsec @app-state)))
+)
+
 (defn downloadBloombergPortfolio [e]
   (aset js/window "location" (str "/clientbloombergportf/" (:selectedclient @app-state)))
 )
@@ -1002,6 +1010,16 @@
               )
               (dom/ul {:className "dropdown-menu dropdown-messages"}
                 (dom/li 
+                  (dom/a {:style {:cursor "pointer" :pointer-events (if (nil? (:selectedsec @app-state)) "none" "all")} :onClick (fn [e] (downloadSecPortfolios e) )}
+                    (dom/div
+                      (dom/i {:className "fa fa-cloud-download"})
+                     "Сохранить в Excel"
+                    )
+                  )
+                )
+
+                (dom/li {:className "divider"})
+                (dom/li 
                   (dom/a {:style {:cursor "pointer" :pointer-events (if (nil? (:selectedclient @app-state)) "none" "all")} :onClick (fn [e] (printMonth) )}
                     (dom/div
                       (dom/i {:className "fa fa-print"})
@@ -1119,36 +1137,36 @@
 
               (dom/input {:id "percentage" :type "number" :step "0.01" :style {:height "32px" :width "70px" :margin-top "1px"} :value  (:percentage @data) :onChange (fn [e] (handleChange e ))})
             )
-            (dom/li {:style {:margin-left "5px"}}
-              (dom/button #js {:id "btnrefresh" :disabled (if (= 1 (:state @data)) false true) :className (if (= 2 (:state @data)) "btn btn-info m-progress" "btn btn-info")  :type "button" :onClick (fn [e] (getCalcPortfolios))} "Обновить")
-            )
+            ;; (dom/li {:style {:margin-left "5px"}}
+            ;;         (dom/button #js {:id "btnrefresh" :disabled (if (= 1 (:state @data)) false true) :className (if (= 2 (:state @data)) "btn btn-info m-progress" "btn btn-info")  :type "button" :onClick (fn [e] (getCalcPortfolios))} "Обновить")
+            ;;         )
 
             (dom/li {:style {:margin-left "15px" :padding-right "10px"}}
-              (dom/label {:for "currencies" :style {:font-weight 100 :margin-top "7px"}} "Валюта: ")
-            )
+                    (dom/label {:for "currencies" :style {:font-weight 100 :margin-top "7px"}} "Валюта: ")
+                    )
             (dom/li
-              (dom/div {:style {:margin-right "10px"}} 
-                (omdom/select #js {:id "currencies"
-                                   :className "selectpicker"
-                                   :data-show-subtext "true"
-                                   :data-live-search "true"
-                                   :onChange #(handle-change-currency % owner)
-                                   }
-                  (dom/option {:key "allcur" :value "all"
-                    :onChange #(handle-change-currency % owner)} "ВСЕ")
-                  (dom/option {:key "usdcur" :value "usd"
-                    :onChange #(handle-change-currency % owner)} "USD")
-                  (dom/option {:key "rubcur" :value "rub"
-                    :onChange #(handle-change-currency % owner)} "RUB")
-                  (dom/option {:key "eurcur" :value "eur"
-                    :onChange #(handle-change-currency % owner)} "EUR")
-                  (dom/option {:key "gbpcur" :value "gbp"
-                    :onChange #(handle-change-currency % owner)} "GBP")
-                  ;;(buildSecsList data owner)
-                )
-              )
+             (dom/div {:style {:margin-right "10px"}} 
+                      (omdom/select #js {:id "currencies"
+                                         :className "selectpicker"
+                                         :data-show-subtext "true"
+                                         :data-live-search "true"
+                                         :onChange #(handle-change-currency % owner)
+                                         }
+                                    (dom/option {:key "allcur" :value "all"
+                                                 :onChange #(handle-change-currency % owner)} "ВСЕ")
+                                    (dom/option {:key "usdcur" :value "usd"
+                                                 :onChange #(handle-change-currency % owner)} "USD")
+                                    (dom/option {:key "rubcur" :value "rub"
+                                                 :onChange #(handle-change-currency % owner)} "RUB")
+                                    (dom/option {:key "eurcur" :value "eur"
+                                                 :onChange #(handle-change-currency % owner)} "EUR")
+                                    (dom/option {:key "gbpcur" :value "gbp"
+                                                 :onChange #(handle-change-currency % owner)} "GBP")
+                                    ;;(buildSecsList data owner)
+                                    )
+                      )
+             )
             )
-          )
 
 
           (dom/ul {:className "nav navbar-nav navbar-right"}
