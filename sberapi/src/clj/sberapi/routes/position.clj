@@ -866,5 +866,6 @@
       (calcPortfolios "" (:id sec) 10.0)
       (Thread/sleep 3000)
     )
+    (println "Finished caching data")
   )
 )

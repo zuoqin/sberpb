@@ -31,6 +31,8 @@
 
 (def ch (chan (dropping-buffer 2)))
 
+(defn abs [n] (max n (- n)))
+
 (defn OnGetPortfolios [response]
   (swap! sbercore/app-state assoc-in [(keyword (:selectedsec @sbercore/app-state)) :calcportfs] response  )
   (sbercore/setCalcSecsDropDown)
@@ -148,45 +150,56 @@
         client1 (first (filter (fn [x] (if (= (:code x) (:client portf1)) true false)) (:clients @sbercore/app-state)))
         client2 (first (filter (fn [x] (if (= (:code x) (:client portf2)) true false)) (:clients @sbercore/app-state)))
 
-        oldmaxusdshares1 (max 0.001 (if (> (* usdrate (:usd client1))  (- (:seclimitinrub portf1) (:calcusedlimit portf1))) (- (:seclimitinrub portf1) (:calcusedlimit portf1)) (* usdrate (:usd client1))))
-        oldmaxeurshares1 (max 0.001 (if (> (* eurrate (:eur client1))  (- (:seclimitinrub portf1) (:calcusedlimit portf1))) (- (:seclimitinrub portf1) (:calcusedlimit portf1)) (* eurrate (:eur client1))))
-        oldmaxgbpshares1 (max 0.001 (if (> (* gbprate (:gbp client1))  (- (:seclimitinrub portf1) (:calcusedlimit portf1))) (- (:seclimitinrub portf1) (:calcusedlimit portf1)) (* gbprate (:gbp portf1))))
-        oldmaxrubshares1 (max 0.001 (if (> (- (:rub client1) (:margin client1)) (- (:seclimitinrub portf1) (:calcusedlimit portf1))) (- (:seclimitinrub portf1) (:calcusedlimit pportf1)) (- (:rub client1) (:margin client1))))
+        oldmaxusdshares1 (min (* usdrate (:usd client1))  (- (:seclimitinrub portf1) (:calcusedlimit portf1)))
+        oldmaxeurshares1 (min (* eurrate (:eur client1))  (- (:seclimitinrub portf1) (:calcusedlimit portf1)))
+        oldmaxgbpshares1 (min (* gbprate (:gbp client1))  (- (:seclimitinrub portf1) (:calcusedlimit portf1)))
+        oldmaxrubshares1 (min (- (:rub client1) (:margin client1)) (- (:seclimitinrub portf1) (:calcusedlimit portf1)))
+
+        oldmaxusdshares1 (if (> (abs oldmaxusdshares1) 0.001) oldmaxusdshares1 0.001)
+        oldmaxeurshares1 (if (> (abs oldmaxeurshares1) 0.001) oldmaxeurshares1 0.001)
+        oldmaxgbpshares1 (if (> (abs oldmaxgbpshares1) 0.001) oldmaxgbpshares1 0.001)
+        oldmaxrubshares1 (if (> (abs oldmaxrubshares1) 0.001) oldmaxrubshares1 0.001)
 
         newseclimitinrub1 (* (/ (:seclimitinrub portf1) 10.0) (:percentage @sbercore/app-state))
 
-        newmaxusdshares1 (* (/ (if (> (* usdrate (:usd client1))  (- newseclimitinrub1 (:calcusedlimit portf1))) (- newseclimitinrub1 (:calcusedlimit portf1)) (* usdrate (:usd client1))) oldmaxusdshares1) (:maxusdshares portf1))
+        newmaxusdshares1 (* (/ (min (* usdrate (:usd client1)) (- newseclimitinrub1 (:calcusedlimit portf1))) oldmaxusdshares1) (:maxusdshares portf1))
 
-        newmaxeurshares1 (* (/ (if (> (* eurrate (:eur client1))  (- newseclimitinrub1 (:calcusedlimit portf1))) (- newseclimitinrub1 (:calcusedlimit portf1)) (* eurrate (:eur client1))) oldmaxeurshares1) (:maxeurshares portf1))
+        newmaxeurshares1 (* (/ (min (* eurrate (:eur client1))  (- newseclimitinrub1 (:calcusedlimit portf1))) oldmaxeurshares1) (:maxeurshares portf1))
 
-        newmaxgbpshares1 (* (/ (if (> (* gbprate (:gbp client1))  (- newseclimitinrub1 (:calcusedlimit portf1))) (- newseclimitinrub1 (:calcusedlimit portf1)) (* gbprate (:gbp client1))) oldmaxgbpshares1) (:maxgbpshares portf1))
+        newmaxgbpshares1 (* (/ (min (* gbprate (:gbp client1))  (- newseclimitinrub1 (:calcusedlimit portf1))) oldmaxgbpshares1) (:maxgbpshares portf1))
 
-        newmaxrubshares1 (* (/ (if (> (- (:rub client1) (:margin client1)) (- newseclimitinrub1 (:calcusedlimit portf1))) (- newseclimitinrub1 (:calcusedlimit portf1)) (- (:rub client1) (:margin client1))) oldmaxrubshares1) (:maxrubshares portf1))
+        newmaxrubshares1 (* (/ (min (- (:rub client1) (:margin client1)) (- newseclimitinrub1 (:calcusedlimit portf1))) oldmaxrubshares1) (:maxrubshares portf1))
 
-        newfreelimit1 (* (/ (- newseclimitinrub1 (:calcusedlimit portf1)) (- (:seclimitinrub portf1) (:calcusedlimit portf1))) (:freelimit portf1))
+        newfreelimit1 (if (= 0 (:seclimitinrub portf1)) 0 (* (/ (- newseclimitinrub1 (:calcusedlimit portf1)) (- (:seclimitinrub portf1) (:calcusedlimit portf1))) (:freelimit portf1))) 
 
-        sharestobuy1 (gstring/format "%.0f" (case (:selectedcurrency @data) "all" (if (< newfreelimit1 0.0) newfreelimit1 (if (< newfreelimit1 (+ newmaxusdshares1 newmaxrubshares1 newmaxeurshares1 newmaxgbpshares1)) newfreelimit1 (+ newmaxusdshares1 newmaxrubshares1 newmaxeurshares1 newmaxgbpshares1))) "usd" newmaxusdshares1 "eur" newmaxeurshares1 "gbp" newmaxgbpshares1 newmaxrubshares1))
+        sharestobuy1 (case (:selectedcurrency @sbercore/app-state) "all" (if (< newfreelimit1 0.0) newfreelimit1 (min newfreelimit1 (+ newmaxusdshares1 newmaxrubshares1 newmaxeurshares1 newmaxgbpshares1))) "usd" newmaxusdshares1 "eur" newmaxeurshares1 "gbp" newmaxgbpshares1 newmaxrubshares1)
 
 
-        oldmaxusdshares2 (max 0.001 (if (> (* usdrate (:usd client2))  (- (:seclimitinrub portf2) (:calcusedlimit portf2))) (- (:seclimitinrub portf2) (:calcusedlimit portf2)) (* usdrate (:usd client2))))
-        oldmaxeurshares2 (max 0.001 (if (> (* eurrate (:eur client2))  (- (:seclimitinrub portf2) (:calcusedlimit portf2))) (- (:seclimitinrub portf2) (:calcusedlimit portf2)) (* eurrate (:eur client2))))
-        oldmaxgbpshares2 (max 0.001 (if (> (* gbprate (:gbp client2))  (- (:seclimitinrub portf2) (:calcusedlimit portf2))) (- (:seclimitinrub portf2) (:calcusedlimit portf2)) (* gbprate (:gbp portf2))))
-        oldmaxrubshares2 (max 0.001 (if (> (- (:rub client2) (:margin client2)) (- (:seclimitinrub portf2) (:calcusedlimit portf2))) (- (:seclimitinrub portf2) (:calcusedlimit pportf2)) (- (:rub client2) (:margin client2))))
+        oldmaxusdshares2 (min (* usdrate (:usd client2))  (- (:seclimitinrub portf2) (:calcusedlimit portf2)))
+        oldmaxeurshares2 (min (* eurrate (:eur client2))  (- (:seclimitinrub portf2) (:calcusedlimit portf2)))
+        oldmaxgbpshares2 (min (* gbprate (:gbp client2))  (- (:seclimitinrub portf2) (:calcusedlimit portf2)))
+        oldmaxrubshares2 (min (- (:rub client2) (:margin client2)) (- (:seclimitinrub portf2) (:calcusedlimit portf2)))
 
-        newseclimitinrub2 (* (/ (:seclimitinrub portf2) 20.0) (:percentage @sbercore/app-state))
+        oldmaxusdshares2 (if (> (abs oldmaxusdshares2) 0.001) oldmaxusdshares2 0.001)
+        oldmaxeurshares2 (if (> (abs oldmaxeurshares2) 0.001) oldmaxeurshares2 0.001)
+        oldmaxgbpshares2 (if (> (abs oldmaxgbpshares2) 0.001) oldmaxgbpshares2 0.001)
+        oldmaxrubshares2 (if (> (abs oldmaxrubshares2) 0.001) oldmaxrubshares2 0.001)
 
-        newmaxusdshares2 (* (/ (if (> (* usdrate (:usd client2))  (- newseclimitinrub2 (:calcusedlimit portf2))) (- newseclimitinrub2 (:calcusedlimit portf2)) (* usdrate (:usd client2))) oldmaxusdshares2) (:maxusdshares portf2))
+        newseclimitinrub2 (* (/ (:seclimitinrub portf2) 10.0) (:percentage @sbercore/app-state))
 
-        newmaxeurshares2 (* (/ (if (> (* eurrate (:eur client2))  (- newseclimitinrub2 (:calcusedlimit portf2))) (- newseclimitinrub2 (:calcusedlimit portf2)) (* eurrate (:eur client2))) oldmaxeurshares2) (:maxeurshares portf2))
+        newmaxusdshares2 (* (/ (min (* usdrate (:usd client2))  (- newseclimitinrub2 (:calcusedlimit portf2))) oldmaxusdshares2) (:maxusdshares portf2))
 
-        newmaxgbpshares2 (* (/ (if (> (* gbprate (:gbp client2))  (- newseclimitinrub2 (:calcusedlimit portf2))) (- newseclimitinrub2 (:calcusedlimit portf2)) (* gbprate (:gbp client2))) oldmaxgbpshares2) (:maxgbpshares portf2))
+        newmaxeurshares2 (* (/ (min (* eurrate (:eur client2))  (- newseclimitinrub2 (:calcusedlimit portf2))) oldmaxeurshares2) (:maxeurshares portf2))
 
-        newmaxrubshares2 (* (/ (if (> (- (:rub client2) (:margin client2)) (- newseclimitinrub2 (:calcusedlimit portf2))) (- newseclimitinrub2 (:calcusedlimit portf2)) (- (:rub client2) (:margin client2))) oldmaxrubshares2) (:maxrubshares portf2))
+        newmaxgbpshares2 (* (/ (min (* gbprate (:gbp client2))  (- newseclimitinrub2 (:calcusedlimit portf2))) oldmaxgbpshares2) (:maxgbpshares portf2))
 
-        newfreelimit2 (* (/ (- newseclimitinrub2 (:calcusedlimit portf2)) (- (:seclimitinrub portf2) (:calcusedlimit portf2))) (:freelimit portf2))
+        newmaxrubshares2 (* (/ (min (- (:rub client2) (:margin client2)) (- newseclimitinrub2 (:calcusedlimit portf2))) oldmaxrubshares2) (:maxrubshares portf2))
 
-        sharestobuy2 (gstring/format "%.0f" (case (:selectedcurrency @data) "all" (if (< newfreelimit2 0.0) newfreelimit2 (if (< newfreelimit2 (+ newmaxusdshares2 newmaxrubshares2 newmaxeurshares2 newmaxgbpshares2)) newfreelimit2 (+ newmaxusdshares2 newmaxrubshares2 newmaxeurshares2 newmaxgbpshares2))) "usd" newmaxusdshares2 "eur" newmaxeurshares2 "gbp" newmaxgbpshares2 newmaxrubshares2))
+        newfreelimit2 (if (= 0 (:seclimitinrub portf2)) 0 (* (/ (- newseclimitinrub2 (:calcusedlimit portf2)) (- (:seclimitinrub portf2) (:calcusedlimit portf2))) (:freelimit portf2)))
 
+        sharestobuy2 (case (:selectedcurrency @sbercore/app-state) "all" (if (< newfreelimit2 0.0) newfreelimit2 (min newfreelimit2 (+ newmaxusdshares2 newmaxrubshares2 newmaxeurshares2 newmaxgbpshares2))) "usd" newmaxusdshares2 "eur" newmaxeurshares2 "gbp" newmaxgbpshares2 newmaxrubshares2)
+
+        ;tr1 (.log js/console (str "porf1=" (:client portf1) " sharetobuy1=" sharestobuy1 " portf2=" (:client portf2) " sharetobuy2=" sharestobuy2 ))
         ]
         (if (or (> sharestobuy1 sharestobuy2)  (and (= sharestobuy1 sharestobuy2) (< (compare (:client portf1)  (:client portf2)) 0))) 
                        true
@@ -214,7 +227,7 @@
 
 
       (let [
-        tr1 (.log js/console (str "percentage=" (:percentage @data)))
+        ;tr1 (.log js/console (str "percentage=" (:percentage @data)))
         ]
         (if (> (count (:calcportfs ((keyword (str (:selectedsec @data))) @data))) 0)
           (dom/div {:className "list-group" :style {:display "block"}}
@@ -237,26 +250,31 @@
                     totalcash (sbercore/calc_cashusdvalue (:client item))
                     totalfreecash (- totalcash (if (nil? (:margin client)) 0.0 (/ (:margin client) usdrate)))
 
-                    oldmaxusdshares (max 0.001 (if (> (* usdrate (:usd client))  (- (:seclimitinrub item) (:calcusedlimit item))) (- (:seclimitinrub item) (:calcusedlimit item)) (* usdrate (:usd client)))) 
-                    oldmaxeurshares (max 0.001 (if (> (* eurrate (:eur client))  (- (:seclimitinrub item) (:calcusedlimit item))) (- (:seclimitinrub item) (:calcusedlimit item)) (* eurrate (:eur client))))
-                    oldmaxgbpshares (max 0.001 (if (> (* gbprate (:gbp client))  (- (:seclimitinrub item) (:calcusedlimit item))) (- (:seclimitinrub item) (:calcusedlimit item)) (* gbprate (:gbp client))))
-                    oldmaxrubshares (max 0.001 (if (> (- (:rub client) (:margin client)) (- (:seclimitinrub item) (:calcusedlimit item))) (- (:seclimitinrub item) (:calcusedlimit item)) (- (:rub client) (:margin client))))
+                    oldmaxusdshares (min (* usdrate (:usd client))  (- (:seclimitinrub item) (:calcusedlimit item)))
+                    oldmaxeurshares (min (* eurrate (:eur client))  (- (:seclimitinrub item) (:calcusedlimit item)))
+                    oldmaxgbpshares (min (* gbprate (:gbp client))  (- (:seclimitinrub item) (:calcusedlimit item)))
+                    oldmaxrubshares (min (- (:rub client) (:margin client)) (- (:seclimitinrub item) (:calcusedlimit item)))
+
+                    oldmaxusdshares (if (> (abs oldmaxusdshares) 0.001) oldmaxusdshares 0.001)
+                    oldmaxeurshares (if (> (abs oldmaxeurshares) 0.001) oldmaxeurshares 0.001)
+                    oldmaxgbpshares (if (> (abs oldmaxgbpshares) 0.001) oldmaxgbpshares 0.001)
+                    oldmaxrubshares (if (> (abs oldmaxrubshares) 0.001) oldmaxrubshares 0.001)
 
                     newseclimitinrub (* (/ (:seclimitinrub item) 10.0) (:percentage @data))
 
-                    newmaxusdshares (* (/ (if (> (* usdrate (:usd client))  (- newseclimitinrub (:calcusedlimit item))) (- newseclimitinrub (:calcusedlimit item)) (* usdrate (:usd client))) oldmaxusdshares) (:maxusdshares item))
+                    newmaxusdshares (* (/ (min (* usdrate (:usd client))  (- newseclimitinrub (:calcusedlimit item))) oldmaxusdshares) (:maxusdshares item))
 
-                    newmaxeurshares (* (/ (if (> (* eurrate (:eur client))  (- newseclimitinrub (:calcusedlimit item))) (- newseclimitinrub (:calcusedlimit item)) (* eurrate (:eur client))) oldmaxeurshares) (:maxeurshares item))
+                    newmaxeurshares (* (/ (min (* eurrate (:eur client))  (- newseclimitinrub (:calcusedlimit item))) oldmaxeurshares) (:maxeurshares item))
 
-                    newmaxgbpshares (* (/ (if (> (* gbprate (:gbp client))  (- newseclimitinrub (:calcusedlimit item))) (- newseclimitinrub (:calcusedlimit item)) (* gbprate (:gbp client))) oldmaxgbpshares) (:maxgbpshares item))
+                    newmaxgbpshares (* (/ (min (* gbprate (:gbp client))  (- newseclimitinrub (:calcusedlimit item))) oldmaxgbpshares) (:maxgbpshares item))
 
-                    newmaxrubshares (* (/ (if (> (- (:rub client) (:margin client)) (- newseclimitinrub (:calcusedlimit item))) (- newseclimitinrub (:calcusedlimit item)) (- (:rub client) (:margin client))) oldmaxrubshares) (:maxrubshares item))
+                    newmaxrubshares (* (/ (min (- (:rub client) (:margin client)) (- newseclimitinrub (:calcusedlimit item))) oldmaxrubshares) (:maxrubshares item))
 
-                    newfreelimit (* (/ (- newseclimitinrub (:calcusedlimit item)) (- (:seclimitinrub item) (:calcusedlimit item))) (:freelimit item))
+                    newfreelimit (if (= 0 (:seclimitinrub item)) 0 (* (/ (- newseclimitinrub (:calcusedlimit item)) (- (:seclimitinrub item) (:calcusedlimit item))) (:freelimit item))) 
 
-                    sharestobuy (gstring/format "%.0f" (case (:selectedcurrency @data) "all" (if (< newfreelimit 0.0) newfreelimit (if (< newfreelimit (+ newmaxusdshares newmaxrubshares newmaxeurshares newmaxgbpshares)) newfreelimit (+ newmaxusdshares newmaxrubshares newmaxeurshares newmaxgbpshares))) "usd" newmaxusdshares "eur" newmaxeurshares "gbp" newmaxgbpshares newmaxrubshares))
+                    sharestobuy (gstring/format "%.0f" (case (:selectedcurrency @data) "all" (if (< newfreelimit 0.0) newfreelimit (min newfreelimit (+ newmaxusdshares newmaxrubshares newmaxeurshares newmaxgbpshares))) "usd" newmaxusdshares "eur" newmaxeurshares "gbp" newmaxgbpshares newmaxrubshares))
 
-                    tr1 (.log js/console (str "newusd=" newmaxusdshares " neweur=" newmaxeurshares))
+                    ;tr1 (.log js/console (str "newusd=" newmaxusdshares " neweur=" newmaxeurshares))
                    ]
 
 

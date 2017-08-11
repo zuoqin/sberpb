@@ -90,15 +90,15 @@
   (let []
     (case (:sort-list @app-state)
       0 (let []
-          (if (or (< (compare (name (first asset1)) (name (first asset2))) 0) )  
+          (if (or (< (compare (subs (str (first asset1)) 1) (subs (str (first asset2)) 1)) 0) )  
               true
               false
           )
         )
       1 (let [
-          sec1 (first (filter (fn[x] (if( = (name (first asset1)) (:acode x)) true false)) (:securities @sbercore/app-state)))
+          sec1 (first (filter (fn[x] (if( = (subs (str (first asset1)) 1) (:acode x)) true false)) (:securities @sbercore/app-state)))
 
-          sec2 (first (filter (fn[x] (if( = (name (first asset2)) (:acode x)) true false)) (:securities @sbercore/app-state)))
+          sec2 (first (filter (fn[x] (if( = (subs (str (first asset2)) 1) (:acode x)) true false)) (:securities @sbercore/app-state)))
               
           price1 (:price sec1)
           price2 (:price sec2)
@@ -158,7 +158,7 @@
     (dom/div {:className "list-group" :style {:display "block"}}
       (map (fn [item]
         (let [
-              sec (first (filter (fn[x] (if( = (name (first item)) (:acode x)) true false)) (:securities @sbercore/app-state)))
+              sec (first (filter (fn[x] (if( = (subs (str (first item)) 1) (:acode x)) true false)) (:securities @sbercore/app-state)))
 
               price (:price sec)
               seccurrency (:currency sec )
@@ -248,7 +248,7 @@
            (sort (comp comp-assets) (filter (fn [x] (let [
 
                ]
-               (if (or (= false (str/includes? (str/lower-case (name (first x))) (str/lower-case (:search @sbercore/app-state)))))  false true)) ) (:assets @sbercore/app-state)))
+               (if (or (= false (str/includes? (str/lower-case (subs (str (first x)) 1)) (str/lower-case (:search @sbercore/app-state)))))  false true)) ) (:assets @sbercore/app-state)))
       )
     )
   )

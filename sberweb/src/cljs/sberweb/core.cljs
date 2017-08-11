@@ -54,7 +54,7 @@
 
 (defn onVersionInfo []
   (let [     
-      newdata { :info "Global Asset Management System пользовательский интерфейс обновлен 07.08.2017 17:28" }
+      newdata { :info "Global Asset Management System пользовательский интерфейс обновлен 10.08.2017 09:28" }
     ]
    
     (setVersionInfo newdata)
