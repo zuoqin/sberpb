@@ -29,6 +29,9 @@
 (def build-in-basicdate-formatter (f/formatters :basic-date))
 (def build-in-date-formatter (f/formatters :date))
 
+;secs (secs/get-securities)
+
+(def app-state (atom {}) )
 
 (def client_state (atom {}))
 
@@ -140,12 +143,13 @@
                         ;tr1 (println "step 3")
                         prevusdprice (:wapusd ((keyword sec) result))
 
-                        wap (if (= 0.0 amnt ) (* (:price tran) (if (or (= 5 (:assettype security)) (= 15 (:assettype security)))  1.0 (/ trancurfxrate seccurfxrate)))  (if (not= newamnt 0.0) (if (> tranamnt 0.0) (/ (+ (* prevpr amnt) (* (:price tran) (if (or (= 5 (:assettype security)) (= 15 (:assettype security)))  1.0 (/ trancurfxrate seccurfxrate)) tranamnt)) newamnt)  prevpr)  0.0))
+                        seccurprice (* (:price tran) (if (or (= 5 (:assettype security)) (= 15 (:assettype security)))  1.0 (/ trancurfxrate seccurfxrate)))
 
+                        wap (if (= 0.0 amnt ) seccurprice (if (> newamnt 0.0) (if (> amnt 0.0) (if (> tranamnt 0.0) (/ (+ (* prevpr amnt) (* seccurprice tranamnt)) newamnt)  prevpr) seccurprice) (if (< amnt 0.0) (if (< tranamnt 0.0) (/ (+ (* prevpr amnt) (* seccurprice tranamnt)) newamnt) prevpr) seccurprice)))
                         
-                        waprub (if (= amnt 0.0)  rubprice (if (= "S" (:direction tran)) prevrubprice (if (> newamnt 0.0) (/ (+ (* prevrubprice amnt) (* rubprice tranamnt)) newamnt) 0.0)) )
+                        waprub (if (= 0.0 amnt ) rubprice (if (> newamnt 0.0) (if (> amnt 0.0) (if (> tranamnt 0.0) (/ (+ (* prevrubprice amnt) (* rubprice tranamnt)) newamnt)  prevrubprice) rubprice) (if (< amnt 0.0) (if (< tranamnt 0.0) (/ (+ (* prevrubprice amnt) (* rubprice tranamnt)) newamnt) prevrubprice) rubprice)))
                          
-                        wapusd (if (= amnt 0.0) usdprice (if (= "S" (:direction tran)) prevusdprice (if (> newamnt 0.0) (/ (+ (* prevusdprice amnt) (* usdprice tranamnt)) newamnt) 0.0)))
+                        wapusd (if (= 0.0 amnt ) usdprice (if (> newamnt 0.0) (if (> amnt 0.0) (if (> tranamnt 0.0) (/ (+ (* prevusdprice amnt) (* usdprice tranamnt)) newamnt)  prevusdprice) usdprice) (if (< amnt 0.0) (if (< tranamnt 0.0) (/ (+ (* prevusdprice amnt) (* usdprice tranamnt)) newamnt) prevusdprice) usdprice)))
 
                         ;tr1 (if (= (:id security) 17592186046065) (println (str "assettype=" (:assettype security) " amnt= " amnt " newamnt= " newamnt " wap= " wap " waprub= " waprub " wapusd= " wapusd " prevusdprice= " prevusdprice)))
 
@@ -373,10 +377,11 @@
                         ;tr1 (if (= (:client tran) "GBCJF") (println (str "secfx= " seccurfxrate " usdprice=" usdprice " rubprice=" rubprice " assetprice=" (:assettype thesecurity)))) 
                         ;tr1 (if (= client "PYUMF") (println (str "prevpr= " prevpr " amnt= " amnt " tranamnt= " tranamnt " newamnt= " newamnt))) 
                         
-                        wap (if (= 0.0 amnt ) seccurprice  (if (> newamnt 0.0) (if (> tranamnt 0.0) (/ (+ (* prevpr amnt) (* seccurprice tranamnt)) newamnt)  prevpr)  0.0))
+                        wap    (if (= 0.0 amnt ) seccurprice (if (> newamnt 0.0) (if (> amnt 0.0) (if (> tranamnt 0.0) (/ (+ (* prevpr amnt) (* seccurprice tranamnt)) newamnt)  prevpr) seccurprice)   (if (< amnt 0.0) (if (< tranamnt 0.0) (/ (+ (* prevpr amnt) (* seccurprice tranamnt)) newamnt)  prevpr) seccurprice) ))
 
-                        waprub (if (= amnt 0.0)  rubprice (if (= "S" (:direction tran)) prevrubprice (if (> newamnt 0.0) (/ (+ (* prevrubprice amnt) (* rubprice tranamnt)) newamnt) 0.0)) )
-                        wapusd (if (= amnt 0.0) usdprice (if (= "S" (:direction tran)) prevusdprice (if (> newamnt 0.0) (/ (+ (* prevusdprice amnt) (* usdprice tranamnt)) newamnt) 0.0)))
+                        waprub (if (= 0.0 amnt ) rubprice (if (> newamnt 0.0) (if (> amnt 0.0) (if (> tranamnt 0.0) (/ (+ (* prevrubprice amnt) (* rubprice tranamnt)) newamnt)  prevrubprice) rubprice)   (if (< amnt 0.0) (if (< tranamnt 0.0) (/ (+ (* prevrubprice amnt) (* rubprice tranamnt)) newamnt)  prevrubprice) rubprice))) 
+
+                        wapusd (if (= amnt 0.0) usdprice (if (> newamnt 0.0) (if (> amnt 0.0) (if (> tranamnt 0.0) (/ (+ (* prevusdprice amnt) (* usdprice tranamnt)) newamnt)  prevusdprice) usdprice)   (if (< amnt 0.0) (if (< tranamnt 0.0) (/ (+ (* prevusdprice amnt) (* usdprice tranamnt)) newamnt)  prevusdprice) usdprice)))
                         ]
                     (recur (assoc-in result [(keyword client) ] {:amount newamnt :price wap :rubprice waprub :wapusd wapusd} )
                          (rest trans))
@@ -633,16 +638,25 @@
 (defn append-position-to-file [client position dt]
   (let [
         ;;tr1 (println position)
-        str1 (str client "," (name (first position)) "," (format "%.1f" (/ (:amount (second position)) (if (str/includes? (name (first position)) "LKOH=") 10.0 1.0))) "," (:price (second position)) "," (f/unparse build-in-basicdate-formatter (c/from-long (c/to-long dt)) ) "\n")
+        str1 (str client "," (:bcode (second position)) "," (format "%.1f" (/ (:amount (second position)) (if (str/includes? (name (first position)) "LKOH=") 10.0 (if (str/includes? (name (first position)) "SBRF=") 100.0 1.0)))) "," (:price (second position)) "," (f/unparse build-in-basicdate-formatter (c/from-long (c/to-long dt)) ) "\n")
         ]
     ;;(println str1)
     (spit (str (-> env :drive) ":/DEV/output/" client ".txt") str1 :append true)
   )
 )
 
+(defn cacheSecurities []
+  (let [
+    secs (secs/get-securities)
+    tr1 (swap! app-state assoc-in [:secs] secs)
+    ]
+    secs
+  )
+)
 
 (defn get-secid-by-isin [isin]
-  (let [secs (secs/get-securities)
+  (let [
+        secs (if (nil? (:secs @app-state)) (cacheSecurities) (:secs @app-state))
         sec (first (filter (fn [x] (if (= (compare (:isin x) isin) 0) true false)) secs))
         ]
     (:id sec)
@@ -660,16 +674,18 @@
 
              multiple (if (nil? (second (first (filter (fn [y] (if (= (first y) :security/multiple) true false)) sec) ))) 1.0 (second (first (filter (fn [y] (if (= (first y) :security/multiple) true false)) sec) )))
 
+             bcode (second (first (filter (fn [y] (if (= (first y) :security/bcode) true false)) sec) ))
+
              ;tr1 (if (= (name (first x)) "GB0032360173") (println (str "x=" x " currency=" currency ""))) 
              ;tr1 (println (str "sec=" sec))
           ]
-          [(name (first x)) {:amount (* multiple (:amount (second x))) :price (:price (second x))}]
+          [(name (first x)) {:bcode bcode :amount (* multiple (:amount (second x))) :price (:price (second x))}]
       )
       ) positions)
 
 
     ;tr1 (println (first (into [] positions)))
-    newpositions (filter (fn [x] (if (> (:amount (second x)) 0.0) true false )) (into [] positions1))
+    newpositions (filter (fn [x] (if (not= (:amount (second x)) 0.0) true false )) (into [] positions1))
 
     ;tr1 (println (str (first newpositions)))
     ;changecurrencyprice (map (fn [x] [(first x) {:amount (:amount (second x)) ()}]) newpositions)
@@ -764,14 +780,12 @@
   )
 )
 
-
-
 (defn getBloombergTransactions [token client]
   (let [
     transactions (sort (comp sort-tran-from-db) (db/get-transactions-from-db client (java.util.Date.)))
 
     ;tr1 (println (first transactions))
-    securities (secs/get-securities)
+    securities (if (nil? (:secs @app-state)) (cacheSecurities) (:secs @app-state))
     
     newtransactions (loop
       [result [] amounts {} trans transactions]
@@ -783,7 +797,9 @@
           sec (first (filter (fn [y] (if (= (:security tran) (:acode y)) true false)) securities))
 
           ;tr1 (println (str "sec=" sec) )
+          bcode (:bcode sec)
           isin (:isin sec)
+
           assettype (:assettype sec)
 
 
@@ -799,7 +815,7 @@
           
           ;tr1 (if (= isin "GB0032360173") (println (str "price= " (:price tran) "fullprice=" (:price tran) " fx=" (:fx tran)) )) 
       ]
-      (recur (conj result {:portfolio client :isin isin :quantity (/ (:nominal tran) (if (str/includes? isin "LKOH=") 10.0 1.0))  :price (:price tran) :date (f/unparse build-in-basicdate-formatter (c/from-long (c/to-long (:valuedate tran))) ) :type (if (> tranamnt 0) (if (> newamnt 0) "BUY LONG" "BUY TO COVER") (if (< newamnt 0) "SELL SHORT" "SELL LONG")) }) (assoc-in amounts [(keyword (:acode sec)) ] {:amount newamnt} ) (rest trans))
+      (recur (conj result {:portfolio client :isin isin :bcode bcode :quantity (/ (:nominal tran) (if (str/includes? isin "LKOH=") 10.0 (if (str/includes? isin "SBRF=") 100.0 1.0))) :price (:price tran) :date (f/unparse build-in-basicdate-formatter (c/from-long (c/to-long (:valuedate tran))) ) :type (if (> tranamnt 0) (if (> newamnt 0) "BUY LONG" "BUY TO COVER") (if (< newamnt 0) "SELL SHORT" "SELL LONG")) }) (assoc-in amounts [(keyword (:acode sec)) ] {:amount newamnt} ) (rest trans))
       )
       result)
     )
@@ -807,26 +823,22 @@
     newtrans (map (fn [x] (let [
 
        sec (db/ent [[(get-secid-by-isin (:isin x) )]])
-       ;;tr1 (println (str x))
-       assettype (second (first (filter (fn [y] (if (= (first y) :security/assettype) true false)) sec ) ))
-       currency (second (first (filter (fn [y] (if (= (first y) :security/currency) true false)) sec ) ))
-       isrussian (if (and 
+       ;tr1 (println (str sec))
+       multiple (second (first (filter (fn [y] (if (= (first y) :security/multiple) true false)) sec )))
+       multiple (if (nil? multiple) 1.0 multiple)
+       ;currency (second (first (filter (fn [y] (if (= (first y) :security/currency) true false)) sec )))
 
-;; Check ISIN starts with RU
-(= (compare (second (first (filter (fn [y] (if (= (first y) :security/currency) true false)) sec) )) "RUB") 0 ) 
-;; Check currency = RUB
-(= (compare (second (first (filter (fn [y] (if (= (first y) :security/currency) true false)) sec) )) "RUB") 0 ) 
-)  true false)
     ]
-    [(:portfolio x)  (:isin x) (if (and (= assettype 5) (= isrussian true)) (* 1000 (:quantity x)) (:quantity x)) (:price x)  (:date x) (:type x)] 
+    [(:portfolio x)  (:bcode x) (* (:quantity x) multiple) (:price x) (:date x) (:type x)]
 )) newtransactions)
 
     ;tr1 (println (str (nth newtrans 1)))
-    wb (create-workbook "transactions" (reduce conj [["portfolio" "isin" "quantity" "price" "date" "type"]]  newtrans) )
+    wb (create-workbook "transactions" (reduce conj [["portfolio" "bcode" "quantity" "price" "date" "type"]]  newtrans) )
     ]
     (do (save-workbook! (str (-> env :drive) ":/dev/java/" client ".xlsx")  wb))
     ;(save-xls ["sheet1" (dataset [:portfolio :isin :quantity :price :date :type] newtrans)] (str drive ":/DEV/Java/" client "_trans.xlsx") )
     "Success"
+    ;newtransactions
   )
 )
 

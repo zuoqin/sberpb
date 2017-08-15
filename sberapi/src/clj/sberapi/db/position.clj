@@ -18,7 +18,7 @@
 (defn get-fxrate-by-date [currency dt]
   (let [
 
-    ;;tr1 (println (str "in get-fxrate-by-date " currency " date=" dt) )
+    ;tr1 (println (str "in get-fxrate-by-date " currency " date=" dt) )
 
 
     newdate dt ;(java.util.Date. (c/to-long (f/parse custom-formatter (f/unparse custom-formatter (c/from-long (c/to-long dt))))))
@@ -165,11 +165,15 @@
         ;; security currency
         currency (second (first (filter (fn [x] (if (= (first x) (keyword "security/currency")) true false)) security)))
 
-
         fx_sec_currency  (if (or (= "RUR" currency) (= "RUB" currency))  1 (get-fxrate-by-date currency (second (first (filter (fn [x] (if (= (first x) (keyword "transaction/valuedate")) true false)) tran)))))
 
+        trancurrency (second (first (filter (fn [x] (if (= (first x) (keyword "transaction/currency")) true false)) tran)))
 
-        fx_tran_currency (if (or (= "RUR" (second (first (filter (fn [x] (if (= (first x) (keyword "transaction/currency")) true false)) tran)))) (= "RUB" (second (first (filter (fn [x] (if (= (first x) (keyword "transaction/currency")) true false)) tran)))))  1 (get-fxrate-by-date (second (first (filter (fn [x] (if (= (first x) (keyword "transaction/currency")) true false)) tran))) (second (first (filter (fn [x] (if (= (first x) (keyword "transaction/valuedate")) true false)) tran)))))
+        newtrancurrency (if (= "PTS" trancurrency) currency trancurrency)
+        ;tr1 (println (str "newtrancurrency=" newtrancurrency))
+
+
+        fx_tran_currency (if (or (= "RUR" newtrancurrency) (= "RUB" newtrancurrency))  1 (get-fxrate-by-date newtrancurrency (second (first (filter (fn [x] (if (= (first x) (keyword "transaction/valuedate")) true false)) tran)))))
 
         newprice (* (second (first (filter (fn [x] (if (= (first x) (keyword "transaction/price")) true false)) tran))) (/ fx_tran_currency fx_sec_currency) (if (= "GBX" currency) 1.0 1.0))
 

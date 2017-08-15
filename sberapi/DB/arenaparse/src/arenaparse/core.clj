@@ -64,7 +64,7 @@
 (defn append-position-to-file [client position dt]
   (let [
         ;;tr1 (println position)
-        str1 (str client "," (name (first position)) "," (format "%.1f" (/ (:amount (second position)) (if (str/includes? (name (first position)) "LKOH=") 10.0 1.0))) "," (:price (second position)) "," (f/unparse build-in-basicdate-formatter (c/from-long (c/to-long dt)) ) "\n")
+        str1 (str client "," (name (first position)) "," (format "%.1f" (/ (:amount (second position)) (if (str/includes? (name (first position)) "LKOH=") 10.0 (if (str/includes? (name (first position)) "SBRF=") 100.0 1.0)))) "," (:price (second position)) "," (f/unparse build-in-basicdate-formatter (c/from-long (c/to-long dt)) ) "\n")
         ]
     ;;(println str1)
     (spit (str drive ":/DEV/output/" client ".txt") str1 :append true)
@@ -182,7 +182,7 @@
   (let [
      conn (d/connect uri)
      ]
-    (d/transact-async conn [{ :security/acode "AMATUS", :security/isin "US0382221051", :security/bcode "AMAT US Equity", :security/assettype 1, :security/multiple 1.0, :security/name "Yandex NV", :security/exchange "BVAL", :security/currency "USD", :db/id #db/id[:db.part/user -100332]}
+    (d/transact-async conn [{ :security/acode "EFGIF_0219A", :security/isin "CH0374210356", :security/bcode "CH0374210356 Corp", :security/assettype 5, :security/multiple 1.0, :security/name "", :security/currency "USD", :db/id #db/id[:db.part/user -100730]}
 ]
     )
     ; To insert new entity:
@@ -332,7 +332,7 @@
   (let [
     dt1 (java.util.Date.)
     conn (d/connect uri)
-    dt2 (java.util.Date. (c/to-long (f/parse custom-formatter (f/unparse custom-formatter (c/from-long (- (c/to-long dt1) (* 1000 24 3600 3)))))))
+    dt2 (java.util.Date. (c/to-long (f/parse custom-formatter (f/unparse custom-formatter (c/from-long (- (c/to-long dt1) (* 1000 24 3600 5)))))))
 
     ;dt3 (java.util.Date. (c/to-long (f/parse custom-formatter (f/unparse custom-formatter (c/from-long (+ (c/to-long dt1) (* 1000 24 3600 3)))))))
     
@@ -938,7 +938,7 @@
           
           ;tr1 (if (= isin "GB0032360173") (println (str "price= " (:price tran) "fullprice=" (:price tran) " fx=" (:fx tran)) )) 
       ]
-      (recur (conj result {:portfolio client :isin isin :quantity (/ (:nominal tran) (if (str/includes? isin "LKOH=") 10.0 1.0))  :price (:price tran) :date (f/unparse build-in-basicdate-formatter (c/from-long (c/to-long (:valuedate tran))) ) :type (if (> tranamnt 0) (if (> newamnt 0) "BUY LONG" "BUY TO COVER") (if (< newamnt 0) "SELL SHORT" "SELL LONG")) }) (assoc-in amounts [(keyword (:acode sec)) ] {:amount newamnt} ) (rest trans))
+      (recur (conj result {:portfolio client :isin isin :quantity (/ (:nominal tran) (if (str/includes? isin "LKOH=") 10.0 (if (str/includes? isin "SBRF=") 100.0 1.0)))  :price (:price tran) :date (f/unparse build-in-basicdate-formatter (c/from-long (c/to-long (:valuedate tran))) ) :type (if (> tranamnt 0) (if (> newamnt 0) "BUY LONG" "BUY TO COVER") (if (< newamnt 0) "SELL SHORT" "SELL LONG")) }) (assoc-in amounts [(keyword (:acode sec)) ] {:amount newamnt} ) (rest trans))
       )
       result)
     )
@@ -1004,7 +1004,7 @@
 
                         prevpr (if (nil? (:wapseccurr ((keyword isin) result))) 0 (:wapseccurr ((keyword isin) result)))
                         
-                        seccurrprice (if (= 15 (:assettype thesecurity)) (:price tran) (:price tran))
+                        seccurprice (if (= 15 (:assettype thesecurity)) (:price tran) (:price tran))
 
 
                         rubprice (* (get-fxrate-by-date currency (:valuedate tran)) (:price tran))
@@ -1023,14 +1023,11 @@
                         tranamnt (if (= "B" (:direction tran)) (:nominal tran) (- 0 (:nominal tran)))
                         newamnt (if (nil? amnt ) tranamnt (+ amnt tranamnt) )
 
-                        wapseccurr (if (or (nil? amnt) (= 0.0 amnt))  seccurrprice (if (> (* tranamnt amnt) 0.0) (/ (+ (* prevpr amnt) (* seccurrprice tranamnt)) newamnt) prevpr))
+                        wapseccurr (if (or (nil? amnt) (= 0.0 amnt)) seccurprice (if (> newamnt 0.0) (if (> amnt 0.0) (if (> tranamnt 0.0) (/ (+ (* prevpr amnt) (* seccurprice tranamnt)) newamnt)  prevpr) seccurprice) (if (< amnt 0.0) (if (< tranamnt 0.0) (/ (+ (* prevpr amnt) (* seccurprice tranamnt)) newamnt) prevpr) seccurprice)))
 
+                        waprub (if (or (nil? amnt) (= 0.0 amnt)) rubprice (if (> newamnt 0.0) (if (> amnt 0.0) (if (> tranamnt 0.0) (/ (+ (* prevrubprice amnt) (* rubprice tranamnt)) newamnt)  prevrubprice) rubprice) (if (< amnt 0.0) (if (< tranamnt 0.0) (/ (+ (* prevrubprice amnt) (* rubprice tranamnt)) newamnt) prevrubprice) rubprice)))
 
-                        waprub (if (or (nil? amnt) (= 0.0 amnt))  rubprice (if (> (* tranamnt amnt) 0.0) (/ (+ (* prevrubprice amnt) (* rubprice tranamnt)) newamnt) prevrubprice))
-
-
-                        wapusd (if (or (nil? amnt) (= 0.0 amnt))  usdprice (if (> (* tranamnt amnt) 0.0) (/ (+ (* prevusdprice amnt) (* usdprice tranamnt)) newamnt) prevusdprice))
-
+                        wapusd (if (or (nil? amnt) (= 0.0 amnt)) usdprice (if (> newamnt 0.0) (if (> amnt 0.0) (if (> tranamnt 0.0) (/ (+ (* prevusdprice amnt) (* usdprice tranamnt)) newamnt)  prevusdprice) usdprice) (if (< amnt 0.0) (if (< tranamnt 0.0) (/ (+ (* prevusdprice amnt) (* usdprice tranamnt)) newamnt) prevusdprice) usdprice)))
                         ;tr3 (if (= (compare (:security tran) "MFON") 0) (println (str "amnt= " amnt " tranamnt=" tranamnt " wapseccurr=" wapseccurr " wapusd=" wapusd " usdprice=" usdprice " rubprice=" rubprice " usdrate=" usdrate " pricetr=" (:price tran) " currencytr=" (:currency tran) " fxtran=" (:fx tran))))
                         ]
                     (recur (assoc-in result [(keyword isin) ] {:amount newamnt :wapseccurr wapseccurr :waprub waprub :wapusd wapusd} )
