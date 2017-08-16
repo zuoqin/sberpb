@@ -1472,6 +1472,10 @@
 
 { :security/acode "EFGIF_0219A", :security/isin "CH0374210356", :security/bcode "CH0374210356 Corp", :security/assettype 5, :security/multiple 1.0, :security/name "", :security/currency "USD", :db/id #db/id[:db.part/user -100730]}
 
+{ :security/acode "MOESKBO27", :security/isin "RU000A0JXJS0", :security/bcode "RU000A0JXJS0 Corp", :security/assettype 5, :security/multiple 1000.0, :security/name "", :security/currency "RUB", :db/id #db/id[:db.part/user -100731]}
+
+{ :security/acode "RZHD-B01P2R", :security/isin "RU000A0JXQ44", :security/bcode "RU000A0JXQ44 Corp", :security/assettype 5, :security/multiple 1000.0, :security/name "", :security/currency "RUB", :db/id #db/id[:db.part/user -100732]}
+
 
 ;;FORTS contracts
 
@@ -1725,7 +1729,7 @@
 
 { :client/code "IVNPF", :client/name "Клиент IVNPF", :client/currency "USD", :client/stockshare 50.0 :client/bondshare 50.0, :client/usd 100000.0, :client/rub 100000.0, :client/eur 100000.0, :client/gbp 100000.0, :client/signedadvisory 5000001.0, :client/advemail "ZWxlbmFfc2xvYm9kaW5hQHNiZXJiYW5rLXBiLnJ1", :client/email "SXZhbm92YTI1QGluYm94LnJ1", :client/advisors [ #db/id[:db.part/user -105001] #db/id[:db.part/user -105013] #db/id[:db.part/user -105010] #db/id[:db.part/user -105011] #db/id[:db.part/user -105007] ], :db/id #db/id[:db.part/user -102088]}
 
-{ :client/code "EMQQF1", :client/name "EMQQF w/o YANDX", :client/currency "USD", :client/stockshare 50.0 :client/bondshare 50.0, :client/usd 100000.0, :client/rub 100000.0, :client/eur 100000.0, :client/gbp 100000.0, :client/signedadvisory 5000001.0, :client/advemail "YW50b25fZ29yZWxvdkBzYmVyYmFuay1wYi5ydQ==", :client/email "bWFyaWFtaWFAeWFuZGV4LnJ1", :client/advisors [ #db/id[:db.part/user -105001] #db/id[:db.part/user -105013] #db/id[:db.part/user -105008] #db/id[:db.part/user -105009]], :db/id #db/id[:db.part/user -102089]}
+;{ :client/code "EMQQF1", :client/name "EMQQF w/o YANDX", :client/currency "USD", :client/stockshare 50.0 :client/bondshare 50.0, :client/usd 100000.0, :client/rub 100000.0, :client/eur 100000.0, :client/gbp 100000.0, :client/signedadvisory 5000001.0, :client/advemail "YW50b25fZ29yZWxvdkBzYmVyYmFuay1wYi5ydQ==", :client/email "bWFyaWFtaWFAeWFuZGV4LnJ1", :client/advisors [ #db/id[:db.part/user -105001] #db/id[:db.part/user -105013] #db/id[:db.part/user -105008] #db/id[:db.part/user -105009]], :db/id #db/id[:db.part/user -102089]}
 
 { :client/code "XNPQF1", :client/name "Клиент XNPQF1", :client/currency "USD", :client/stockshare 50.0 :client/bondshare 50.0, :client/usd 100000.0, :client/rub 100000.0, :client/eur 100000.0, :client/gbp 100000.0, :client/signedadvisory 5000001.0, :client/advemail "VmxhZGltaXJfVXNwZW5za2l5QHNiZXJiYW5rLXBiLnJ1", :client/email "c2hhcG92YWxAc2liLWVuZXJnby5ydQ==", :client/advisors [ #db/id[:db.part/user -105001] #db/id[:db.part/user -105013] #db/id[:db.part/user -105004] ], :db/id #db/id[:db.part/user -102090]}
 
@@ -2110,8 +2114,6 @@
 
 { :transaction/client #db/id[:db.part/user -102019], :transaction/security #db/id[:db.part/user -100075], :transaction/nominal 22133.0, :transaction/price 4.2521, :transaction/direction "S", :transaction/tradedate #inst "2015-06-24T10:00:00.0000000Z", :transaction/valuedate #inst "2015-06-24T10:00:00.0000000Z", :transaction/currency "USD", :transaction/comment "Transfer out", :db/id #db/id[:db.part/user -110076] }
 
-{ :transaction/client #db/id[:db.part/user -102019], :transaction/security #db/id[:db.part/user -100098], :transaction/nominal 361.0, :transaction/price 3706.41, :transaction/direction "S", :transaction/tradedate #inst "2017-02-20T10:00:00.0000000Z", :transaction/valuedate #inst "2017-02-20T10:00:00.0000000Z", :transaction/currency "RUB", :transaction/comment "Оферта", :db/id #db/id[:db.part/user -110190] }
-
 { :transaction/client #db/id[:db.part/user -102020], :transaction/security #db/id[:db.part/user -100064], :transaction/nominal 1303000.0, :transaction/price 103.13, :transaction/direction "S", :transaction/tradedate #inst "2016-12-12T10:00:00.0000000Z", :transaction/valuedate #inst "2016-12-12T10:00:00.0000000Z", :transaction/currency "USD", :transaction/comment "Call options on URANIUM18", :db/id #db/id[:db.part/user -110077] }
 
 { :transaction/client #db/id[:db.part/user -102020], :transaction/security #db/id[:db.part/user -100086], :transaction/nominal 225000.0, :transaction/price 101.75, :transaction/direction "S", :transaction/tradedate #inst "2016-04-25T10:00:00.0000000Z", :transaction/valuedate #inst "2016-04-25T10:00:00.0000000Z", :transaction/currency "USD", :transaction/comment "Оферта Евраз 6.75% 27apr2018", :db/id #db/id[:db.part/user -110095] }
@@ -2167,6 +2169,12 @@
 { :transaction/client #db/id[:db.part/user -102026], :transaction/security #db/id[:db.part/user -100140], :transaction/nominal 1580.0, :transaction/price 15.8159,:transaction/direction "B",:transaction/tradedate #inst "2015-07-08T10:00:00.0000000Z",:transaction/valuedate #inst "2015-07-08T10:00:00.0000000Z", :transaction/currency "USD", :transaction/comment "Замена NILSY_OLD в NILSY", :db/id #db/id[:db.part/user -110118] }
 
 { :transaction/client #db/id[:db.part/user -102027], :transaction/security #db/id[:db.part/user -100098], :transaction/nominal 5060.0, :transaction/price 3706.41,:transaction/direction "S",:transaction/tradedate #inst "2017-02-20T10:00:00.0000000Z",:transaction/valuedate #inst "2017-02-20T10:00:00.0000000Z", :transaction/currency "RUB", :transaction/comment "Оферта", :db/id #db/id[:db.part/user -110119] }
+
+{ :transaction/client #db/id[:db.part/user -102057], :transaction/security #db/id[:db.part/user -100054], :transaction/nominal 200000.0, :transaction/price 102.0, :transaction/direction "B",:transaction/tradedate #inst "2016-11-16T10:00:00.0000000Z",:transaction/valuedate #inst "2016-11-16T10:00:00.0000000Z", :transaction/currency "USD", :transaction/comment "Transfer from BBKEF", :db/id #db/id[:db.part/user -110120] }
+
+{ :transaction/client #db/id[:db.part/user -102065], :transaction/security #db/id[:db.part/user -100052], :transaction/nominal 1000000.0, :transaction/price 176.061, :transaction/direction "S",:transaction/tradedate #inst "2017-07-26T10:00:00.0000000Z",:transaction/valuedate #inst "2017-07-26T10:00:00.0000000Z", :transaction/currency "USD", :transaction/comment "Transfer Out", :db/id #db/id[:db.part/user -110121] }
+
+{ :transaction/client #db/id[:db.part/user -102066], :transaction/security #db/id[:db.part/user -100010], :transaction/nominal 100000.0, :transaction/price 28.444, :transaction/direction "S",:transaction/tradedate #inst "2017-08-08T10:00:00.0000000Z",:transaction/valuedate #inst "2017-08-08T10:00:00.0000000Z", :transaction/currency "EUR", :transaction/comment "Transfer Out", :db/id #db/id[:db.part/user -110122] }
 
 { :transaction/client #db/id[:db.part/user -102029], :transaction/security #db/id[:db.part/user -100252], :transaction/nominal 10000000.0, :transaction/price 100.0, :transaction/direction "S",:transaction/tradedate #inst "2016-07-25T10:00:00.0000000Z",:transaction/valuedate #inst "2016-07-25T10:00:00.0000000Z", :transaction/currency "RUB", :transaction/comment "Погашение Газпромбанк 7.875% 25jul2016", :db/id #db/id[:db.part/user -110123] }
 
@@ -2232,7 +2240,9 @@
 
 { :transaction/client #db/id[:db.part/user -102045], :transaction/security #db/id[:db.part/user -100098], :transaction/nominal 4199.0, :transaction/price 3706.41, :transaction/direction "S", :transaction/tradedate #inst "2017-02-20T10:00:00.0000000Z", :transaction/valuedate #inst "2017-02-20T10:00:00.0000000Z", :transaction/currency "RUB", :transaction/comment "Оферта", :db/id #db/id[:db.part/user -110189] }
 
-;{ :transaction/client #db/id[:db.part/user -102047], :transaction/security #db/id[:db.part/user -100098], :transaction/nominal 2803.0, :transaction/price 3706.41, :transaction/direction "S", :transaction/tradedate #inst "2017-02-20T10:00:00.0000000Z", :transaction/valuedate #inst "2017-02-20T10:00:00.0000000Z", :transaction/currency "RUB", :transaction/comment "Оферта", :db/id #db/id[:db.part/user -110191] }
+{ :transaction/client #db/id[:db.part/user -102019], :transaction/security #db/id[:db.part/user -100098], :transaction/nominal 361.0, :transaction/price 3706.41, :transaction/direction "S", :transaction/tradedate #inst "2017-02-20T10:00:00.0000000Z", :transaction/valuedate #inst "2017-02-20T10:00:00.0000000Z", :transaction/currency "RUB", :transaction/comment "Оферта", :db/id #db/id[:db.part/user -110190] }
+
+{ :transaction/client #db/id[:db.part/user -102066], :transaction/security #db/id[:db.part/user -100419], :transaction/nominal 200000.0, :transaction/price 101.669, :transaction/direction "S", :transaction/tradedate #inst "2017-08-08T10:00:00.0000000Z", :transaction/valuedate #inst "2017-08-08T10:00:00.0000000Z", :transaction/currency "USD", :transaction/comment "Transfer Out", :db/id #db/id[:db.part/user -110191] }
 
 { :transaction/client #db/id[:db.part/user -102035], :transaction/security #db/id[:db.part/user -100377], :transaction/nominal 9960.0, :transaction/price 98.49, :transaction/direction "S", :transaction/tradedate #inst "2016-11-01T10:00:00.0000000Z", :transaction/valuedate #inst "2016-11-01T10:00:00.0000000Z", :transaction/currency "RUB", :transaction/comment "Intreraccount transfer", :db/id #db/id[:db.part/user -110192]}
 
@@ -2275,8 +2285,6 @@
 { :transaction/client #db/id[:db.part/user -102056], :transaction/security #db/id[:db.part/user -100413], :transaction/nominal 200000.0, :transaction/price 100.0, :transaction/direction "B", :transaction/tradedate #inst "2017-01-24T10:00:00.0000000Z", :transaction/valuedate #inst "2017-01-24T10:00:00.0000000Z", :transaction/currency "USD", :transaction/comment "Transfer", :db/id #db/id[:db.part/user -110211] }
 
 { :transaction/client #db/id[:db.part/user -102056], :transaction/security #db/id[:db.part/user -100098], :transaction/nominal 1398.0, :transaction/price 3706.41, :transaction/direction "S", :transaction/tradedate #inst "2017-02-20T10:00:00.0000000Z", :transaction/valuedate #inst "2017-02-20T10:00:00.0000000Z", :transaction/currency "RUB", :transaction/comment "Оферта", :db/id #db/id[:db.part/user -110212] }
-
-{ :transaction/client #db/id[:db.part/user -102057], :transaction/security #db/id[:db.part/user -100054], :transaction/nominal 200000.0, :transaction/price 102.0, :transaction/direction "B",:transaction/tradedate #inst "2016-11-16T10:00:00.0000000Z",:transaction/valuedate #inst "2016-11-16T10:00:00.0000000Z", :transaction/currency "USD", :transaction/comment "Transfer from BBKEF", :db/id #db/id[:db.part/user -110120] }
 
 { :transaction/client #db/id[:db.part/user -102057], :transaction/security #db/id[:db.part/user -100054], :transaction/nominal 200000.0, :transaction/price 103.5, :transaction/direction "B", :transaction/tradedate #inst "2016-09-26T10:00:00.0000000Z", :transaction/valuedate #inst "2016-09-26T10:00:00.0000000Z", :transaction/currency "USD", :transaction/comment "Transfer from BBKEF", :db/id #db/id[:db.part/user -110315] }
 
@@ -2934,7 +2942,7 @@
 
 { :transaction/client #db/id[:db.part/user -102011], :transaction/security #db/id[:db.part/user -100324], :transaction/nominal 25000.0, :transaction/price 101.403, :transaction/direction "B", :transaction/tradedate #inst "2017-04-28T10:00:00.0000000Z", :transaction/valuedate #inst "2017-04-28T10:00:00.0000000Z", :transaction/currency "USD", :transaction/comment "Transfer In", :db/id #db/id[:db.part/user -110533] }
 
-{ :transaction/client #db/id[:db.part/user -102009], :transaction/security #db/id[:db.part/user -100177], :transaction/nominal 200000.0, :transaction/price 106.00, :transaction/direction "S", :transaction/tradedate #inst "2016-10-17T10:00:00.0000000Z", :transaction/valuedate #inst "2016-10-17T10:00:00.0000000Z", :transaction/currency "USD", :transaction/comment "Transfer Out", :db/id #db/id[:db.part/user -110534] }
+{ :transaction/client #db/id[:db.part/user -102066], :transaction/security #db/id[:db.part/user -100514], :transaction/nominal 100000.0, :transaction/price 104.318, :transaction/direction "S", :transaction/tradedate #inst "2017-08-08T10:00:00.0000000Z", :transaction/valuedate #inst "2017-08-08T10:00:00.0000000Z", :transaction/currency "USD", :transaction/comment "Transfer Out", :db/id #db/id[:db.part/user -110534] }
 
 { :transaction/client #db/id[:db.part/user -102115], :transaction/security #db/id[:db.part/user -100098], :transaction/nominal 16836.0, :transaction/price 3706.41, :transaction/direction "S", :transaction/tradedate #inst "2017-02-20T10:00:00.0000000Z", :transaction/valuedate #inst "2017-02-20T10:00:00.0000000Z", :transaction/currency "RUB", :transaction/comment "Оферта", :db/id #db/id[:db.part/user -110535] }
 
@@ -3258,7 +3266,7 @@
 
 { :transaction/client #db/id[:db.part/user -102003], :transaction/security #db/id[:db.part/user -100045], :transaction/nominal 125000.0, :transaction/price 100.00, :transaction/direction "S",:transaction/tradedate #inst "2017-06-19T10:00:00.0000000Z",:transaction/valuedate #inst "2017-06-19T10:00:00.0000000Z", :transaction/currency "USD", :transaction/comment "Worst of Issuer Callable Barrier Reverse Convertible on Johnson & Johnson Merck & Pfizer", :db/id #db/id[:db.part/user -110701] }
 
-;;{ :transaction/client #db/id[:db.part/user -102116], :transaction/security #db/id[:db.part/user -100045], :transaction/nominal 110000.0, :transaction/price 100.00, :transaction/direction "S",:transaction/tradedate #inst "2017-06-19T10:00:00.0000000Z",:transaction/valuedate #inst "2017-06-19T10:00:00.0000000Z", :transaction/currency "USD", :transaction/comment "Worst of Issuer Callable Barrier Reverse Convertible on Johnson & Johnson Merck & Pfizer", :db/id #db/id[:db.part/user -110702] }
+{ :transaction/client #db/id[:db.part/user -102066], :transaction/security #db/id[:db.part/user -100515], :transaction/nominal 100000.0, :transaction/price 108.097, :transaction/direction "S",:transaction/tradedate #inst "2017-08-08T10:00:00.0000000Z",:transaction/valuedate #inst "2017-08-08T10:00:00.0000000Z", :transaction/currency "USD", :transaction/comment "Transfer Out", :db/id #db/id[:db.part/user -110702] }
 
 { :transaction/client #db/id[:db.part/user -102086], :transaction/security #db/id[:db.part/user -100045], :transaction/nominal 97000.0, :transaction/price 100.00, :transaction/direction "S",:transaction/tradedate #inst "2017-06-19T10:00:00.0000000Z",:transaction/valuedate #inst "2017-06-19T10:00:00.0000000Z", :transaction/currency "USD", :transaction/comment "Worst of Issuer Callable Barrier Reverse Convertible on Johnson & Johnson Merck & Pfizer", :db/id #db/id[:db.part/user -110703] }
 
@@ -3450,7 +3458,7 @@
 
 { :transaction/client #db/id[:db.part/user -102143], :transaction/security #db/id[:db.part/user -100201], :transaction/nominal 200000.0, :transaction/price 101.53, :transaction/direction "S", :transaction/tradedate #inst "2016-04-25T01:00:00.0000000Z", :transaction/valuedate #inst "2016-04-25T01:00:00.0000000Z", :transaction/currency "USD", :transaction/comment "Transfer Out", :db/id #db/id[:db.part/user -110788] }
 
-;{ :transaction/client #db/id[:db.part/user -102143], :transaction/security #db/id[:db.part/user -100006], :transaction/nominal 300000.0, :transaction/price 105.50, :transaction/direction "S", :transaction/tradedate #inst "2017-04-13T01:00:00.0000000Z", :transaction/valuedate #inst "2017-04-13T01:00:00.0000000Z", :transaction/currency "USD", :transaction/comment "Transfer Out", :db/id #db/id[:db.part/user -110789] }
+{ :transaction/client #db/id[:db.part/user -102066], :transaction/security #db/id[:db.part/user -100428], :transaction/nominal 200000.0, :transaction/price 103.388, :transaction/direction "S", :transaction/tradedate #inst "2017-08-08T01:00:00.0000000Z", :transaction/valuedate #inst "2017-08-08T01:00:00.0000000Z", :transaction/currency "USD", :transaction/comment "Transfer Out", :db/id #db/id[:db.part/user -110789] }
 
 { :transaction/client #db/id[:db.part/user -102143], :transaction/security #db/id[:db.part/user -100700], :transaction/nominal 487000.0, :transaction/price 110.305, :transaction/direction "S", :transaction/tradedate #inst "2017-02-09T01:00:00.0000000Z", :transaction/valuedate #inst "2017-02-09T01:00:00.0000000Z", :transaction/currency "USD", :transaction/comment "Transfer Out", :db/id #db/id[:db.part/user -110790] }
 
@@ -3885,11 +3893,12 @@
 
 { :transaction/client #db/id[:db.part/user -102065], :transaction/security #db/id[:db.part/user -100057], :transaction/nominal 919000.0, :transaction/price 102.288, :transaction/direction "B", :transaction/tradedate #inst "2017-07-24T10:00:00.0000000Z", :transaction/valuedate #inst "2017-07-24T10:00:00.0000000Z", :transaction/currency "USD", :transaction/comment "Transfer In", :db/id #db/id[:db.part/user -110990] }
 
-;;{ :transaction/client #db/id[:db.part/user -102074], :transaction/security #db/id[:db.part/user -100189], :transaction/nominal 200000.0, :transaction/price 111.75, :transaction/direction "S", :transaction/tradedate #inst "2017-08-03T10:00:00.0000000Z", :transaction/valuedate #inst "2017-08-03T10:00:00.0000000Z", :transaction/currency "USD", :transaction/comment "Оферта Vedanta, 8.250% 7jun2021", :db/id #db/id[:db.part/user -110974] }
+{ :transaction/client #db/id[:db.part/user -102065], :transaction/security #db/id[:db.part/user -100621], :transaction/nominal 246000.0, :transaction/price 100.00, :transaction/direction "B", :transaction/tradedate #inst "2017-06-09T10:00:00.0000000Z", :transaction/valuedate #inst "2017-06-09T10:00:00.0000000Z", :transaction/currency "USD", :transaction/comment "Transfer In", :db/id #db/id[:db.part/user -110991] }
 
-;{ :transaction/client #db/id[:db.part/user -102028], :transaction/security #db/id[:db.part/user -100139], :transaction/nominal 1572.0, :transaction/price 15.9, :transaction/direction "S",:transaction/tradedate #inst "2015-07-10T10:00:00.0000000Z",:transaction/valuedate #inst "2015-07-10T10:00:00.0000000Z", :transaction/currency "USD", :transaction/comment "Замена NILSY_OLD в NILSY", :db/id #db/id[:db.part/user -110121] }
+{ :transaction/client #db/id[:db.part/user -102013], :transaction/security #db/id[:db.part/user -100173], :transaction/nominal 550000.0, :transaction/price 113.593, :transaction/direction "S", :transaction/tradedate #inst "2017-06-22T10:00:00.0000000Z", :transaction/valuedate #inst "2017-06-22T10:00:00.0000000Z", :transaction/currency "USD", :transaction/comment "Transfer Out", :db/id #db/id[:db.part/user -110992] }
 
-;{ :transaction/client #db/id[:db.part/user -102028], :transaction/security #db/id[:db.part/user -100140], :transaction/nominal 1572.0, :transaction/price 15.9, :transaction/direction "B",:transaction/tradedate #inst "2015-07-10T10:00:00.0000000Z",:transaction/valuedate #inst "2015-07-10T10:00:00.0000000Z", :transaction/currency "USD", :transaction/comment "Замена NILSY_OLD в NILSY", :db/id #db/id[:db.part/user -110122] }
+{ :transaction/client #db/id[:db.part/user -102047], :transaction/security #db/id[:db.part/user -100052], :transaction/nominal 1000000.0, :transaction/price 175.465, :transaction/direction "B", :transaction/tradedate #inst "2017-07-25T10:00:00.0000000Z", :transaction/valuedate #inst "2017-07-25T10:00:00.0000000Z", :transaction/currency "USD", :transaction/comment "Transfer In", :db/id #db/id[:db.part/user -110993] }
+
 
 ;; PRICES
 { :price/security #db/id[:db.part/user -100133], :price/lastprice 1.0, :price/valuedate #inst "2000-01-01T10:00:00.0000000Z", :price/analystrating 0.0, :price/targetprice 1.0, :price/yield 0.0, :price/dvddate #inst "1900-01-01T00:00:00.0000000Z", :price/duration 0.0, :price/comment "manual", :price/source "test data", :db/id #db/id[:db.part/user -200001] }

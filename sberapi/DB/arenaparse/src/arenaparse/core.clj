@@ -182,7 +182,9 @@
   (let [
      conn (d/connect uri)
      ]
-    (d/transact-async conn [{ :security/acode "EFGIF_0219A", :security/isin "CH0374210356", :security/bcode "CH0374210356 Corp", :security/assettype 5, :security/multiple 1.0, :security/name "", :security/currency "USD", :db/id #db/id[:db.part/user -100730]}
+    (d/transact-async conn [{ :security/acode "MOESKBO27", :security/isin "RU000A0JXJS0", :security/bcode "RU000A0JXJS0 Corp", :security/assettype 5, :security/multiple 1000.0, :security/name "", :security/currency "RUB", :db/id #db/id[:db.part/user -100731]}
+
+{ :security/acode "RZHD-B01P2R", :security/isin "RU000A0JXQ44", :security/bcode "RU000A0JXQ44 Corp", :security/assettype 5, :security/multiple 1000.0, :security/name "", :security/currency "RUB", :db/id #db/id[:db.part/user -100732]}
 ]
     )
     ; To insert new entity:

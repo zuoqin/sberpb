@@ -135,7 +135,7 @@
 
     ;tr1 (println (str "security = " (first (filter (fn [z] (if (= "RUB" (get z "acode")) true false)) securities) )  " acode=" (get (first securities) "acode")) ) 
     url (str apipath "api/position?client=" client )
-    positions (filter (fn [x] (if (> (get (second x) "amount") 0) true false)) (json/read-str (:body (client/get url {:headers {"authorization" "Bearer TheBearer"}})))) 
+    positions (filter (fn [x] (if (not= (get (second x) "amount") 0.0) true false)) (json/read-str (:body (client/get url {:headers {"authorization" "Bearer TheBearer"}}))))
 
     ;url (str apipath "api/deals?client=" client )
     ;deals (flatten (map (fn [x] (map-deal x)) (filter (fn [x] (if (= 1 1) true false)) (json/read-str (:body (client/get url {:headers {"authorization" "Bearer TheBearer"}}))))))
