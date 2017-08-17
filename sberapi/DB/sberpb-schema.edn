@@ -208,8 +208,8 @@
 {:db/id #db/id[:db.part/db]
   :db/ident :client/advemail
   :db/valueType :db.type/string
-  :db/cardinality :db.cardinality/one
-  :db/doc "Client Advisory email"
+  :db/cardinality :db.cardinality/many
+  :db/doc "Client Advisory emails"
   :db.install/_attribute :db.part/db}
 
 {:db/id #db/id[:db.part/db]

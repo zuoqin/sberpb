@@ -482,6 +482,7 @@
   (let [
     ;; We need to calculate used limits for all portfolios, so use admin as user
     ;;usercode (:iss (-> token str->jwt :claims))
+    tr1 (println (str "in getCalcPortfolios"))
     usercode "zuoqin" 
     ;transactions (into [] (db/get-transactions-by-security security))
 
@@ -552,11 +553,8 @@
  :maxgbpshares (long (/ (if (> (* gbprate (:gbp client))  (- seclimitinrub calcusedlimit)) (- seclimitinrub calcusedlimit) (* gbprate (:gbp client)))  (* (if (= 0.0 seclastrubprice) 1.0 seclastrubprice) (if isbond (* multiple 0.01) 1.0)))) 
       }
       ))   clients)
-
-
-
-    tr1 (swap! sec_state assoc-in [(keyword (str security)) :calcportfs (keyword (str percentage))] calc_portfs)
     ]
+    (swap! sec_state assoc-in [(keyword (str security)) :calcportfs (keyword (str percentage))] calc_portfs)
     calc_portfs
   )
 )
@@ -574,9 +572,12 @@
 (defn calcPortfolios [token security percentage]
   (let [
     newsec (str security)
+    ;tr1 (println (str "security=" newsec " percentage=" (str percentage))) 
+    ;tr1 (println (nil? ((keyword (str percentage)) (:calcportfs ((keyword newsec) @sec_state)))))
     cachedata (if (nil? ((keyword (str percentage)) (:calcportfs ((keyword newsec) @sec_state)))) (getCalcPortfolios token security percentage) ((keyword (str percentage)) (:calcportfs ((keyword newsec) @sec_state))))
     ;;
-    result cachedata;;(map (fn [x] (map-cachedata x percentage)) cachedata)
+    result cachedata ;;(map (fn [x] (map-cachedata x percentage)) cachedata)
+    tr1 (println (str (first result)))
     ]
     result
   )
@@ -638,7 +639,7 @@
 (defn append-position-to-file [client position dt]
   (let [
         ;;tr1 (println position)
-        str1 (str client "," (:bcode (second position)) "," (format "%.1f" (/ (:amount (second position)) (if (str/includes? (name (first position)) "LKOH=") 10.0 (if (str/includes? (name (first position)) "SBRF=") 100.0 1.0)))) "," (:price (second position)) "," (f/unparse build-in-basicdate-formatter (c/from-long (c/to-long dt)) ) "\n")
+        str1 (str client "," (:bcode (second position)) "," (str/replace (format "%.1f" (/ (:amount (second position)) (if (str/includes? (name (first position)) "LKOH=") 10.0 (if (str/includes? (name (first position)) "SBRF=") 100.0 1.0)))) #"," ".") "," (:price (second position)) "," (f/unparse build-in-basicdate-formatter (c/from-long (c/to-long dt)) ) "\n")
         ]
     ;;(println str1)
     (spit (str (-> env :drive) ":/DEV/output/" client ".txt") str1 :append true)
@@ -679,7 +680,7 @@
              ;tr1 (if (= (name (first x)) "GB0032360173") (println (str "x=" x " currency=" currency ""))) 
              ;tr1 (println (str "sec=" sec))
           ]
-          [(name (first x)) {:bcode bcode :amount (* multiple (:amount (second x))) :price (:price (second x))}]
+          [(name (first x)) {:bcode bcode :amount (* (if (or (= assettype 15)) 1.0 multiple) (:amount (second x))) :price (:price (second x))}]
       )
       ) positions)
 
@@ -826,16 +827,17 @@
        ;tr1 (println (str sec))
        multiple (second (first (filter (fn [y] (if (= (first y) :security/multiple) true false)) sec )))
        multiple (if (nil? multiple) 1.0 multiple)
+       assettype (second (first (filter (fn [y] (if (= (first y) :security/assettype) true false)) sec ) ))                                                   
        ;currency (second (first (filter (fn [y] (if (= (first y) :security/currency) true false)) sec )))
 
     ]
-    [(:portfolio x)  (:bcode x) (* (:quantity x) multiple) (:price x) (:date x) (:type x)]
+    [(:portfolio x)  (:bcode x) (* (:quantity x) (if (or (= assettype 15)) 1.0 multiple)) (:price x) (:date x) (:type x)]
 )) newtransactions)
 
     ;tr1 (println (str (nth newtrans 1)))
     wb (create-workbook "transactions" (reduce conj [["portfolio" "bcode" "quantity" "price" "date" "type"]]  newtrans) )
     ]
-    (do (save-workbook! (str (-> env :drive) ":/dev/java/" client ".xlsx")  wb))
+    (do (save-workbook! (str (-> env :drive) ":/dev/java/" client "_trans.xlsx")  wb))
     ;(save-xls ["sheet1" (dataset [:portfolio :isin :quantity :price :date :type] newtrans)] (str drive ":/DEV/Java/" client "_trans.xlsx") )
     "Success"
     ;newtransactions
@@ -878,6 +880,8 @@
       (calcPortfolios "" (:id sec) 10.0)
       (Thread/sleep 3000)
     )
+
     (println "Finished caching data")
+    ;(first securities)
   )
 )

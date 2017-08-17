@@ -98,6 +98,32 @@
 
 
   (context "/api" []
+    :tags ["calcshares"]
+
+    (GET "/calcshares" []
+      :header-params [authorization :- String]
+      :query-params [security :- Long, percentage :- Double]
+      :summary      "calculating limits by portfolios for security"
+
+      (ok  (positionapi/calcPortfolios (nth (str/split authorization #" ") 1) security percentage)
+      )
+    )
+
+    (POST "/calcshares" []
+      :header-params [authorization :- String]
+      :query-params [security :- Long]
+      :body [clients [ClientAmounts]]
+      :summary      "Send emails to client advisors"
+
+      (ok  (positionapi/sendLetters (nth (str/split authorization #" ") 1) security clients)))
+
+    (OPTIONS "/calcshares" []
+      :summary  "Allows OPTIONS requests"
+      (ok "")
+    )
+  )
+
+  (context "/api" []
     :tags ["client"]
 
     (GET "/client" []
@@ -107,30 +133,6 @@
       (ok  (clientapi/getClients (nth (str/split authorization #" ") 1))))
 
     (OPTIONS "/client" []
-      :summary  "Allows OPTIONS requests"
-      (ok "")
-    )
-  )
-
-  (context "/api" []
-    :tags ["calcshares"]
-
-    (GET "/calcshares" []
-      :header-params [authorization :- String]
-      :query-params [security :- Long, percentage :- Double]
-      :summary      "retrieve all clients"
-
-      (ok  (positionapi/calcPortfolios (nth (str/split authorization #" ") 1) security percentage)))
-
-    (POST "/calcshares" []
-      :header-params [authorization :- String]
-      :query-params [security :- Long]
-      :body [clients [ClientAmounts]]
-      :summary      "retrieve all clients"
-
-      (ok  (positionapi/sendLetters (nth (str/split authorization #" ") 1) security clients)))
-
-    (OPTIONS "/calcshares" []
       :summary  "Allows OPTIONS requests"
       (ok "")
     )
