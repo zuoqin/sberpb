@@ -82,7 +82,7 @@
     price (ent priceid)
 
 
-    target (second (first (filter (fn [x] (if (= (first x) (keyword "price/targetprice")) true false)) price) ))
+    target (second (first (filter (fn [x] (if (= (first x) (keyword "price/targetprice")) true false)) price)))
 
     anr (second (first (filter (fn [x] (if (= (first x) (keyword "price/analystrating")) true false)) price) ))
 

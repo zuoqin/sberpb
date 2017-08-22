@@ -104,8 +104,13 @@
       :header-params [authorization :- String]
       :query-params [security :- Long, percentage :- Double]
       :summary      "calculating limits by portfolios for security"
+      (let [
+          tr1 (println (str "In GET calcShares"))
+          result (positionapi/calcPortfolios (nth (str/split authorization #" ") 1) security percentage)
 
-      (ok  (positionapi/calcPortfolios (nth (str/split authorization #" ") 1) security percentage)
+         tr1 (println (str "total records= " (count result)))
+        ]
+        (ok  result)
       )
     )
 

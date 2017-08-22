@@ -664,7 +664,7 @@
                           (= false (str/includes? seccode (str/upper-case (:search @sbercore/app-state)) ))
                       )  false true)
                 ))
-              (:positions ((keyword (:selectedclient @sbercore/app-state)) @sbercore/app-state))
+              (:positions ((keyword (:selectedclient @data)) @data))
             )
           )
         )

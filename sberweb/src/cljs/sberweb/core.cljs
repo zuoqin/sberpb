@@ -110,6 +110,7 @@
 )
 
 
+
 (defn doLogout [data]
   (swap! app-state assoc-in [:view] 0)
 )
@@ -131,6 +132,7 @@
 
 (defn goPositions [e]
   (aset js/window "location" "#/positions")
+  (swap! app-state assoc :state 1)
   (swap! app-state assoc-in [:view] 1)
 )
 
@@ -296,7 +298,6 @@
     ;;tr1 (.log js/console (str "client currency: " (:currency client) "position=" (nth position 1)))
     clientcurrencyrate (:price (first (filter (fn [x] (if (= (str/upper-case (:currency client)) (:acode x)) true false)) (:securities @app-state))))
 
-    ;;isrusbond (if (and (= 5 (:assettype security))  (= "RUB" (:currency security)))  true false)
     isbond (if (and (= 5 (:assettype security)) 
                    ;(= "RU" (subs (:isin security) 0 2))
                    )  true false)
@@ -403,15 +404,73 @@
   )
 )
 
+(defn update-position [position]
+  (let [
+    client (first (filter (fn [x] (if (= (:selectedclient @app-state) (:code x)) true false)) (:clients @app-state)))
+    secid (:id position)
+    security (first (filter (fn [x] (if (= (:id x) secid) true false)) (:securities @app-state)))
+    
+    posprice (:price position)
+    price (if (nil? (:price security)) posprice (:price security))
 
 
+    currency (if (= 0 (compare "GBX" (:currency security))) "GBP" (:currency security))
+
+    
+    fxrate (if (or (= "RUB" currency) (= "RUR" currency)) 1 (:price  (first (filter (fn[x] (if( = (:acode x) currency) true false)) (:securities @app-state)))))
+    usdrate (:price (first (filter (fn [x] (if (= "USD" (:acode x)) true false)) (:securities @app-state))))
+
+
+    ;;tr1 (.log js/console (str "client currency: " (:currency client) "position=" (nth position 1)))
+    clientcurrencyrate (:price (first (filter (fn [x] (if (= (str/upper-case (:currency client)) (:acode x)) true false)) (:securities @app-state))))
+
+    isbond (if (and (= 5 (:assettype security)) 
+                   ;(= "RU" (subs (:isin security) 0 2))
+                   )  true false)
+    newfxrate (if (= 0 (compare "GBX" (:currency security))) (/ fxrate 100.) fxrate)
+
+    result {:id secid :currency (:currency security) :amount (:amount position) :wap posprice :price price :waprub (:waprub position) :currubprice (* price newfxrate) :wapusd (:wapusd position) :usdvalue (/ (* (:amount position) (:price security)  (if (= isbond true) (* newfxrate (:multiple security) 0.01 ) newfxrate )  ) usdrate) :posvalue (/ (* (:amount position) (:price security)  (if (= isbond true) (* newfxrate 0.01 (:multiple security)) newfxrate )  ) clientcurrencyrate) }
+    ]
+    result
+  )
+)
+
+(defn update-selectedclient []
+  (let [
+      positions (:positions ((keyword (:selectedclient @app-state)) @app-state))
+    ]
+    (swap! app-state assoc-in [(keyword (:selectedclient @app-state)) :positions] (map (fn [x] (update-position x)) positions))
+    ;;map-position
+  )
+)
+
+(defn OnGetSecurities [response]
+  (swap! app-state assoc-in [:securities] response )
+  (swap! app-state assoc-in [:state] 1)
+  ;(swap! sbercore/app-state assoc-in [:view] 1 )
+  ;(aset js/window "location" "#/positions")
+  ;(:positions ((keyword (:selectedclient @data)) @data))
+  (if (not (nil? (:selectedclient @app-state))) (update-selectedclient))
+)
 
 
 
 (defn error-handler [{:keys [status status-text]}]
   (.log js/console (str "something bad happened: " status " " status-text))
 )
-,
+
+
+
+(defn reqsecurities []
+  (swap! app-state assoc :state 2 )
+  (GET (str settings/apipath "api/security")
+       {:handler OnGetSecurities
+        :error-handler error-handler
+        :headers {:content-type "application/json"
+                  :Authorization (str "Bearer " (:token  (:token @app-state))) }
+       })
+)
+
 
 
 (defn getPositions []
@@ -818,6 +877,11 @@
               (dom/h5 {:style {:margin-left "5px" :margin-right "5px" :height "32px" :margin-top "1px"}} " "
       (dom/input {:id "search" :type "text" :placeholder "Search" :style {:height "32px" :margin-top "1px"} :value  (:search @data) :onChange (fn [e] (handleChange e )) })  )
             )
+
+            (dom/li {:style {:margin-left "5px"}}
+                    (dom/button #js {:id "btnrefresh" :disabled (if (= 1 (:state @data)) false true) :className (if (= 2 (:state @data)) "btn btn-info m-progress" "btn btn-info")  :type "button" :onClick (fn [e] (reqsecurities))} "Обновить")
+            )
+
             (if (= (nil? (:selectedclient @app-state)) false) (dom/li
                 (dom/h5 {:style {:margin-left "5px" :margin-right "5px" :height "32px" :margin-top "10px"}} (str "Всего лимит инвестирования: " (split-thousands (gstring/format "%.0f" totallimit))  " " currency (if (> (- totallimit portfvalue) 1000.0) (str " Не инвестировано: " (split-thousands (gstring/format "%.0f" (- totallimit portfvalue))) " " currency) " Все средства инвестированы.")  ) )))
 

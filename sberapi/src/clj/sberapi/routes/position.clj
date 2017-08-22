@@ -577,7 +577,7 @@
     cachedata (if (nil? ((keyword (str percentage)) (:calcportfs ((keyword newsec) @sec_state)))) (getCalcPortfolios token security percentage) ((keyword (str percentage)) (:calcportfs ((keyword newsec) @sec_state))))
     ;;
     result cachedata ;;(map (fn [x] (map-cachedata x percentage)) cachedata)
-    tr1 (println (str (first result)))
+    tr1 (println (str "Total records: " (count result)))
     ]
     result
   )
@@ -693,7 +693,7 @@
 
 
     t2 (spit (str (-> env :drive) ":/DEV/output/" client ".txt")  ",,,,\n" :append true)
-    t3 (doall (map (fn [x] (append-position-to-file client x dt)) (if (> (count newpositions) 0) newpositions (into [] positions))))
+    t3 (doall (map (fn [x] (append-position-to-file client x dt)) (if (> (count newpositions) 0) newpositions (into [] positions1))))
     ;; t4 (if (not (nil? selectfile)) (doall (map (fn [x] (let [
     ;;                                            str1 (str client "," (str (if (= "RUR" (:currency x)) "RUB" (:currency x))  " Curncy")  "," (format "%.2f" (:amount x))  ","  "," (f/unparse build-in-basicdate-formatter (c/from-long (+  (* 3600000 6) (c/to-long (:date x))) )) "\n")
     ;;                                            ]
