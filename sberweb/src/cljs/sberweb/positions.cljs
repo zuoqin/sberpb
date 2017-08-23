@@ -506,8 +506,13 @@
 
             (dom/div {:className "row" :style {:margin-left "0px" :margin-right "0px"}} 
               (dom/div {:className "col-xs-2 col-md-1" :style {:padding-left "0px" :padding-right "0px"}}
-                (dom/a {:className "list-group-item" :href (str  "#/postrans/" (:id (first (filter (fn [x] (if (= (compare (:code x) (:selectedclient @sbercore/app-state)) 0) true false)) (:clients @sbercore/app-state)))) "/" (:id item) ) }
-                  (dom/h4 {:className "list-group-item-heading" :style {:white-space "nowrap"}} (:acode sec))
+                (dom/div {:className "clientcode"}
+                  (dom/a {:className "list-group-item" :href (str  "#/postrans/" (:id (first (filter (fn [x] (if (= (compare (:code x) (:selectedclient @sbercore/app-state)) 0) true false)) (:clients @sbercore/app-state)))) "/" (:id item) ) }
+                    (dom/h4 {:className "list-group-item-heading" :style {:white-space "nowrap"}} (:acode sec))
+                  )
+                  (dom/span {:className "clientinfo"}
+                    (dom/input {:type "text" :style {:border-width "0px" :background-color "aqua"} :visibility "hidden" :value (str "ISIN: " (:isin sec)):readOnly "readOnly"} )
+                  )
                 )
               )
 
@@ -706,10 +711,14 @@
 
             (dom/div {:className "row" :style {:margin-left "0px" :margin-right "0px"}} 
               (dom/div {:className "col-xs-2 col-md-1" :style {:padding-left "0px" :padding-right "0px"}}
-                (dom/a {:className "list-group-item" :href (str  "#/postrans/" (:id (first (filter (fn [x] (if (= (compare (:code x) (:selectedclient @sbercore/app-state)) 0) true false)) (:clients @sbercore/app-state)))) "/" (:id item) ) }
-                  (dom/h4 {:className "list-group-item-heading" :style {:white-space "nowrap"}} (:acode sec))
+                (dom/div {:className "clientcode"}
+                  (dom/a {:className "list-group-item" :href (str  "#/postrans/" (:id (first (filter (fn [x] (if (= (compare (:code x) (:selectedclient @sbercore/app-state)) 0) true false)) (:clients @sbercore/app-state)))) "/" (:id item) ) }
+                    (dom/h4 {:className "list-group-item-heading" :style {:white-space "nowrap"}} (:acode sec))
+                  )
+                  (dom/span {:className "clientinfo"}
+                    (dom/input {:type "text" :style {:border-width "0px" :background-color "aqua"} :visibility "hidden" :value (str "ISIN: " (:isin sec)):readOnly "readOnly"} )
+                  )
                 )
-
               )
 
               ;;Доля в портфеле
@@ -999,8 +1008,13 @@
     (dom/div {:className "row" :style {:margin-left "0px" :margin-right "0px"}}
       ;; Инструмент
       (dom/div {:className "col-xs-2 col-md-1" :style {:padding-left "0px" :padding-right "0px"}}
-        (dom/a {:className "list-group-item" :href (str  "#/postrans/" (:id (first (filter (fn [x] (if (= (compare (:code x) (:selectedclient @sbercore/app-state)) 0) true false)) (:clients @sbercore/app-state)))) "/" (:id sec)) }
-          (dom/h4 {:className "list-group-item-heading" :style {:white-space "nowrap"}} (:acode sec))
+        (dom/div {:className "clientcode"}
+          (dom/a {:className "list-group-item" :href (str  "#/postrans/" (:id (first (filter (fn [x] (if (= (compare (:code x) (:selectedclient @sbercore/app-state)) 0) true false)) (:clients @sbercore/app-state)))) "/" (:id sec)) }
+            (dom/h4 {:className "list-group-item-heading" :style {:white-space "nowrap"}} (:acode sec))
+          )
+          (dom/span {:className "clientinfo"}
+            (dom/input {:type "text" :style {:border-width "0px" :background-color "aqua"} :visibility "hidden" :value (str "ISIN: " (:isin sec)):readOnly "readOnly"} )
+          )
         )
       )
 

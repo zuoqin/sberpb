@@ -130,12 +130,12 @@
     url (str apipath "api/security")
 
     ;tr1 (println (str "Trying to get securities"))
-    securities (json/read-str (:body (client/get url {:headers {"authorization" "Bearer TheBearer"}})))
+    securities (json/read-str (:body (client/get url {:headers {"authorization" (str "Bearer " (env :token))}})))
 
 
     ;tr1 (println (str "security = " (first (filter (fn [z] (if (= "RUB" (get z "acode")) true false)) securities) )  " acode=" (get (first securities) "acode")) ) 
     url (str apipath "api/position?client=" client )
-    positions (filter (fn [x] (if (not= (get (second x) "amount") 0.0) true false)) (json/read-str (:body (client/get url {:headers {"authorization" "Bearer TheBearer"}}))))
+    positions (filter (fn [x] (if (not= (get (second x) "amount") 0.0) true false)) (json/read-str (:body (client/get url {:headers {"authorization" (str "Bearer " (env :token))}}))))
 
     ;url (str apipath "api/deals?client=" client )
     ;deals (flatten (map (fn [x] (map-deal x)) (filter (fn [x] (if (= 1 1) true false)) (json/read-str (:body (client/get url {:headers {"authorization" "Bearer TheBearer"}}))))))
@@ -206,7 +206,7 @@
 (defn create-excel-report [sec]
   (let [
     url (str apipath "api/portfolios?security=" sec )
-    portfs (json/read-str (:body (client/get url {:headers {"authorization" "Bearer TheBearer"}})))
+    portfs (json/read-str (:body (client/get url {:headers {"authorization" (str "Bearer " (env :token))}})))
 
     positions (sort (comp sort-portfs-by-name) portfs)
     newpositions (into [] (map (fn [x] [(first x)   (get (second x) "amount") (get (second x) "price") (get (second x) "rubprice") (get (second x) "wapusd")]) positions))
@@ -236,33 +236,33 @@
     (let [
           file (create-excel-report sec)
     ]
-    {:status 200 :headers {"Content-Type" "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet; charset=utf-8"} :body (io/input-stream (str xlsdir sec ".xlsx") )}
+    {:status 200 :headers {"Content-Type" "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Content-Disposition" (str "attachment;filename=" sec ".xlsx") } :body (io/input-stream (str xlsdir sec ".xlsx") )}
     )
   )
   (GET "/clientexcel/:client" [client]
     (let [
           file (create-client-report client)
     ]
-    {:status 200 :headers {"Content-Type" "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet; charset=utf-8"} :body (io/input-stream (str xlsdir client ".xlsx") )}
+    {:status 200 :headers {"Content-Type" "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Content-Disposition" (str "attachment;filename=" client ".xlsx")} :body (io/input-stream (str xlsdir client ".xlsx") )}
     )
   )
   (GET "/clientbloombergportf/:client" [client]
     (let [
       url (str apipath "api/bloomberg_portf?portf=" client)
       ;tr1 (println (str "Trying to get securities"))
-      response (client/get url {:headers {"authorization" "Bearer TheBearer"}})
+      response (client/get url {:headers {"authorization" (str "Bearer " (env :token))}})
 
 
     ]
-    {:status 200 :headers {"Content-Type" "text/plain", "charset" "utf-8", "Content-Disposition" "attachment", "filename" "portfolio.txt"} :body (io/input-stream (str bloombergportdir client ".txt") )}
+    {:status 200 :headers {"Content-Type" "text/plain;charset=utf-8", "Content-Disposition" (str "attachment;filename=" client ".txt")} :body (io/input-stream (str bloombergportdir client ".txt") )}
     )
   )
   (GET "/clientbloombergtrans/:client" [client]
     (let [
       url (str apipath "api/bloomberg_trans?portf=" client)
-      response (client/get url {:headers {"authorization" "Bearer TheBearer"}})
+      response (client/get url {:headers {"authorization" (str "Bearer " (env :token))}})
     ]
-    {:status 200 :headers {"Content-Type" "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, charset=utf-8"} :body (io/input-stream (str xlsdir client ".xlsx") )}
+    {:status 200 :headers {"Content-Type" "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;", "Content-Disposition" (str "attachment;filename=" client "_trans.xlsx") } :body (io/input-stream (str xlsdir client "_trans.xlsx") )}
     )
   )
 
@@ -283,5 +283,10 @@
       wrap-gzip))
 
 (defn -main [& [port]]
-  (let [port (Integer. (or port (env :port) 10555))]
-    (run-jetty http-handler {:port port :join? false})))
+  (let [
+    port (Integer. (or port (env :port) 10555))
+    ;tr1 (println (str "token=" (env :token)))
+    ]
+    (run-jetty http-handler {:port port :join? false})
+  )
+)

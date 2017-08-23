@@ -3,4 +3,5 @@
  :database-url "datomic:dev://localhost:4334/sberpb_dev"
  :drive c
  :imagepath ":\\DEV\\output\\img\\tradeidea\\"
+ :token "eyJhbGciOiJub25lIiwidHlwIjoiSldUIn0.eyJpc3MiOiJ6dW9xaW4iLCJleHAiOjE1MDM0NzQ4NzQsImlhdCI6MTUwMzM4ODQ3NH0."
 }
