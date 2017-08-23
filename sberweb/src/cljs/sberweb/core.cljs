@@ -987,6 +987,16 @@
                     )
                   )
                 )
+
+                (dom/li {:className "divider"})
+                (dom/li
+                  (dom/a {:href "#/syssettings" :onClick (fn [e] (goSysSettings e))}
+                    (dom/div
+                      (dom/i {:className "fa fa-tasks fa-fw"})
+                      "Опции"
+                    )
+                  )
+                )
               )
             )
 

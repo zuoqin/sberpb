@@ -42,6 +42,8 @@
 
   ;; Use `lein run` if you just want to start a HTTP server, without figwheel
   :main sberweb.server
+  :aot [sberweb.server]
+
 
   ;; nREPL by default starts in the :main namespace, we want to start in `user`
   ;; because that's where our development helper functions like (run) and
@@ -58,8 +60,8 @@
 
                 :compiler {:main sberweb.login
                            :asset-path "js/compiled/out"
-                           :output-to "resources/public/js/compiled2/sberweb.js"
-                           :output-dir "resources/public/js/compiled2/out"
+                           :output-to "resources/public/js/compiled/sberweb.js"
+                           :output-dir "resources/public/js/compiled/out"
                            :source-map-timestamp true
                            :optimizations :none
                            :pretty-print true}}
@@ -94,8 +96,8 @@
                 :jar true
                 :compiler {:main sberweb.login
                            :asset-path "js/compiled/out"
-                           :output-to "resources/public/js/compiled/sberweb.js"
-                           :output-dir "resources/public/js/compiled/out"
+                           :output-to "resources/public/js/compiled2/sberweb.js"
+                           :output-dir "resources/public/js/compiled2/out"
                            :source-map-timestamp false
                            :optimizations :simple
                            :closure-warnings {:externs-validation :off}
@@ -144,22 +146,4 @@
              :server-logfile "log/figwheel.log"}
 
   :doo {:build "test"}
-
-  :profiles {:dev
-             {:dependencies [[figwheel "0.5.4-4"]
-                             [figwheel-sidecar "0.5.4-4"]
-                             [com.cemerick/piggieback "0.2.1"]
-                             [org.clojure/tools.nrepl "0.2.12"]]
-
-              :plugins [[lein-figwheel "0.5.4-4"]
-                        [lein-doo "0.1.6"]]
-
-              :source-paths ["dev"]
-              :repl-options {:nrepl-middleware [cemerick.piggieback/wrap-cljs-repl]}}
-
-             :uberjar
-             {:source-paths ^:replace ["src/clj" "src/cljc"]
-              :prep-tasks ["compile" ["cljsbuild" "once" "min"]]
-              :hooks []
-              :omit-source true
-              :aot :all}})
+)
