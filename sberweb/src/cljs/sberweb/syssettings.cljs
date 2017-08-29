@@ -106,7 +106,7 @@
           )
         )
         (dom/div
-          (dom/a {:className "list-group-item" :href "/templates/template_bloomberg_light.xlsx" }
+          (dom/a {:className "list-group-item" :href "/templates/template_bloomberg_light.xlsm" }
             (dom/h4  #js {:className "list-group-item-heading"} "Download Light Bloomberg Excel template")
           )
         )

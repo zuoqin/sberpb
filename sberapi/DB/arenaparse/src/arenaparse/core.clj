@@ -182,7 +182,7 @@
   (let [
      conn (d/connect uri)
      ]
-    (d/transact-async conn [{ :security/acode "MUS", :security/isin "US55616P1049", :security/bcode "M US Equity", :security/assettype 1, :security/multiple 1.0, :security/name "Macy's Inc", :security/currency "USD", :db/id #db/id[:db.part/user -100740] }
+    (d/transact-async conn [{ :security/acode "AMLPUS", :security/isin "US00162Q8666", :security/bcode "AMLP US Equity", :security/assettype 1, :security/multiple 1.0, :security/name "Alerian MLP ETF", :security/currency "USD", :db/id #db/id[:db.part/user -100743] }
 ]
     )
     ; To insert new entity:
