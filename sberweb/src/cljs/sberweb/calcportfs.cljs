@@ -143,6 +143,15 @@
     ]
     (case (:sort-list @app-state)
       "maxshares" (let [
+
+        sec (first (filter (fn[x] (if( = (:selectedsec @sbercore/app-state) (:id x)) true false)) (:securities @sbercore/app-state)))
+
+        price (:price sec)
+        seccurrency (:currency sec)
+
+        isbond (if (and (= 5 (:assettype sec))) true false)
+
+
         usdrate (:price (first (filter (fn [x] (if (= "USD" (:acode x)) true false)) (:securities @sbercore/app-state))))
         eurrate (:price (first (filter (fn [x] (if (= "EUR" (:acode x)) true false)) (:securities @sbercore/app-state))))
         gbprate (:price (first (filter (fn [x] (if (= "GBP" (:acode x)) true false)) (:securities @sbercore/app-state))))
@@ -160,7 +169,7 @@
         oldmaxgbpshares1 (if (> (abs oldmaxgbpshares1) 0.001) oldmaxgbpshares1 0.001)
         oldmaxrubshares1 (if (> (abs oldmaxrubshares1) 0.001) oldmaxrubshares1 0.001)
 
-        newseclimitinrub1 (* (/ (:seclimitinrub portf1) 10.0) (:percentage @sbercore/app-state))
+        newseclimitinrub1 (* (if (= 1 (:fulllimit @sbercore/app-state)) (if isbond (/ 100.0 (:bondshare client1)) (/ 100.0 (:stockshare client1))) 1.0) (/ (:seclimitinrub portf1) 10.0) (:percentage @sbercore/app-state))
 
         newmaxusdshares1 (* (/ (min (* usdrate (:usd client1)) (- newseclimitinrub1 (:calcusedlimit portf1))) oldmaxusdshares1) (:maxusdshares portf1))
 
@@ -185,7 +194,7 @@
         oldmaxgbpshares2 (if (> (abs oldmaxgbpshares2) 0.001) oldmaxgbpshares2 0.001)
         oldmaxrubshares2 (if (> (abs oldmaxrubshares2) 0.001) oldmaxrubshares2 0.001)
 
-        newseclimitinrub2 (* (/ (:seclimitinrub portf2) 10.0) (:percentage @sbercore/app-state))
+        newseclimitinrub2 (* (if (= 1 (:fulllimit @sbercore/app-state)) (if isbond (/ 100.0 (:bondshare client2)) (/ 100.0 (:stockshare client2))) 1.0) (/ (:seclimitinrub portf2) 10.0) (:percentage @sbercore/app-state))
 
         newmaxusdshares2 (* (/ (min (* usdrate (:usd client2))  (- newseclimitinrub2 (:calcusedlimit portf2))) oldmaxusdshares2) (:maxusdshares portf2))
 
@@ -260,7 +269,7 @@
                     oldmaxgbpshares (if (> (abs oldmaxgbpshares) 0.001) oldmaxgbpshares 0.001)
                     oldmaxrubshares (if (> (abs oldmaxrubshares) 0.001) oldmaxrubshares 0.001)
 
-                    newseclimitinrub (* (/ (:seclimitinrub item) 10.0) (:percentage @data))
+                    newseclimitinrub (* (if (= 1 (:fulllimit @sbercore/app-state)) (if isbond (/ 100.0 (:bondshare client)) (/ 100.0 (:stockshare client))) 1.0) (/ (:seclimitinrub item) 10.0) (:percentage @data))
 
                     newmaxusdshares (* (/ (min (* usdrate (:usd client))  (- newseclimitinrub (:calcusedlimit item))) oldmaxusdshares) (:maxusdshares item))
 
@@ -355,7 +364,7 @@
                   ;;Total Limit
                   (dom/div {:className "col-xs-1 col-md-1" :style {:padding-left "0px" :padding-right "0px"}}            
                     (dom/a {:className "list-group-item" :style {:padding-left "3px" :padding-right "3px" :text-align "right"} :href (str  "#/postrans/" (:id item) "/" (:selectedsec @data)) }
-                      (dom/h4 {:className "list-group-item-heading"} (sbercore/split-thousands (gstring/format "%.0f" (* (/ (:maxlimit item) 10.0) (:percentage @data)))))
+                      (dom/h4 {:className "list-group-item-heading"} (sbercore/split-thousands (gstring/format "%.0f" (* (/ (:maxlimit item) 10.0) (:percentage @data)   (if (= 1 (:fulllimit @sbercore/app-state)) (if isbond (/ 100.0 (:bondshare client)) (/ 100.0 (:stockshare client))) 1.0)))))
                     )
                   )
 

@@ -312,6 +312,10 @@
   )
 )
 
+(defn securities-to-excel []
+  (save-xls ["sheet1" (dataset [:acode :isin :bcode] (get-securities))] (str drive ":/DEV/Java/allsecurities.xlsx") )
+)
+
 
 (defn clients-to-excel []
   (save-xls ["sheet1" (dataset [:code :name :signedadvisory :currency :stockshare :bondshare :usd :rub :eur "gbp"] (get-clients))] (str drive ":/DEV/Java/allclients.xlsx") )

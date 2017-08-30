@@ -20,7 +20,7 @@
 
 (enable-console-print!)
 
-(defonce app-state (atom {:state 0 :percentage "5.00" :noholders 0 :selectedclient nil :search "" :selectedcurrency "all" :user {:role "admin"} :dealspage -1 :nomoredeals false}))
+(defonce app-state (atom {:state 0 :percentage "5.00" :noholders 0 :fulllimit 0 :selectedclient nil :search "" :selectedcurrency "all" :user {:role "admin"} :dealspage -1 :nomoredeals false}))
 
 
 
@@ -1197,12 +1197,19 @@
       (dom/input {:id "search" :type "text" :placeholder "Search" :style {:height "32px" :width "100px" :margin-top "1px"} :value  (:search @data) :onChange (fn [e] (handleChange e )) })  )
             )
 
-            (dom/li {:style {:margin-left "3px"}}
+            (dom/li {:style {:margin-left "3px"}}              
               (dom/label {:for "noholders" :style {:font-weight 100 :padding-right "1px" :padding-top "7px"}} "Оставить без бумаги:")
             )
             (dom/li {:style {:margin-left "1px"}}
               (dom/input {:id "noholders" :type "checkbox" :style {:height "32px" :width "70px" :margin-top "1px"} :defaultChecked (if (= 0 (:noholders @data)) false true) :label "Оставить без бумаги" :onChange (fn [e] (handle-chkb-change e ))})
             )
+            (dom/li {:style {:margin-left "3px"}}              
+              (dom/label {:for "fulllimit" :style {:font-weight 100 :padding-right "1px" :padding-top "7px"}} "Учитывать все активы:")
+            )
+            (dom/li {:style {:margin-left "1px"}}
+              (dom/input {:id "fulllimit" :type "checkbox" :style {:height "32px" :width "70px" :margin-top "1px"} :defaultChecked (if (= 0 (:fulllimit @data)) false true) :label "Учитывать все активы" :onChange (fn [e] (handle-chkb-change e ))})
+            )
+
 
             (dom/li {:style {:margin-left "1px"}}
               (dom/label {:for "percentage" :style {:font-weight 100 :padding-right "10px"}} "Процент: ")
