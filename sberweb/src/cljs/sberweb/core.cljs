@@ -54,7 +54,7 @@
 
 (defn onVersionInfo []
   (let [     
-      newdata { :info "Global Asset Management System пользовательский интерфейс обновлен 25.08.2017 09:28" }
+      newdata { :info "Global Asset Management System пользовательский интерфейс обновлен 27.08.2017 09:28" }
     ]
    
     (setVersionInfo newdata)
@@ -620,7 +620,7 @@
       (dom/option {:key (:id text) :value (:id text)
                     :onChange #(handle-change % owner)} (:acode text))
     )
-    (sort (comp comp-secs) (filter (fn [x] (if (or (= 10 (:assettype x)) (= true (:ismatured x)))  false true)) (:securities @app-state )))
+    (sort (comp comp-secs) (filter (fn [x] (if (or (= 10 (:assettype x)) (= true (:ismatured x))  (and (= 4 (:view @data)) (= 15 (:assettype x))))  false true)) (:securities @app-state )))
   )
 )
 
