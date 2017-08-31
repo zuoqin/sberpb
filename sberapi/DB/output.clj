@@ -85,7 +85,7 @@
 
 { :security/acode "MGNT", :security/isin "RU000A0JKQU8", :security/bcode "MGNT RX Equity", :security/assettype 1, :security/name "", :security/exchange "MOSCOW", :security/currency "RUB", :db/id #db/id[:db.part/user -100042] }
 
-{ :security/acode "RUALR", :security/isin "RU000A0JR5Z51", :security/bcode "RUALR RX Equity", :security/assettype 1, :security/ismatured true, :security/multiple 1.0, :security/currency "RUB", :db/id #db/id[:db.part/user -100043] }
+{ :security/acode "RUALR", :security/isin "RU000A0JR5Z5", :security/bcode "RUALR RX Equity", :security/assettype 1, :security/ismatured true, :security/multiple 1.0, :security/currency "RUB", :db/id #db/id[:db.part/user -100043] }
 
 { :security/acode "VIPUS", :security/isin "US92719A1060", :security/bcode "VIP US Equity", :security/assettype 1, :security/ismatured true, :security/currency "USD", :db/id #db/id[:db.part/user -100044] }
 
@@ -455,7 +455,7 @@
 
 { :security/acode "SBERP", :security/isin "RU0009029557", :security/bcode "SBERP RX Equity", :security/assettype 1, :security/name "", :security/exchange "RX", :security/currency "RUB", :db/id #db/id[:db.part/user -100216]}
 
-{ :security/acode "486HK", :security/isin  "JE00B5BCW814", :security/bcode "486 HK Equity", :security/assettype 1, :security/name "United Company RUSAL Plc", :security/multiple 1.0, :security/currency "HKD", :db/id #db/id[:db.part/user -100222]}
+;{ :security/acode "486HK", :security/isin  "JE00B5BCW814", :security/bcode "486 HK Equity", :security/assettype 1, :security/name "United Company RUSAL Plc", :security/multiple 1.0, :security/currency "HKD", :db/id #db/id[:db.part/user -100222]}
 
 { :security/acode "25079", :security/isin  "RU000A0JRHZ1", :security/bcode "RU000A0JRHZ1 Corp", :security/assettype 5, :security/multiple 1000.0, :security/name "", :security/ismatured true, :security/currency "RUB", :db/id #db/id[:db.part/user -100224]}
 
@@ -1489,7 +1489,7 @@
 
 { :security/acode "GS19", :security/isin "XS1603245389", :security/bcode "XS1603245389 Corp", :security/assettype 5, :security/multiple 1.0, :security/name "Goldman Sachs International, FRN 4jan2019", :security/currency "USD", :db/id #db/id[:db.part/user -100738] }
 
-{ :security/acode "RUAL", :security/isin "RU000A0JR5Z5", :security/bcode "RUAL RX Equity", :security/assettype 1, :security/multiple 1.0, :security/name "United Company RUSAL Plc", :security/currency "RUB", :db/id #db/id[:db.part/user -100739] }
+{ :security/acode "RUAL", :security/isin "JE00B5BCW814", :security/bcode "RUAL RX Equity", :security/assettype 1, :security/multiple 1.0, :security/name "United Company RUSAL Plc", :security/currency "RUB", :db/id #db/id[:db.part/user -100739] }
 
 { :security/acode "MUS", :security/isin "US55616P1049", :security/bcode "M US Equity", :security/assettype 1, :security/multiple 1.0, :security/name "Macy's Inc", :security/currency "USD", :db/id #db/id[:db.part/user -100740] }
 
@@ -1513,7 +1513,7 @@
 
 { :security/acode "TGKJ", :security/isin "RU000A0F61T7", :security/bcode "TGKJ RX Equity", :security/assettype 1, :security/multiple 1.0, :security/name "", :security/currency "RUB", :db/id #db/id[:db.part/user -100750] }
 
-
+{ :security/acode "EURONAT19Q", :security/isin "XS1605088845", :security/bcode "XS1605088845 Corp", :security/assettype 1, :security/multiple 1.0, :security/name "", :security/currency "RUB", :db/id #db/id[:db.part/user -100751] }
 
 
 
@@ -2134,7 +2134,7 @@
 
 { :transaction/client #db/id[:db.part/user -102018], :transaction/security #db/id[:db.part/user -100212], :transaction/nominal 2272000.0, :transaction/price 2.755, :transaction/direction "B", :transaction/tradedate #inst "2015-07-20T10:00:00.0000000Z", :transaction/valuedate #inst "2015-07-20T10:00:00.0000000Z", :transaction/currency "RUB", :transaction/comment "Transfer in", :db/id #db/id[:db.part/user -110064] }
 
-{ :transaction/client #db/id[:db.part/user -102018], :transaction/security #db/id[:db.part/user -100222], :transaction/nominal 250000.0, :transaction/price 3.90, :transaction/direction "B", :transaction/tradedate #inst "2015-07-20T10:00:00.0000000Z", :transaction/valuedate #inst "2015-07-20T10:00:00.0000000Z", :transaction/currency "HKD", :transaction/comment "Transfer in", :db/id #db/id[:db.part/user -110065] }
+{ :transaction/client #db/id[:db.part/user -102018], :transaction/security #db/id[:db.part/user -100739], :transaction/nominal 250000.0, :transaction/price 3.90, :transaction/direction "B", :transaction/tradedate #inst "2015-07-20T10:00:00.0000000Z", :transaction/valuedate #inst "2015-07-20T10:00:00.0000000Z", :transaction/currency "HKD", :transaction/comment "Transfer in", :db/id #db/id[:db.part/user -110065] }
 
 { :transaction/client #db/id[:db.part/user -102018], :transaction/security #db/id[:db.part/user -100070], :transaction/nominal 1106.0, :transaction/price 9393.0, :transaction/direction "B", :transaction/tradedate #inst "2015-07-20T10:00:00.0000000Z", :transaction/valuedate #inst "2015-07-20T10:00:00.0000000Z", :transaction/currency "RUB", :transaction/comment "Transfer in", :db/id #db/id[:db.part/user -110066] }
 
@@ -2164,7 +2164,7 @@
 
 { :transaction/client #db/id[:db.part/user -102021], :transaction/security #db/id[:db.part/user -100098], :transaction/nominal 22312.0, :transaction/price 3706.41, :transaction/direction "S", :transaction/tradedate #inst "2017-02-20T10:00:00.0000000Z", :transaction/valuedate #inst "2017-02-20T10:00:00.0000000Z", :transaction/currency "RUB", :transaction/comment "Оферта", :db/id #db/id[:db.part/user -110177] }
 
-{ :transaction/client #db/id[:db.part/user -102022], :transaction/security #db/id[:db.part/user -100222], :transaction/nominal 24000.0, :transaction/price 3.6, :transaction/direction "B", :transaction/tradedate #inst "2015-08-10T10:00:00.0000000Z", :transaction/valuedate #inst "2015-08-10T10:00:00.0000000Z", :transaction/currency "HKD", :transaction/comment "Transfer In", :db/id #db/id[:db.part/user -110089] }
+{ :transaction/client #db/id[:db.part/user -102022], :transaction/security #db/id[:db.part/user -100739], :transaction/nominal 24000.0, :transaction/price 3.6, :transaction/direction "B", :transaction/tradedate #inst "2015-08-10T10:00:00.0000000Z", :transaction/valuedate #inst "2015-08-10T10:00:00.0000000Z", :transaction/currency "HKD", :transaction/comment "Transfer In", :db/id #db/id[:db.part/user -110089] }
 
 { :transaction/client #db/id[:db.part/user -102022], :transaction/security #db/id[:db.part/user -100096], :transaction/nominal 59600.0, :transaction/price 21.0, :transaction/direction "B", :transaction/tradedate #inst "2015-08-10T10:00:00.0000000Z", :transaction/valuedate #inst "2015-08-10T10:00:00.0000000Z", :transaction/currency "RUB", :transaction/comment "Transfer In", :db/id #db/id[:db.part/user -110096] }
 
