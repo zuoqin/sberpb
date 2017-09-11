@@ -15,7 +15,7 @@
 ;;(def apipath "https://api.sberpb.com/")
 
 
-;;(def apipath "http://localhost:3000/")
-(def apipath "http://10.20.35.21:3000/")
+(def apipath "http://localhost:3000/")
+;;(def apipath "http://10.20.35.21:3000/")
 (def demouser "")
 (def demopassword "")

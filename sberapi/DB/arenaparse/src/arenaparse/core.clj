@@ -182,7 +182,9 @@
   (let [
      conn (d/connect uri)
      ]
-    (d/transact-async conn [{ :security/acode "AMLPUS", :security/isin "US00162Q8666", :security/bcode "AMLP US Equity", :security/assettype 1, :security/multiple 1.0, :security/name "Alerian MLP ETF", :security/currency "USD", :db/id #db/id[:db.part/user -100743] }
+    (d/transact-async conn [{ :security/acode "EURONAT19R", :security/isin "XS1605088928", :security/bcode "XS1605088928 Corp", :security/assettype 5, :security/multiple 1.0, :security/name "", :security/currency "USD", :db/id #db/id[:db.part/user -100754] }
+
+{ :security/acode "RDC25", :security/isin "US779382AU43", :security/bcode "US779382AU43 Corp", :security/assettype 5, :security/multiple 1.0, :security/name "", :security/currency "USD", :db/id #db/id[:db.part/user -100755] }
 ]
     )
     ; To insert new entity:
@@ -1812,7 +1814,7 @@
 
 (defn recent-deals-to-db []
   (let [
-    files [3 4 5 6 7 8]
+    files [9]
     trans (doall (map (fn [x] (recent-deals-to-db-by-num x))  files )) 
     ]
     ;(count secs)
