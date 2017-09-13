@@ -25,6 +25,8 @@
 
 (defonce app-state (atom  {:sort-list "usd"}))
 
+(def jquery (js* "$"))
+
 (def custom-formatter (tf/formatter "dd/MM/yyyy"))
 
 (def custom-formatter1 (tf/formatter "MMM dd yyyy hh:mm:ss"))
@@ -84,12 +86,16 @@
 
         client (first (filter (fn [x] (if (= code (:client x)) true false)) (:calcportfs ((keyword (str (:selectedsec @sbercore/app-state))) @sbercore/app-state))))
 
-        amount1 (case (:selectedcurrency @sbercore/app-state) "all" (if (< (:freelimit client) 0.0) (:freelimit client) (if (< (:freelimit client) (+ (:maxusdshares client) (:maxrubshares client) (:maxeurshares client) (:maxgbpshares client))) (:freelimit client) (+ (:maxusdshares client) (:maxrubshares client) (:maxeurshares client) (:maxgbpshares client))))  ((keyword (str "max" (:selectedcurrency @sbercore/app-state) "shares") ) client))
+
+        amount1 (.. (aget (-> (jquery (str "#sharesbuy" code))) 0) -value)
+        tr2 (.log js/console (.. e -currentTarget) )
+        ;;amount1 (case (:selectedcurrency @sbercore/app-state) "all" (if (< (:freelimit client) 0.0) (:freelimit client) (if (< (:freelimit client) (+ (:maxusdshares client) (:maxrubshares client) (:maxeurshares client) (:maxgbpshares client))) (:freelimit client) (+ (:maxusdshares client) (:maxrubshares client) (:maxeurshares client) (:maxgbpshares client))))  ((keyword (str "max" (:selectedcurrency @sbercore/app-state) "shares") ) client))
 
         ;tr1 (.log js/console (str "amount1=" amount1 " client=" client))
         amount (if (nil? letter) amount1 (:amount letter))
         delletter (remove (fn [letter] (if (= (:code letter) code ) true false  )) letters)
-        addletter (into [] (conj delletter {:code code :amount amount :issend (.. e -currentTarget -checked) }  )) 
+
+        addletter (if (.. e -currentTarget -checked) (into [] (conj delletter {:code code :amount amount :issend (.. e -currentTarget -checked) }  )) delletter) 
     ]
     (.stopPropagation e)
     (.stopImmediatePropagation (.. e -nativeEvent) )

@@ -583,7 +583,25 @@
   )
 )
 
+(defn parseAdvmail [mails]
+  (let [
 
+    emails (loop [result [] email mails]
+                (if (> (count email) 0)  
+                  (let [
+                        thenext (if (= nil (str/index-of email ";")) (count email) (str/index-of email ";"))                         
+
+                        ;tr1 (println (str "thenext=" thenext " next=" (drop (if (= nil (str/index-of email ";")) (count email) (+ 1 (str/index-of email ";")) ) email)))
+
+                        ]
+                    (recur (conj result (subs email 0 thenext)) (if (= nil (str/index-of email ";")) "" (subs email (+ 1 (str/index-of email ";"))) ))
+                  )
+                  result)
+                )
+    ]
+    emails
+  )
+)
 
 (defn sendLetter [usercode security clientdata txtdata]
   (let [
@@ -603,7 +621,7 @@
     ]
     (postal/send-message {:host "psmtp.sberbank-cib.ru"} ;:user "alexey@sberpb.com" :pass "password"
       {:from "tradeidea@sberpb.com"
-       :to email
+       :to (parseAdvmail email)
        :cc ["Alexey_Zorchenkov@sberbank-pb.ru" "Rustam_Nazimanov@sberbank-pb.ru" "Alexey_Koshkin@sberbank-pb.ru"
          ]
        :subject (str "Trade idea: " seccode) 

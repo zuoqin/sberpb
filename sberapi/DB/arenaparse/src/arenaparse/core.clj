@@ -724,7 +724,7 @@
 
         fx_tran_currency (if (or (= "RUR" trancurrency) (= "RUB" trancurrency))  1.0 (get-fxrate-by-date trancurrency tranvaluedate))
 
-        newprice (* tranprice (if (= assettype 5) 1.0 (/ fx_tran_currency fx_sec_currency))  (if (= "GBX" currency) 1.0 1.0))
+        newprice (* tranprice (if (or (= assettype 5) (= assettype 15))  1.0 (/ fx_tran_currency fx_sec_currency))  (if (= "GBX" currency) 1.0 1.0))
 
         ;tr1 (if (= acode "AALLN") (println (str "fxtran=" fx_tran_currency " fxsec=" fx_sec_currency " price=" newprice)))
         ;;
@@ -1814,7 +1814,7 @@
 
 (defn recent-deals-to-db []
   (let [
-    files [9]
+    files [3 4 5 6 7 8 9]
     trans (doall (map (fn [x] (recent-deals-to-db-by-num x))  files )) 
     ]
     ;(count secs)
@@ -1836,12 +1836,12 @@
               
               (if (and
                    (= (:ss:StyleID (:attrs (nth item 0))) "s72" )
-                   (or (= 0 (compare "We Sell" (first (:content  (first (:content (nth item 9)  )  ))))) 
+                   (or (= 0 (compare "We Sell" (first (:content  (first (:content (nth item 9)  )  )))))
                        (= 0 (compare "We Buy" (first (:content  (first (:content (nth item 9)  )  )))))
                    )
                    (not (str/includes? (str/lower-case (first (:content  (first (:content (nth item 4)  )  )))) "forts"))
-                   (if (> (count item) 23) (not (str/includes? (str/lower-case  (if (nil? (first (:content  (first (:content (nth item 24)  )  )))) "" (first (:content  (first (:content (nth item 24)  )  ))))  ) "call")) true) 
-                   (if (> (count item) 23) (not (str/includes? (str/lower-case  (if (nil? (first (:content  (first (:content (nth item 24)  )  )))) "" (first (:content  (first (:content (nth item 24)  )  ))))  ) "put")) true) 
+                   (if (> (count item) 23) (not (str/includes? (str/lower-case  (if (nil? (first (:content  (first (:content (nth item 24)  )  )))) "" (first (:content  (first (:content (nth item 24)  )  ))))  ) "call")) true)
+                   (if (> (count item) 23) (not (str/includes? (str/lower-case  (if (nil? (first (:content  (first (:content (nth item 24)  )  )))) "" (first (:content  (first (:content (nth item 24)  )  ))))  ) "put")) true)
                 )
                 (recur (conj result item ) (inc num))
                 (recur result (inc num))
