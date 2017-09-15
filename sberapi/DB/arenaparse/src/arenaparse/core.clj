@@ -182,9 +182,11 @@
   (let [
      conn (d/connect uri)
      ]
-    (d/transact-async conn [{ :security/acode "EURONAT19R", :security/isin "XS1605088928", :security/bcode "XS1605088928 Corp", :security/assettype 5, :security/multiple 1.0, :security/name "", :security/currency "USD", :db/id #db/id[:db.part/user -100754] }
+    (d/transact-async conn [{ :security/acode "EXILN", :security/isin "IM00B58FMW76", :security/bcode "EXI LN Equity", :security/assettype 1, :security/multiple 1.0, :security/name "", :security/currency "GBX", :db/id #db/id[:db.part/user -100756] }
 
-{ :security/acode "RDC25", :security/isin "US779382AU43", :security/bcode "US779382AU43 Corp", :security/assettype 5, :security/multiple 1.0, :security/name "", :security/currency "USD", :db/id #db/id[:db.part/user -100755] }
+{ :security/acode "BR-10.17", :security/isin "B5V7 Comdty", :security/bcode "B5V7 Comdty", :security/assettype 15, :security/name "Brent Crude Futs  Oct17", :security/multiple 10.0, :security/ismatured false, :security/currency "USD", :db/id #db/id[:db.part/user -101030] }
+
+{ :security/acode "SI-12.17", :security/isin "URZ7 Curncy", :security/bcode "URZ7 Curncy", :security/assettype 15, :security/name "Futures on USD/RUB Exchange Rate", :security/multiple 1.0, :security/ismatured false, :security/currency "RUB", :db/id #db/id[:db.part/user -101031] }
 ]
     )
     ; To insert new entity:

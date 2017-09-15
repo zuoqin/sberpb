@@ -511,7 +511,7 @@
                     (dom/h4 {:className "list-group-item-heading" :style {:white-space "nowrap"}} (:acode sec))
                   )
                   (dom/span {:className "clientinfo"}
-                    (dom/input {:type "text" :style {:border-width "0px" :background-color "aqua"} :visibility "hidden" :value (str "ISIN: " (:isin sec)):readOnly "readOnly"} )
+                    (dom/input {:type "text" :style {:border-width "0px" :background-color "aqua" :width "250px"} :visibility "hidden" :value (str "ISIN: " (:isin sec)):readOnly "readOnly"} )
                   )
                 )
               )
@@ -716,7 +716,7 @@
                     (dom/h4 {:className "list-group-item-heading" :style {:white-space "nowrap"}} (:acode sec))
                   )
                   (dom/span {:className "clientinfo"}
-                    (dom/input {:type "text" :style {:border-width "0px" :background-color "aqua"} :visibility "hidden" :value (str "ISIN: " (:isin sec)):readOnly "readOnly"} )
+                    (dom/input {:type "text" :style {:border-width "0px" :background-color "aqua" :width "250px"} :visibility "hidden" :value (str "ISIN: " (:isin sec)):readOnly "readOnly"} )
                   )
                 )
               )
@@ -1013,7 +1013,7 @@
             (dom/h4 {:className "list-group-item-heading" :style {:white-space "nowrap"}} (:acode sec))
           )
           (dom/span {:className "clientinfo"}
-            (dom/input {:type "text" :style {:border-width "0px" :background-color "aqua"} :visibility "hidden" :value (str "ISIN: " (:isin sec)):readOnly "readOnly"} )
+            (dom/input {:type "text" :style {:border-width "0px" :background-color "aqua" :width "250px"} :visibility "hidden" :value (str "ISIN: " (:isin sec)):readOnly "readOnly"} )
           )
         )
       )
