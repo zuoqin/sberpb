@@ -267,7 +267,7 @@
               newseccurrate (if (and (= (:id cursec)  (:id newcursec)) (= curdate (:valuedate tran))) seccurrate (db/get-fxrate-by-date (:currency newcursec) (:valuedate tran)))
               newtrancurrate  (if (and (= (:id cursec)  (:id newcursec)) (= curdate (:valuedate tran))) trancurrrate (db/get-fxrate-by-date (:currency tran) (:valuedate tran)))
 
-              rubprice (if (= 5 (:assettype newcursec)) (* newseccurrate (:price tran)) (* newtrancurrate (:price tran)))
+              rubprice (if (or (= 5 (:assettype newcursec)) (= 15 (:assettype newcursec)))  (* newseccurrate (:price tran)) (* newtrancurrate (:price tran)))
               ;tr1 (if (= (:id newcursec) 17592186045512) (println (str " rubprice= " rubprice " tranprice= " (:price tran) " newnominal= " newnominal " trannominal= " trannominal)))
 
               newusdrate (if (= (:valuedate tran) curdate) usdrate (db/get-fxrate-by-date "USD" (:valuedate tran)))
@@ -834,7 +834,7 @@
           
           ;tr1 (if (= isin "GB0032360173") (println (str "price= " (:price tran) "fullprice=" (:price tran) " fx=" (:fx tran)) )) 
       ]
-      (recur (conj result {:portfolio client :isin isin :bcode bcode :quantity (/ (:nominal tran) (if (str/includes? isin "LKOH=") 10.0 (if (str/includes? isin "SBRF=") 100.0 1.0))) :price (:price tran) :date (f/unparse build-in-basicdate-formatter (c/from-long (c/to-long (:valuedate tran))) ) :type (if (> tranamnt 0) (if (> newamnt 0) "BUY LONG" "BUY TO COVER") (if (< newamnt 0) "SELL SHORT" "SELL LONG")) }) (assoc-in amounts [(keyword (:acode sec)) ] {:amount newamnt} ) (rest trans))
+      (recur (if (or (= assettype 10)) result (conj result {:portfolio client :isin isin :bcode bcode :quantity (/ (:nominal tran) (if (str/includes? isin "LKOH=") 10.0 (if (str/includes? isin "SBRF=") 100.0 1.0))) :price (:price tran) :date (f/unparse build-in-basicdate-formatter (c/from-long (c/to-long (:valuedate tran))) ) :type (if (> tranamnt 0) (if (> newamnt 0) "BUY LONG" "BUY TO COVER") (if (< newamnt 0) "SELL SHORT" "SELL LONG")) }))  (assoc-in amounts [(keyword (:acode sec)) ] {:amount newamnt} ) (rest trans))
       )
       result)
     )

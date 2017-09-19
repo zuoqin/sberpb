@@ -160,6 +160,8 @@
         security (ent [[(:db/id (second (first (filter (fn [x] (if (= (first x) (keyword "transaction/security")) true false)) tran))) )]] ) ;;(ent [[(:db/id (nth (nth tran 1) 1))]]  )
 
         acode (second (first (filter (fn [x] (if (= (first x) (keyword "security/acode")) true false)) security) ))
+
+        assettype (second (first (filter (fn [x] (if (= (first x) (keyword "security/assettype")) true false)) security) ))
         ;; ;tr1 (println security)
        
         ;; security currency
@@ -175,7 +177,7 @@
 
         fx_tran_currency (if (or (= "RUR" newtrancurrency) (= "RUB" newtrancurrency))  1 (get-fxrate-by-date newtrancurrency (second (first (filter (fn [x] (if (= (first x) (keyword "transaction/valuedate")) true false)) tran)))))
 
-        newprice (* (second (first (filter (fn [x] (if (= (first x) (keyword "transaction/price")) true false)) tran))) (/ fx_tran_currency fx_sec_currency) (if (= "GBX" currency) 1.0 1.0))
+        newprice (* (second (first (filter (fn [x] (if (= (first x) (keyword "transaction/price")) true false)) tran))) (if (or (= assettype 5) (= assettype 15)) 1.0 (/ fx_tran_currency fx_sec_currency)) (if (= "GBX" currency) 1.0 1.0))
 
 
         id (if (nil? (second (first (filter (fn [x] (if (= (first x) (keyword "transaction/refnum")) true false)) tran)))) "" (second (first (filter (fn [x] (if (= (first x) (keyword "transaction/refnum")) true false)) tran))))

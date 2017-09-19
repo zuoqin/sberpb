@@ -182,11 +182,9 @@
   (let [
      conn (d/connect uri)
      ]
-    (d/transact-async conn [{ :security/acode "EXILN", :security/isin "IM00B58FMW76", :security/bcode "EXI LN Equity", :security/assettype 1, :security/multiple 1.0, :security/name "", :security/currency "GBX", :db/id #db/id[:db.part/user -100756] }
+    (d/transact-async conn [{ :security/acode "CREAL23", :security/isin "USP32457AA44", :security/bcode "USP32457AA44 Corp", :security/assettype 5, :security/multiple 1.0, :security/name "", :security/currency "USD", :db/id #db/id[:db.part/user -100766] }
 
-{ :security/acode "BR-10.17", :security/isin "B5V7 Comdty", :security/bcode "B5V7 Comdty", :security/assettype 15, :security/name "Brent Crude Futs  Oct17", :security/multiple 10.0, :security/ismatured false, :security/currency "USD", :db/id #db/id[:db.part/user -101030] }
-
-{ :security/acode "SI-12.17", :security/isin "URZ7 Curncy", :security/bcode "URZ7 Curncy", :security/assettype 15, :security/name "Futures on USD/RUB Exchange Rate", :security/multiple 1.0, :security/ismatured false, :security/currency "RUB", :db/id #db/id[:db.part/user -101031] }
+{ :security/acode "NLMK24", :security/isin "XS1577953174", :security/bcode "XS1577953174 Corp", :security/assettype 5, :security/multiple 1.0, :security/name "", :security/currency "USD", :db/id #db/id[:db.part/user -100767] }
 ]
     )
     ; To insert new entity:
@@ -1495,7 +1493,7 @@
           ;t1 (println (str "in save-transactions " client))
           tranmap (get-transactions client (java.util.Date. (+ (* 1000 60 60 24) (.getTime (java.util.Date.)) )))
 
-          ;tr4 (println (str tranmap))
+          ;tr4 (println (count tranmap))
 
           newtran (map (fn [x] (let [
 
@@ -1729,7 +1727,7 @@
 
 (defn recent-deals-to-db-by-num [num]
   (let [
-        filename (str drive ":/DEV/Java/" "recentdeals" (if (< (count (str num)) 2) "0") num ".xml")
+        filename (str drive ":/DEV/Java/" "recentdeals" num ".xml")
         f (slurp filename)
         x (parse f)
 	
@@ -1816,7 +1814,8 @@
 
 (defn recent-deals-to-db []
   (let [
-    files [3 4 5 6 7 8 9]
+    files ["03" "04" "05" "06" "07" "08" "9-0" "9-1"]
+    ;files ["9-0"]
     trans (doall (map (fn [x] (recent-deals-to-db-by-num x))  files )) 
     ]
     ;(count secs)
@@ -1841,7 +1840,9 @@
                    (or (= 0 (compare "We Sell" (first (:content  (first (:content (nth item 9)  )  )))))
                        (= 0 (compare "We Buy" (first (:content  (first (:content (nth item 9)  )  )))))
                    )
-                   (not (str/includes? (str/lower-case (first (:content  (first (:content (nth item 4)  )  )))) "forts"))
+                   (and (not (str/includes? (str/lower-case (first (:content  (first (:content (nth item 4)  )  )))) "forts")) 
+                        (not (str/includes? (str/lower-case (first (:content  (first (:content (nth item 0)  )  )))) "spot"))
+                   ) 
                    (if (> (count item) 23) (not (str/includes? (str/lower-case  (if (nil? (first (:content  (first (:content (nth item 24)  )  )))) "" (first (:content  (first (:content (nth item 24)  )  ))))  ) "call")) true)
                    (if (> (count item) 23) (not (str/includes? (str/lower-case  (if (nil? (first (:content  (first (:content (nth item 24)  )  )))) "" (first (:content  (first (:content (nth item 24)  )  ))))  ) "put")) true)
                 )
