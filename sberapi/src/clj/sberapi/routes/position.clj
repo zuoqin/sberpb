@@ -339,6 +339,79 @@
   )
 )
 
+(defn cacheSecurities []
+  (let [
+    secs (if (nil? (:secs @app-state)) (secs/get-securities) (:secs @app-state))
+    tr1 (swap! app-state assoc-in [:secs] secs)
+    ]
+    secs
+  )
+)
+
+(defn get_sharesbonds [client]
+  (let [
+    secs (cacheSecurities)
+  ]
+  (filter (fn [x] (let [
+    sec (first (filter (fn[y] (if (= (name (first x)) (str (:id y)) ) true false)) secs))
+    assettype (:assettype sec)
+    ]
+    (if (or (= 1 assettype) (= 5 assettype)) true false))) (:positions ((keyword client) @client_state)))
+  )
+)
+
+
+(defn calc_cashusdvalue [client]
+  (let [
+    secs (cacheSecurities)
+    usdrate (:price (first (filter (fn [x] (if (= "USD" (:acode x)) true false)) secs)))
+    eurrate (:price (first (filter (fn [x] (if (= "EUR" (:acode x)) true false)) secs)))
+    gbprate (:price (first (filter (fn [x] (if (= "GBP" (:acode x)) true false)) secs)))
+    clients (clients/get-clients "zuoqin")
+
+    cashusdvalue (+ (:usd (first (filter (fn [x] (if (= (:code x) client) true false)) clients))) (* eurrate (/ (:eur (first (filter (fn [x] (if (= (:code x) client) true false)) clients))) usdrate)) (* gbprate (/ (:gbp (first (filter (fn [x] (if (= (:code x) client) true false)) clients))) usdrate)) (* 1.0 (/ (:rub (first (filter (fn [x] (if (= (:code x) client) true false)) clients))) usdrate)))
+        ]
+    cashusdvalue
+  )
+)
+
+
+(defn calc_portfusdvalue [client]
+  (let [
+    secs (cacheSecurities)
+    usdrate (:price (first (filter (fn[y] (if (= "USD" (:acode y)) true false)) secs)))
+
+    secsvalues (map (fn [x] (
+      let [
+         sec (first (filter (fn[y] (if (= (name (first x)) (str (:id y)) ) true false)) secs))
+         currency (:currency sec)
+         assettype (:assettype sec)
+ 
+         seccurfxrate (:price (first (filter (fn[y] (if (= currency (:acode y)) true false)) secs)))
+
+         rubprice (* (:multiple sec) seccurfxrate (if (= 5 assettype) 0.01 1.0 ) (:price sec))
+
+         ;tr1 (println sec)
+         ;tr1 (println (str x))
+         usdprice (/ rubprice usdrate)
+      ]
+      {:usdvalue (* (:amount (second x)) usdprice)}
+      )
+    ) (get_sharesbonds client))
+
+    ;tr1 (println (str (first secsvalues)))
+    
+    secsusdvalue (if (nil? (:positions ((keyword client) @client_state))) 0.0
+     (:usdvalue (reduce (fn [x y] {:usdvalue (+ (:usdvalue x) (:usdvalue y))})
+       secsvalues)))
+    cashusdvalue (calc_cashusdvalue client) 
+
+    portfusdvalue (+ secsusdvalue cashusdvalue)
+  ]
+  portfusdvalue
+  )
+)
+
 
 (defn retrievePortfolios [token security]
   (let [
@@ -346,7 +419,7 @@
     transactions (sort (comp sort-trans-from-db) (db/get-transactions-by-security security))
 
     ;tr1 (println (first transactions))
-    securities (secs/get-securities)
+    securities (cacheSecurities)
     thesecurity (first (filter (fn [x] (if (= security (:id x)) true false)) securities))
     portfolios (loop [result {} trans transactions]
                 (if (seq trans) 
@@ -391,13 +464,28 @@
 
 
     filter_portfs (filter (fn [x] (if (not= (:amount (second x)) 0.0) true false))  portfolios) 
-    
+    usdrate (:price (first (filter (fn[y] (if (= "USD" (:acode y)) true false)) securities)))
     result (into {} (map (fn [x]
-                            (let [
-                                  y (name (first x))
-                                  z (second x) 
-                                        ;tr1 (println (str "y: " y " z: " z))
-                                  ] {(keyword y) z}))  filter_portfs)) 
+      (let [
+            y (name (first x))
+            z (second x)
+
+            sec (first (filter (fn[y] (if (= security (:id y) ) true false)) securities))
+            currency (:currency sec)
+            assettype (:assettype sec)
+
+            seccurfxrate (:price (first (filter (fn[y] (if (= currency (:acode y)) true false)) securities)))
+
+            rubprice (* (:multiple sec) seccurfxrate (if (= 5 assettype) 0.01 1.0 ) (:price sec))
+
+            ;tr1 (println sec)
+            ;tr1 (println (str x))
+            usdprice (/ rubprice usdrate)
+            usdvalue (* (:amount (second x)) usdprice)
+            portfval (calc_portfusdvalue y)
+            newresult (assoc z :share (* 100.0 (/ usdvalue portfval)) )
+            ;tr1 (println (str "posval: " usdvalue " portf: " portfval))
+      ] {(keyword y) newresult}))  filter_portfs))
 
     tr1 (swap! sec_state assoc-in [(keyword (str security)) :portfolios] result)
     ]
@@ -664,18 +752,9 @@
   )
 )
 
-(defn cacheSecurities []
-  (let [
-    secs (secs/get-securities)
-    tr1 (swap! app-state assoc-in [:secs] secs)
-    ]
-    secs
-  )
-)
-
 (defn get-secid-by-isin [isin]
   (let [
-        secs (if (nil? (:secs @app-state)) (cacheSecurities) (:secs @app-state))
+        secs (cacheSecurities)
         sec (first (filter (fn [x] (if (= (compare (:isin x) isin) 0) true false)) secs))
         ]
     (:id sec)
@@ -878,25 +957,25 @@
     (doseq [client clients]
       (println (str "retrieving positions for portfolio: " (:code client)))
       (getPositions "" (:code client))
-      (Thread/sleep 3000)
+      (Thread/sleep 2000)
     )
 
     (doseq [client clients]
       (println (str "retrieving deals for portfolio: " (:code client)))
       (getDeals "" (:code client) 0)
-      (Thread/sleep 3000)
+      (Thread/sleep 2000)
     )
 
     (doseq [sec securities]
       (println (str "retrieving portfolios for security: " (:acode sec)))
       (getPortfolios "" (:id sec))
-      (Thread/sleep 3000)
+      (Thread/sleep 2000)
     )
 
     (doseq [sec securities]
       (println (str "calculating portfolios limits for security: " (:acode sec)))
       (calcPortfolios "" (:id sec) 10.0)
-      (Thread/sleep 3000)
+      (Thread/sleep 2000)
     )
 
     (println "Finished caching data")

@@ -314,7 +314,7 @@
 
 (defn map-portfolio [item]
   (let [
-    ;tr1 (.log js/console item)
+    tr1 (.log js/console item)
     portfid (name (nth item 0))
     portfolio (first (filter (fn [x] (if (= (compare (:code x) portfid) 0) true false)) (:clients @app-state)))
 
@@ -336,7 +336,7 @@
                    ;(= "RU" (subs (:isin security) 0 2))
                    )  true false)
 
-    result {:id (:id portfolio) :amount (:amount (nth item 1) ) :wapcur (:price (nth item 1) ) :wapusd (:wapusd (nth item 1) ) :waprub (:rubprice (nth item 1) ) :currubprice (* price newfxrate) :usdvalue (/ (* (:amount (nth item 1)) (:price security)  (if (= isbond true) (* newfxrate 0.01 (:multiple security)) newfxrate )  ) usdrate) }
+    result {:id (:id portfolio) :amount (:amount (nth item 1) ) :wapcur (:price (nth item 1) ) :wapusd (:wapusd (nth item 1) ) :waprub (:rubprice (nth item 1) ) :currubprice (* price newfxrate) :usdvalue (/ (* (:amount (nth item 1)) (:price security)  (if (= isbond true) (* newfxrate 0.01 (:multiple security)) newfxrate )  ) usdrate) :share (:share (nth item 1)) }
 
     ]
     result
@@ -606,8 +606,8 @@
 (defn buildClientsList [data owner]
   (map
     (fn [text]
-      (dom/option {:key (:code text) :value (:id text)
-                    :onChange #(handle-change % owner)} (:name text))
+      (dom/option {:key (:name text) :value (:id text)
+                    :onChange #(handle-change % owner)} (:code text))
     )
     (sort (comp comp-clients) (:clients @app-state )) 
   )

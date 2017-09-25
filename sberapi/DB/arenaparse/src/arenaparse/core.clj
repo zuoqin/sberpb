@@ -182,9 +182,9 @@
   (let [
      conn (d/connect uri)
      ]
-    (d/transact-async conn [{ :security/acode "CREAL23", :security/isin "USP32457AA44", :security/bcode "USP32457AA44 Corp", :security/assettype 5, :security/multiple 1.0, :security/name "", :security/currency "USD", :db/id #db/id[:db.part/user -100766] }
+    (d/transact-async conn [{ :security/acode "MIX-12.17", :security/isin "XMCZ7 Index", :security/bcode "XMCZ7 Index", :security/assettype 15, :security/name "RTS MICEX INDEX FUTURE  Dec17", :security/multiple 1.0, :security/ismatured false, :security/currency "RUB", :db/id #db/id[:db.part/user -101033] }
 
-{ :security/acode "NLMK24", :security/isin "XS1577953174", :security/bcode "XS1577953174 Corp", :security/assettype 5, :security/multiple 1.0, :security/name "", :security/currency "USD", :db/id #db/id[:db.part/user -100767] }
+{ :security/acode "ATCOASS", :security/isin "SE0006886750", :security/bcode "US382550BG56 Corp", :security/assettype 5, :security/multiple 1.0, :security/name "", :security/currency "SEK", :db/id #db/id[:db.part/user -100783] }
 ]
     )
     ; To insert new entity:
@@ -1022,7 +1022,8 @@
 
 
 
-                        ;tr4 (if (= (compare (:security tran) "HGMLN") 0) (println (str "seccurrencyprice: " seccurrprice " rubprice: " rubprice))) 
+                        ;tr4 (if (= (compare (:security tran) "GMKN") 0) (println (str "usdprice: " usdprice " rubprice: " rubprice)))
+
                         prevrubprice (:waprub ((keyword isin) result))
                         prevusdprice (:wapusd ((keyword isin) result))
 
@@ -1782,6 +1783,7 @@
                          (not (str/includes? (str/lower-case (:status x)) "valid") ) 
                          (= "RUR" (:security x))
                          (= "GBP/RUR" (:security x))
+                         (= "USD/CAD" (:security x))
                          (= "USD/RUR" (:security x))
                          (= "GBP/USD" (:security x))
                          (= "GBP/EUR" (:security x))
@@ -1814,8 +1816,8 @@
 
 (defn recent-deals-to-db []
   (let [
-    files ["03" "04" "05" "06" "07" "08" "9-0" "9-1"]
-    ;files ["9-0"]
+    files ["03" "04" "05" "06" "07" "08" "9-0" "9-1" "9-2" "9-3"]
+    ;files ["9-3"]
     trans (doall (map (fn [x] (recent-deals-to-db-by-num x))  files )) 
     ]
     ;(count secs)

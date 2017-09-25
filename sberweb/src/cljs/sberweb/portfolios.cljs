@@ -94,12 +94,21 @@
 
           (dom/div {:className "row" :style {:margin-left "0px" :margin-right "0px"}}
 
-            ;; Portfolio (client
-            (dom/div {:className "col-xs-2 col-md-2" :style {:padding-left "0px" :padding-right "0px"}}
+            ;; Portfolio (client)
+            (dom/div {:className "col-xs-1 col-md-1" :style {:padding-left "0px" :padding-right "0px"}}
               (dom/a {:className "list-group-item" :href (str  "#/postrans/" (:id item) "/" (:selectedsec @sbercore/app-state)  )}
                 (dom/h4 {:className "list-group-item-heading" :style {:white-space "nowrap"}} (:code (first (filter (fn[x] (if (= (:id x) (:id item) ) true false)) (:clients @sbercore/app-state)))))
               )
             )
+
+            ;; Доля в портфеле
+            (dom/div {:className "col-xs-1 col-md-1" :style {:padding-left "0px" :padding-right "0px" :text-align "right"}}
+              (dom/a {:className "list-group-item" :href (str  "#/postrans/" (:id item) "/" (:selectedsec @sbercore/app-state)  )}
+                (dom/h4 {:className "list-group-item-heading" :style {:white-space "nowrap"}} (gstring/format "%.2f" (:share item)))
+              )
+            )
+
+
 
             ;; Количество бумаг
             (dom/div {:className "col-xs-2 col-md-1" :style {:padding-left "0px" :padding-right "0px"}}            
@@ -243,8 +252,9 @@
           (dom/div {:className "panel-heading"}
 
             (dom/div (assoc stylerow  :className "row" )
-              (dom/div {:className "col-xs-2 col-md-2" :style {:text-align "center"}}  "Portfolio")
-              (dom/div {:className "col-xs-2 col-md-1" :style {:text-align "center"}} "Amount")
+              (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}}  "Портфель")
+              (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}}  "Доля в портфеле")
+              (dom/div {:className "col-xs-2 col-md-1" :style {:text-align "center"}} "Кол-во")
               (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "WAP price")
               (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "Last price")
               (dom/div {:className "col-xs-2 col-md-2" :style {:text-align "center"}} "USD Value")
