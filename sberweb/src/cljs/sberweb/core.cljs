@@ -54,7 +54,7 @@
 
 (defn onVersionInfo []
   (let [     
-      newdata { :info "Global Asset Management System пользовательский интерфейс обновлен 01.09.2017 09:28" }
+      newdata { :info "Global Asset Management System пользовательский интерфейс обновлен 20.09.2017 09:28" }
     ]
    
     (setVersionInfo newdata)
@@ -314,7 +314,7 @@
 
 (defn map-portfolio [item]
   (let [
-    tr1 (.log js/console item)
+    ;tr1 (.log js/console item)
     portfid (name (nth item 0))
     portfolio (first (filter (fn [x] (if (= (compare (:code x) portfid) 0) true false)) (:clients @app-state)))
 
@@ -606,8 +606,13 @@
 (defn buildClientsList [data owner]
   (map
     (fn [text]
-      (dom/option {:key (:name text) :value (:id text)
+      (let [
+        ;tr1 (.log js/console (str  "name=" (:name text) ))
+        ]
+        (dom/option {:key (:code text) :data-subtext (:name text) :value (:id text)
                     :onChange #(handle-change % owner)} (:code text))
+      )
+      
     )
     (sort (comp comp-clients) (:clients @app-state )) 
   )
@@ -865,7 +870,7 @@
               (dom/div {:style {:margin-right "10px" :visibility (if (and (= (compare (:name (:current @data)) "Positions") 0) (or (= (:role (:user @data)) "admin") (= (:role (:user @data)) "admin")) ) "visible" "hidden")}}
                 (omdom/select #js {:id "clients"
                                    :className "selectpicker"
-                                   :data-show-subtext "true"
+                                   :data-show-subtext "false"
                                    :data-live-search "true"
                                    :onChange #(handle-change % owner)
                                    }                

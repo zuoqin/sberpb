@@ -2,6 +2,7 @@
  :port 3000
  ;; when :nrepl-port is set the application starts the nREPL server on load
  :nrepl-port 7000
+ :password pa$$w0rd
  :database-url "datomic:dev://db.sberpb.com:4334/sberpb_dev"
  :token "eyJhbGciOiJub25lIiwidHlwIjoiSldUIn0.eyJpc3MiOiJ6dW9xaW4iLCJleHAiOjE1MDM0NzQ4NzQsImlhdCI6MTUwMzM4ODQ3NH0."
 }

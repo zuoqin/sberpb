@@ -10,7 +10,12 @@
 
             [clojure.string :as str]
             [datomic.api :as d]
-            ;[ajax.core :refer [GET POST]]
+
+            [clojure.data.codec.base64 :as b64]
+            [lock-key.core :refer [decrypt decrypt-as-str decrypt-from-base64
+                                        encrypt encrypt-as-base64]]
+
+            [base64-clj.core :as base64]
             [clojure.data.csv :as csv]
             [clojure.java.io :as io]
             [dk.ative.docjure.spreadsheet]
@@ -988,7 +993,8 @@
 
 (defn build-excel-positions [client]
   (let [
-    transactions (sort (comp sort-tran-from-db) (get-transactions-from-db client (java.util.Date.))   )
+    dt2 (java.util.Date. (c/to-long (f/parse custom-formatter (f/unparse custom-formatter (c/from-long (+ (c/to-long (java.util.Date.)) (* 10 1000 24 3600)))))))
+    transactions (sort (comp sort-tran-from-db) (get-transactions-from-db client dt2)   )
 
     ;tr1 (println (str "client=" client))
     securities (get-securities)
@@ -1816,8 +1822,8 @@
 
 (defn recent-deals-to-db []
   (let [
-    files ["03" "04" "05" "06" "07" "08" "9-0" "9-1" "9-2" "9-3"]
-    ;files ["9-3"]
+    ;files ["03" "04" "05" "06" "07" "08" "9-0" "9-1" "9-2"]
+    files ["9-3"]
     trans (doall (map (fn [x] (recent-deals-to-db-by-num x))  files )) 
     ]
     ;(count secs)

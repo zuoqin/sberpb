@@ -10,7 +10,9 @@
                  [org.clojure/clojure "1.8.0"]
                  [clj-time "0.13.0"]
                  [incanter "1.5.7"]
-                 [cljs-ajax "0.5.9"]
+                 [org.clojure/data.codec "0.1.0"]
+                 [lock-key "1.5.0"]
+                 [base64-clj "0.1.1"]
                  [com.datomic/datomic-pro "0.9.5350" :exclusions [org.slf4j/log4j-over-slf4j org.slf4j/slf4j-nop]]
 
                  [dk.ative/docjure "1.11.0"]

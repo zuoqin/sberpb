@@ -4,5 +4,6 @@
  :nrepl-port 7000
  :database-url "datomic:dev://localhost:4334/sberpb_dev"
  :drive c
+ :password pa$$w0rd
  :imagepath ":/DEV/clojure/sberpb/sberapi/resources/public/img/tradeidea/"
  }

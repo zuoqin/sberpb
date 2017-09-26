@@ -19,6 +19,7 @@
             [sberweb.portfolios :as portfolios]
             [sberweb.calcportfs :as calcportfs]
             [sberweb.postrans :as postrans]
+            ;[sberweb.allclients :as allclients]
             [sberweb.securities :as assets]
             [sberweb.syssettings :as syssettings]
             [cljs.core.async :refer [put! dropping-buffer chan take! <!]]

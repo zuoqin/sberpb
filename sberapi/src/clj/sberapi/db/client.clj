@@ -9,7 +9,13 @@
             [clj-time.coerce :as c]
 
             [clojure.string :as str]
-            [clojure.data.codec.base64 :as b64]
+            [base64-clj.core :as b64]
+
+            [clojure.java.io :as io]
+            [lock-key.core :refer [decrypt decrypt-as-str decrypt-from-base64
+                                        encrypt encrypt-as-base64]]
+
+            
 ))
 
 
@@ -19,7 +25,9 @@
   (let [
       email (first email)
       ;tr1 (println (str "email=" email))
-      result (if (> (count email) 0) (String. (b64/decode (bytes (byte-array (map byte email))))) "") 
+      result (if (> (count email) 0) (String. (b64/decode email)) "")
+
+;result (if (> (count email) 0) (String. (b64/decode (bytes (byte-array (map byte email))))) "") 
     ]
     result
   )
@@ -44,8 +52,11 @@
 
 (defn client-to-map [client]
   (let [
+    name (try
+     (b64/decode (decrypt-from-base64 (nth client 2) (str (-> env :password)) )) 
+     (catch Exception e (nth client 2)))
     ;tr1 (println (nth client 12))
-    newclient {:id (nth client 0) :code (nth client 1) :name (nth client 2) :currency (nth client 3) :usd (nth client 4) :rub (nth client 5) :eur (nth client 6) :gbp (nth client 7) :margin (nth client 12) :stockshare (nth client 8) :bondshare (nth client 9) :signedadvisory (nth client 10) :email (nth client 11) :advmail (get-client-advemails (nth client 1))}
+    newclient {:id (nth client 0) :code (nth client 1) :name name :currency (nth client 3) :usd (nth client 4) :rub (nth client 5) :eur (nth client 6) :gbp (nth client 7) :margin (nth client 12) :stockshare (nth client 8) :bondshare (nth client 9) :signedadvisory (nth client 10) :email (nth client 11) :advmail (get-client-advemails (nth client 1))}
   ]
   newclient
   )

@@ -32,13 +32,14 @@
                  [com.draines/postal "2.0.2"]
                  [clj-jwt "0.1.1"]
                  [jumblerg/ring.middleware.cors "1.0.1"]
-                 [org.clojure/data.codec "0.1.0"]
+                 [base64-clj "0.1.1"]
+                 ;[org.clojure/data.codec "0.1.0"]
                  [digest "1.4.5"]
 
                  [clojurewerkz/quartzite "2.0.0"]
                  [dk.ative/docjure "1.11.0"]
 
-                 ;;[incanter "1.5.7"]
+                 [lock-key "1.5.0"]
 		]
 
   :min-lein-version "2.0.0"

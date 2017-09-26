@@ -387,9 +387,11 @@
          currency (:currency sec)
          assettype (:assettype sec)
  
-         seccurfxrate (:price (first (filter (fn[y] (if (= currency (:acode y)) true false)) secs)))
+         seccurfxrate (db/get-fxrate-by-date currency (java.util.Date.))
 
-         rubprice (* (:multiple sec) seccurfxrate (if (= 5 assettype) 0.01 1.0 ) (:price sec))
+         ;tr1 (println (str "multsec=" (:multiple sec) " fx=" seccurfxrate " price=" (:price sec) " currency=" (:currency sec)))
+
+         rubprice (* (:multiple sec) seccurfxrate (if (= 5 assettype) 0.01 1.0 ) (if (nil? (:price sec)) 0.0 (:price sec)))
 
          ;tr1 (println sec)
          ;tr1 (println (str x))
@@ -474,16 +476,16 @@
             currency (:currency sec)
             assettype (:assettype sec)
 
-            seccurfxrate (:price (first (filter (fn[y] (if (= currency (:acode y)) true false)) securities)))
+            seccurfxrate (db/get-fxrate-by-date currency (java.util.Date.)) 
+            ;tr1 (println (str "mult=" (:multiple sec) " seccur=" seccurfxrate " assettype=" assettype " price=" (:price sec)))
+            rubprice (* (:multiple sec) seccurfxrate (if (= 5 assettype) 0.01 1.0 ) (if (nil? (:price sec)) 0.0 (:price sec)) )
 
-            rubprice (* (:multiple sec) seccurfxrate (if (= 5 assettype) 0.01 1.0 ) (:price sec))
-
-            ;tr1 (println sec)
+            
             ;tr1 (println (str x))
             usdprice (/ rubprice usdrate)
             usdvalue (* (:amount (second x)) usdprice)
             portfval (calc_portfusdvalue y)
-            newresult (assoc z :share (* 100.0 (/ usdvalue portfval)) )
+            newresult (assoc z :share (* 100.0 (/ usdvalue (if (< portfval 1.0) 1.0 portfval))) )
             ;tr1 (println (str "posval: " usdvalue " portf: " portfval))
       ] {(keyword y) newresult}))  filter_portfs))
 
