@@ -269,11 +269,13 @@
                     oldmaxeurshares (min (* eurrate (:eur client))  (- (:seclimitinrub item) (:calcusedlimit item)))
                     oldmaxgbpshares (min (* gbprate (:gbp client))  (- (:seclimitinrub item) (:calcusedlimit item)))
                     oldmaxrubshares (min (- (:rub client) (:margin client)) (- (:seclimitinrub item) (:calcusedlimit item)))
+                    oldmaxallshares (min (* totalfreecash usdrate) (- (:seclimitinrub item) (:calcusedlimit item)))
 
                     oldmaxusdshares (if (> (abs oldmaxusdshares) 0.001) oldmaxusdshares 0.001)
                     oldmaxeurshares (if (> (abs oldmaxeurshares) 0.001) oldmaxeurshares 0.001)
                     oldmaxgbpshares (if (> (abs oldmaxgbpshares) 0.001) oldmaxgbpshares 0.001)
                     oldmaxrubshares (if (> (abs oldmaxrubshares) 0.001) oldmaxrubshares 0.001)
+                    oldmaxallshares (if (> (abs oldmaxallshares) 0.001) oldmaxallshares 0.001)
 
                     newseclimitinrub (* (if (= 1 (:fulllimit @sbercore/app-state)) (if isbond (/ 100.0 (:bondshare client)) (/ 100.0 (:stockshare client))) 1.0) (/ (:seclimitinrub item) 10.0) (:percentage @data))
 
@@ -284,10 +286,12 @@
                     newmaxgbpshares (* (/ (min (* gbprate (:gbp client))  (- newseclimitinrub (:calcusedlimit item))) oldmaxgbpshares) (:maxgbpshares item))
 
                     newmaxrubshares (* (/ (min (- (:rub client) (:margin client)) (- newseclimitinrub (:calcusedlimit item))) oldmaxrubshares) (:maxrubshares item))
+                    
+                    newmaxallshares (* (/ (min (* totalfreecash usdrate)  (- newseclimitinrub (:calcusedlimit item))) price))
 
                     newfreelimit (if (= 0 (:seclimitinrub item)) 0 (* (/ (- newseclimitinrub (:calcusedlimit item)) (- (:seclimitinrub item) (:calcusedlimit item))) (:freelimit item))) 
 
-                    sharestobuy (gstring/format "%.0f" (case (:selectedcurrency @data) "all" (if (< newfreelimit 0.0) newfreelimit (min newfreelimit (+ newmaxusdshares newmaxrubshares newmaxeurshares newmaxgbpshares))) "usd" newmaxusdshares "eur" newmaxeurshares "gbp" newmaxgbpshares newmaxrubshares))
+                    sharestobuy (gstring/format "%.0f" (case (:selectedcurrency @data) "all" (if (< newfreelimit 0.0) newfreelimit (min newfreelimit newmaxallshares)) "usd" newmaxusdshares "eur" newmaxeurshares "gbp" newmaxgbpshares newmaxrubshares))
 
                     ;tr1 (.log js/console (str "newusd=" newmaxusdshares " neweur=" newmaxeurshares))
                    ]
@@ -297,42 +301,19 @@
 
                   ;;Client code
                   (dom/div {:className "col-xs-1 col-md-1 clientcode" :style {:padding-left "0px" :padding-right "0px"}}
-                    (dom/a {:className "list-group-item" :style {:padding-left "3px" :padding-right "3px" :text-align "left"} :href (str  "#/postrans/" (:id client)  "/" (:selectedsec @data)) }
+                    (dom/a {:className "list-group-item" :style {:padding-left "3px" :padding-right "3px" :text-align "left"} :href (str  "#/postrans/" (:id client) "/" (:selectedsec @data))}
                       (dom/h4 {:className "list-group-item-heading"} (:client item))
-                      (dom/span {:className "clientinfo"}
-                        (dom/p (str "Всего активов в advisory: " (sbercore/split-thousands (gstring/format "%.0f" (:signedadvisory client))) " " (:currency client)))
-                        (dom/p (str "Доля акций: " (gstring/format "%.0f" (:stockshare client)) "% Доля облигаций: " (:bondshare client) "%"))
-                        (dom/p (str "Банкир: " ) (dom/a {:href (str "mailto:" (:advmail client) "?Subject=Trade%20idea") } (:advmail client)))
-                      )
+                    )
+                    (dom/span {:className "clientinfo"}
+                      (dom/p (str "Всего активов в advisory: " (sbercore/split-thousands (gstring/format "%.0f" (:signedadvisory client))) " " (:currency client)))
+                      (dom/p (str "Доля акций: " (gstring/format "%.0f" (:stockshare client)) "% Доля облигаций: " (:bondshare client) "%"))
+                      (dom/p (str "Банкир: " ) (dom/a {:href (str "mailto:" (:advmail client) "?Subject=Trade%20idea") } (:advmail client)))
                     )
                   )
 
-                  ;; Всего в управлении
-                  ;; (dom/div {:className "col-xs-1 col-md-1" :style {:padding-left "0px" :padding-right "0px"}}            
-                  ;;   (dom/a {:className "list-group-item" :style {:padding-left "3px" :padding-right "3px" :text-align "right"} :href (str  "#/postrans/" (:id item) "/" (:selectedsec @sbercore/app-state)) }
-                  ;;     (dom/h4 {:className "list-group-item-heading"} (str (sbercore/split-thousands (str (:signedadvisory client))) " " (:currency item)))
-                  ;;   )
-                  ;; )
-
-                  ;;Доля акций в портфеле
-                  ;; (dom/div {:className "col-xs-1 col-md-1" :style {:padding-left "0px" :padding-right "0px"}}            
-                  ;;   (dom/a {:className "list-group-item" :style {:padding-left "3px" :padding-right "3px" :text-align "right"} :href (str  "#/postrans/" (:id item) "/" (:selectedsec @sbercore/app-state)) }
-                  ;;     (dom/h4 {:className "list-group-item-heading"} (sbercore/split-thousands (str (:stockshare client)))   )
-                  ;;   )
-                  ;; )
-
-
-                  ;;Доля облигаций в портфеле
-                  ;; (dom/div {:className "col-xs-1 col-md-1" :style {:padding-left "0px" :padding-right "0px"}}            
-                  ;;   (dom/a {:className "list-group-item" :style {:padding-left "3px" :padding-right "3px" :text-align "right"} :href (str  "#/postrans/" (:id item) "/" (:selectedsec @sbercore/app-state)) }
-                  ;;     (dom/h4 {:className "list-group-item-heading"} (sbercore/split-thousands (str (:bondshare client)))   )
-                  ;;   )
-                  ;; )
-
-
                   ;;Денежная позиция
                   (dom/div {:className "col-xs-3 col-md-3 clientcash" :style {:padding-left "0px" :padding-right "0px"}}            
-                    (dom/a {:className "list-group-item" :style {:padding-left "3px" :padding-right "3px" :text-align "right"} :href (str  "#/postrans/" (:id item) "/" (:selectedsec @data)) }
+                    (dom/a {:className "list-group-item" :style {:padding-left "3px" :padding-right "3px" :text-align "right"} :href (str  "#/postrans/" (:id client) "/" (:selectedsec @data))}
                       (dom/h4 {:className "list-group-item-heading"} (sbercore/split-thousands (gstring/format "%.0f" (case (:selectedcurrency @data) "all" totalfreecash "rub" (- (:rub item) (:margin client)) ((keyword (:selectedcurrency @data)) item)))))
 
                       (dom/span {:className "cashinfo"} 
@@ -345,46 +326,24 @@
                     )
                   )
 
-                  ;;RUB amount
-                  ;; (dom/div {:className "col-xs-1 col-md-1" :style {:padding-left "0px" :padding-right "0px"}}            
-                  ;;   (dom/a {:className "list-group-item" :style {:padding-left "3px" :padding-right "3px" :text-align "right"} :href (str  "#/postrans/" (:id item) "/" (:selectedsec @sbercore/app-state)) }
-                  ;;     (dom/h4 {:className "list-group-item-heading"} (sbercore/split-thousands (gstring/format "%.0f" (:rub item))))
-                  ;;   )            
-                  ;; )
-
-
-                  ;; ;;EUR amount
-                  ;; (dom/div {:className "col-xs-1 col-md-1" :style {:padding-left "0px" :padding-right "0px"}}            
-                  ;;   (dom/a {:className "list-group-item" :style {:padding-left "3px" :padding-right "3px" :text-align "right"} :href (str  "#/postrans/" (:id item) "/" (:selectedsec @sbercore/app-state)) }
-                  ;;     (dom/h4 {:className "list-group-item-heading"} (sbercore/split-thousands (gstring/format "%.0f" (:eur item))))
-                  ;;   )            
-                  ;; )
-
-                  ;; ;;GBP amount
-                  ;; (dom/div {:className "col-xs-1 col-md-1" :style {:padding-left "0px" :padding-right "0px"}}            
-                  ;;   (dom/a {:className "list-group-item" :style {:padding-left "3px" :padding-right "3px" :text-align "right"} :href (str  "#/postrans/" (:id item) "/" (:selectedsec @sbercore/app-state)) }
-                  ;;     (dom/h4 {:className "list-group-item-heading"} (sbercore/split-thousands (gstring/format "%.0f" (:gbp item))))
-                  ;;   )            
-                  ;; )
-
                   ;;Total Limit
                   (dom/div {:className "col-xs-1 col-md-1" :style {:padding-left "0px" :padding-right "0px"}}            
-                    (dom/a {:className "list-group-item" :style {:padding-left "3px" :padding-right "3px" :text-align "right"} :href (str  "#/postrans/" (:id item) "/" (:selectedsec @data)) }
+                    (dom/a {:className "list-group-item" :style {:padding-left "3px" :padding-right "3px" :text-align "right"} :href (str  "#/postrans/" (:id client) "/" (:selectedsec @data)) }
                       (dom/h4 {:className "list-group-item-heading"} (sbercore/split-thousands (gstring/format "%.0f" (* (/ (:maxlimit item) 10.0) (:percentage @data)   (if (= 1 (:fulllimit @sbercore/app-state)) (if isbond (/ 100.0 (:bondshare client)) (/ 100.0 (:stockshare client))) 1.0)))))
                     )
                   )
 
                   ;;Bought Shares
                   (dom/div {:className "col-xs-1 col-md-1" :style {:padding-left "0px" :padding-right "0px"}}            
-                    (dom/a {:className "list-group-item" :style {:padding-left "3px" :padding-right "3px" :text-align "right"} :href (str  "#/postrans/" (:id item) "/" (:selectedsec @data)) }
+                    (dom/a {:className "list-group-item" :style {:padding-left "3px" :padding-right "3px" :text-align "right"} :href (str  "#/postrans/" (:id client) "/" (:selectedsec @data)) }
                       (dom/h4 {:className "list-group-item-heading"} (sbercore/split-thousands (str (:shares item))))
-                    )            
+                    )
                   )
 
 
                   ;; Free Limit
                   (dom/div {:className "col-xs-2 col-md-2" :style {:padding-left "0px" :padding-right "0px"}}            
-                    (dom/a {:className "list-group-item" :style {:padding-left "3px" :padding-right "3px" :text-align "right"} :href (str  "#/postrans/" (:id item) "/" (:selectedsec @data)) }
+                    (dom/a {:className "list-group-item" :style {:padding-left "3px" :padding-right "3px" :text-align "right"} :href (str  "#/postrans/" (:id client) "/" (:selectedsec @data)) }
                       (dom/h4 {:className "list-group-item-heading"} (sbercore/split-thousands (gstring/format "%.0f" newfreelimit)))
                     )
                   )
@@ -392,37 +351,13 @@
 
                   ;;Shares can buy in selected cash
                   (dom/div {:className "col-xs-2 col-md-2" :style {:padding-left "0px" :padding-right "0px"}}            
-                    (dom/a {:className "list-group-item" :style {:padding-left "3px" :padding-right "3px" :text-align "right" :padding-top "12px"} :href (str  "#/postrans/" (:id item) "/" (:selectedsec @data)) }
-                      (dom/h4 {:className "list-group-item-heading"} (sbercore/split-thousands (str sharestobuy)))
-                    )
+                    (dom/a {:className "list-group-item" :style {:padding-left "3px" :padding-right "3px" :text-align "right" :padding-top "12px"} :href (str  "#/postrans/" (:id client) "/" (:selectedsec @data)) }
+                      (dom/h4 {:className "list-group-item-heading"} (sbercore/split-thousands (str sharestobuy))))
                   )
-
-
-                  ;;Shares can buy in RUB
-                  ;; (dom/div {:className "col-xs-1 col-md-1" :style {:padding-left "0px" :padding-right "0px"}}            
-                  ;;   (dom/a {:className "list-group-item" :style {:padding-left "3px" :padding-right "3px" :text-align "right"} :href (str  "#/postrans/" (:id item) "/" (:selectedsec @sbercore/app-state)) }
-                  ;;     (dom/h4 {:className "list-group-item-heading"} (sbercore/split-thousands (str (:maxrubshares item))))
-                  ;;   )
-                  ;; )
-
-                  ;; ;;Shares can buy in EUR
-                  ;; (dom/div {:className "col-xs-1 col-md-1" :style {:padding-left "0px" :padding-right "0px"}}            
-                  ;;   (dom/a {:className "list-group-item" :style {:padding-left "3px" :padding-right "3px" :text-align "right"} :href (str  "#/postrans/" (:id item) "/" (:selectedsec @sbercore/app-state)) }
-                  ;;     (dom/h4 {:className "list-group-item-heading"} (sbercore/split-thousands (str (:maxeurshares item))))
-                  ;;   )
-                  ;; )
-
-                  ;; ;;Shares can buy in GBP
-                  ;; (dom/div {:className "col-xs-1 col-md-1" :style {:padding-left "0px" :padding-right "0px"}}            
-                  ;;   (dom/a {:className "list-group-item" :style {:padding-left "3px" :padding-right "3px" :text-align "right"} :href (str  "#/postrans/" (:id item) "/" (:selectedsec @sbercore/app-state)) }
-                  ;;     (dom/h4 {:className "list-group-item-heading"} (sbercore/split-thousands (str (:maxgbpshares item))))
-                  ;;   )
-                  ;; )
 
                   ;;Купить бумаг
                   (dom/div {:className "col-xs-1 col-md-1" :style {:padding-left "0px" :padding-right "0px"}}
-                    (dom/input {:type "text" :id (str "sharesbuy" (:client item)) :style {:height "36px" :width "100%" :font-size "14px" :font-weight 500 :margin-top "2px" :text-align "right"} :value (if (nil? (:amount (first (filter (fn [x] (if (= (:code x) (:client item)) true false)) (:letters @app-state))))) (str sharestobuy) (:amount (first (filter (fn [x] (if (= (:code x) (:client item)) true false)) (:letters @app-state))))) :onChange (fn [e] (handle-sharebuy-change e ))
-      } )
+                    (dom/input {:type "text" :id (str "sharesbuy" (:client item)) :style {:height "36px" :width "100%" :font-size "14px" :font-weight 500 :margin-top "2px" :text-align "right"} :value (if (nil? (:amount (first (filter (fn [x] (if (= (:code x) (:client item)) true false)) (:letters @app-state))))) (str sharestobuy) (:amount (first (filter (fn [x] (if (= (:code x) (:client item)) true false)) (:letters @app-state))))) :onChange (fn [e] (handle-sharebuy-change e ))})
                   )
 
                   ;;Отправить письмо
@@ -508,12 +443,6 @@
               ;(dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "Доля Облигаций")
               (dom/div {:className "col-xs-3 col-md-3" :style {:text-align "center"}} (b/button {:className "btn btn-primary colbtn" :onClick (fn [e] ((swap! app-state assoc-in [:sort-list] "cash") (sbercore/doswaps)))} "Денежная позиция"))
 
-              ;; (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} (b/button {:className "btn btn-primary colbtn" :onClick (fn [e] ((swap! app-state assoc-in [:sort-list] "rub") (swap! sbercore/app-state assoc-in [:percentage] (+ (:percentage @sbercore/app-state) 0.0))))} "RUB"))
-
-              ;; (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} (b/button {:className "btn btn-primary colbtn" :onClick (fn [e] ((swap! app-state assoc-in [:sort-list] "eur") (swap! sbercore/app-state assoc-in [:percentage] (+ (:percentage @sbercore/app-state) 0.0))))} "EUR"))
-
-              ;; (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} (b/button {:className "btn btn-primary colbtn" :onClick (fn [e] ((swap! app-state assoc-in [:sort-list] "gbp") (swap! sbercore/app-state assoc-in [:percentage] (+ (:percentage @sbercore/app-state) 0.0))))} "GBP"))
-
               (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} "Лимит клиента на бумагу, шт.")
 
               (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center" :padding-top "7px"}} "Куплено бумаг, шт.")
@@ -521,13 +450,6 @@
               (dom/div {:className "col-xs-2 col-md-2" :style {:text-align "center"}} "Свободный лимит на бумагу, шт.")
 
               (dom/div {:className "col-xs-2 col-md-2" :style {:text-align "center"}} (b/button {:className "btn btn-primary colbtn" :onClick (fn [e] ((swap! app-state assoc-in [:sort-list] "maxshares") (sbercore/doswaps)))} "Купить кол-во"))
-
-              ;; (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} (b/button {:className "btn btn-primary colbtn" :onClick (fn [e] ((swap! app-state assoc-in [:sort-list] "maxrubshares") (swap! sbercore/app-state assoc-in [:percentage] (+ (:percentage @sbercore/app-state) 0.0))))} "₽ кол-во"))
-
-              ;; (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} (b/button {:className "btn btn-primary colbtn" :onClick (fn [e] ((swap! app-state assoc-in [:sort-list] "maxeurshares") (swap! sbercore/app-state assoc-in [:percentage] (+ (:percentage @sbercore/app-state) 0.0))))} "€ кол-во"))
-
-              ;; (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} (b/button {:className "btn btn-primary colbtn" :onClick (fn [e] ((swap! app-state assoc-in [:sort-list] "maxgbpshares") (swap! sbercore/app-state assoc-in [:percentage] (+ (:percentage @sbercore/app-state) 0.0))) )} "£ кол-во"))
-
               (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} (dom/h4 {:style {:text-align "center"}}) "Купить кол-во")
 
               (dom/div {:className "col-xs-1 col-md-1" :style {:text-align "center"}} (b/button {:className "btn btn-primary colbtn" :onClick (fn [e] (sendLetter))} "email"))

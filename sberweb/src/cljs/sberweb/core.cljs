@@ -545,7 +545,7 @@
     (swap! app-state assoc-in [:selectedsec] code)
     (if (nil? (:calcportfs ((keyword value) @app-state))) (getCalcPortfolios))    
   )
-  (.log js/console (str "in onCalcSecsDropDownChange value =") value)  
+  ;(.log js/console (str "in onCalcSecsDropDownChange value =") value)  
 )
 
 (defn onCalcCurrenciesDropDownChange [id value]
