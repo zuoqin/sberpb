@@ -1579,7 +1579,7 @@
 
 { :security/acode "GT27", :security/isin "US382550BG56", :security/bcode "US382550BG56 Corp", :security/assettype 5, :security/multiple 1.0, :security/name "", :security/currency "USD", :db/id #db/id[:db.part/user -100782] }
 
-{ :security/acode "ATCOASS", :security/isin "SE0006886750", :security/bcode "ATCOA SS Equity", :security/assettype 5, :security/multiple 1.0, :security/name "", :security/currency "SEK", :db/id #db/id[:db.part/user -100783] }
+{ :security/acode "ATCOASS", :security/isin "SE0006886750", :security/bcode "ATCOA SS Equity", :security/assettype 1, :security/multiple 1.0, :security/name "", :security/currency "SEK", :db/id #db/id[:db.part/user -100783] }
 
 { :security/acode "TDNESG1", :security/isin "GB0002771383", :security/bcode "TDNESG1 LN Equity", :security/assettype 1, :security/multiple 1.0, :security/name "", :security/currency "EUR", :db/id #db/id[:db.part/user -100784] }
 
@@ -1587,7 +1587,9 @@
 
 { :security/acode "IRAQ23", :security/isin "XS1662407862", :security/bcode "XS1662407862 Corp", :security/assettype 5, :security/multiple 1.0, :security/name "", :security/currency "USD", :db/id #db/id[:db.part/user -100786] }
 
-;{ :security/acode "FEES", :security/isin "RU000A0JPNN9", :security/bcode "FEES RX Equity", :security/assettype 1, :security/multiple 1.0, :security/name "", :security/currency "USD", :db/id #db/id[:db.part/user -100787] }
+{ :security/acode "EAUS", :security/isin "US2855121099", :security/bcode "EA US Equity", :security/assettype 1, :security/multiple 1.0, :security/name "", :security/currency "USD", :db/id #db/id[:db.part/user -100787] }
+
+{ :security/acode "UCBBB", :security/isin "BE0003739530", :security/bcode "UCB BB Equity", :security/assettype 1, :security/multiple 1.0, :security/name "", :security/currency "EUR", :db/id #db/id[:db.part/user -100788] }
 
 
 
@@ -1746,7 +1748,7 @@
 
 { :client/code "GRENF", :client/name "Клиент GRENF", :client/currency "USD", :client/stockshare 25.0 :client/bondshare 75.0, :client/usd 100000.0, :client/rub 100000.0, :client/eur 100000.0, :client/gbp 100000.0, :client/signedadvisory 5000000.0, :client/advemail[ "RWxlbmFfUmF6Z292b3JvdmFAc2JlcmJhbmstcGIucnU=" ], :client/email "ZGFuaWlsUm96ZW50YWxAZ2FyZXNlLWFzc29jaWF0ZXMuY29t", :client/advisors [ #db/id[:db.part/user -105001] #db/id[:db.part/user -105002] #db/id[:db.part/user -105003] #db/id[:db.part/user -105013] #db/id[:db.part/user -105019] #db/id[:db.part/user -105020] ], :db/id #db/id[:db.part/user -102034]}
 
-{ :client/code "PYUNF", :client/name "2emxZQfY8vKJvMiGbENRTaIpT+g1Ov7Vyvs4x6RkGeXmWVyKAi3nyBo/gGIhmGFwt74pgrSdMLpcDzuubLC4QyvsQciutZr5ra8nJtwNcDYjL/FKq+cIsrKZlYmSr2o3", :client/currency "USD", :client/stockshare 50.0 :client/bondshare 50.0, :client/usd 100000.0, :client/rub 100000.0, :client/eur 100000.0, :client/gbp 100000.0, :client/signedadvisory 5000001.0, :client/advemail["TmF0YWxpYV9Ub2xwZXpobmlrb3ZhQHNiZXJiYW5rLXBiLnJ1" "QW5kcmV5X0tvemh1a2hvdkBzYmVyYmFuay1wYi5ydQ==" "QW5uYV9BcnRlbXlldmFAc2JlcmJhbmstY2liLnJ1"], :client/email "UGV0cmFrb3ZOQHVzb2Z0LnJ1", :client/advisors [ #db/id[:db.part/user -105001] #db/id[:db.part/user -105002] #db/id[:db.part/user -105003] #db/id[:db.part/user -105007] #db/id[:db.part/user -105012] #db/id[:db.part/user -105013] #db/id[:db.part/user -105018] ], :db/id #db/id[:db.part/user -102035]}
+{ :client/code "PYUNF", :client/name "sWBsjvcVXcPClgVaUgWF3HVcaODagf/14pl19u7xtd8IJO0N4ntTTjqTxetpyLcyFt4x9+sV7E0dRt6v/asyyUKoQl+Al52v4I12MAL8QrH/jm9TMSZaANWRz/7nrSCm", :client/currency "USD", :client/stockshare 50.0 :client/bondshare 50.0, :client/usd 100000.0, :client/rub 100000.0, :client/eur 100000.0, :client/gbp 100000.0, :client/signedadvisory 5000001.0, :client/advemail["TmF0YWxpYV9Ub2xwZXpobmlrb3ZhQHNiZXJiYW5rLXBiLnJ1" "QW5kcmV5X0tvemh1a2hvdkBzYmVyYmFuay1wYi5ydQ==" "QW5uYV9BcnRlbXlldmFAc2JlcmJhbmstY2liLnJ1"], :client/email "UGV0cmFrb3ZOQHVzb2Z0LnJ1", :client/advisors [ #db/id[:db.part/user -105001] #db/id[:db.part/user -105002] #db/id[:db.part/user -105003] #db/id[:db.part/user -105007] #db/id[:db.part/user -105012] #db/id[:db.part/user -105013] #db/id[:db.part/user -105018] ], :db/id #db/id[:db.part/user -102035]}
 
 { :client/code "PYUZF", :client/name "zh0h/3B8995CffwnqyMQgon+ipbgcVrruwS1llVCL4i0anSfFv09NiC/SQIUYIIGCkAKalibTDDQO0TIypwcWGFmUR0HX8uhqHDfoUj+ZtaGMdiDOKgJy9sObZQd5eya", :client/currency "USD", :client/stockshare 50.0 :client/bondshare 50.0, :client/usd 100000.0, :client/rub 100000.0, :client/eur 100000.0, :client/gbp 100000.0, :client/signedadvisory 5000001.0, :client/advemail[ "TmF0YWxpYV9Ub2xwZXpobmlrb3ZhQHNiZXJiYW5rLXBiLnJ1" ], :client/email "UGl0ZXJfNDZAbWFpbC5ydQ==", :client/advisors [ #db/id[:db.part/user -105001] #db/id[:db.part/user -105006] #db/id[:db.part/user -105007] #db/id[:db.part/user -105012] #db/id[:db.part/user -105013] #db/id[:db.part/user -105018]], :db/id #db/id[:db.part/user -102036]}
 
@@ -1754,7 +1756,7 @@
 
 { :client/code "XGPQF", :client/name "Клиент XGPQF", :client/currency "USD", :client/stockshare 50.0 :client/bondshare 50.0, :client/usd 100000.0, :client/rub 100000.0, :client/eur 100000.0, :client/gbp 100000.0, :client/signedadvisory 5000001.0, :client/advemail[ "ZWxlbmFfc2xvYm9kaW5hQHNiZXJiYW5rLXBiLnJ1" ], :client/email "c3lzb2V2dnNAbWFpbC5ydQ==", :client/advisors [ #db/id[:db.part/user -105001] #db/id[:db.part/user -105013] #db/id[:db.part/user -105007] ], :db/id #db/id[:db.part/user -102038]}
 
-{ :client/code "PYUNF1", :client/name "2emxZQfY8vKJvMiGbENRTaIpT+g1Ov7Vyvs4x6RkGeXmWVyKAi3nyBo/gGIhmGFwt74pgrSdMLpcDzuubLC4QyvsQciutZr5ra8nJtwNcDYjL/FKq+cIsrKZlYmSr2o3", :client/currency "USD", :client/stockshare 50.0 :client/bondshare 50.0, :client/usd 100000.0, :client/rub 100000.0, :client/eur 100000.0, :client/gbp 100000.0, :client/signedadvisory 5000001.0, :client/advemail["TmF0YWxpYV9Ub2xwZXpobmlrb3ZhQHNiZXJiYW5rLXBiLnJ1" "QW5kcmV5X0tvemh1a2hvdkBzYmVyYmFuay1wYi5ydQ==" "QW5uYV9BcnRlbXlldmFAc2JlcmJhbmstY2liLnJ1"], :client/email "UGV0cmFrb3ZOQHVzb2Z0LnJ1", :client/advisors [ #db/id[:db.part/user -105001] #db/id[:db.part/user -105002] #db/id[:db.part/user -105003] #db/id[:db.part/user -105013] #db/id[:db.part/user -105007]  #db/id[:db.part/user -105012] #db/id[:db.part/user -105013] #db/id[:db.part/user -105018] ], :db/id #db/id[:db.part/user -102039]}
+{ :client/code "PYUNF1", :client/name "sWBsjvcVXcPClgVaUgWF3HVcaODagf/14pl19u7xtd8IJO0N4ntTTjqTxetpyLcyFt4x9+sV7E0dRt6v/asyyUKoQl+Al52v4I12MAL8QrH/jm9TMSZaANWRz/7nrSCm", :client/currency "USD", :client/stockshare 50.0 :client/bondshare 50.0, :client/usd 100000.0, :client/rub 100000.0, :client/eur 100000.0, :client/gbp 100000.0, :client/signedadvisory 5000001.0, :client/advemail["TmF0YWxpYV9Ub2xwZXpobmlrb3ZhQHNiZXJiYW5rLXBiLnJ1" "QW5kcmV5X0tvemh1a2hvdkBzYmVyYmFuay1wYi5ydQ==" "QW5uYV9BcnRlbXlldmFAc2JlcmJhbmstY2liLnJ1"], :client/email "UGV0cmFrb3ZOQHVzb2Z0LnJ1", :client/advisors [ #db/id[:db.part/user -105001] #db/id[:db.part/user -105002] #db/id[:db.part/user -105003] #db/id[:db.part/user -105013] #db/id[:db.part/user -105007]  #db/id[:db.part/user -105012] #db/id[:db.part/user -105013] #db/id[:db.part/user -105018] ], :db/id #db/id[:db.part/user -102039]}
 
 { :client/code "KDFMF", :client/name "Клиент KDFMF", :client/currency "USD", :client/stockshare 50.0 :client/bondshare 50.0, :client/usd 100000.0, :client/rub 100000.0, :client/eur 100000.0, :client/gbp 100000.0, :client/signedadvisory 5000001.0, :client/advemail[ "RWxlbmFfUmF6Z292b3JvdmFAc2JlcmJhbmstcGIucnU=" ], :client/email "ZGJmMkBtYWlsLnJ1", :client/advisors [ #db/id[:db.part/user -105001] #db/id[:db.part/user -105007] #db/id[:db.part/user -105013] #db/id[:db.part/user -105019] #db/id[:db.part/user -105020] ], :db/id #db/id[:db.part/user -102040]}
 
@@ -4368,9 +4370,9 @@
 
 
 ;; KDCTF Initial CASH position
-{ :transaction/client #db/id[:db.part/user -102160], :transaction/security #db/id[:db.part/user -100132], :transaction/nominal 575000.0, :transaction/price 1.0, :transaction/direction "B", :transaction/tradedate #inst "2016-06-23T01:00:00.0000000Z", :transaction/valuedate #inst "2016-06-23T01:00:00.0000000Z", :transaction/currency "RUB", :transaction/comment "Transfer In", :db/id #db/id[:db.part/user -111144] }
+{ :transaction/client #db/id[:db.part/user -102013], :transaction/security #db/id[:db.part/user -100132], :transaction/nominal 575000.0, :transaction/price 1.0, :transaction/direction "B", :transaction/tradedate #inst "2016-06-23T01:00:00.0000000Z", :transaction/valuedate #inst "2016-06-23T01:00:00.0000000Z", :transaction/currency "RUB", :transaction/comment "Transfer In", :db/id #db/id[:db.part/user -111144] }
 
-{ :transaction/client #db/id[:db.part/user -102160], :transaction/security #db/id[:db.part/user -100132], :transaction/nominal 575000.0, :transaction/price 1.0, :transaction/direction "S", :transaction/tradedate #inst "2016-06-24T01:00:00.0000000Z", :transaction/valuedate #inst "2016-06-24T01:00:00.0000000Z", :transaction/currency "RUB", :transaction/comment "Transfer Out", :db/id #db/id[:db.part/user -111145] }
+{ :transaction/client #db/id[:db.part/user -102013], :transaction/security #db/id[:db.part/user -100132], :transaction/nominal 575000.0, :transaction/price 1.0, :transaction/direction "S", :transaction/tradedate #inst "2016-06-24T01:00:00.0000000Z", :transaction/valuedate #inst "2016-06-24T01:00:00.0000000Z", :transaction/currency "RUB", :transaction/comment "Transfer Out", :db/id #db/id[:db.part/user -111145] }
 
 
 ;; CONSERVATIVE

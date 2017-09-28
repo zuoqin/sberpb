@@ -174,7 +174,7 @@
 
 (defn readallcbrrates []
   (let [
-        currencies ["USD" "EUR" "CHF" "GBP" "HKD"]
+        currencies ["USD" "EUR" "CHF" "GBP" "HKD" "SEK"]
 
         
   ]
@@ -799,7 +799,7 @@
 
 (defn get-transactions-from-db [client dt & [in-currencies in-types]]
   (let [
-        currencies (if (nil? in-currencies) ["USD" "EUR" "RUB" "GBP" "RUR" "GBX" "CHF" "HKD"] in-currencies)
+        currencies (if (nil? in-currencies) ["USD" "EUR" "RUB" "GBP" "RUR" "GBX" "CHF" "HKD" "SEK"] in-currencies)
 
         types (if (nil? in-types) [0 1 5 10 15] in-types)
 
@@ -1010,7 +1010,7 @@
 
                         isin (:isin thesecurity)
 
-                        ;tr8 ( println tran)  
+                        ;tr8 (if (= (:acode thesecurity) "ATCOASS") (println (str "acode=" (:acode thesecurity))))
                         
                         amnt (:amount ( (keyword isin) result ))
 
