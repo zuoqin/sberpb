@@ -4464,7 +4464,7 @@
 
 { :transaction/client #db/id[:db.part/user -102144], :transaction/security #db/id[:db.part/user -100505], :transaction/nominal 50000.0, :transaction/price 100.0, :transaction/direction "S", :transaction/tradedate #inst "2017-09-18T10:00:00.0000000Z", :transaction/valuedate #inst "2017-09-22T10:00:00.0000000Z", :transaction/currency "EUR", :transaction/comment "Autocall EFG International Finance (Guernsey)", :db/id #db/id[:db.part/user -111185] }
 
-
+{ :transaction/client #db/id[:db.part/user -102111], :transaction/security #db/id[:db.part/user -100652], :transaction/nominal 236000.0, :transaction/price 110.80, :transaction/direction "B", :transaction/tradedate #inst "2017-09-28T10:00:00.0000000Z", :transaction/valuedate #inst "2017-09-28T10:00:00.0000000Z", :transaction/currency "USD", :transaction/comment "Transfer In", :db/id #db/id[:db.part/user -111186] }
 
 
 

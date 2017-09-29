@@ -295,7 +295,7 @@
               newdeals (if (= (:id cursec) (:id newcursec))  (if (= (:valuedate tran) curdate) deals (conj deals {:date (f/unparse db/custom-formatter (c/from-long (c/to-long curdate)))  :direction direction :nominal amnt :waprub waprub :wapusd wapusd :wap wap}) ) [])
 
 
-              newresult (if (= (:id cursec)  (:security tran)) result (conj result {:security (:id cursec)  :transactions (conj deals {:date (f/unparse db/custom-formatter (c/from-long (c/to-long curdate)))  :direction direction :nominal amnt :waprub waprub :wapusd wapusd :wap wap})}))
+              newresult (if (or (= (:assettype cursec) 10) (= (:id cursec)  (:security tran))) result (conj result {:security (:id cursec)  :transactions (conj deals {:date (f/unparse db/custom-formatter (c/from-long (c/to-long curdate)))  :direction direction :nominal amnt :waprub waprub :wapusd wapusd :wap wap})}))
               ;thetrans (filter (fn [x] (if (and (= (:security x) sec)) true false)) newtransactions)
               ;;tr1 (if (= (:id newcursec) 17592186045465) (println (str  "deals count= " (count newdeals) " newcursec= " (:id newcursec) " cursec= " (:id cursec) " curdate= " curdate " valuedate= " (:valuedate tran) " newwaprub=" (:waprub theres) " wapusd=" (:wapusd theres) " wap=" (:wap theres) " newnominal=" newnominal " newtrancurrate=" newtrancurrate " trannominal=" trannominal " oldamnt=" amnt " newamnt= " newamnt " rubprice=" rubprice " tranprice=" (:price tran))))
               ;thedates (distinct (map (fn [x] (:valuedate x)) thetrans))
@@ -304,7 +304,7 @@
               ]
           (recur newresult (rest thetrans) newcursec newdeals (:waprub theres) (:wapusd theres) (:wap theres) newnominal newusdrate newtrancurrate newseccurrate (:valuedate tran) (:direction tran))
         )
-        (conj result {:security (:id cursec)  :transactions (conj deals {:date (f/unparse db/custom-formatter (c/from-long (c/to-long curdate)))  :direction direction :nominal amnt :waprub waprub :wapusd wapusd :wap wap})})
+        (if (= (:assettype cursec) 10) result (conj result {:security (:id cursec)  :transactions (conj deals {:date (f/unparse db/custom-formatter (c/from-long (c/to-long curdate)))  :direction direction :nominal amnt :waprub waprub :wapusd wapusd :wap wap})}))        
         )
       )
 
