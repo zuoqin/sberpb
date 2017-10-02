@@ -46,7 +46,9 @@
 (defn security-to-map [security]
   (let [
     [price anr target yield dvddate putdate duration] (get-last-fx (nth security 1))
-    newsec {:id (nth security 0) :acode (nth security 1) :exchange (nth security 2) :isin (nth security 3) :price price :anr anr :target target :yield yield :dvddate dvddate :putdate putdate :duration duration :currency (nth security 4) :assettype (nth security 5) :bcode (nth security 6) :multiple (nth security 7) :ismatured (nth security 8)}
+
+    ;tr1 (println security)
+    newsec {:id (nth security 0) :acode (nth security 1) :exchange (nth security 2) :isin (nth security 3) :price price :anr anr :target target :yield yield :dvddate dvddate :putdate putdate :duration duration :currency (nth security 4) :assettype (nth security 5) :bcode (nth security 6) :multiple (nth security 7) :ismatured (nth security 8) :name (nth security 9)}
         
   ]
   newsec
@@ -55,7 +57,7 @@
 
 (defn get-securities []
   (let [
-        securities (d/q '[:find ?e ?a ?x ?i ?c ?t ?b ?m ?ismatured
+        securities (d/q '[:find ?e ?a ?x ?i ?c ?t ?b ?m ?ismatured ?n
                           :where
                           [?e :security/acode]
                           [?e :security/acode ?a]
@@ -66,6 +68,7 @@
                           [?e :security/bcode ?b]
                           [(get-else $ ?e :security/multiple 1.0) ?m]
                           [(get-else $ ?e :security/ismatured false) ?ismatured]
+                          [(get-else $ ?e :security/name "") ?n]
                           ]
                         (d/db conn)) 
 

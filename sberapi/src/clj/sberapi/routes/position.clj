@@ -127,7 +127,7 @@
 
                         currency (:currency security)
 
-                        ;tr1 (println (str "sec currency=" security " tran currency=" tran))
+                        ;tr1 (if (nil? security )) (println (str "sec currency=" security " tran currency=" tran))
                         amnt (if (nil? (:amount ( (keyword sec) result ))) 0.0 (:amount ( (keyword sec) result ))) 
                         prevpr (if (nil? (:price ((keyword sec) result))) 0.0 (:price ((keyword sec) result)))                       
 

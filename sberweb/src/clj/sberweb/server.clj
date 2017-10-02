@@ -198,7 +198,7 @@
 
       usdvalue (/ rubvalue usdrate)     
 
-] {:security (get sec "bcode") :isin (get sec "isin") :price (get sec "price") :wap (get (second x) "price") :amount amount :usdvalue usdvalue :rubvalue rubvalue :usdcosts usdcosts :rubcosts rubcosts :assettype (case assettype 1 "Equity" 5 "Bond" 15 "Derivatives" "Other")  :currency seccurrency :anr anr :target target :duration duration :yield yield :dvddate dvddate :putdate putdate :multiple multiple})) positions)
+] {:security (get sec "bcode") :isin (get sec "isin") :price (get sec "price") :wap (get (second x) "price") :amount amount :usdvalue usdvalue :rubvalue rubvalue :usdcosts usdcosts :rubcosts rubcosts :assettype (case assettype 1 "Equity" 5 "Bond" 15 "Derivatives" "Other")  :currency seccurrency :anr anr :target target :duration duration :yield yield :dvddate dvddate :putdate putdate :multiple multiple :name (get sec "name")})) positions)
     ;positions (sort (comp sort-portfs-by-name) portfs)
 
     ;; newdeals (map (fn [x] (let [sec (first (filter (fn [sec] (if (= (get sec "id") (:security x)) true false)) securities))]
@@ -206,17 +206,17 @@
     ;;   )) deals)
 
     ;tr1 (println (str "theclient = " theclient))
-    positionswithcash1 (conj newpositions {:security "RUB Curncy" :isin "RUB Curncy" :price 1.0 :wap 1.0 :amount (get theclient "rub") :usdvalue (/ (get theclient "rub") usdrate) :rubvalue (get theclient "rub") :usdcosts 0.0 :rubcosts (get theclient "rub") :assettype "Cash" :currency "RUB" :anr 0.0 :target 1.0 :duration 0.0 :yield 0.0 :dvddate nil :putdate nil :multiple 1.0 })
+    positionswithcash1 (conj newpositions {:security "RUB Curncy" :isin "RUB Curncy" :price 1.0 :wap 1.0 :amount (get theclient "rub") :usdvalue (/ (get theclient "rub") usdrate) :rubvalue (get theclient "rub") :usdcosts 0.0 :rubcosts (get theclient "rub") :assettype "Cash" :currency "RUB" :anr 0.0 :target 1.0 :duration 0.0 :yield 0.0 :dvddate nil :putdate nil :multiple 1.0 :name "Рубль РФ"})
 
-    positionswithcash2 (conj positionswithcash1 {:security "USD Curncy" :isin "USD Curncy" :price 1.0 :wap 1.0 :amount (get theclient "usd") :usdvalue (get theclient "usd") :rubvalue (* usdrate (get theclient "usd")) :usdcosts (get theclient "usd") :rubcosts 0.0 :assettype "Cash" :currency "USD" :anr 0.0 :target 1.0 :duration 0.0 :yield 0.0 :dvddate nil :putdate nil :multiple 1.0 })
+    positionswithcash2 (conj positionswithcash1 {:security "USD Curncy" :isin "USD Curncy" :price 1.0 :wap 1.0 :amount (get theclient "usd") :usdvalue (get theclient "usd") :rubvalue (* usdrate (get theclient "usd")) :usdcosts (get theclient "usd") :rubcosts 0.0 :assettype "Cash" :currency "USD" :anr 0.0 :target 1.0 :duration 0.0 :yield 0.0 :dvddate nil :putdate nil :multiple 1.0 :name "Доллар США"})
 
-    positionswithcash3 (conj positionswithcash2 {:security "EUR Curncy" :isin "EUR Curncy" :price 1.0 :wap 1.0 :amount (get theclient "eur") :usdvalue (* eurrate (/ (get theclient "eur") usdrate))  :rubvalue (* eurrate (get theclient "eur")) :usdcosts 0.0 :rubcosts 0.0 :assettype "Cash" :currency "EUR" :anr 0.0 :target 1.0 :duration 0.0 :yield 0.0 :dvddate nil :putdate nil :multiple 1.0 })
+    positionswithcash3 (conj positionswithcash2 {:security "EUR Curncy" :isin "EUR Curncy" :price 1.0 :wap 1.0 :amount (get theclient "eur") :usdvalue (* eurrate (/ (get theclient "eur") usdrate))  :rubvalue (* eurrate (get theclient "eur")) :usdcosts 0.0 :rubcosts 0.0 :assettype "Cash" :currency "EUR" :anr 0.0 :target 1.0 :duration 0.0 :yield 0.0 :dvddate nil :putdate nil :multiple 1.0 :name "Евро"})
 
-    positionswithcash4 (conj positionswithcash3 {:security "GBP Curncy" :isin "GBP Curncy" :price 1.0 :wap 1.0 :amount (get theclient "gbp") :usdvalue (* gbprate (/ (get theclient "gbp") usdrate)) :rubvalue (* gbprate (get theclient "gbp")) :usdcosts 0.0 :rubcosts 0.0 :assettype "Cash" :currency "GBP" :anr 0.0 :target 1.0 :duration 0.0 :yield 0.0 :dvddate nil :putdate nil :multiple 1.0 })
+    positionswithcash4 (conj positionswithcash3 {:security "GBP Curncy" :isin "GBP Curncy" :price 1.0 :wap 1.0 :amount (get theclient "gbp") :usdvalue (* gbprate (/ (get theclient "gbp") usdrate)) :rubvalue (* gbprate (get theclient "gbp")) :usdcosts 0.0 :rubcosts 0.0 :assettype "Cash" :currency "GBP" :anr 0.0 :target 1.0 :duration 0.0 :yield 0.0 :dvddate nil :putdate nil :multiple 1.0 :name "Фунт стерлингов"})
 
     newpositions positionswithcash4
     ]
-    (save-xls ["positions" (dataset [:security :isin :price :wap :amount :usdvalue :rubvalue :usdcosts :rubcosts :assettype :currency :anr :target :duration :yield :dvddate :putdate :multiple] (sort (comp comp-positions) newpositions)) 
+    (save-xls ["positions" (dataset [:security :isin :price :wap :amount :usdvalue :rubvalue :usdcosts :rubcosts :assettype :currency :anr :target :duration :yield :dvddate :putdate :multiple :name] (sort (comp comp-positions) newpositions)) 
                ;;"transactions" (dataset [:security :isin :direction :nominal :wap :wapusd :waprub :date] (sort (comp comp-deals) newdeals))
     ] (str xlsdir client ".xlsx"))
     "Success"

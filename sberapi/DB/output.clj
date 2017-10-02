@@ -479,7 +479,7 @@
 
 { :security/acode "GTLK-1P-03", :security/isin "RU000A0JXE06", :security/bcode "AM281135 Corp", :security/assettype 5, :security/multiple 1000.0, :security/name "Yandex NV", :security/exchange "MICB", :security/currency "RUB", :db/id #db/id[:db.part/user -100233]}
 
-{ :security/acode "FIVELI", :security/isin "US98387E2054", :security/bcode "FIVE LI Equity", :security/assettype 1, :security/name "", :security/exchange "", :security/currency "USD", :db/id #db/id[:db.part/user -100234]}
+{ :security/acode "FIVELI", :security/isin "US98387E2054", :security/bcode "FIVE LI Equity", :security/assettype 1, :security/name "X5 Retail Group, ГДР", :security/exchange "", :security/currency "USD", :db/id #db/id[:db.part/user -100234]}
 
 { :security/acode "IRAO", :security/isin "RU000A0JPNM1", :security/bcode "IRAO RX Equity", :security/assettype 1, :security/name "", :security/exchange "RX", :security/currency "RUB", :db/id #db/id[:db.part/user -100235]}
 
@@ -507,7 +507,7 @@
 
 { :security/acode "RUSST17", :security/isin "XS0802648955", :security/bcode "XS0802648955 Corp", :security/assettype 5, :security/multiple 1.0, :security/name "", :security/ismatured true, :security/currency "USD", :db/id #db/id[:db.part/user -100247]}
 
-{ :security/acode "EVRLN", :security/isin "GB00B71N6K86", :security/bcode "EVR LN Equity", :security/assettype 1, :security/name "", :security/exchange "GR", :security/currency "GBX", :db/id #db/id[:db.part/user -100248]}
+{ :security/acode "EVRLN", :security/isin "GB00B71N6K86", :security/bcode "EVR LN Equity", :security/assettype 1, :security/name "Evraz plc", :security/exchange "GR", :security/currency "GBX", :db/id #db/id[:db.part/user -100248]}
 
 { :security/acode "SBRCYUS", :security/isin "US80585Y3080", :security/bcode "SBNCD PO Equity", :security/assettype 1, :security/name "", :security/exchange "PO", :security/currency "USD", :db/id #db/id[:db.part/user -100249]}
 
@@ -1169,7 +1169,7 @@
 
 { :security/acode "PETBRA23", :security/assettype 5, :security/multiple 1.0, :security/isin "US71647NAF69", :security/bcode "US71647NAF69 Corp", :security/exchange "XETRA", :security/currency "USD", :db/id #db/id[:db.part/user -100578] }
 
-{ :security/acode "EFGIF_0419A", :security/assettype 5, :security/multiple 1.0, :security/isin "CH0361710632", :security/bcode "CH0361710632 Corp", :security/exchange "XETRA", :security/currency "USD", :db/id #db/id[:db.part/user -100579] }
+{ :security/acode "EFGIF_0419A", :security/assettype 5, :security/multiple 1.0, :security/isin "CH0361710632", :security/ismatured true, :security/bcode "CH0361710632 Corp", :security/exchange "XETRA", :security/currency "USD", :db/id #db/id[:db.part/user -100579] }
 
 { :security/acode "YPFDAR19", :security/assettype 5, :security/multiple 1.0, :security/isin "CH0336352825", :security/bcode "CH0336352825 Corp", :security/exchange "XETRA", :security/currency "CHF", :db/id #db/id[:db.part/user -100580] }
 
@@ -1653,13 +1653,15 @@
 
 { :security/acode "SBRF-9.17", :security/isin "SBRF=U7 RU Equity", :security/bcode "SBRF=U7 RU Equity", :security/assettype 15, :security/name "Sberbank of Russia PJSC Sep17 FUTURE", :security/multiple 1.0, :security/ismatured false, :security/currency "RUB", :db/id #db/id[:db.part/user -101029] }
 
-{ :security/acode "BR-10.17", :security/isin "B5V7 Comdty", :security/bcode "B5V7 Comdty", :security/assettype 15, :security/name "Brent Crude Futs  Oct17", :security/multiple 10.0, :security/ismatured false, :security/currency "USD", :db/id #db/id[:db.part/user -101030] }
+{ :security/acode "BR-10.17", :security/isin "B5V7 Comdty", :security/bcode "B5V7 Comdty", :security/assettype 15, :security/name "Brent Crude Futs  Oct17", :security/multiple 10.0, :security/ismatured true, :security/currency "USD", :db/id #db/id[:db.part/user -101030] }
 
 { :security/acode "SI-12.17", :security/isin "URZ7 Curncy", :security/bcode "URZ7 Curncy", :security/assettype 15, :security/name "Futures on USD/RUB Exchange Rate", :security/multiple 1.0, :security/ismatured false, :security/currency "RUB", :db/id #db/id[:db.part/user -101031] }
 
 { :security/acode "RTS-12.17", :security/isin "VEZ7 Index", :security/bcode "VEZ7 Index", :security/assettype 15, :security/name "RTS INDEX FUTURE  Dec17", :security/multiple 0.02, :security/ismatured false, :security/currency "USD", :db/id #db/id[:db.part/user -101032] }
 
 { :security/acode "MIX-12.17", :security/isin "XMCZ7 Index", :security/bcode "XMCZ7 Index", :security/assettype 15, :security/name "RTS MICEX INDEX FUTURE  Dec17", :security/multiple 1.0, :security/ismatured false, :security/currency "RUB", :db/id #db/id[:db.part/user -101033] }
+
+{ :security/acode "BR-11.17", :security/isin "B5X7 Comdty", :security/bcode "B5X7 Comdty", :security/assettype 15, :security/name "Brent Crude Futs  Nov17", :security/multiple 10.0, :security/ismatured false, :security/currency "USD", :db/id #db/id[:db.part/user -101034] }
 
 
 
@@ -4465,6 +4467,27 @@
 { :transaction/client #db/id[:db.part/user -102144], :transaction/security #db/id[:db.part/user -100505], :transaction/nominal 50000.0, :transaction/price 100.0, :transaction/direction "S", :transaction/tradedate #inst "2017-09-18T10:00:00.0000000Z", :transaction/valuedate #inst "2017-09-22T10:00:00.0000000Z", :transaction/currency "EUR", :transaction/comment "Autocall EFG International Finance (Guernsey)", :db/id #db/id[:db.part/user -111185] }
 
 { :transaction/client #db/id[:db.part/user -102111], :transaction/security #db/id[:db.part/user -100652], :transaction/nominal 236000.0, :transaction/price 110.80, :transaction/direction "B", :transaction/tradedate #inst "2017-09-28T10:00:00.0000000Z", :transaction/valuedate #inst "2017-09-28T10:00:00.0000000Z", :transaction/currency "USD", :transaction/comment "Transfer In", :db/id #db/id[:db.part/user -111186] }
+
+{ :transaction/client #db/id[:db.part/user -102101], :transaction/security #db/id[:db.part/user -100579], :transaction/nominal 400000.0, :transaction/price 100.00, :transaction/direction "S", :transaction/tradedate #inst "2017-09-30T10:00:00.0000000Z", :transaction/valuedate #inst "2017-09-30T10:00:00.0000000Z", :transaction/currency "USD", :transaction/comment "Погашение EFG International Finance (Guernsey), 11% 11apr2019", :db/id #db/id[:db.part/user -111187] }
+
+{ :transaction/client #db/id[:db.part/user -102090], :transaction/security #db/id[:db.part/user -100579], :transaction/nominal 200000.0, :transaction/price 100.00, :transaction/direction "S", :transaction/tradedate #inst "2017-09-30T10:00:00.0000000Z", :transaction/valuedate #inst "2017-09-30T10:00:00.0000000Z", :transaction/currency "USD", :transaction/comment "Погашение EFG International Finance (Guernsey), 11% 11apr2019", :db/id #db/id[:db.part/user -111188] }
+
+{ :transaction/client #db/id[:db.part/user -102051], :transaction/security #db/id[:db.part/user -100579], :transaction/nominal 200000.0, :transaction/price 100.00, :transaction/direction "S", :transaction/tradedate #inst "2017-09-30T10:00:00.0000000Z", :transaction/valuedate #inst "2017-09-30T10:00:00.0000000Z", :transaction/currency "USD", :transaction/comment "Погашение EFG International Finance (Guernsey), 11% 11apr2019", :db/id #db/id[:db.part/user -111189] }
+
+{ :transaction/client #db/id[:db.part/user -102003], :transaction/security #db/id[:db.part/user -100579], :transaction/nominal 200000.0, :transaction/price 100.00, :transaction/direction "S", :transaction/tradedate #inst "2017-09-30T10:00:00.0000000Z", :transaction/valuedate #inst "2017-09-30T10:00:00.0000000Z", :transaction/currency "USD", :transaction/comment "Погашение EFG International Finance (Guernsey), 11% 11apr2019", :db/id #db/id[:db.part/user -111190] }
+
+{ :transaction/client #db/id[:db.part/user -102050], :transaction/security #db/id[:db.part/user -100579], :transaction/nominal 100000.0, :transaction/price 100.00, :transaction/direction "S", :transaction/tradedate #inst "2017-09-30T10:00:00.0000000Z", :transaction/valuedate #inst "2017-09-30T10:00:00.0000000Z", :transaction/currency "USD", :transaction/comment "Погашение EFG International Finance (Guernsey), 11% 11apr2019", :db/id #db/id[:db.part/user -111191] }
+
+{ :transaction/client #db/id[:db.part/user -102144], :transaction/security #db/id[:db.part/user -100579], :transaction/nominal 100000.0, :transaction/price 100.00, :transaction/direction "S", :transaction/tradedate #inst "2017-09-30T10:00:00.0000000Z", :transaction/valuedate #inst "2017-09-30T10:00:00.0000000Z", :transaction/currency "USD", :transaction/comment "Погашение EFG International Finance (Guernsey), 11% 11apr2019", :db/id #db/id[:db.part/user -111192] }
+
+{ :transaction/client #db/id[:db.part/user -102053], :transaction/security #db/id[:db.part/user -100579], :transaction/nominal 100000.0, :transaction/price 100.00, :transaction/direction "S", :transaction/tradedate #inst "2017-09-30T10:00:00.0000000Z", :transaction/valuedate #inst "2017-09-30T10:00:00.0000000Z", :transaction/currency "USD", :transaction/comment "Погашение EFG International Finance (Guernsey), 11% 11apr2019", :db/id #db/id[:db.part/user -111193] }
+
+{ :transaction/client #db/id[:db.part/user -102138], :transaction/security #db/id[:db.part/user -100579], :transaction/nominal 100000.0, :transaction/price 100.00, :transaction/direction "S", :transaction/tradedate #inst "2017-09-30T10:00:00.0000000Z", :transaction/valuedate #inst "2017-09-30T10:00:00.0000000Z", :transaction/currency "USD", :transaction/comment "Погашение EFG International Finance (Guernsey), 11% 11apr2019", :db/id #db/id[:db.part/user -111194] }
+
+{ :transaction/client #db/id[:db.part/user -102137], :transaction/security #db/id[:db.part/user -100579], :transaction/nominal 70000.0, :transaction/price 100.00, :transaction/direction "S", :transaction/tradedate #inst "2017-09-30T10:00:00.0000000Z", :transaction/valuedate #inst "2017-09-30T10:00:00.0000000Z", :transaction/currency "USD", :transaction/comment "Погашение EFG International Finance (Guernsey), 11% 11apr2019", :db/id #db/id[:db.part/user -111195] }
+
+
+
 
 
 

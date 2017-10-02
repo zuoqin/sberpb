@@ -120,13 +120,13 @@
             ;; 
             (dom/div {:className "col-xs-1 col-md-1" :style {:padding-left "0px" :padding-right "0px"}}
               (dom/a {:className "list-group-item" :style {:text-align "right"} :href (str  "#/postrans/" (:id item)  "/" (:selectedsec @sbercore/app-state)  ) }
-                (dom/h4 {:className "list-group-item-heading"} (if (> (:wapcur item) 1) (gstring/format "%.2f" (if (nil? (:wapcur item)) 0.00 (:wapcur item)) )  (subs (str (if (nil? (:wapcur item)) 0.00 (:wapcur item))) 0 5)))
+                (dom/h4 {:className "list-group-item-heading"} (sbercore/split-thousands (if (> (:wapcur item) 1) (gstring/format "%.2f" (if (nil? (:wapcur item)) 0.00 (:wapcur item)) )  (subs (str (if (nil? (:wapcur item)) 0.00 (:wapcur item))) 0 5))))
                )
             )
 
             (dom/div {:className "col-xs-1 col-md-1" :style {:padding-left "0px" :padding-right "0px"}}
               (dom/a {:className "list-group-item" :style {:text-align "right"} :href (str  "#/postrans/" (:id (first (filter (fn [x] (if (= (compare (:code x) (:selectedclient @sbercore/app-state)) 0) true false)) (:clients @sbercore/app-state)))) "/" (:id item) ) }
-                (dom/h4 {:className "list-group-item-heading"} (str (if (> price 1) (gstring/format "%.2f" price)  (subs (str price) 0 5) ) " " (case (:currency sec) "USD" "$" "GBP" "£" "GBX" "£p" "EUR" "€" "RUB" "₽" "RUR" "₽" ""))     )
+                (dom/h4 {:className "list-group-item-heading"} (str (sbercore/split-thousands (if (> price 1) (gstring/format "%.2f" price)  (subs (str price) 0 5) )) " " (case (:currency sec) "USD" "$" "GBP" "£" "GBX" "£p" "EUR" "€" "RUB" "₽" "RUR" "₽" ""))     )
               )            
             )
 
@@ -145,7 +145,7 @@
             (dom/div {:className "col-xs-1 col-md-1" :style {:padding-left "0px" :padding-right "0px" :padding-top "10px"}}
               (dom/div {:className "progress"}
                 (dom/div {:className (str "progress-bar" (if (< (:usdvalue item) (* (:wapusd item) (:amount item) (if (= 5 (:assettype sec)) (* 0.01 (:multiple sec)) 1.0))) " progress-bar-danger" ""))  :role "progresbar" :aria-valuenow (str (.round js/Math (.abs js/Math (* 100.0 (/ (- (:usdvalue item) (* (:wapusd item) (:amount item) (if (= 5 (:assettype sec)) (* 0.01 (:multiple sec)) 1.0))) (* (:wapusd item) (:amount item) (if (= 5 (:assettype sec)) (* 0.01 (:multiple sec)) 1.0)) )) ))) :aria-valuemin "0" :aria-valuemax "100" :style {:color "black" :width (str (.round js/Math (.abs js/Math  (* 100.0 (/ (- (:usdvalue item) (* (:wapusd item) (:amount item) (if (= 5 (:assettype sec)) (* 0.01 (:multiple sec)) 1.0))) (* (:wapusd item) (:amount item) (if (= 5 (:assettype sec)) (* 0.01 (:multiple sec)) 1.0)) )))) "%") }}
-                  (dom/span {:style {:position "absolute" :display "block" :width "100%"}} (gstring/format "%.2f" (* 100.0 (/ (- (:usdvalue item) (* (:wapusd item) (:amount item) (if (= 5 (:assettype sec)) (* 0.01 (:multiple sec)) 1.0))) (* (:wapusd item) (:amount item) (if (= 5 (:assettype sec)) (* 0.01 (:multiple sec)) 1.0)) ))))
+                  (dom/span {:style {:position "absolute" :display "block" :width "100%"}} (gstring/format "%.2f" (* 100.0 (if (> (:usdvalue item) 0) 1 -1) (/ (- (:usdvalue item) (* (:wapusd item) (:amount item) (if (= 5 (:assettype sec)) (* 0.01 (:multiple sec)) 1.0))) (* (:wapusd item) (:amount item) (if (= 5 (:assettype sec)) (* 0.01 (:multiple sec)) 1.0)) ))))
                 )
               )
             )
@@ -155,7 +155,7 @@
             (dom/div {:className "col-xs-1 col-md-1" :style {:padding-left "0px" :padding-right "0px" :padding-top "10px"}}
               (dom/div {:className "progress"}
                 (dom/div {:className (str "progress-bar" (if (< (:currubprice item) (:waprub item)) " progress-bar-danger" ""))  :role "progresbar" :aria-valuenow (str (.round js/Math (.abs js/Math (* 100.0 (/ (-  (:currubprice item) (:waprub item)) (:waprub item)))))) :aria-valuemin "0" :aria-valuemax "100" :style {:color "black" :width (str (.round js/Math (.abs js/Math (* 100.0 (/ (-  (:currubprice item) (:waprub item)) (:waprub item))))) "%") }}
-                  (dom/span {:style {:position "absolute" :display "block" :width "100%"}} (gstring/format "%.2f" (* 100.0 (/ (-  (:currubprice item) (:waprub item)) (if (> (:waprub item) 0.0001) (:waprub item) 0.0001) ))) ) 
+                  (dom/span {:style {:position "absolute" :display "block" :width "100%"}} (gstring/format "%.2f" (* 100.0 (if (> (:usdvalue item) 0) 1 -1) (/ (-  (:currubprice item) (:waprub item)) (if (> (:waprub item) 0.0001) (:waprub item) 0.0001) ))) ) 
 
                 )
               )
