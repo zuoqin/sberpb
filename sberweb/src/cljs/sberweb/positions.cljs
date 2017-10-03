@@ -665,7 +665,7 @@
                   seccode (:acode sec)
                   assettype (:assettype sec)]
                   (if (or (not= 1 assettype)
-                          (<= (:amount x) 0) 
+                          ;(<= (:amount x) 0) 
                           (= false (str/includes? seccode (str/upper-case (:search @sbercore/app-state)) ))
                       )  false true)
                 ))
@@ -864,7 +864,8 @@
             sec (first (filter (fn[y] (if (= (:id x) (:id y) ) true false)) (:securities @sbercore/app-state)))
             seccode (:acode sec)
             assettype (:assettype sec)]
-            (if (or (not= 5 assettype) (<= (:amount x) 0) 
+            (if (or (not= 5 assettype)
+                    ;(<= (:amount x) 0) 
                     (= false (str/includes? seccode (str/upper-case (:search @sbercore/app-state)) )) 
                 )  false true)
                                                         ) ) (:positions ((keyword (:selectedclient @sbercore/app-state)) @sbercore/app-state))))
@@ -981,7 +982,7 @@
                   seccode (:acode sec)
                   assettype (:assettype sec)]
                   (if (or (not= 15 assettype)
-                          (= (:amount x) 0.0) 
+                          ;(= (:amount x) 0.0) 
                           (= false (str/includes? seccode (str/upper-case (:search @sbercore/app-state)) ))
                       )  false true)
                 ))
@@ -1107,7 +1108,7 @@
             (if (and (= true (str/includes? seccode (str/upper-case (:search @sbercore/app-state)) )) (> (:wap x) (- 0 (:column (:sort-deals-list @app-state)))  ))   true false) ) ) (:deals ((keyword (:selectedclient @sbercore/app-state)) @sbercore/app-state)))) 
         )
         (dom/div {:className "panel-footer"}
-          (b/button {:className (if (= 2 (:state @data)) "btn btn-info m-progress" "btn btn-info") :disabled? (:nomoredeals @data) :style {:width "100%"} :onClick (fn [e] (load-deals))} (if (:nomoredeals @data) "Все сделки загружены" "Загрузить ещё..."))
+          (b/button {:className (if (= 2 (:state @data)) "btn btn-info m-progress no-print" "btn btn-info no-print") :disabled? (:nomoredeals @data) :style {:width "100%"} :onClick (fn [e] (load-deals))} (if (:nomoredeals @data) "Все сделки загружены" "Загрузить ещё..."))
         )
         
       )

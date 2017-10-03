@@ -297,11 +297,11 @@
                    ]
 
 
-                (dom/div {:className "row" :style {:margin-left "0px" :margin-right "0px"}} 
+                (dom/div {:className "row tablerow" :style {:margin-left "0px" :margin-right "0px"}} 
 
                   ;;Client code
                   (dom/div {:className "col-xs-1 col-md-1 clientcode" :style {:padding-left "0px" :padding-right "0px"}}
-                    (dom/a {:className "list-group-item" :style {:padding-left "3px" :padding-right "3px" :text-align "left"} :href (str  "#/postrans/" (:id client) "/" (:selectedsec @data))}
+                    (dom/a {:className "list-group-item" :style {:background "transparent" :padding-left "3px" :padding-right "3px" :text-align "left"} :href (str  "#/postrans/" (:id client) "/" (:selectedsec @data))}
                       (dom/h4 {:className "list-group-item-heading"} (:client item))
                     )
                     (dom/span {:className "clientinfo"}
@@ -313,7 +313,7 @@
 
                   ;;Денежная позиция
                   (dom/div {:className "col-xs-3 col-md-3 clientcash" :style {:padding-left "0px" :padding-right "0px"}}            
-                    (dom/a {:className "list-group-item" :style {:padding-left "3px" :padding-right "3px" :text-align "right"} :href (str  "#/postrans/" (:id client) "/" (:selectedsec @data))}
+                    (dom/a {:className "list-group-item" :style {:background "transparent" :padding-left "3px" :padding-right "3px" :text-align "right"} :href (str  "#/postrans/" (:id client) "/" (:selectedsec @data))}
                       (dom/h4 {:className "list-group-item-heading"} (sbercore/split-thousands (gstring/format "%.0f" (case (:selectedcurrency @data) "all" totalfreecash "rub" (- (:rub item) (:margin client)) ((keyword (:selectedcurrency @data)) item)))))
 
                       (dom/span {:className "cashinfo"} 
@@ -328,14 +328,14 @@
 
                   ;;Total Limit
                   (dom/div {:className "col-xs-1 col-md-1" :style {:padding-left "0px" :padding-right "0px"}}            
-                    (dom/a {:className "list-group-item" :style {:padding-left "3px" :padding-right "3px" :text-align "right"} :href (str  "#/postrans/" (:id client) "/" (:selectedsec @data)) }
+                    (dom/a {:className "list-group-item" :style {:background "transparent" :padding-left "3px" :padding-right "3px" :text-align "right"} :href (str  "#/postrans/" (:id client) "/" (:selectedsec @data)) }
                       (dom/h4 {:className "list-group-item-heading"} (sbercore/split-thousands (gstring/format "%.0f" (* (/ (:maxlimit item) 10.0) (:percentage @data)   (if (= 1 (:fulllimit @sbercore/app-state)) (if isbond (/ 100.0 (:bondshare client)) (/ 100.0 (:stockshare client))) 1.0)))))
                     )
                   )
 
                   ;;Bought Shares
                   (dom/div {:className "col-xs-1 col-md-1" :style {:padding-left "0px" :padding-right "0px"}}            
-                    (dom/a {:className "list-group-item" :style {:padding-left "3px" :padding-right "3px" :text-align "right"} :href (str  "#/postrans/" (:id client) "/" (:selectedsec @data)) }
+                    (dom/a {:className "list-group-item" :style {:background "transparent" :padding-left "3px" :padding-right "3px" :text-align "right"} :href (str  "#/postrans/" (:id client) "/" (:selectedsec @data)) }
                       (dom/h4 {:className "list-group-item-heading"} (sbercore/split-thousands (str (:shares item))))
                     )
                   )
@@ -343,7 +343,7 @@
 
                   ;; Free Limit
                   (dom/div {:className "col-xs-2 col-md-2" :style {:padding-left "0px" :padding-right "0px"}}            
-                    (dom/a {:className "list-group-item" :style {:padding-left "3px" :padding-right "3px" :text-align "right"} :href (str  "#/postrans/" (:id client) "/" (:selectedsec @data)) }
+                    (dom/a {:className "list-group-item" :style {:background "transparent" :padding-left "3px" :padding-right "3px" :text-align "right"} :href (str  "#/postrans/" (:id client) "/" (:selectedsec @data)) }
                       (dom/h4 {:className "list-group-item-heading"} (sbercore/split-thousands (gstring/format "%.0f" newfreelimit)))
                     )
                   )
@@ -351,7 +351,7 @@
 
                   ;;Shares can buy in selected cash
                   (dom/div {:className "col-xs-2 col-md-2" :style {:padding-left "0px" :padding-right "0px"}}            
-                    (dom/a {:className "list-group-item" :style {:padding-left "3px" :padding-right "3px" :text-align "right" :padding-top "12px"} :href (str  "#/postrans/" (:id client) "/" (:selectedsec @data)) }
+                    (dom/a {:className "list-group-item" :style {:background "transparent" :padding-left "3px" :padding-right "3px" :text-align "right" :padding-top "12px"} :href (str  "#/postrans/" (:id client) "/" (:selectedsec @data)) }
                       (dom/h4 {:className "list-group-item-heading"} (sbercore/split-thousands (str sharestobuy))))
                   )
 

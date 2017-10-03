@@ -1822,8 +1822,8 @@
 
 (defn recent-deals-to-db []
   (let [
-    ;files ["03" "04" "05" "06" "07" "08" "9-0" "9-1" "9-2"]
-    files ["9-3"]
+    ;files ["03" "04" "05" "06" "07" "08" "09-0" "09-1" "09-2" "09-3"]
+    files ["10-1"]
     trans (doall (map (fn [x] (recent-deals-to-db-by-num x))  files )) 
     ]
     ;(count secs)
@@ -1836,10 +1836,10 @@
   (let [f (slurp (str drive ":/DEV/Java/" "todaydeals" ".xml"))
         x (parse f)
 	
-        trancnt (- (count (:content (nth   (:content (nth (:content x) 4) )  0 ) ) ) 1)  
+        trancnt (- (count (:content (nth (:content (nth (:content x) 4)) 0))) 1)
         ;tr1 (println trancnt) 
         trans (loop [result [] num 0 ]
-          (let [item (if (<= num trancnt) (:content (nth (:content (nth   (:content (nth (:content x) 4) )  0 ) )  num)))
+          (let [item (if (<= num trancnt) (:content (nth (:content (nth   (:content (nth (:content x) 4)) 0)) num)))
             ]
             (if (<= num trancnt)            
               
