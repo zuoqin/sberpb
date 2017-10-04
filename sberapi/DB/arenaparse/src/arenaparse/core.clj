@@ -1837,20 +1837,20 @@
         x (parse f)
 	
         trancnt (- (count (:content (nth (:content (nth (:content x) 4)) 0))) 1)
-        ;tr1 (println trancnt) 
+        ;tr1 (println trancnt)
         trans (loop [result [] num 0 ]
           (let [item (if (<= num trancnt) (:content (nth (:content (nth   (:content (nth (:content x) 4)) 0)) num)))
             ]
-            (if (<= num trancnt)            
+            (if (<= num trancnt)
               
               (if (and
                    (= (:ss:StyleID (:attrs (nth item 0))) "s72" )
                    (or (= 0 (compare "We Sell" (first (:content  (first (:content (nth item 9)  )  )))))
                        (= 0 (compare "We Buy" (first (:content  (first (:content (nth item 9)  )  )))))
                    )
-                   (and (not (str/includes? (str/lower-case (first (:content  (first (:content (nth item 4)  )  )))) "forts")) 
+                   (and (not (str/includes? (str/lower-case (first (:content  (first (:content (nth item 4)  )  )))) "forts"))
                         (not (str/includes? (str/lower-case (first (:content  (first (:content (nth item 0)  )  )))) "spot"))
-                   ) 
+                   )
                    (if (> (count item) 23) (not (str/includes? (str/lower-case  (if (nil? (first (:content  (first (:content (nth item 24)  )  )))) "" (first (:content  (first (:content (nth item 24)  )  ))))  ) "call")) true)
                    (if (> (count item) 23) (not (str/includes? (str/lower-case  (if (nil? (first (:content  (first (:content (nth item 24)  )  )))) "" (first (:content  (first (:content (nth item 24)  )  ))))  ) "put")) true)
                 )
