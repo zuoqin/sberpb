@@ -187,9 +187,7 @@
   (let [
      conn (d/connect uri)
      ]
-    (d/transact-async conn [{ :security/acode "MIX-12.17", :security/isin "XMCZ7 Index", :security/bcode "XMCZ7 Index", :security/assettype 15, :security/name "RTS MICEX INDEX FUTURE  Dec17", :security/multiple 1.0, :security/ismatured false, :security/currency "RUB", :db/id #db/id[:db.part/user -101033] }
-
-{ :security/acode "ATCOASS", :security/isin "SE0006886750", :security/bcode "US382550BG56 Corp", :security/assettype 5, :security/multiple 1.0, :security/name "", :security/currency "SEK", :db/id #db/id[:db.part/user -100783] }
+    (d/transact-async conn [{ :security/acode "SIBUR23", :security/isin "XS1693971043", :security/bcode "XS1693971043 Corp", :security/assettype 5, :security/multiple 1.0, :security/name "SIBUR, 4.125% 5oct2023", :security/currency "USD", :db/id #db/id[:db.part/user -100790] }
 ]
     )
     ; To insert new entity:
@@ -1834,15 +1832,13 @@
 
 (defn get-recent-deals []
   (let [f (slurp (str drive ":/DEV/Java/" "todaydeals" ".xml"))
-        x (parse f)
-	
+        x (parse f)	
         trancnt (- (count (:content (nth (:content (nth (:content x) 4)) 0))) 1)
         ;tr1 (println trancnt)
         trans (loop [result [] num 0 ]
           (let [item (if (<= num trancnt) (:content (nth (:content (nth   (:content (nth (:content x) 4)) 0)) num)))
             ]
-            (if (<= num trancnt)
-              
+            (if (<= num trancnt)              
               (if (and
                    (= (:ss:StyleID (:attrs (nth item 0))) "s72" )
                    (or (= 0 (compare "We Sell" (first (:content  (first (:content (nth item 9)  )  )))))
