@@ -15,6 +15,41 @@
 
 (defn ent [id]  (seq (d/entity (d/db conn) (ffirst id))) )
 
+
+
+(defn get-price-for-day [security dt]
+  (let [
+        dt1 (java.util.Date. (c/to-long (f/parse custom-formatter (f/unparse custom-formatter (c/from-long (c/to-long dt))))))
+        ;tr1 (println (str "security=" security " dt=" dt1))
+        ;dt2 (java.util.Date. (c/to-long (f/parse custom-formatter (f/unparse custom-formatter (c/from-long (+ (c/to-long dt) (* 1000 24 3600)))))))
+        rate (first (sort-by first #(> (c/to-long %1) (c/to-long %2))
+           (d/q '[:find ?d ?p
+                  :in $ ?sec ?dt
+                  :where
+                  [?e :price/security ?sec]
+                  [?e :price/valuedate ?d]
+                  [?e :price/lastprice ?p]
+                  [(<= ?d ?dt)]
+                  ]
+                (d/db conn) security dt1)))
+
+
+        ;; prices (d/q '[:find ?dt ?price
+        ;;               :in $ ?security ?dt1
+        ;;               :where
+        ;;               [?e :price/lastprice ?price]
+        ;;               [?e :price/security ?security]
+        ;;               [?e :price/valuedate ?dt]
+        ;;               [(< ?dt ?dt1)]
+        ;;               ;[(> ?dt ?dt1)]
+        ;;              ] (d/db conn) security dt1)
+    ]
+    (second rate)
+    ;(ent client)
+  )
+)
+
+
 (defn get-fxrate-by-date [currency dt]
   (let [
 

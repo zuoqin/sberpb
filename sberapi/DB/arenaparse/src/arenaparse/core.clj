@@ -66,10 +66,42 @@
 (def build-in-date-formatter (f/formatters :date))
 
 
+(defn get-price-for-day [security dt]
+  (let [
+        dt1 (java.util.Date. (c/to-long (f/parse custom-formatter (f/unparse custom-formatter (c/from-long (c/to-long dt))))))
+        conn (d/connect uri)
+        ;dt2 (java.util.Date. (c/to-long (f/parse custom-formatter (f/unparse custom-formatter (c/from-long (+ (c/to-long dt) (* 1000 24 3600)))))))
+        rate (first (sort-by first #(> (c/to-long %1) (c/to-long %2))
+           (d/q '[:find ?d ?p
+                  :in $ ?sec ?dt
+                  :where
+                  [?e :price/security ?sec]
+                  [?e :price/valuedate ?d]
+                  [?e :price/lastprice ?p]
+                  [(<= ?d ?dt)]
+                  ]
+                (d/db conn) security dt1)))
+
+
+        ;; prices (d/q '[:find ?dt ?price
+        ;;               :in $ ?security ?dt1
+        ;;               :where
+        ;;               [?e :price/lastprice ?price]
+        ;;               [?e :price/security ?security]
+        ;;               [?e :price/valuedate ?dt]
+        ;;               [(< ?dt ?dt1)]
+        ;;               ;[(> ?dt ?dt1)]
+        ;;              ] (d/db conn) security dt1)
+    ]
+    (second rate)
+    ;(ent client)
+  )
+)
+
 (defn append-position-to-file [client position dt]
   (let [
-        ;;tr1 (println position)
-        str1 (str client "," (name (first position)) "," (format "%.1f" (/ (:amount (second position)) (if (str/includes? (name (first position)) "LKOH=") 10.0 (if (str/includes? (name (first position)) "SBRF=") 100.0 1.0)))) "," (:price (second position)) "," (f/unparse build-in-basicdate-formatter (c/from-long (c/to-long dt)) ) "\n")
+        ;tr1 (println position)
+        str1 (str client "," (name (first position)) "," (format "%.1f" (/ (:amount (second position)) (if (str/includes? (name (first position)) "LKOH=") 10.0 (if (str/includes? (name (first position)) "SBRF=") 100.0 1.0)))) "," (:price (second position)) "," (f/unparse build-in-basicdate-formatter (c/from-long (c/to-long dt)) ) "," (if (nil? (get-price-for-day (nth position 2) dt)) "" (get-price-for-day (nth position 2) dt) ) "\n")
         ]
     ;;(println str1)
     (spit (str drive ":/DEV/output/" client ".txt") str1 :append true)
@@ -187,7 +219,9 @@
   (let [
      conn (d/connect uri)
      ]
-    (d/transact-async conn [{ :security/acode "SIBUR23", :security/isin "XS1693971043", :security/bcode "XS1693971043 Corp", :security/assettype 5, :security/multiple 1.0, :security/name "SIBUR, 4.125% 5oct2023", :security/currency "USD", :db/id #db/id[:db.part/user -100790] }
+    (d/transact-async conn [{ :security/acode "EFGIF_0419E", :security/isin "CH0384861396", :security/bcode "CH0384861396 Corp", :security/assettype 5, :security/multiple 1.0, :security/name "EFG International Finance (Guernsey) Limited 16/04/19", :security/currency "USD", :db/id #db/id[:db.part/user -100793] }
+
+{ :security/acode "SBERBO3R", :security/isin "RU000A0ZYBS1", :security/bcode "RU000A0ZYBS1 Corp", :security/assettype 5, :security/multiple 1000.0, :security/name "Сбербанк России ПАО, биржевые облигации процентные документарные на предъявителя, серии 001Р-03R", :security/currency "RUB", :db/id #db/id[:db.part/user -100794] }
 ]
     )
     ; To insert new entity:
@@ -1305,18 +1339,20 @@
                  (select-columns {:A :date, :B :account :C :currency :D :amount})) (println (str "file with cash balances not found for date: " (f/unparse build-in-date-formatter (c/from-long (+ (c/to-long dt) (* 3600000 24)) )))))
 
     positions1 (map (fn [x] (let [
-                             sec (ent [[(get-secid-by-isin (name (first x)) )]])
+                             secid (get-secid-by-isin (name (first x)) )
+                             sec (ent [[secid]])
                              assettype (second (first (filter (fn [y] (if (= (first y) :security/assettype) true false)) sec ) ))
                              currency (second (first (filter (fn [y] (if (= (first y) :security/currency) true false)) sec ) ))
                              multiple (if (nil? (second (first (filter (fn [y] (if (= (first y) :security/multiple) true false)) sec ) ))) 1.0 (second (first (filter (fn [y] (if (= (first y) :security/multiple) true false)) sec ) )))
 
                              bcode (second (first (filter (fn [y] (if (= (first y) :security/bcode) true false)) sec ) ))
+                              
 
 
 
                               ;tr1 (if (= (name (first x)) "GB0032360173") (println (str "x=" x " currency=" currency ""))) 
                               ]
-                          [bcode  {:amount (if (= assettype 5) (* multiple (:amount (second x))) (:amount (second x))) :price (:price (second x))}]
+                          [bcode  {:amount (if (= assettype 5) (* multiple (:amount (second x))) (:amount (second x))) :price (:price (second x))} secid]
                           )) positions)
 
 
@@ -1437,7 +1473,7 @@
 
     ;res1 (spit (str "C:/DEV/clojure/sberpb/sberapi/DB/" client ".txt")  ",,,,\n" :append false)
     transactions (sort (comp sort-tran-from-db) (get-transactions-from-db client (java.util.Date.) currencies [0 1 5 10 15]))
-    res1 (spit (str drive ":/DEV/output/" client ".txt") (str "Portfolio Name,Security ID,Position/Quantity/Nominal,Cost Px asset Currency,Date\n")  :append false)
+    res1 (spit (str drive ":/DEV/output/" client ".txt") (str "Portfolio Name,Security ID,Position/Quantity/Nominal,Cost Px asset Currency,Date,Market Price\n")  :append false)
     securities (get-securities)
 
     ;tr1 (println (first transactions))
@@ -1820,7 +1856,7 @@
 
 (defn recent-deals-to-db []
   (let [
-    ;files ["03" "04" "05" "06" "07" "08" "09-0" "09-1" "09-2" "09-3"]
+    ;files ["03" "04" "05" "06" "07" "08" "09-0" "09-1" "09-2" "09-3"] 
     files ["10-1"]
     trans (doall (map (fn [x] (recent-deals-to-db-by-num x))  files )) 
     ]
@@ -1847,7 +1883,7 @@
                    (and (not (str/includes? (str/lower-case (first (:content  (first (:content (nth item 4)  )  )))) "forts"))
                         (not (str/includes? (str/lower-case (first (:content  (first (:content (nth item 0)  )  )))) "spot"))
                    )
-                   (if (> (count item) 23) (not (str/includes? (str/lower-case  (if (nil? (first (:content  (first (:content (nth item 24)  )  )))) "" (first (:content  (first (:content (nth item 24)  )  ))))  ) "call")) true)
+                   (if (> (count item) 23) (not (str/includes? (str/lower-case  (if (nil? (first (:content (first (:content (nth item 24)))))) "" (first (:content  (first (:content (nth item 24)  )  ))))  ) "call")) true)
                    (if (> (count item) 23) (not (str/includes? (str/lower-case  (if (nil? (first (:content  (first (:content (nth item 24)  )  )))) "" (first (:content  (first (:content (nth item 24)  )  ))))  ) "put")) true)
                 )
                 (recur (conj result item ) (inc num))

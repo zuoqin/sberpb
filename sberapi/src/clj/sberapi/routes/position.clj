@@ -747,7 +747,7 @@
 (defn append-position-to-file [client position dt]
   (let [
         ;;tr1 (println position)
-        str1 (str client "," (:bcode (second position)) "," (str/replace (format "%.1f" (/ (:amount (second position)) (if (str/includes? (name (first position)) "LKOH=") 10.0 (if (str/includes? (name (first position)) "SBRF=") 100.0 1.0)))) #"," ".") "," (:price (second position)) "," (f/unparse build-in-basicdate-formatter (c/from-long (c/to-long dt)) ) "\n")
+        str1 (str client "," (:bcode (second position)) "," (str/replace (format "%.1f" (/ (:amount (second position)) (if (str/includes? (name (first position)) "LKOH=") 10.0 (if (str/includes? (name (first position)) "SBRF=") 100.0 1.0)))) #"," ".") "," (:price (second position)) "," (f/unparse build-in-basicdate-formatter (c/from-long (c/to-long dt)) ) "," (if (nil? (db/get-price-for-day (nth position 2) dt)) "" (db/get-price-for-day (nth position 2) dt) ) "\n")
         ]
     ;;(println str1)
     (spit (str (-> env :drive) ":/DEV/output/" client ".txt") str1 :append true)
@@ -767,7 +767,8 @@
   (let [
     positions1 (map (fn [x]
       (let [
-             sec (db/ent [[(get-secid-by-isin (name (first x)) )]])
+             secid (get-secid-by-isin (name (first x)) )
+             sec (db/ent [[secid]])
 
              assettype (second (first (filter (fn [y] (if (= (first y) :security/assettype) true false)) sec ) ))
              currency (second (first (filter (fn [y] (if (= (first y) :security/currency) true false)) sec ) ))
@@ -779,7 +780,7 @@
              ;tr1 (if (= (name (first x)) "GB0032360173") (println (str "x=" x " currency=" currency ""))) 
              ;tr1 (println (str "sec=" sec))
           ]
-          [(name (first x)) {:bcode bcode :amount (* (if (or (= assettype 15)) 1.0 multiple) (:amount (second x))) :price (:price (second x))}]
+          [(name (first x)) {:bcode bcode :amount (* (if (or (= assettype 15)) 1.0 multiple) (:amount (second x))) :price (:price (second x))} secid]
       )
       ) positions)
 
@@ -827,7 +828,7 @@
 
     ;res1 (spit (str "C:/DEV/clojure/sberpb/sberapi/DB/" client ".txt")  ",,,,\n" :append false)
     transactions (sort (comp sort-transactions-from-db) (db/get-transactions-from-db client (java.util.Date.)))
-    res1 (spit (str (-> env :drive) ":/DEV/output/" client ".txt") (str "Portfolio Name,Security ID,Position/Quantity/Nominal,Cost Px asset Currency,Date\n")  :append false)
+    res1 (spit (str (-> env :drive) ":/DEV/output/" client ".txt") (str "Portfolio Name,Security ID,Position/Quantity/Nominal,Cost Px asset Currency,Date,Market Price\n")  :append false)
     securities (secs/get-securities)
     lastpositions (loop
       [positions {} valuedate nil trans transactions]
