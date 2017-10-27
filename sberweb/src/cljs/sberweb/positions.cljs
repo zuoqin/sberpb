@@ -175,6 +175,161 @@
   )
 )
 
+(def usdrate (:price (first (filter (fn [x] (if (= "USD" (:acode x)) true false)) (:securities @sbercore/app-state)))))
+
+(def gbprate (:price (first (filter (fn [x] (if (= "GBP" (:acode x)) true false)) (:securities @sbercore/app-state)))))
+
+(def eurrate (:price (first (filter (fn [x] (if (= "EUR" (:acode x)) true false)) (:securities @sbercore/app-state)))))
+
+
+(defn setPieChart1[]
+  (let [
+    usdval (+ (:usd (first (filter (fn [x] (if (= (:code x) (:selectedclient @sbercore/app-state)) true false)) (:clients @sbercore/app-state)))) (:posvalue (reduce (fn [x y] {:posvalue (+ (:posvalue x) (:posvalue y))} ) (filter (fn [x] (if (and (= (:currency (first (filter (fn [y] (if (= (:id y) (:id x)) true false)) (:securities @sbercore/app-state)))) "USD")  (or (= (:assettype (first (filter (fn [y] (if (= (:id y) (:id x)) true false)) (:securities @sbercore/app-state)))) 1) (= (:assettype (first (filter (fn [y] (if (= (:id y) (:id x)) true false)) (:securities @sbercore/app-state)))) 5)) )  true false)) (:positions ((keyword (:selectedclient @sbercore/app-state)) @sbercore/app-state)))))) 
+
+
+    rubval (+ (* 1.0 (/ (:rub (first (filter (fn [x] (if (= (:code x) (:selectedclient @sbercore/app-state)) true false)) (:clients @sbercore/app-state)))) usdrate))
+
+
+      (:posvalue (reduce (fn [x y] {:posvalue (+ (:posvalue x) (:posvalue y))} ) (filter (fn [x] (if (and (= (:currency (first (filter (fn [y] (if (= (:id y) (:id x)) true false)) (:securities @sbercore/app-state)))) "RUB")  (or (= (:assettype (first (filter (fn [y] (if (= (:id y) (:id x)) true false)) (:securities @sbercore/app-state)))) 1) (= (:assettype (first (filter (fn [y] (if (= (:id y) (:id x)) true false)) (:securities @sbercore/app-state)))) 5)) )  true false)) (:positions ((keyword (:selectedclient @sbercore/app-state)) @sbercore/app-state)))))
+    )
+
+
+
+    eurval (+ (* eurrate (/ (:eur (first (filter (fn [x] (if (= (:code x) (:selectedclient @sbercore/app-state)) true false)) (:clients @sbercore/app-state)))) usdrate))
+
+
+      (:posvalue (reduce (fn [x y] {:posvalue (+ (:posvalue x) (:posvalue y))} ) (filter (fn [x] (if (and (= (:currency (first (filter (fn [y] (if (= (:id y) (:id x)) true false)) (:securities @sbercore/app-state)))) "EUR")  (or (= (:assettype (first (filter (fn [y] (if (= (:id y) (:id x)) true false)) (:securities @sbercore/app-state)))) 1) (= (:assettype (first (filter (fn [y] (if (= (:id y) (:id x)) true false)) (:securities @sbercore/app-state)))) 5)) )  true false)) (:positions ((keyword (:selectedclient @sbercore/app-state)) @sbercore/app-state)))))
+    )
+
+    gbpval (+ (* gbprate (/ (:gbp (first (filter (fn [x] (if (= (:code x) (:selectedclient @sbercore/app-state)) true false)) (:clients @sbercore/app-state)))) usdrate))
+
+
+      (:posvalue (reduce (fn [x y] {:posvalue (+ (:posvalue x) (:posvalue y))} ) (filter (fn [x] (if (and (or (= (:currency (first (filter (fn [y] (if (= (:id y) (:id x)) true false)) (:securities @sbercore/app-state)))) "GBX") (= (:currency (first (filter (fn [y] (if (= (:id y) (:id x)) true false)) (:securities @sbercore/app-state)))) "GBP"))   (or (= (:assettype (first (filter (fn [y] (if (= (:id y) (:id x)) true false)) (:securities @sbercore/app-state)))) 1) (= (:assettype (first (filter (fn [y] (if (= (:id y) (:id x)) true false)) (:securities @sbercore/app-state)))) 5)) )  true false)) (:positions ((keyword (:selectedclient @sbercore/app-state)) @sbercore/app-state)))))
+    ) 
+
+    usdval (if (> usdval 0) (.round js/Math usdval) 0.0)
+    rubval (if (> rubval 0) (.round js/Math rubval) 0.0)
+    eurval (if (> eurval 0) (.round js/Math eurval) 0.0)
+    gbpval (if (> gbpval 0) (.round js/Math gbpval) 0.0)
+
+
+    ;tr1 (.log js/console (str "usdval=" usdval " eurval=" eurval " gbpval=" gbpval "rubval=" rubval))
+    element (.getElementById js/document "rev-chartjs1")
+    context (.getContext element "2d")
+    chart-data {:type "pie"
+                :options {
+                  :legend {
+                    :display true
+                    :labels {
+                      :fontSize 36
+                    }
+                  }
+                }
+                :data {:labels ["USD" "RUB" "EUR" "GBP"]
+                       :datasets [{:data [usdval rubval eurval gbpval]
+                                   :label "Rev in MM"
+                                   :backgroundColor [
+                                     "#FF0000"
+                                     "#00FF00"
+                                     "#0000FF"
+                                     "#00FFFF"
+                                   ]}
+                                  ]}}
+    ]
+    (set! (.-defaultFontSize (.-global (.-defaults js/Chart))) 36)
+    ;(set! (.-title js/document) "דו״ח זמינות יחידות")
+    (js/Chart. context (clj->js chart-data))
+
+
+    (set! (.-width (.-style element)) "300px")
+
+    (set! (.-height (.-style element)) "300px")
+
+  )
+)
+
+
+;; (defn js-object-by-asset-type []
+;;   (do (clj->js #{ (.round js/Math (sbercore/calc_cashusdvalue)) (if (nil? (:selectedclient @sbercore/app-state)) 0.0 (.round js/Math (:posvalue (reduce (fn [x y] {:posvalue (+ (:posvalue x) (:posvalue y))} ) (filter (fn [x] (if (= (:assettype (first (filter (fn [y] (if (= (:id y) (:id x)) true false)) (:securities @sbercore/app-state))) ) 5) true false) ) (:positions ((keyword (:selectedclient @sbercore/app-state)) @sbercore/app-state)))))))  (if (nil? (:selectedclient @sbercore/app-state)) 0.0 (.round js/Math (:posvalue (reduce (fn [x y] {:posvalue (+ (:posvalue x) (:posvalue y))} ) (filter (fn [x] (if (= (:assettype (first (filter (fn [y] (if (= (:id y) (:id x)) true false)) (:securities @sbercore/app-state))) ) 1) true false) ) (:positions ((keyword (:selectedclient @sbercore/app-state)) @sbercore/app-state)))))))  }))
+;; )
+
+
+(defn setPieChart2[]
+  (let [
+    cash (.round js/Math (sbercore/calc_cashusdvalue))
+    bonds (if (nil? (:selectedclient @sbercore/app-state)) 0.0 (.round js/Math (:posvalue (reduce (fn [x y] {:posvalue (+ (:posvalue x) (:posvalue y))} ) (filter (fn [x] (if (= (:assettype (first (filter (fn [y] (if (= (:id y) (:id x)) true false)) (:securities @sbercore/app-state))) ) 5) true false) ) (:positions ((keyword (:selectedclient @sbercore/app-state)) @sbercore/app-state)))))))
+    equity (if (nil? (:selectedclient @sbercore/app-state)) 0.0 (.round js/Math (:posvalue (reduce (fn [x y] {:posvalue (+ (:posvalue x) (:posvalue y))} ) (filter (fn [x] (if (= (:assettype (first (filter (fn [y] (if (= (:id y) (:id x)) true false)) (:securities @sbercore/app-state))) ) 1) true false) ) (:positions ((keyword (:selectedclient @sbercore/app-state)) @sbercore/app-state)))))))
+
+
+    cash (if (> cash 0) cash 0.0)
+    bonds (if (> bonds 0) bonds 0.0)
+    equity (if (> equity 0) equity 0.0)
+
+    element (.getElementById js/document "rev-chartjs2")
+    context (.getContext element "2d")
+    chart-data {:type "pie"
+                :options {
+                  :legend {
+                    :display true
+                    :labels {
+                    :fontSize 36
+                    }
+                  }
+                }
+                :data {:labels ["Денежная позиция" "Облигации" "Акции"]
+                       :datasets [{:data [cash bonds equity]
+                                   :label "Rev in MM"
+                                   :backgroundColor [
+                                     "#FF0000"
+                                     "#00FF00"
+                                     "#0000FF"
+                                   ]}
+                                  ]}}
+    ]
+    (set! (.-defaultFontSize (.-global (.-defaults js/Chart))) 36)
+    ;(set! (.-title js/document) "דו״ח זמינות יחידות")
+    (js/Chart. context (clj->js chart-data))
+
+
+    (set! (.-width (.-style element)) "300px")
+
+    (set! (.-height (.-style element)) "300px")
+
+  )
+)
+
+
+(defn setPieCharts []
+  (let []
+    (setPieChart1)
+    (setPieChart2)
+    ;(setPieChart3)
+  )
+)
+
+
+(defcomponent showcharts-view [data owner]
+  (render [_]
+    (let []
+      (dom/div  {:className "row" :style {:margin-top "70px" :direction "ltr"}}
+        (dom/div {:className "col-md-4"}
+          (dom/canvas {:id "rev-chartjs1" :width "300" :height "300" :style {:display "block" :width "300px !important" :height "300px !important"}}
+          )
+        )
+        
+        (dom/div {:className "col-md-4"}          
+          (dom/canvas {:id "rev-chartjs2" :width "300" :height "300" :style {:display "block" :width "300px !important" :height "300px !important"}}
+          )
+        )        
+
+
+                  
+      )
+    )
+  )
+)
+
+
 (defcomponent showstocks-total-view [data owner]
   (render [_]
     (let [
@@ -1146,8 +1301,12 @@
 
 (defn setcontrols [value]
   (case value
-    42 (sbercore/setClientsDropDown)
+    42 ( let [] 
+         (setPieCharts)
+         (sbercore/setClientsDropDown)
+       )
     43 (doswaps)
+    46 (setPieCharts)
   )
 )
 
@@ -1179,6 +1338,11 @@
   (will-mount [_]
     (onMount data)
   )
+  (did-update [this prev-props prev-state]
+    ;(.log js/console (str "update happened 11"))
+    (put! ch 46)
+  )
+
   (render [_]
     (let [
       stylerow {:style {:margin-left "0px" :margin-right "0px"}}
@@ -1189,11 +1353,23 @@
         (sbercore/addVersionInfo)
         (om/build sbercore/website-view data {})
 
+        (dom/div
+              (dom/div  {:className "panel panel-primary"}
+                (dom/div {:className "panel-body"}
+                  (om/build showcharts-view data {})
+                )
+              )
+        )
+
         (if (not (nil? (:selectedclient @sbercore/app-state)))
           (if (or (> (count (:positions ((keyword (:selectedclient @sbercore/app-state)) @sbercore/app-state) )) 0)
                   (= (:state @data ) 1)
             )
             (dom/div
+
+
+
+
               (dom/div {:style {:margin-top "70px"} :className "panel panel-info"}
                 (dom/div {:className "panel-heading"}
                   (dom/div (assoc stylerow  :className "row" )

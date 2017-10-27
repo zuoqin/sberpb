@@ -82,6 +82,7 @@
                              "resources/public/javascript/bootstrap-datepicker.min.js"
                              "cljsjs/common/jquery.ext.js"
                              "resources/public/javascript/tinymce/tinymce.min.js"
+                             "resources/public/javascript/Chart.js"
                            ]
                            :pretty-print false}}
 
@@ -107,6 +108,7 @@
                              "resources/public/javascript/bootstrap-datepicker.min.js"
                              "cljsjs/common/jquery.ext.js"
                              "resources/public/javascript/tinymce/tinymce.min.js"
+                             "resources/public/javascript/Chart.js"
                            ]
                            :pretty-print false}}]}
 
