@@ -160,7 +160,7 @@
   )
   (render [_]
     (let [
-      styleprimary {:style {:margin-top "70px" :margin-left "0px" :margin-right "0px"}}
+      styleprimary {:style {:padding-top "70px" :margin-left "0px" :margin-right "0px"}}
       stylerow {:style {:margin-left "0px" :margin-right "0px"}}
       ]
 

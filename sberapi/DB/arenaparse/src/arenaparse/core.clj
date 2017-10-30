@@ -219,7 +219,7 @@
   (let [
      conn (d/connect uri)
      ]
-    (d/transact-async conn [{ :security/acode "GTONA", :security/isin "NL0000400653", :security/bcode "GTO NA Equity", :security/assettype 1, :security/multiple 1.0, :security/name "Gemalto NV", :security/currency "EUR", :db/id #db/id[:db.part/user -100802] }
+    (d/transact-async conn [{ :security/acode "EFGIF_0419D", :security/isin "CH0384862568", :security/bcode "CH0384862568 Corp", :security/assettype 5, :security/multiple 1.0, :security/name "EFG International Finance (Guernsey)", :security/currency "EUR", :db/id #db/id[:db.part/user -100802] }
 ]
     )
     ; To insert new entity:

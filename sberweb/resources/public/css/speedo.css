@@ -30,7 +30,7 @@ body{
   margin: 50px auto;
   position:relative;
   animation-name: speedo;
-  animation-duration: 4s;
+  animation-duration: 3s;
 }
 .black{
   width:100%;
@@ -238,7 +238,7 @@ span.s-200{
   transform-origin: 100%;
   animation-name: strelka;
   transition:.6s;
-  animation-duration: 9s;
+  animation-duration: 7s;
 }
 @keyframes speedo{
   0%{

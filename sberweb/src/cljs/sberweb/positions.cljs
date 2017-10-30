@@ -187,50 +187,86 @@
   (:price (first (filter (fn [x] (if (= "EUR" (:acode x)) true false)) (:securities @sbercore/app-state))))
 )
 
-
+(defn clientcurrencyrate []
+  (let [
+    client (first (filter (fn [x] (if (= (:selectedclient @sbercore/app-state) (:code x)) true false)) (:clients @sbercore/app-state)))
+    ]
+    (if (nil? (:selectedclient @sbercore/app-state))
+    1.0
+    (:price (first (filter (fn [x] (if (= (str/upper-case (:currency client)) (:acode x)) true false)) (:securities @sbercore/app-state)))))
+  )
+)
 
 (defcomponent speedo-view [data owner]
   (render [_]
-    (dom/div {:style {:zoom 0.61 :width "640px" :height "480px" :margin-top "0px" :margin-right "0px" :margin-bottom "0px" :margin-left "50px" :overflow "hidden" :backgroundColor "#000" :position "relative"}}
-      (dom/div {:className "speedometr"}
-        (dom/div {:className "ris-w"})
-        (dom/div {:className "ris-w"})
-        (dom/div {:className "ris-w"})
-        (dom/div {:className "ris-w"})
-        (dom/div {:className "ris-w"})
-        (dom/div {:className "ris-w"})
-        (dom/div {:className "ris-w"})
-        (dom/div {:className "ris-w"})
-        (dom/div {:className "ris-w"})
-        (dom/div {:className "ris-w"})
-        (dom/div {:className "ris-w"})
-        (dom/div {:className "ris ris-o1"})
-        (dom/div {:className "ris ris-o2"})
-        (dom/div {:className "ris ris-o3"})
-        (dom/div {:className "ris ris-o4"})
-        (dom/div {:className "ris ris-o5"})
-        (dom/div {:className "ris ris-o6"})
-        (dom/div {:className "ris ris-o7"})
-        (dom/div {:className "ris ris-o8"})
-        (dom/div {:className "ris ris-o9"})
-        (dom/div {:className "ris ris-o10"})
+    (let [
+          usdval (:usd (first (filter (fn [x] (if (= (:code x) (:selectedclient @data)) true false)) (:clients @data))))
+
+          usdval (if (< usdval 0.0) (- 0 usdval) 0.0)
+
+          rubcash (:rub (first (filter (fn [x] (if (= (:code x) (:selectedclient @data)) true false)) (:clients @data))))
+          rubcash (if (< rubcash 0.0) (- 0 rubcash) 0.0)
+
+          eurcash (:eur (first (filter (fn [x] (if (= (:code x) (:selectedclient @data)) true false)) (:clients @data))))
+          eurcash (if (< eurcash 0.0) (- 0 eurcash) 0.0)
+
+          gbpcash (:gbp (first (filter (fn [x] (if (= (:code x) (:selectedclient @data)) true false)) (:clients @data))))
+          gbpcash (if (< gbpcash 0.0) (- 0 gbpcash) 0.0)
+
+          borrowings (do (if (nil? (:selectedclient @data)) 0.0 (/ (+ (* (eurrate) eurcash) (* (gbprate) gbpcash) rubcash) (clientcurrencyrate))))
 
 
-        (dom/span {:className "speedo s-0"} "0")
-        (dom/span {:className "speedo s-20"} "10")
-        (dom/span {:className "speedo s-40"} "20")
-        (dom/span {:className "speedo s-60"} "30")
-        (dom/span {:className "speedo s-80"} "40")
-        (dom/span {:className "speedo s-100"} "50")
-        (dom/span {:className "speedo s-120"} "60")
-        (dom/span {:className "speedo s-140"} "70")
-        (dom/span {:className "speedo s-160"} "80")
-        (dom/span {:className "speedo s-180"} "90")
-        (dom/span {:className "speedo s-200"} "100")
+          futures (if (nil? (:selectedclient @data)) 0.0 (:posvalue (reduce (fn [x y] (let [;tr1 (.log js/console (str "x=" x " y=" y))
+           ] {:posvalue (+ (if (< (:posvalue y) 0.0) (- 0.0 (:posvalue y)) (:posvalue y)) (:posvalue x))})  ) (filter (fn [x] (if (and (= 1 1) (or (= (:assettype (first (filter (fn [z] (if (= (:id z) (:id x)) true false)) (:securities @sbercore/app-state)))) 15)) )  true false)) (:positions ((keyword (:selectedclient @data)) @data))))))
 
-        (dom/div {:className "strelka" {:style {:transform "rotate(20deg)"}}})
+          portfvalue (sbercore/calc_portfvalue)
+
+
+          margin (/ (* 100.0 portfvalue) (+ borrowings futures portfvalue))
+
+          ;tr1 (.log js/console (str "futures=" futures " borrow=" borrowings " margin=" margin))
+      ]
+      (dom/div {:style {:zoom 0.61 :width "640px" :height "480px" :margin-top "0px" :margin-right "0px" :margin-bottom "0px" :margin-left "50px" :overflow "hidden" :backgroundColor "#000" :position "relative" :display "inline-block"}}
+        (dom/div {:className "speedometr"}
+          (dom/div {:className "ris-w"})
+          (dom/div {:className "ris-w"})
+          (dom/div {:className "ris-w"})
+          (dom/div {:className "ris-w"})
+          (dom/div {:className "ris-w"})
+          (dom/div {:className "ris-w"})
+          (dom/div {:className "ris-w"})
+          (dom/div {:className "ris-w"})
+          (dom/div {:className "ris-w"})
+          (dom/div {:className "ris-w"})
+          (dom/div {:className "ris-w"})
+          (dom/div {:className "ris ris-o1"})
+          (dom/div {:className "ris ris-o2"})
+          (dom/div {:className "ris ris-o3"})
+          (dom/div {:className "ris ris-o4"})
+          (dom/div {:className "ris ris-o5"})
+          (dom/div {:className "ris ris-o6"})
+          (dom/div {:className "ris ris-o7"})
+          (dom/div {:className "ris ris-o8"})
+          (dom/div {:className "ris ris-o9"})
+          (dom/div {:className "ris ris-o10"})
+
+
+          (dom/span {:className "speedo s-0"} "0")
+          (dom/span {:className "speedo s-20"} "10")
+          (dom/span {:className "speedo s-40"} "20")
+          (dom/span {:className "speedo s-60"} "30")
+          (dom/span {:className "speedo s-80"} "40")
+          (dom/span {:className "speedo s-100"} "50")
+          (dom/span {:className "speedo s-120"} "60")
+          (dom/span {:className "speedo s-140"} "70")
+          (dom/span {:className "speedo s-160"} "80")
+          (dom/span {:className "speedo s-180"} "90")
+          (dom/span {:className "speedo s-200"} "100")
+
+          (dom/div {:className "strelka" :style {:transform (str "rotate(" (.round js/Math (- (* margin (/ 210 100)) 20.0)) "deg)")}})
+        )
+        (dom/div {:className "black"})
       )
-      (dom/div {:className "black"})
     )
   )
 )
@@ -238,28 +274,24 @@
 
 (defn setPieChart1[]
   (let [
-    usdval (do (if (nil? (:selectedclient @sbercore/app-state)) 0.0 (+ (:usd (first (filter (fn [x] (if (= (:code x) (:selectedclient @sbercore/app-state)) true false)) (:clients @sbercore/app-state)))) (:posvalue (reduce (fn [x y] {:posvalue (+ (:posvalue x) (:posvalue y))} ) (filter (fn [x] (if (and (= (:currency (first (filter (fn [y] (if (= (:id y) (:id x)) true false)) (:securities @sbercore/app-state)))) "USD")  (or (= (:assettype (first (filter (fn [y] (if (= (:id y) (:id x)) true false)) (:securities @sbercore/app-state)))) 1) (= (:assettype (first (filter (fn [y] (if (= (:id y) (:id x)) true false)) (:securities @sbercore/app-state)))) 5)) )  true false)) (:positions ((keyword (:selectedclient @sbercore/app-state)) @sbercore/app-state)))))))) 
+    usdval (do (if (nil? (:selectedclient @sbercore/app-state)) 0.0 (+ (/ (* (usdrate) (:usd (first (filter (fn [x] (if (= (:code x) (:selectedclient @sbercore/app-state)) true false)) (:clients @sbercore/app-state))))) (clientcurrencyrate)) (:posvalue (reduce (fn [x y] {:posvalue (+ (:posvalue x) (:posvalue y))} ) (filter (fn [x] (if (and (= (:currency (first (filter (fn [y] (if (= (:id y) (:id x)) true false)) (:securities @sbercore/app-state)))) "USD")  (or (= (:assettype (first (filter (fn [y] (if (= (:id y) (:id x)) true false)) (:securities @sbercore/app-state)))) 1) (= (:assettype (first (filter (fn [y] (if (= (:id y) (:id x)) true false)) (:securities @sbercore/app-state)))) 5)) )  true false)) (:positions ((keyword (:selectedclient @sbercore/app-state)) @sbercore/app-state)))))))) 
 
 
-    rubval (do (if (nil? (:selectedclient @sbercore/app-state)) 0.0 (+ (* 1.0 (/ (:rub (first (filter (fn [x] (if (= (:code x) (:selectedclient @sbercore/app-state)) true false)) (:clients @sbercore/app-state)))) (usdrate)))
+    rubval (do (if (nil? (:selectedclient @sbercore/app-state)) 0.0 (+ (/ (:rub (first (filter (fn [x] (if (= (:code x) (:selectedclient @sbercore/app-state)) true false)) (:clients @sbercore/app-state)))) (clientcurrencyrate))
 
-
-                                                                      (:posvalue (reduce (fn [x y] {:posvalue (+ (:posvalue x) (:posvalue y))} ) (filter (fn [x] (if (and (= (:currency (first (filter (fn [y] (if (= (:id y) (:id x)) true false)) (:securities @sbercore/app-state)))) "RUB")  (or (= (:assettype (first (filter (fn [y] (if (= (:id y) (:id x)) true false)) (:securities @sbercore/app-state)))) 1) (= (:assettype (first (filter (fn [y] (if (= (:id y) (:id x)) true false)) (:securities @sbercore/app-state)))) 5)) )  true false)) (:positions ((keyword (:selectedclient @sbercore/app-state)) @sbercore/app-state)))))
-         )))
+      (:posvalue (reduce (fn [x y] {:posvalue (+ (:posvalue x) (:posvalue y))} ) (filter (fn [x] (if (and (= (:currency (first (filter (fn [y] (if (= (:id y) (:id x)) true false)) (:securities @sbercore/app-state)))) "RUB")  (or (= (:assettype (first (filter (fn [y] (if (= (:id y) (:id x)) true false)) (:securities @sbercore/app-state)))) 1) (= (:assettype (first (filter (fn [y] (if (= (:id y) (:id x)) true false)) (:securities @sbercore/app-state)))) 5)) )  true false)) (:positions ((keyword (:selectedclient @sbercore/app-state)) @sbercore/app-state))))))))
 
 
 
-    eurval (do (if (nil? (:selectedclient @sbercore/app-state)) 0.0 (+ (* (eurrate) (/ (:eur (first (filter (fn [x] (if (= (:code x) (:selectedclient @sbercore/app-state)) true false)) (:clients @sbercore/app-state)))) (usdrate)))
+    eurval (do (if (nil? (:selectedclient @sbercore/app-state)) 0.0 (+ (* (eurrate) (/ (:eur (first (filter (fn [x] (if (= (:code x) (:selectedclient @sbercore/app-state)) true false)) (:clients @sbercore/app-state)))) (clientcurrencyrate)))
 
-
-                                                                      (:posvalue (reduce (fn [x y] {:posvalue (+ (:posvalue x) (:posvalue y))} ) (filter (fn [x] (if (and (= (:currency (first (filter (fn [y] (if (= (:id y) (:id x)) true false)) (:securities @sbercore/app-state)))) "EUR")  (or (= (:assettype (first (filter (fn [y] (if (= (:id y) (:id x)) true false)) (:securities @sbercore/app-state)))) 1) (= (:assettype (first (filter (fn [y] (if (= (:id y) (:id x)) true false)) (:securities @sbercore/app-state)))) 5)) )  true false)) (:positions ((keyword (:selectedclient @sbercore/app-state)) @sbercore/app-state)))))
+      (:posvalue (reduce (fn [x y] {:posvalue (+ (:posvalue x) (:posvalue y))} ) (filter (fn [x] (if (and (= (:currency (first (filter (fn [y] (if (= (:id y) (:id x)) true false)) (:securities @sbercore/app-state)))) "EUR")  (or (= (:assettype (first (filter (fn [y] (if (= (:id y) (:id x)) true false)) (:securities @sbercore/app-state)))) 1) (= (:assettype (first (filter (fn [y] (if (= (:id y) (:id x)) true false)) (:securities @sbercore/app-state)))) 5)) )  true false)) (:positions ((keyword (:selectedclient @sbercore/app-state)) @sbercore/app-state)))))
                                                                       )))
 
-    gbpval (do (if (nil? (:selectedclient @sbercore/app-state)) 0.0 (+ (* (gbprate) (/ (:gbp (first (filter (fn [x] (if (= (:code x) (:selectedclient @sbercore/app-state)) true false)) (:clients @sbercore/app-state)))) (usdrate)))
+    gbpval (do (if (nil? (:selectedclient @sbercore/app-state)) 0.0 (+ (* (gbprate) (/ (:gbp (first (filter (fn [x] (if (= (:code x) (:selectedclient @sbercore/app-state)) true false)) (:clients @sbercore/app-state)))) (clientcurrencyrate)))
 
 
-                                                                      (:posvalue (reduce (fn [x y] {:posvalue (+ (:posvalue x) (:posvalue y))} ) (filter (fn [x] (if (and (or (= (:currency (first (filter (fn [y] (if (= (:id y) (:id x)) true false)) (:securities @sbercore/app-state)))) "GBX") (= (:currency (first (filter (fn [y] (if (= (:id y) (:id x)) true false)) (:securities @sbercore/app-state)))) "GBP"))   (or (= (:assettype (first (filter (fn [y] (if (= (:id y) (:id x)) true false)) (:securities @sbercore/app-state)))) 1) (= (:assettype (first (filter (fn [y] (if (= (:id y) (:id x)) true false)) (:securities @sbercore/app-state)))) 5)) )  true false)) (:positions ((keyword (:selectedclient @sbercore/app-state)) @sbercore/app-state)))))
-                                                                      )))
+                                                                      (:posvalue (reduce (fn [x y] {:posvalue (+ (:posvalue x) (:posvalue y))} ) (filter (fn [x] (if (and (or (= (:currency (first (filter (fn [y] (if (= (:id y) (:id x)) true false)) (:securities @sbercore/app-state)))) "GBX") (= (:currency (first (filter (fn [y] (if (= (:id y) (:id x)) true false)) (:securities @sbercore/app-state)))) "GBP"))   (or (= (:assettype (first (filter (fn [y] (if (= (:id y) (:id x)) true false)) (:securities @sbercore/app-state)))) 1) (= (:assettype (first (filter (fn [y] (if (= (:id y) (:id x)) true false)) (:securities @sbercore/app-state)))) 5)) )  true false)) (:positions ((keyword (:selectedclient @sbercore/app-state)) @sbercore/app-state))))))))
 
     usdval (if (> usdval 0) (.round js/Math usdval) 0.0)
     rubval (if (> rubval 0) (.round js/Math rubval) 0.0)
@@ -368,18 +400,18 @@
   (render [_]
     (let []
       (dom/div  {:className "row" :style {:margin-top "0px" :direction "ltr"}}
-        (dom/div {:className "col-md-4"}
-          (dom/canvas {:id "rev-chartjs1" :width "300" :height "300" :style {:display "block" :width "300px !important" :height "300px !important" :text-align "center"}}
-          )
-        )
-        
-        (dom/div {:className "col-md-4"}          
-          (dom/canvas {:id "rev-chartjs2" :width "300" :height "300" :style {:display "block" :width "300px !important" :height "300px !important"}}
+        (dom/div {:className "col-md-4" :style {:text-align "center"}}
+          (dom/canvas {:id "rev-chartjs1" :width "300" :height "300" :style {:display "inline-block" :width "300px !important" :height "300px !important" :text-align "center"}}
           )
         )
 
-        (dom/div {:className "col-md-4"}          
+        (dom/div {:className "col-md-4" :style {:text-align "center"}}
           (om/build speedo-view data {})
+        )
+
+        (dom/div {:className "col-md-4" :style {:text-align "center"}}
+          (dom/canvas {:id "rev-chartjs2" :width "300" :height "300" :style {:display "inline-block" :width "300px !important" :height "300px !important"}}
+          )
         )
       )
     )
@@ -1363,10 +1395,10 @@
          (sbercore/setClientsDropDown)
        )
     43 (doswaps)
-    ;; 46 (go
-    ;;      (<! (timeout 100))
-    ;;      (setPieCharts)
-    ;;    )
+    46 (go
+         (<! (timeout 100))
+         (setPieCharts)
+       )
   )
 )
 
@@ -1432,13 +1464,14 @@
             (dom/div {:className "panel-heading" :style {:margin-top "70px"}}
               (dom/div (assoc stylerow  :className "row" )
                 (dom/div {:className "col-xs-4 col-md-4" :style {:text-align "center"}} "По типам валют")
-                (dom/div {:className "col-xs-4 col-md-4" :style {:text-align "center"}} "По типам инструментов")
 
                 (dom/div {:className "col-xs-4 col-md-4" :style {:text-align "center"}} "Уровень маржи")
+
+                (dom/div {:className "col-xs-4 col-md-4" :style {:text-align "center"}} "По типам инструментов")
               )
             )
             (dom/div {:className "panel-body"}
-              ;(om/build showcharts-view data {})
+              (om/build showcharts-view data {})
             )
           )
         )
