@@ -8,7 +8,7 @@
 { :user/code "alexander", :user/password "2af9b1ba42dc5eb01743e6b3759b6e4b", :user/role "admin", :db/id #db/id[:db.part/user -105007] }
 { :user/code "guillaume", :user/password "2af9b1ba42dc5eb01743e6b3759b6e4b", :user/role "admin", :db/id #db/id[:db.part/user -105008] }
 { :user/code "michael", :user/password "2af9b1ba42dc5eb01743e6b3759b6e4b", :user/role "admin", :db/id #db/id[:db.part/user -105009] }
-{ :user/code "elena", :user/password "2af9b1ba42dc5eb01743e6b3759b6e4b", :user/role "admin", :db/id #db/id[:db.part/user -105010] }
+{ :user/code "elena", :user/password "ce13e39763bc27732f17546ecfa703a9", :user/role "admin", :db/id #db/id[:db.part/user -105010] }
 { :user/code "darya", :user/password "2af9b1ba42dc5eb01743e6b3759b6e4b", :user/role "admin", :db/id #db/id[:db.part/user -105011] }
 { :user/code "fylhtq", :user/password "094556f765509fcdcadd9e7bef0404c3", :user/role "admin", :db/id #db/id[:db.part/user -105012] }
 { :user/code "admin", :user/password "2af9b1ba42dc5eb01743e6b3759b6e4b", :user/role "admin", :db/id #db/id[:db.part/user -105013] }
@@ -1618,6 +1618,9 @@
 { :security/acode "EFGIF_0419F", :security/isin "CH0384862550", :security/bcode "CH0384862550 Corp", :security/assettype 5, :security/multiple 1.0, :security/name "EFG International Finance (Guernsey)", :security/currency "USD", :db/id #db/id[:db.part/user -100801] }
 
 { :security/acode "GTONA", :security/isin "NL0000400653", :security/bcode "GTO NA Equity", :security/assettype 1, :security/multiple 1.0, :security/name "Gemalto NV", :security/currency "EUR", :db/id #db/id[:db.part/user -100802] }
+
+{ :security/acode "EFGIF_0419D", :security/isin "CH0384862568", :security/bcode "CH0384862568 Corp", :security/assettype 5, :security/multiple 1.0, :security/name "EFG International Finance (Guernsey)", :security/currency "EUR", :db/id #db/id[:db.part/user -100802] }
+
 
 ;;FORTS contracts
 
