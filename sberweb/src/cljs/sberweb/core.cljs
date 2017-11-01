@@ -203,14 +203,20 @@
 
 (defn calc_portfusdvalue []
   (let [
-         secsusdvalue (if (nil? (:selectedclient @app-state)) 0.0 (:usdvalue (reduce (fn [x y] {:usdvalue (+ (:usdvalue x) (:usdvalue y))}) (filter (fn [x] (let [
-                                                                                                                                     sec (first (filter (fn[y] (if (= (:id x) (:id y) ) true false)) (:securities @app-state)))
-                                                                                                                                     assettype (:assettype sec)]
-                                                                                                                                 (if (or (= 1 assettype) (= 5 assettype)) true false))) (:positions ((keyword (:selectedclient @app-state)) @app-state)))
-                                                 ))) 
-         cashusdvalue (calc_cashusdvalue) 
+    secsusdvalue (if (nil? (:selectedclient @app-state)) 0.0 
+      (:usdvalue (reduce 
+        (fn [x y] {:usdvalue (+ (:usdvalue x) (:usdvalue y))})
+        (filter (fn [x] (let
+          [ sec (first (filter (fn[y] (if (= (:id x) (:id y) ) true false)) (:securities @app-state)))
+            assettype (:assettype sec)
+          ]
+          (if (or (= 1 assettype) (= 5 assettype)) true false))) (:positions ((keyword (:selectedclient @app-state)) @app-state)))
+       ))) 
+    cashusdvalue (calc_cashusdvalue) 
 
-         portfusdvalue (+ secsusdvalue cashusdvalue)
+    portfusdvalue (+ secsusdvalue cashusdvalue)
+
+    ;tr1 (.log js/console (str "portfusdvalue=" portfusdvalue))
   ]
   portfusdvalue
   )
@@ -303,7 +309,7 @@
                    )  true false)
     newfxrate (if (= 0 (compare "GBX" (:currency security))) (/ fxrate 100.) fxrate)
 
-    result {:id secid :currency (:currency security) :amount (:amount (nth position 1)) :wap posprice :price price :waprub (:rubprice (nth position 1)) :currubprice (* price newfxrate) :wapusd (:wapusd (nth position 1)) :usdvalue (/ (* (:amount (nth position 1)) (:price security)  (if (= isbond true) (* newfxrate (:multiple security) 0.01 ) newfxrate )  ) usdrate) :posvalue (/ (* (:amount (nth position 1)) (:price security) newfxrate (if (= isbond true) 0.01 (:multiple security) ) ) clientcurrencyrate) 
+    result {:id secid :currency (:currency security) :amount (:amount (nth position 1)) :wap posprice :price price :waprub (:rubprice (nth position 1)) :currubprice (* price newfxrate) :wapusd (:wapusd (nth position 1)) :usdvalue (/ (* (:amount (nth position 1)) (:price security)  (if (= isbond true) (* newfxrate (:multiple security) 0.01 ) newfxrate )  ) usdrate) :posvalue (/ (* (:amount (nth position 1)) (:price security) (:multiple security) newfxrate (if (= isbond true) 0.01 1.0) ) clientcurrencyrate) 
      }
 
     ]

@@ -226,6 +226,20 @@
   :db/doc "Client to users relationship"
   :db.install/_attribute :db.part/db}
 
+{:db/id #db/id[:db.part/db]
+  :db/ident :client/stocklimit
+  :db/valueType :db.type/double
+  :db/cardinality :db.cardinality/one
+  :db/doc "Client's limit for one stock"
+  :db.install/_attribute :db.part/db}
+
+{:db/id #db/id[:db.part/db]
+  :db/ident :client/bondlimit
+  :db/valueType :db.type/double
+  :db/cardinality :db.cardinality/one
+  :db/doc "Client's limit for one bond"
+  :db.install/_attribute :db.part/db}
+
 
 ;; transactions
 

@@ -30,6 +30,7 @@
 (def build-in-date-formatter (f/formatters :date))
 
 ;secs (secs/get-securities)
+(defn abs [n] (max n (- n)))
 
 (def app-state (atom {}) )
 
@@ -888,8 +889,21 @@
     ;tr1 (println (first transactions))
     securities (if (nil? (:secs @app-state)) (cacheSecurities) (:secs @app-state))
     
+
+    tran (first transactions)
+    isin (:isin (first (filter (fn [y] (if (= (:security tran) (:acode y)) true false)) securities)))
+
+    tranamnt (if (= "B" (:direction tran)) (:nominal tran) (- 0 (:nominal tran)))
+
+    type (if (> tranamnt 0) "BUY LONG" "SELL SHORT")
+
+    dateval (f/unparse build-in-basicdate-formatter (c/from-long (c/to-long (:valuedate tran))))
+
+    newvalue {:portfolio client :isin isin :amount tranamnt :price (:price tran) :date dateval :type type}
+
+
     newtransactions (loop
-      [result [] amounts {} trans transactions]
+      [result [] amounts {} trans (drop 1 transactions) prevtran tran prevsec newvalue]
       (if (seq trans)
         (let [
           
@@ -913,12 +927,32 @@
 
           ;tr1 (println (str "amnt=" amnt) )
           newamnt (if (nil? amnt ) tranamnt (+ amnt tranamnt) )
+
+          newnominal (/ tranamnt (if (str/includes? isin "LKOH=") 10.0 (if (str/includes? isin "SBRF=") 100.0 1.0)))
+
+
+          dateval (f/unparse build-in-basicdate-formatter (c/from-long (c/to-long (:valuedate tran))))
+
+          newvalue {:portfolio client :isin isin :bcode bcode :quantity (+ (abs (:amount prevsec)) newnominal) :price (:price tran) :date dateval :type (if (> tranamnt 0) (if (> newamnt 0) "BUY LONG" "BUY TO COVER") (if (< newamnt 0) "SELL SHORT" "SELL LONG")) }
+          
+          
+          newprevsec (update prevsec :amount (fn [x] (if (and (= isin (:isin prevsec)) (= dateval (:date prevsec))) (+ newnominal (:amount prevsec)) newnominal)))
+
+          newprevsec (update newprevsec :price (fn [x] (if (and (= isin (:isin prevsec)) (= dateval (:date prevsec))) (/ (+ (* (:price prevsec) (:amount prevsec)) (* (:price tran) newnominal)) (+ (:amount prevsec) newnominal)) (:price tran))) )
+
+          newprevsec (update newprevsec :isin (fn [x] isin))
+          newprevsec (update newprevsec :bcode (fn [x] bcode))
+
+          newprevsec (update newprevsec :date (fn [x] dateval))
+
+          newprevsec (update newprevsec :type (fn [x] (if (and (= isin (:isin prevsec)) (= dateval (:date prevsec))) (if (> tranamnt 0) (if (> newamnt 0) "BUY LONG" "BUY TO COVER") (if (< newamnt 0) "SELL SHORT" "SELL LONG")) (if (> tranamnt 0) (if (> newamnt 0) "BUY LONG" "BUY TO COVER") (if (< newamnt 0) "SELL SHORT" "SELL LONG")))))
+
           
           ;tr1 (if (= isin "GB0032360173") (println (str "price= " (:price tran) "fullprice=" (:price tran) " fx=" (:fx tran)) )) 
       ]
-      (recur (if (or (= assettype 10)) result (conj result {:portfolio client :isin isin :bcode bcode :quantity (/ (:nominal tran) (if (str/includes? isin "LKOH=") 10.0 (if (str/includes? isin "SBRF=") 100.0 1.0))) :price (:price tran) :date (f/unparse build-in-basicdate-formatter (c/from-long (c/to-long (:valuedate tran))) ) :type (if (> tranamnt 0) (if (> newamnt 0) "BUY LONG" "BUY TO COVER") (if (< newamnt 0) "SELL SHORT" "SELL LONG")) }))  (assoc-in amounts [(keyword (:acode sec)) ] {:amount newamnt} ) (rest trans))
+      (recur (if (and (= isin (:isin prevsec)) (= dateval (:date prevsec)))  result (conj result {:portfolio client :isin (:isin prevsec) :bcode (:bcode prevsec) :quantity (abs (:amount prevsec)) :price (:price prevsec) :date (:date prevsec) :type (:type prevsec)})) (assoc-in amounts [(keyword (:acode sec)) ] {:amount newamnt} ) (rest trans) tran newprevsec)
       )
-      result)
+      (conj result {:portfolio client :isin (:isin prevsec) :bcode (:bcode prevsec) :quantity (abs (:amount prevsec)) :price (:price prevsec) :date (:date prevsec) :type (:type prevsec)}))
     )
 
     newtrans (map (fn [x] (let [
@@ -927,7 +961,7 @@
        ;tr1 (println (str sec))
        multiple (second (first (filter (fn [y] (if (= (first y) :security/multiple) true false)) sec )))
        multiple (if (nil? multiple) 1.0 multiple)
-       assettype (second (first (filter (fn [y] (if (= (first y) :security/assettype) true false)) sec ) ))                                                   
+       assettype (second (first (filter (fn [y] (if (= (first y) :security/assettype) true false)) sec ) ))
        ;currency (second (first (filter (fn [y] (if (= (first y) :security/currency) true false)) sec )))
 
     ]

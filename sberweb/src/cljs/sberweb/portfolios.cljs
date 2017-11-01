@@ -244,7 +244,7 @@
   (render [_]
     (let [
       stylerow {:style {:margin-left "0px" :margin-right "0px"}}
-      styleprimary {:style {:margin-top "70px" :margin-left "0px" :margin-right "0px"}}
+      styleprimary {:style {:padding-top "70px" :margin-left "0px" :margin-right "0px"}}
       ]
       (dom/div
         (om/build sbercore/website-view sbercore/app-state {})

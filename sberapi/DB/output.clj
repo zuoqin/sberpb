@@ -1,3 +1,4 @@
+
 [
 { :user/code "zuoqin", :user/password "2af9b1ba42dc5eb01743e6b3759b6e4b", :user/role "admin", :db/id #db/id[:db.part/user -105001] }
 { :user/code "rustam", :user/password "2af9b1ba42dc5eb01743e6b3759b6e4b", :user/role "admin", :db/id #db/id[:db.part/user -105002] }
@@ -1619,7 +1620,9 @@
 
 { :security/acode "GTONA", :security/isin "NL0000400653", :security/bcode "GTO NA Equity", :security/assettype 1, :security/multiple 1.0, :security/name "Gemalto NV", :security/currency "EUR", :db/id #db/id[:db.part/user -100802] }
 
-{ :security/acode "EFGIF_0419D", :security/isin "CH0384862568", :security/bcode "CH0384862568 Corp", :security/assettype 5, :security/multiple 1.0, :security/name "EFG International Finance (Guernsey)", :security/currency "EUR", :db/id #db/id[:db.part/user -100802] }
+{ :security/acode "EFGIF_0419D", :security/isin "CH0384862568", :security/bcode "CH0384862568 Corp", :security/assettype 5, :security/multiple 1.0, :security/name "EFG International Finance (Guernsey)", :security/currency "EUR", :db/id #db/id[:db.part/user -100803] }
+
+{ :security/acode "TURKEY30", :security/isin "US900123AL40", :security/bcode "US900123AL40 Corp", :security/assettype 5, :security/multiple 1.0, :security/name "Турция, 11.875% 15jan2030", :security/currency "USD", :db/id #db/id[:db.part/user -100804] }
 
 
 ;;FORTS contracts
@@ -1717,7 +1720,7 @@
 
 
 ;; CLIENTS
-{ :client/code "PYUMF", :client/name "Клиент PYUMF", :client/currency "USD", :client/stockshare 50.0 :client/bondshare 50.0, :client/usd 100000.0, :client/rub 100000.0, :client/eur 100000.0, :client/gbp 100000.0, :client/signedadvisory 5000000.0, :client/advemail ["RWxlbmFfS2hhcml0b25vdmFAc2JlcmJhbmstcGIucnU=" "VmxhZGltaXJfVXNwZW5za2l5QHNiZXJiYW5rLXBiLnJ1" "TWFyaW5hX1Zvcm9iaWV2YUBzYmVyYmFuay1wYi5ydQ=="], :client/email "NzcyNTg0NkBnbWFpbC5jb20=", :client/advisors [ #db/id[:db.part/user -105001] #db/id[:db.part/user -105013] #db/id[:db.part/user -105002] #db/id[:db.part/user -105004] #db/id[:db.part/user -105003] #db/id[:db.part/user -105008] ], :db/id #db/id[:db.part/user -102003]}
+{ :client/code "PYUMF", :client/name "Клиент PYUMF", :client/currency "USD", :client/stockshare 50.0, :client/bondshare 50.0, :client/stocklimit 10.0, :client/bondlimit 10.0, :client/usd 100000.0, :client/rub 100000.0, :client/eur 100000.0, :client/gbp 100000.0, :client/signedadvisory 5000000.0, :client/advemail ["RWxlbmFfS2hhcml0b25vdmFAc2JlcmJhbmstcGIucnU=" "VmxhZGltaXJfVXNwZW5za2l5QHNiZXJiYW5rLXBiLnJ1" "TWFyaW5hX1Zvcm9iaWV2YUBzYmVyYmFuay1wYi5ydQ=="], :client/email "NzcyNTg0NkBnbWFpbC5jb20=", :client/advisors [ #db/id[:db.part/user -105001] #db/id[:db.part/user -105013] #db/id[:db.part/user -105002] #db/id[:db.part/user -105004] #db/id[:db.part/user -105003] #db/id[:db.part/user -105008] ], :db/id #db/id[:db.part/user -102003]}
 
 { :client/code "DACFF", :client/name "Клиент DACFF", :client/currency "USD", :client/stockshare 50.0 :client/bondshare 50.0, :client/usd 100000.0, :client/rub 100000.0, :client/eur 100000.0, :client/gbp 100000.0, :client/signedadvisory 5000001.0, :client/advemail ["ZWxlbmFfc2xvYm9kaW5hQHNiZXJiYW5rLXBiLnJ1"], :client/email "ZS5kZXJnYWNoZXZhQGxpc3QucnU=", :client/advisors [ #db/id[:db.part/user -105001] #db/id[:db.part/user -105013] #db/id[:db.part/user -105007] #db/id[:db.part/user -105010]], :db/id #db/id[:db.part/user -102004]}
 
@@ -4360,7 +4363,7 @@
 
 { :transaction/client #db/id[:db.part/user -102159], :transaction/security #db/id[:db.part/user -100134], :transaction/nominal 74800000.0, :transaction/price 1.0, :transaction/direction "S", :transaction/tradedate #inst "2017-08-29T01:00:00.0000000Z", :transaction/valuedate #inst "2017-08-29T01:00:00.0000000Z", :transaction/currency "RUB", :transaction/comment "Transfer Out", :db/id #db/id[:db.part/user -111120] }
 
-{ :transaction/client #db/id[:db.part/user -102069], :transaction/security #db/id[:db.part/user -100226], :transaction/nominal 810.0, :transaction/price 810.0, :transaction/direction "B", :transaction/tradedate #inst "2017-09-14T01:00:00.0000000Z", :transaction/valuedate #inst "2017-09-18T01:00:00.0000000Z", :transaction/currency "RUB", :transaction/comment "Transfer In", :db/id #db/id[:db.part/user -111121] }
+{ :transaction/client #db/id[:db.part/user -102069], :transaction/security #db/id[:db.part/user -100226], :transaction/nominal 810.0, :transaction/price 810.0, :transaction/direction "B", :transaction/tradedate #inst "2017-09-14T01:00:00.0000000Z", :transaction/valuedate #inst "2017-09-14T01:00:00.0000000Z", :transaction/currency "RUB", :transaction/comment "Transfer In", :db/id #db/id[:db.part/user -111121] }
 
 { :transaction/client #db/id[:db.part/user -102069], :transaction/security #db/id[:db.part/user -100108], :transaction/nominal 8390.0, :transaction/price 593.0, :transaction/direction "S", :transaction/tradedate #inst "2017-09-15T01:00:00.0000000Z", :transaction/valuedate #inst "2017-09-15T01:00:00.0000000Z", :transaction/currency "RUB", :transaction/comment "Transfer In", :db/id #db/id[:db.part/user -111122] }
 
