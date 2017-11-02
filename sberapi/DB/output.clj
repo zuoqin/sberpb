@@ -1624,6 +1624,9 @@
 
 { :security/acode "TURKEY30", :security/isin "US900123AL40", :security/bcode "US900123AL40 Corp", :security/assettype 5, :security/multiple 1.0, :security/name "Турция, 11.875% 15jan2030", :security/currency "USD", :db/id #db/id[:db.part/user -100804] }
 
+{ :security/acode "QNBK21", :security/isin "XS1485745704", :security/bcode "XS1485745704 Corp", :security/assettype 5, :security/multiple 1.0, :security/name "Qatar National Bank, 2.125% 7sep2021", :security/currency "USD", :db/id #db/id[:db.part/user -100805] }
+
+
 
 ;;FORTS contracts
 
@@ -1693,7 +1696,7 @@
 
 { :security/acode "MIX-12.17", :security/isin "XMCZ7 Index", :security/bcode "XMCZ7 Index", :security/assettype 15, :security/name "RTS MICEX INDEX FUTURE  Dec17", :security/multiple 1.0, :security/ismatured false, :security/currency "RUB", :db/id #db/id[:db.part/user -101033] }
 
-{ :security/acode "BR-11.17", :security/isin "B5X7 Comdty", :security/bcode "B5X7 Comdty", :security/assettype 15, :security/name "Brent Crude Futs  Nov17", :security/multiple 10.0, :security/ismatured false, :security/currency "USD", :db/id #db/id[:db.part/user -101034] }
+{ :security/acode "BR-11.17", :security/isin "B5X7 Comdty", :security/bcode "B5X7 Comdty", :security/assettype 15, :security/name "Brent Crude Futs  Nov17", :security/multiple 10.0, :security/ismatured true, :security/currency "USD", :db/id #db/id[:db.part/user -101034] }
 
 { :security/acode "GOLD-12.17", :security/isin "C3Z7 Comdty", :security/bcode "C3Z7 Comdty", :security/assettype 15, :security/name "GOLD FUTURES", :security/multiple 1.0, :security/ismatured false, :security/currency "USD", :db/id #db/id[:db.part/user -101035] }
 
@@ -4575,7 +4578,7 @@
 
 { :transaction/client #db/id[:db.part/user -102069], :transaction/security #db/id[:db.part/user -100555], :transaction/nominal 150000.0, :transaction/price 103.00, :transaction/direction "S", :transaction/tradedate #inst "2017-10-09T10:00:00.0000000Z", :transaction/valuedate #inst "2017-10-09T10:00:00.0000000Z", :transaction/currency "USD", :transaction/comment "Natixis Structured Issuance SA, FRN 15apr2019", :db/id #db/id[:db.part/user -111216] }
 
-{ :transaction/client #db/id[:db.part/user -102088], :transaction/security #db/id[:db.part/user -100555], :transaction/nominal 150000.0, :transaction/price 106.00, :transaction/direction "S", :transaction/tradedate #inst "2017-10-09T10:00:00.0000000Z", :transaction/valuedate #inst "2017-10-09T10:00:00.0000000Z", :transaction/currency "USD", :transaction/comment "Natixis Structured Issuance SA, FRN 15apr2019", :db/id #db/id[:db.part/user -111217] }
+{ :transaction/client #db/id[:db.part/user -102088], :transaction/security #db/id[:db.part/user -100555], :transaction/nominal 150000.0, :transaction/price 103.00, :transaction/direction "S", :transaction/tradedate #inst "2017-10-09T10:00:00.0000000Z", :transaction/valuedate #inst "2017-10-09T10:00:00.0000000Z", :transaction/currency "USD", :transaction/comment "Natixis Structured Issuance SA, FRN 15apr2019", :db/id #db/id[:db.part/user -111217] }
 
 { :transaction/client #db/id[:db.part/user -102003], :transaction/security #db/id[:db.part/user -100555], :transaction/nominal 125000.0, :transaction/price 106.00, :transaction/direction "S", :transaction/tradedate #inst "2017-10-09T10:00:00.0000000Z", :transaction/valuedate #inst "2017-10-09T10:00:00.0000000Z", :transaction/currency "USD", :transaction/comment "Natixis Structured Issuance SA, FRN 15apr2019", :db/id #db/id[:db.part/user -111218] }
 
@@ -4673,6 +4676,20 @@
 { :transaction/client #db/id[:db.part/user -102069], :transaction/security #db/id[:db.part/user -100555], :transaction/nominal 150000.0, :transaction/price 97.65, :transaction/direction "B", :transaction/tradedate #inst "2017-07-17T10:00:00.0000000Z", :transaction/valuedate #inst "2017-07-17T10:00:00.0000000Z", :transaction/currency "USD", :transaction/comment "Natixis Structured Issuance SA, FRN 15apr2019 Coupon 3%", :db/id #db/id[:db.part/user -111258] }
 
 { :transaction/client #db/id[:db.part/user -102069], :transaction/security #db/id[:db.part/user -100555], :transaction/nominal 150000.0, :transaction/price 100.65, :transaction/direction "S", :transaction/tradedate #inst "2017-07-17T10:00:00.0000000Z", :transaction/valuedate #inst "2017-07-17T10:00:00.0000000Z", :transaction/currency "USD", :transaction/comment "Natixis Structured Issuance SA, FRN 15apr2019 Coupon 3%", :db/id #db/id[:db.part/user -111259] }
+
+;; IVNPF Initial CASH position
+{ :transaction/client #db/id[:db.part/user -102088], :transaction/security #db/id[:db.part/user -100132], :transaction/nominal 3700000.0, :transaction/price 1.0, :transaction/direction "B", :transaction/tradedate #inst "2016-12-29T01:00:00.0000000Z", :transaction/valuedate #inst "2016-12-29T01:00:00.0000000Z", :transaction/currency "RUB", :transaction/comment "Transfer In", :db/id #db/id[:db.part/user -111260] }
+
+{ :transaction/client #db/id[:db.part/user -102088], :transaction/security #db/id[:db.part/user -100132], :transaction/nominal 3700000.0, :transaction/price 1.0, :transaction/direction "S", :transaction/tradedate #inst "2016-12-30T01:00:00.0000000Z", :transaction/valuedate #inst "2016-12-30T01:00:00.0000000Z", :transaction/currency "RUB", :transaction/comment "Transfer Out", :db/id #db/id[:db.part/user -111261] }
+
+;{ :transaction/client #db/id[:db.part/user -102088], :transaction/security #db/id[:db.part/user -100555], :transaction/nominal 150000.0, :transaction/price 97.65, :transaction/direction "B", :transaction/tradedate #inst "2017-10-06T10:00:00.0000000Z", :transaction/valuedate #inst "2017-10-06T10:00:00.0000000Z", :transaction/currency "USD", :transaction/comment "Coupon Natixis Structured Issuance SA, FRN 15apr2019 Coupon 3%", :db/id #db/id[:db.part/user -111262] }
+
+;{ :transaction/client #db/id[:db.part/user -102088], :transaction/security #db/id[:db.part/user -100555], :transaction/nominal 150000.0, :transaction/price 100.65, :transaction/direction "S", :transaction/tradedate #inst "2017-10-06T10:00:00.0000000Z", :transaction/valuedate #inst "2017-10-06T10:00:00.0000000Z", :transaction/currency "USD", :transaction/comment "Coupon Natixis Structured Issuance SA, FRN 15apr2019 Coupon 3%", :db/id #db/id[:db.part/user -111263] }
+
+{ :transaction/client #db/id[:db.part/user -102088], :transaction/security #db/id[:db.part/user -100555], :transaction/nominal 150000.0, :transaction/price 97.65, :transaction/direction "B", :transaction/tradedate #inst "2017-07-17T10:00:00.0000000Z", :transaction/valuedate #inst "2017-07-17T10:00:00.0000000Z", :transaction/currency "USD", :transaction/comment "Coupon Natixis Structured Issuance SA, FRN 15apr2019 Coupon 3%", :db/id #db/id[:db.part/user -111264] }
+
+{ :transaction/client #db/id[:db.part/user -102088], :transaction/security #db/id[:db.part/user -100555], :transaction/nominal 150000.0, :transaction/price 100.65, :transaction/direction "S", :transaction/tradedate #inst "2017-07-17T10:00:00.0000000Z", :transaction/valuedate #inst "2017-07-17T10:00:00.0000000Z", :transaction/currency "USD", :transaction/comment "Coupon Natixis Structured Issuance SA, FRN 15apr2019 Coupon 3%", :db/id #db/id[:db.part/user -111265] }
+
 
 
 ;{ :transaction/client #db/id[:db.part/user -102158], :transaction/security #db/id[:db.part/user -100779], :transaction/nominal 100000.0, :transaction/price 100.00, :transaction/direction "S",:transaction/tradedate #inst "2017-10-19T10:00:00.0000000Z",:transaction/valuedate #inst "2017-10-19T10:00:00.0000000Z", :transaction/currency "USD", :transaction/comment "Погашение EFG International Finance 23/04/2018", :db/id #db/id[:db.part/user -111258] }

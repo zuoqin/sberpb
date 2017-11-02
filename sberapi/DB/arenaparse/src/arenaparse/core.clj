@@ -219,7 +219,7 @@
   (let [
      conn (d/connect uri)
      ]
-    (d/transact-async conn [{ :security/acode "TURKEY30", :security/isin "US900123AL40", :security/bcode "US900123AL40 Corp", :security/assettype 5, :security/multiple 1.0, :security/name "Турция, 11.875% 15jan2030", :security/currency "USD", :db/id #db/id[:db.part/user -100804] }
+    (d/transact-async conn [{ :security/acode "QNBK21", :security/isin "XS1485745704", :security/bcode "XS1485745704 Corp", :security/assettype 5, :security/multiple 1.0, :security/name "Qatar National Bank, 2.125% 7sep2021", :security/currency "USD", :db/id #db/id[:db.part/user -100805] }
 ]
     )
     ; To insert new entity:
@@ -995,23 +995,27 @@
 
           dateval (f/unparse build-in-basicdate-formatter (c/from-long (c/to-long (:valuedate tran))))
 
+          newtype (fn [x] (if (and (= isin (:isin prevsec)) (= dateval (:date prevsec)) ) (if (> tranamnt 0) (if (> newamnt 0) "BUY LONG" "BUY TO COVER") (if (< newamnt 0) "SELL SHORT" "SELL LONG")) (if (> tranamnt 0) (if (> newamnt 0) "BUY LONG" "BUY TO COVER") (if (< newamnt 0) "SELL SHORT" "SELL LONG"))))
+
           newvalue {:portfolio client :isin isin :quantity (+ (abs (:amount prevsec)) newnominal) :price (:price tran) :date dateval :type (if (> tranamnt 0) (if (> newamnt 0) "BUY LONG" "BUY TO COVER") (if (< newamnt 0) "SELL SHORT" "SELL LONG")) }
           
           
-          newprevsec (update prevsec :amount (fn [x] (if (and (= isin (:isin prevsec)) (= dateval (:date prevsec))) (+ newnominal (:amount prevsec)) newnominal)))
+          newprevsec (update prevsec :amount (fn [x] (if (and (= isin (:isin prevsec)) (= newtype (:type prevsec))  (= dateval (:date prevsec))) (+ newnominal (:amount prevsec)) newnominal)))
 
-          newprevsec (update newprevsec :price (fn [x] (if (and (= isin (:isin prevsec)) (= dateval (:date prevsec))) (/ (+ (* (:price prevsec) (:amount prevsec)) (* (:price tran) newnominal)) (+ (:amount prevsec) newnominal)) (:price tran))) )
+          newprevsec (update newprevsec :price (fn [x] (if (and (= isin (:isin prevsec)) (= dateval (:date prevsec)) (= newtype (:type prevsec))) (/ (+ (* (:price prevsec) (:amount prevsec)) (* (:price tran) newnominal)) (+ (:amount prevsec) newnominal)) (:price tran))) )
 
           newprevsec (update newprevsec :isin (fn [x] isin) )
 
+          
+
           newprevsec (update newprevsec :date (fn [x] dateval))
 
-          newprevsec (update newprevsec :type (fn [x] (if (and (= isin (:isin prevsec)) (= dateval (:date prevsec))) (if (> tranamnt 0) (if (> newamnt 0) "BUY LONG" "BUY TO COVER") (if (< newamnt 0) "SELL SHORT" "SELL LONG")) (if (> tranamnt 0) (if (> newamnt 0) "BUY LONG" "BUY TO COVER") (if (< newamnt 0) "SELL SHORT" "SELL LONG")))))
+          newprevsec (update newprevsec :type newtype)
 
           ;tr1 (println (str "isin=" isin))
-          ;tr1 (if (= isin "SBRF=U7 RU Equity") (println newprevsec))
+          ;tr1 (if (= isin "XS1513280757") (println newprevsec))
       ]
-      (recur (if (and (= isin (:isin prevsec)) (= dateval (:date prevsec)))  result (conj result {:portfolio client :isin (:isin prevsec) :quantity (abs (:amount prevsec)) :price (:price prevsec) :date (:date prevsec) :type (:type prevsec)})) (assoc-in amounts [(keyword (:acode sec)) ] {:amount newamnt} ) (rest trans) tran newprevsec)
+      (recur (if (and (= isin (:isin prevsec)) (= newtype (:type prevsec)) (= dateval (:date prevsec)))  result (conj result {:portfolio client :isin (:isin prevsec) :quantity (abs (:amount prevsec)) :price (:price prevsec) :date (:date prevsec) :type (:type prevsec)})) (assoc-in amounts [(keyword (:acode sec)) ] {:amount newamnt} ) (rest trans) tran newprevsec)
       )
       (conj result {:portfolio client :isin (:isin prevsec) :quantity (abs (:amount prevsec)) :price (:price prevsec) :date (:date prevsec) :type (:type prevsec)}))
     )
@@ -1882,8 +1886,8 @@
 
 (defn recent-deals-to-db []
   (let [
-    files ["03" "04" "05" "06" "07" "08" "09-0" "09-1" "09-2" "09-3" "10-1"]
-    ;files ["11-1"]
+    ;files ["03" "04" "05" "06" "07" "08" "09-0" "09-1" "09-2" "09-3" "10-1"]
+    files ["11-1"]
     trans (doall (map (fn [x] (recent-deals-to-db-by-num x))  files )) 
     ]
     ;(count secs)
