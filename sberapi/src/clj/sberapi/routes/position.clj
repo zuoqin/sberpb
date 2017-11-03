@@ -958,7 +958,7 @@
           
           ;tr1 (if (= isin "GB0032360173") (println (str "price= " (:price tran) "fullprice=" (:price tran) " fx=" (:fx tran)) )) 
       ]
-      (recur (if (or (= assettype 10) (and (= isin (:isin prevsec)) (= dateval (:date prevsec)))) result (if (= (:assettype prevsec) 10) result (conj result {:portfolio client :isin (:isin prevsec) :bcode (:bcode prevsec) :quantity (abs (:amount prevsec)) :price (:price prevsec) :date (:date prevsec) :type (:type prevsec)}))) (assoc-in amounts [(keyword (:acode sec)) ] {:amount newamnt} ) (rest trans) tran newprevsec)
+      (recur (if (or (= assettype 10) (and (= isin (:isin prevsec)) (= newtype (:type prevsec)) (= dateval (:date prevsec)))) result (if (= (:assettype prevsec) 10) result (conj result {:portfolio client :isin (:isin prevsec) :bcode (:bcode prevsec) :quantity (abs (:amount prevsec)) :price (:price prevsec) :date (:date prevsec) :type (:type prevsec)}))) (assoc-in amounts [(keyword (:acode sec)) ] {:amount newamnt} ) (rest trans) tran newprevsec)
       )
       (if (or (= (:assettype prevsec) 10)) result (conj result {:portfolio client :isin (:isin prevsec) :bcode (:bcode prevsec) :quantity (abs (:amount prevsec)) :price (:price prevsec) :date (:date prevsec) :type (:type prevsec)})))
     )

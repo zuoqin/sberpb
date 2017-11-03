@@ -2057,6 +2057,33 @@
 )
 
 
+(defn testa []
+  (let [
+    nums (map (fn [x] (str x)) (range 1 30000))
+    str1 (reduce (fn [x y] (str x y)) "" nums)
+    ;tr1 (println (str (nth nums 2) (nth nums 3)))
+    ;tr1 (println (nth str1 0))
+    ;tr1 (println (if (= (read-string (str (nth str1 0))) 1) "ttt" "jjj"))
+    r1 (loop [result 0 data str1 len (count str1)]
+      (let [
+          
+          
+          n1 (if (and (= (str (nth data 0)) "2") (= (str (nth data 1)) "0") (= (str (nth data 2)) "1") (= (str (nth data 3)) "7"))  1 0)
+
+          tr1 (if (= n1 1) (println (str "data=" (str/join (take 20 data)) )))
+        ]
+        (if (> len 3)
+          (recur (+ result n1) (drop 1 data) (- len 1))
+          result
+        )
+        
+      )
+
+      )
+    ]
+    (println (str r1))
+  )
+)
 
 (defn -main 
   "I don't do a whole lot ... yet."
