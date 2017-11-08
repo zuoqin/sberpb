@@ -200,9 +200,9 @@
 (defcomponent speedo-view [data owner]
   (render [_]
     (let [
-          usdval (:usd (first (filter (fn [x] (if (= (:code x) (:selectedclient @data)) true false)) (:clients @data))))
+          usdcash (:usd (first (filter (fn [x] (if (= (:code x) (:selectedclient @data)) true false)) (:clients @data))))
 
-          usdval (if (< usdval 0.0) (- 0 usdval) 0.0)
+          usdcash (if (< usdcash 0.0) (- 0 usdcash) 0.0)
 
           rubcash (:rub (first (filter (fn [x] (if (= (:code x) (:selectedclient @data)) true false)) (:clients @data))))
           rubcash (if (< rubcash 0.0) (- 0 rubcash) 0.0)
@@ -213,7 +213,7 @@
           gbpcash (:gbp (first (filter (fn [x] (if (= (:code x) (:selectedclient @data)) true false)) (:clients @data))))
           gbpcash (if (< gbpcash 0.0) (- 0 gbpcash) 0.0)
 
-          borrowings (do (if (nil? (:selectedclient @data)) 0.0 (/ (+ (* (eurrate) eurcash) (* (gbprate) gbpcash) rubcash) (clientcurrencyrate))))
+          borrowings (do (if (nil? (:selectedclient @data)) 0.0 (/ (+ (* (usdrate) usdcash) (* (eurrate) eurcash) (* (gbprate) gbpcash) rubcash) (clientcurrencyrate))))
 
 
           futures (if (nil? (:selectedclient @data)) 0.0 (:posvalue (reduce (fn [x y] (let [;tr1 (.log js/console (str "x=" x " y=" y))
@@ -224,7 +224,7 @@
 
           margin (/ (* 100.0 portfvalue) (+ borrowings futures portfvalue))
 
-          ;tr1 (.log js/console (str "futures=" futures " borrow=" borrowings " margin=" margin))
+          tr1 (.log js/console (str "futures=" futures " borrow=" borrowings " margin=" margin))
       ]
       (dom/div {:style {:zoom 0.41 :width "640px" :height "480px" :margin-top "0px" :margin-right "0px" :margin-bottom "0px" :margin-left "50px" :overflow "hidden" :backgroundColor "#000" :position "relative" :display "inline-block"}}
         (dom/div {:className "speedometr"}
@@ -597,7 +597,7 @@
                     (gstring/format "%.2f" (/ (:usdvalue (reduce (fn [x y] {:usdvalue (+ (:usdvalue x) (:usdvalue y))} ) (filter (fn [x] (if (= (:assettype (first (filter (fn [y] (if (= (:id y) (:id x)) true false)) (:securities @sbercore/app-state))) ) 5) true false) ) (:positions ((keyword (:selectedclient @sbercore/app-state)) @sbercore/app-state))))) portfusdvalue 0.01))))
                 )
                 (dom/div {:className "col-md-6"}
-                  (dom/h4 {:className "list-group-item-heading" :style {:margin-left "10px" :font-weight "700" :margin-right "10px"}} (sbercore/split-thousands 
+                  (dom/h4 {:className "list-group-item-heading" :style {:margin-left "-10px" :font-weight "700" :margin-right "-10px"}} (sbercore/split-thousands 
                     (gstring/format "%.2f" (- (:bondshare client) (/ (:posvalue (reduce (fn [x y] {:posvalue (+ (:posvalue x) (:posvalue y))} ) (filter (fn [x] (if (= (:assettype (first (filter (fn [y] (if (= (:id y) (:id x)) true false)) (:securities @sbercore/app-state))) ) 5) true false) ) (:positions ((keyword (:selectedclient @sbercore/app-state)) @sbercore/app-state))))) portfvalue 0.01)))))
                 )
               )

@@ -219,7 +219,9 @@
   (let [
      conn (d/connect uri)
      ]
-    (d/transact-async conn [{ :security/acode "QNBK21", :security/isin "XS1485745704", :security/bcode "XS1485745704 Corp", :security/assettype 5, :security/multiple 1.0, :security/name "Qatar National Bank, 2.125% 7sep2021", :security/currency "USD", :db/id #db/id[:db.part/user -100805] }
+    (d/transact-async conn [{ :security/acode "EUCHEM20", :security/isin "XS1495632298", :security/bcode "XS1495632298 Corp", :security/assettype 5, :security/multiple 1.0, :security/name "ЕвроХим, 3.8% 12apr2020", :security/currency "USD", :db/id #db/id[:db.part/user -100808] }
+
+{ :security/acode "TDNESG1LN", :security/isin "GB0002771383", :security/bcode "TDNESG1 LN Equity", :security/assettype 1, :security/multiple 1.0, :security/name "Threadneedle Investment Funds ICVC - European Smaller Companies Fund", :security/currency "EUR", :db/id #db/id[:db.part/user -100809] }
 ]
     )
     ; To insert new entity:
