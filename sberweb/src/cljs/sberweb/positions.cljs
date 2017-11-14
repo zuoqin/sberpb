@@ -224,7 +224,7 @@
 
           margin (/ (* 100.0 portfvalue) (+ borrowings futures portfvalue))
 
-          tr1 (.log js/console (str "futures=" futures " borrow=" borrowings " margin=" margin))
+          ;tr1 (.log js/console (str "futures=" futures " borrow=" borrowings " margin=" margin))
       ]
       (dom/div {:style {:zoom 0.41 :width "640px" :height "480px" :margin-top "0px" :margin-right "0px" :margin-bottom "0px" :margin-left "50px" :overflow "hidden" :backgroundColor "#000" :position "relative" :display "inline-block"}}
         (dom/div {:className "speedometr"}

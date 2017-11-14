@@ -891,12 +891,13 @@
     
 
     tran (first transactions)
-    isin (:isin (first (filter (fn [y] (if (= (:security tran) (:acode y)) true false)) securities)))
+    sec (first (filter (fn [y] (if (= (:security tran) (:acode y)) true false)) securities))
+    isin (:isin sec)
 
-    bcode (:isin (first (filter (fn [y] (if (= (:security tran) (:acode y)) true false)) securities)))
+    bcode (:bcode sec)
 
 
-    assettype (:assettype (first (filter (fn [y] (if (= (:security tran) (:acode y)) true false)) securities)))
+    assettype (:assettype sec)
 
     tranamnt (if (= "B" (:direction tran)) (:nominal tran) (- 0 (:nominal tran)))
 
@@ -908,7 +909,7 @@
 
 
     newtransactions (loop
-      [result [] amounts {} trans (drop 1 transactions) prevtran tran prevsec newvalue]
+      [result [] amounts (assoc-in {} [(keyword (:acode sec)) ] {:amount tranamnt} ) trans (drop 1 transactions) prevtran tran prevsec newvalue]
       (if (seq trans)
         (let [
           
@@ -935,7 +936,7 @@
 
           dateval (f/unparse build-in-basicdate-formatter (c/from-long (c/to-long (:valuedate tran))))
 
-          newtype (fn [x] (if (and (= isin (:isin prevsec)) (= dateval (:date prevsec)) ) (if (> tranamnt 0) (if (> newamnt 0) "BUY LONG" "BUY TO COVER") (if (< newamnt 0) "SELL SHORT" "SELL LONG")) (if (> tranamnt 0) (if (> newamnt 0) "BUY LONG" "BUY TO COVER") (if (< newamnt 0) "SELL SHORT" "SELL LONG"))))
+          newtype (if (and (= isin (:isin prevsec)) (= dateval (:date prevsec)) ) (if (> tranamnt 0) (if (> newamnt 0) "BUY LONG" "BUY TO COVER") (if (< newamnt 0) "SELL SHORT" "SELL LONG")) (if (> tranamnt 0) (if (> newamnt 0) "BUY LONG" "BUY TO COVER") (if (< newamnt 0) "SELL SHORT" "SELL LONG")))
 
           newvalue {:portfolio client :isin isin :bcode bcode :quantity (+ (abs (:amount prevsec)) newnominal) :price (:price tran) :date dateval :type (if (> tranamnt 0) (if (> newamnt 0) "BUY LONG" "BUY TO COVER") (if (< newamnt 0) "SELL SHORT" "SELL LONG")) }
           
@@ -949,7 +950,7 @@
 
           newprevsec (update newprevsec :date (fn [x] dateval))
 
-          newprevsec (update newprevsec :type newtype)
+          newprevsec (update newprevsec :type (fn [x] newtype))
 
           newprevsec (update newprevsec :assettype (fn [x] assettype))
 

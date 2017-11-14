@@ -207,8 +207,6 @@
 (defn readallcbrrates []
   (let [
         currencies ["USD" "EUR" "CHF" "GBP" "HKD" "SEK"]
-
-        
   ]
   (doall (map (fn [x] (readcbrrates x)) currencies ))
   )
@@ -219,9 +217,7 @@
   (let [
      conn (d/connect uri)
      ]
-    (d/transact-async conn [{ :security/acode "EUCHEM20", :security/isin "XS1495632298", :security/bcode "XS1495632298 Corp", :security/assettype 5, :security/multiple 1.0, :security/name "ЕвроХим, 3.8% 12apr2020", :security/currency "USD", :db/id #db/id[:db.part/user -100808] }
-
-{ :security/acode "TDNESG1LN", :security/isin "GB0002771383", :security/bcode "TDNESG1 LN Equity", :security/assettype 1, :security/multiple 1.0, :security/name "Threadneedle Investment Funds ICVC - European Smaller Companies Fund", :security/currency "EUR", :db/id #db/id[:db.part/user -100809] }
+    (d/transact-async conn [{ :security/acode "EURONAT19U", :security/isin "XS1631530257", :security/bcode "XS1631530257 Corp", :security/assettype 5, :security/multiple 1.0, :security/name "Structured Note of Natixis Structured Issuance SA", :security/currency "USD", :db/id #db/id[:db.part/user -100809] }
 ]
     )
     ; To insert new entity:
@@ -357,7 +353,7 @@
 
 (defn security-to-map [security]
   (let [
-    newsec {:id (nth security 0) :acode (nth security 1) :exchange (nth security 2) :isin (nth security 3) :currency (nth security 4) :bcode (nth security 5) :assettype (nth security 6)}
+    newsec {:id (nth security 0) :acode (nth security 1) :exchange (nth security 2) :isin (nth security 3) :currency (nth security 4) :bcode (nth security 5) :assettype (nth security 6) :multiple (nth security 7)}
         
   ]
 
@@ -396,15 +392,16 @@
 (defn get-securities []
   (let [
         conn (d/connect uri)
-        securities (d/q '[:find ?e ?c ?x ?i ?currency ?bcode ?assettype
+        securities (d/q '[:find ?e ?a ?x ?i ?currency ?bcode ?assettype ?m
                           :where
                           [?e :security/acode]
-                          [?e :security/acode ?c]
+                          [?e :security/acode ?a]
                           [(get-else $ ?e :security/exchange "") ?x]
                           [?e :security/isin ?i]
                           [?e :security/currency ?currency]
-                          (or [?e :security/bcode ?bcode] [?e :security/bcode ?bcode])
+                          (or [?e :security/bcode ?bcode] [?e :security/bcode ?bcode])                          
                           [?e :security/assettype ?assettype]
+                          [(get-else $ ?e :security/multiple 1) ?m]
                           ]
                         (d/db conn)) 
 
@@ -414,7 +411,7 @@
 )
 
 (defn securities-to-excel []
-  (save-xls ["sheet1" (dataset [:acode :isin :bcode] (get-securities))] (str drive ":/DEV/Java/allsecurities.xlsx") )
+  (save-xls ["sheet1" (dataset [:acode :isin :bcode :currency] (get-securities))] (str drive ":/DEV/Java/allsecurities.xlsx") )
 )
 
 
@@ -961,6 +958,7 @@
     
 
     tran (first transactions)
+    sec (first (filter (fn [y] (if (= (:security tran) (:acode y)) true false)) securities))
     isin (:isin (first (filter (fn [y] (if (= (:security tran) (:acode y)) true false)) securities)))
 
     tranamnt (if (= "B" (:direction tran)) (:nominal tran) (- 0 (:nominal tran)))
@@ -972,7 +970,7 @@
     newvalue {:portfolio client :isin isin :amount tranamnt :price (:price tran) :date dateval :type type}
 
     newtransactions (loop
-      [result [] amounts {} trans (drop 1 transactions) prevtran tran prevsec newvalue]
+      [result [] amounts (assoc-in {} [(keyword (:acode sec)) ] {:amount tranamnt} ) trans (drop 1 transactions) prevtran tran prevsec newvalue]
       (if (seq trans)
         (let [
           
@@ -997,7 +995,7 @@
 
           dateval (f/unparse build-in-basicdate-formatter (c/from-long (c/to-long (:valuedate tran))))
 
-          newtype (fn [x] (if (and (= isin (:isin prevsec)) (= dateval (:date prevsec)) ) (if (> tranamnt 0) (if (> newamnt 0) "BUY LONG" "BUY TO COVER") (if (< newamnt 0) "SELL SHORT" "SELL LONG")) (if (> tranamnt 0) (if (> newamnt 0) "BUY LONG" "BUY TO COVER") (if (< newamnt 0) "SELL SHORT" "SELL LONG"))))
+          newtype (if (and (= isin (:isin prevsec)) (= dateval (:date prevsec)) ) (if (> tranamnt 0) (if (> newamnt 0) "BUY LONG" "BUY TO COVER") (if (< newamnt 0) "SELL SHORT" "SELL LONG")) (if (> tranamnt 0) (if (> newamnt 0) "BUY LONG" "BUY TO COVER") (if (< newamnt 0) "SELL SHORT" "SELL LONG")))
 
           newvalue {:portfolio client :isin isin :quantity (+ (abs (:amount prevsec)) newnominal) :price (:price tran) :date dateval :type (if (> tranamnt 0) (if (> newamnt 0) "BUY LONG" "BUY TO COVER") (if (< newamnt 0) "SELL SHORT" "SELL LONG")) }
           
@@ -1012,10 +1010,10 @@
 
           newprevsec (update newprevsec :date (fn [x] dateval))
 
-          newprevsec (update newprevsec :type newtype)
+          newprevsec (update newprevsec :type (fn [x] newtype))
 
-          ;tr1 (println (str "isin=" isin))
-          ;tr1 (if (= isin "XS1513280757") (println newprevsec))
+          ;ltr1 (println (str "isin=" isin " previsin=" (:isin prevsec) " count=" (count result) " tranamnt=" tranamnt " newamnt=" newamnt))
+          ;tr1 (if (= "RU000A0JPFP0" isin) (println "isin=" isin "previsin=" (:isin prevsec) " type=" newtype " prevtype=" (:type prevsec) "res=" (= dateval (:date prevsec))))
       ]
       (recur (if (and (= isin (:isin prevsec)) (= newtype (:type prevsec)) (= dateval (:date prevsec)))  result (conj result {:portfolio client :isin (:isin prevsec) :quantity (abs (:amount prevsec)) :price (:price prevsec) :date (:date prevsec) :type (:type prevsec)})) (assoc-in amounts [(keyword (:acode sec)) ] {:amount newamnt} ) (rest trans) tran newprevsec)
       )
@@ -1990,9 +1988,9 @@
 
 (defn export-securities []
   (let [
-    secs (filter (fn [x] (if (= 5 (:assettype x)) true false)) (get-securities))
+    secs (filter (fn [x] (if (or (= 1 1) (= 5 (:assettype x))) true false)) (get-securities))
     ]
-    (save-xls ["sheet1" (dataset [:bcode :isin] secs)] (str drive ":/DEV/Java/" "securiites.xlsx") )
+    (save-xls ["sheet1" (dataset [:acode :bcode :isin :assettype :multiple :currency] secs)] (str drive ":/DEV/Java/" "securiites.xlsx") )
   )
 )
 
