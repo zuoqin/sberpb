@@ -144,8 +144,8 @@
             ;; USD P/L, %%
             (dom/div {:className "col-xs-1 col-md-1" :style {:padding-left "0px" :padding-right "0px" :padding-top "10px"}}
               (dom/div {:className "progress"}
-                (dom/div {:className (str "progress-bar" (if (< (:usdvalue item) (* (:wapusd item) (:amount item) (if (= 5 (:assettype sec)) (* 0.01 (:multiple sec)) 1.0))) " progress-bar-danger" ""))  :role "progresbar" :aria-valuenow (str (.round js/Math (.abs js/Math (* 100.0 (/ (- (:usdvalue item) (* (:wapusd item) (:amount item) (if (= 5 (:assettype sec)) (* 0.01 (:multiple sec)) 1.0))) (* (:wapusd item) (:amount item) (if (= 5 (:assettype sec)) (* 0.01 (:multiple sec)) 1.0)) )) ))) :aria-valuemin "0" :aria-valuemax "100" :style {:color "black" :width (str (.round js/Math (.abs js/Math  (* 100.0 (/ (- (:usdvalue item) (* (:wapusd item) (:amount item) (if (= 5 (:assettype sec)) (* 0.01 (:multiple sec)) 1.0))) (* (:wapusd item) (:amount item) (if (= 5 (:assettype sec)) (* 0.01 (:multiple sec)) 1.0)) )))) "%") }}
-                  (dom/span {:style {:position "absolute" :display "block" :width "100%"}} (gstring/format "%.2f" (* 100.0 (if (> (:usdvalue item) 0) 1 -1) (/ (- (:usdvalue item) (* (:wapusd item) (:amount item) (if (= 5 (:assettype sec)) (* 0.01 (:multiple sec)) 1.0))) (* (:wapusd item) (:amount item) (if (= 5 (:assettype sec)) (* 0.01 (:multiple sec)) 1.0)) ))))
+                (dom/div {:className (str "progress-bar" (if (< (:usdvalue item) (* (:wapusd item) (:amount item) (if (= 5 (:assettype sec)) (* 0.01 (:multiple sec) (:nominal sec) 0.001) 1.0))) " progress-bar-danger" ""))  :role "progresbar" :aria-valuenow (str (.round js/Math (.abs js/Math (* 100.0 (/ (- (:usdvalue item) (* (:wapusd item) (:amount item) (if (= 5 (:assettype sec)) (* 0.01 (:multiple sec) (:nominal sec) 0.001) 1.0))) (* (:wapusd item) (:amount item) (if (= 5 (:assettype sec)) (* 0.01 (:multiple sec) (:nominal sec) 0.001) 1.0)) )) ))) :aria-valuemin "0" :aria-valuemax "100" :style {:color "black" :width (str (.round js/Math (.abs js/Math  (* 100.0 (/ (- (:usdvalue item) (* (:wapusd item) (:amount item) (if (= 5 (:assettype sec)) (* 0.01 (:multiple sec) (:nominal sec) 0.001) 1.0))) (* (:wapusd item) (:amount item) (if (= 5 (:assettype sec)) (* 0.01 (:multiple sec) (:nominal sec) 0.001) 1.0)) )))) "%") }}
+                  (dom/span {:style {:position "absolute" :display "block" :width "100%"}} (gstring/format "%.2f" (* 100.0 (/ (- (:usdvalue item) (* (:wapusd item) (:amount item) (if (= 5 (:assettype sec)) (* 0.01 (:multiple sec) (:nominal sec) 0.001) 1.0))) (* (:wapusd item) (:amount item) (if (= 5 (:assettype sec)) (* 0.01 (:multiple sec) (:nominal sec) 0.001) 1.0)) ))))
                 )
               )
             )
@@ -165,7 +165,7 @@
             (dom/div {:className "hidden-xs col-md-1" :style {:padding-left "0px" :padding-right "0px" :padding-top "10px"}}
               (dom/div
                 (dom/div 
-                  (dom/span {:style {:position "absolute" :padding-right "5px" :text-align "right" :display "block" :width "100%"}} (sbercore/split-thousands (str (.round js/Math  (if (= isbond true) (/ (* (:multiple sec) (-  (:currubprice item) (:waprub item)) (:amount item))  100.0)  (* (-  (:currubprice item) (:waprub item)) (:amount item)))))))
+                  (dom/span {:style {:position "absolute" :padding-right "5px" :text-align "right" :display "block" :width "100%"}} (sbercore/split-thousands (str (.round js/Math  (if (= isbond true) (/ (* (:multiple sec) (:nominal sec) 0.001 (-  (:currubprice item) (:waprub item)) (:amount item))  100.0)  (* (-  (:currubprice item) (:waprub item)) (:amount item)))))))
                 )
               )
             )
@@ -175,7 +175,7 @@
             (dom/div {:className "col-xs-2 col-md-2" :style {:padding-left "0px" :padding-right "0px" :padding-top "10px"}}
               (dom/div
                 (dom/div 
-                  (dom/span {:style {:position "absolute" :padding-right "5px" :text-align "right" :display "block" :width "100%"}} (sbercore/split-thousands (str (.round js/Math (/ (* (- (/ (:currubprice item) usdrate) (:wapusd item) )  (:amount item) (:multiple sec)) (if (= isbond true) 100.0 1.0) )))))
+                  (dom/span {:style {:position "absolute" :padding-right "5px" :text-align "right" :display "block" :width "100%"}} (sbercore/split-thousands (str (.round js/Math (* (- (/ (:currubprice item) usdrate) (:wapusd item) )  (:amount item) (:multiple sec) (:nominal sec) (if (= isbond true) 0.0001 1.0)) ))))
                 )
               )
             )

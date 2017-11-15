@@ -115,6 +115,13 @@
   :db/doc "Flag indicator whether security matured, dafault false"
   :db.install/_attribute :db.part/db}
 
+{:db/id #db/id[:db.part/db]
+  :db/ident :security/nominal
+  :db/valueType :db.type/double
+  :db/cardinality :db.cardinality/one
+  :db/doc "Nominal for bonds"
+  :db.install/_attribute :db.part/db}
+
  ;; issuer
  {:db/id #db/id[:db.part/db]
   :db/ident :issuer/code

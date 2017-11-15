@@ -392,7 +392,7 @@
 
          ;tr1 (println (str "multsec=" (:multiple sec) " fx=" seccurfxrate " price=" (:price sec) " currency=" (:currency sec)))
 
-         rubprice (* (:multiple sec) seccurfxrate (if (= 5 assettype) 0.01 1.0 ) (if (nil? (:price sec)) 0.0 (:price sec)))
+         rubprice (* (:multiple sec) seccurfxrate (if (= 5 assettype) (* (:nominal sec) 0.001 0.01) 1.0 ) (if (nil? (:price sec)) 0.0 (:price sec)))
 
          ;tr1 (println sec)
          ;tr1 (println (str x))
@@ -479,7 +479,7 @@
 
             seccurfxrate (db/get-fxrate-by-date currency (java.util.Date.)) 
             ;tr1 (println (str "mult=" (:multiple sec) " seccur=" seccurfxrate " assettype=" assettype " price=" (:price sec)))
-            rubprice (* (:multiple sec) seccurfxrate (if (= 5 assettype) 0.01 1.0 ) (if (nil? (:price sec)) 0.0 (:price sec)) )
+            rubprice (* (:multiple sec) seccurfxrate (if (= 5 assettype) (* (:nominal sec) 0.001 0.01) 1.0 ) (if (nil? (:price sec)) 0.0 (:price sec)) )
 
             
             ;tr1 (println (str x))
@@ -585,6 +585,7 @@
     sec (first (filter (fn [x] (if (= security (:id x)) true false)) securities))
 
     multiple (:multiple sec)
+    nominal (:nominal sec)
     isbond (if (and (= 5 (:assettype sec))
                                    ;(= "RU" (subs (:isin security) 0 2))
                                    )  true false)
@@ -606,7 +607,7 @@
 
            seclastrubprice (if (= secrubprice 0.0) (if (nil? usedlimit) 0.0 (:rubprice usedlimit) ) secrubprice)
 
-           calcusedlimit (if (nil? usedlimit) 0 (* (if isbond (* 0.01 multiple) 1.0) (:amount usedlimit) seclastrubprice))
+           calcusedlimit (if (nil? usedlimit) 0 (* (if isbond (* 0.01 multiple nominal 0.001) 1.0) (:amount usedlimit) seclastrubprice))
 
            usdrate (db/get-fxrate-by-date "USD" (java.util.Date.))
            eurrate (db/get-fxrate-by-date "EUR" (java.util.Date.))
@@ -627,21 +628,21 @@
       {:client (:code client) :usd (:usd client) :rub (:rub client) :eur (:eur client) :gbp (:gbp client) :currency (:currency client) :shares (if (nil? usedlimit) 0 (:amount usedlimit)) :calcusedlimit calcusedlimit :seclimitinrub seclimitinrub
 
  ;; Максимальный лимит на ценную бумагу
- :maxlimit (long (/ seclimitinrub (* (if (= 0.0 seclastrubprice) 1.0 seclastrubprice) (if isbond (* multiple 0.01) 1.0))))
+ :maxlimit (long (/ seclimitinrub (* (if (= 0.0 seclastrubprice) 1.0 seclastrubprice) (if isbond (* multiple 0.01 nominal 0.001) 1.0))))
 
  ;; Свободный лимит на покупку ценных бумаг:
  ;; для иностранных облигаций - в номинале бумаги
  ;; для российских облигаций - в тысячах рублей номинала (как в Арене)
  ;; для акций - штук
- :freelimit (long (/ (- seclimitinrub calcusedlimit) (* (if (= 0.0 seclastrubprice) 1.0 seclastrubprice) (if isbond (* multiple 0.01) 1.0)))) 
+ :freelimit (long (/ (- seclimitinrub calcusedlimit) (* (if (= 0.0 seclastrubprice) 1.0 seclastrubprice) (if isbond (* multiple 0.01 nominal 0.001) 1.0)))) 
 
- :maxusdshares (long (/ (if (> (* usdrate (:usd client))  (- seclimitinrub calcusedlimit)) (- seclimitinrub calcusedlimit) (* usdrate (:usd client))) (* (if (= 0.0 seclastrubprice) 1.0 seclastrubprice) (if isbond (* multiple 0.01) 1.0))))
+ :maxusdshares (long (/ (if (> (* usdrate (:usd client))  (- seclimitinrub calcusedlimit)) (- seclimitinrub calcusedlimit) (* usdrate (:usd client))) (* (if (= 0.0 seclastrubprice) 1.0 seclastrubprice) (if isbond (* multiple 0.01 nominal 0.001) 1.0))))
 
- :maxrubshares (long (/ (if (> (- (:rub client) margin)  (- seclimitinrub calcusedlimit)) (- seclimitinrub calcusedlimit) (- (:rub client) margin)) (* (if (= 0.0 seclastrubprice) 1.0 seclastrubprice) (if isbond (* multiple 0.01) 1.0))))
+ :maxrubshares (long (/ (if (> (- (:rub client) margin)  (- seclimitinrub calcusedlimit)) (- seclimitinrub calcusedlimit) (- (:rub client) margin)) (* (if (= 0.0 seclastrubprice) 1.0 seclastrubprice) (if isbond (* multiple 0.01 nominal 0.001) 1.0))))
 
- :maxeurshares (long (/ (if (> (* eurrate (:eur client))  (- seclimitinrub calcusedlimit)) (- seclimitinrub calcusedlimit) (* eurrate (:eur client))) (* (if (= 0.0 seclastrubprice) 1.0 seclastrubprice) (if isbond (* multiple 0.01) 1.0))))
+ :maxeurshares (long (/ (if (> (* eurrate (:eur client))  (- seclimitinrub calcusedlimit)) (- seclimitinrub calcusedlimit) (* eurrate (:eur client))) (* (if (= 0.0 seclastrubprice) 1.0 seclastrubprice) (if isbond (* multiple 0.01 nominal 0.001) 1.0))))
 
- :maxgbpshares (long (/ (if (> (* gbprate (:gbp client))  (- seclimitinrub calcusedlimit)) (- seclimitinrub calcusedlimit) (* gbprate (:gbp client)))  (* (if (= 0.0 seclastrubprice) 1.0 seclastrubprice) (if isbond (* multiple 0.01) 1.0)))) 
+ :maxgbpshares (long (/ (if (> (* gbprate (:gbp client))  (- seclimitinrub calcusedlimit)) (- seclimitinrub calcusedlimit) (* gbprate (:gbp client)))  (* (if (= 0.0 seclastrubprice) 1.0 seclastrubprice) (if isbond (* multiple 0.01 nominal 0.001) 1.0)))) 
       }
       ))   clients)
     ]

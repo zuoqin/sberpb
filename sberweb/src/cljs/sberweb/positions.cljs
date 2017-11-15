@@ -516,54 +516,10 @@
             )
 
             ;; Yield
-            (dom/div {:className "col-xs-1 col-md-1" :style {:padding-left "0px" :padding-right "0px" :text-align "right" :font-size "18px"}}
-              ;; (sbercore/split-thousands 
-              ;;   (gstring/format "%.0f" (:sum (reduce (fn [x item] (let [
-
-              ;;     sec (first (filter (fn[x] (if (= (:id x) (:id item) ) true false)) (:securities @sbercore/app-state)))
-              ;;     seccur (:currency sec)
-
-              ;;     isrusbond (if (and (= 5 (:assettype sec))
-              ;;                        (= "RU" (subs (:isin sec) 0 2))
-              ;;                        )  true false)
-
-              ;;     isbond (if (and (= 5 (:assettype sec))
-              ;;                        ;(= "RU" (subs (:isin security) 0 2))
-              ;;                        )  true false)
-              ;;     ]
-              ;;     {:sum (+ (if (= isrusbond true) (/ (* 1000.0 (-  (:currubprice item) (:waprub item)) (:amount item))  100.0)  (if (= isbond true) (/ (* (-  (:currubprice item) (:waprub item)) (:amount item))  100.0)  (* (-  (:currubprice item) (:waprub item)) (:amount item)))) (:sum x))}  
-              ;;   )  ) {:sum 0.0} (:positions ((keyword (:selectedclient @sbercore/app-state)) @sbercore/app-state)  ) )))
-              ;; )
-            )
+            (dom/div {:className "col-xs-1 col-md-1" :style {:padding-left "0px" :padding-right "0px" :text-align "right" :font-size "18px"}})
 
             ;; Ex-div date
-            (dom/div {:className "col-xs-1 col-md-1" :style {:padding-left "0px" :padding-right "0px" :text-align "right" :font-size "18px"}}
-    ;; (sbercore/split-thousands 
-    ;;             (gstring/format "%.0f" (:sum (reduce (fn [x item] (let [
-
-    ;;               sec (first (filter (fn[x] (if (= (:id x) (:id item) ) true false)) (:securities @sbercore/app-state)))
-    ;;               seccur (:currency sec)
-    ;;               isbond (if (= 5 (:assettype sec)) true false)
-    ;;               usdrate (:price (first (filter (fn [x] (if (= "USD" (:acode x)) true false)) (:securities @sbercore/app-state))))
-
-    ;;               fxrate (if (or (= "RUB" seccur) (= "RUR" seccur)) 1 (:price  (first (filter (fn[x] (if( = (:acode x) (if (= seccur "GBX") "GBP" seccur)) true false)) (:securities @sbercore/app-state)))))
-    ;;               newfxrate (if (= 0 (compare "GBX" seccur)) (/ fxrate 100.) fxrate)
-    ;;               isrusbond (if (and (= 5 (:assettype sec))
-    ;;                                  (= "RU" (subs (:isin sec) 0 2))
-    ;;                                  )  true false)
-
-    ;;               isbond (if (and (= 5 (:assettype sec))
-    ;;                                  ;(= "RU" (subs (:isin security) 0 2))
-    ;;                                  )  true false)
-    ;;               ]
-    ;;               {:sum (+ (/ (* (if (= isrusbond true) 1000.0 1.0) (-  (:price item) (:wap item))  (:amount item) newfxrate) (* usdrate (if (= isbond true) 100.0 1.0)) )  (:sum x))}
-    ;;             )  ) {:sum 0.0} (:positions ((keyword (:selectedclient @sbercore/app-state)) @sbercore/app-state)  ) )))
-    ;;           )
-
-              ;; (sbercore/split-thousands
-              ;;  (gstring/format "%.0f" (:usdvalue (reduce (fn [x y] {:usdvalue (+ (:usdvalue x) (:usdvalue y))} ) (:positions ((keyword (:selectedclient @sbercore/app-state)) @sbercore/app-state)  )  ) ) )
-              ;; )
-            )
+            (dom/div {:className "col-xs-1 col-md-1" :style {:padding-left "0px" :padding-right "0px" :text-align "right" :font-size "18px"}})
           )
         )
       )
@@ -648,54 +604,10 @@
             )
 
             ;; Yield
-            (dom/div {:className "col-xs-1 col-md-1" :style {:padding-left "0px" :padding-right "0px" :text-align "right" :font-size "18px"}}
-              ;; (sbercore/split-thousands 
-              ;;   (gstring/format "%.0f" (:sum (reduce (fn [x item] (let [
-
-              ;;     sec (first (filter (fn[x] (if (= (:id x) (:id item) ) true false)) (:securities @sbercore/app-state)))
-              ;;     seccur (:currency sec)
-
-              ;;     isrusbond (if (and (= 5 (:assettype sec))
-              ;;                        (= "RU" (subs (:isin sec) 0 2))
-              ;;                        )  true false)
-
-              ;;     isbond (if (and (= 5 (:assettype sec))
-              ;;                        ;(= "RU" (subs (:isin security) 0 2))
-              ;;                        )  true false)
-              ;;     ]
-              ;;     {:sum (+ (if (= isrusbond true) (/ (* 1000.0 (-  (:currubprice item) (:waprub item)) (:amount item))  100.0)  (if (= isbond true) (/ (* (-  (:currubprice item) (:waprub item)) (:amount item))  100.0)  (* (-  (:currubprice item) (:waprub item)) (:amount item)))) (:sum x))}  
-              ;;   )  ) {:sum 0.0} (:positions ((keyword (:selectedclient @sbercore/app-state)) @sbercore/app-state)  ) )))
-              ;; )
-            )
+            (dom/div {:className "col-xs-1 col-md-1" :style {:padding-left "0px" :padding-right "0px" :text-align "right" :font-size "18px"}})
 
             ;; Ex-div date
-            (dom/div {:className "col-xs-1 col-md-1" :style {:padding-left "0px" :padding-right "0px" :text-align "right" :font-size "18px"}}
-    ;; (sbercore/split-thousands 
-    ;;             (gstring/format "%.0f" (:sum (reduce (fn [x item] (let [
-
-    ;;               sec (first (filter (fn[x] (if (= (:id x) (:id item) ) true false)) (:securities @sbercore/app-state)))
-    ;;               seccur (:currency sec)
-    ;;               isbond (if (= 5 (:assettype sec)) true false)
-    ;;               usdrate (:price (first (filter (fn [x] (if (= "USD" (:acode x)) true false)) (:securities @sbercore/app-state))))
-
-    ;;               fxrate (if (or (= "RUB" seccur) (= "RUR" seccur)) 1 (:price  (first (filter (fn[x] (if( = (:acode x) (if (= seccur "GBX") "GBP" seccur)) true false)) (:securities @sbercore/app-state)))))
-    ;;               newfxrate (if (= 0 (compare "GBX" seccur)) (/ fxrate 100.) fxrate)
-    ;;               isrusbond (if (and (= 5 (:assettype sec))
-    ;;                                  (= "RU" (subs (:isin sec) 0 2))
-    ;;                                  )  true false)
-
-    ;;               isbond (if (and (= 5 (:assettype sec))
-    ;;                                  ;(= "RU" (subs (:isin security) 0 2))
-    ;;                                  )  true false)
-    ;;               ]
-    ;;               {:sum (+ (/ (* (if (= isrusbond true) 1000.0 1.0) (-  (:price item) (:wap item))  (:amount item) newfxrate) (* usdrate (if (= isbond true) 100.0 1.0)) )  (:sum x))}
-    ;;             )  ) {:sum 0.0} (:positions ((keyword (:selectedclient @sbercore/app-state)) @sbercore/app-state)  ) )))
-    ;;           )
-
-              ;; (sbercore/split-thousands
-              ;;  (gstring/format "%.0f" (:usdvalue (reduce (fn [x y] {:usdvalue (+ (:usdvalue x) (:usdvalue y))} ) (:positions ((keyword (:selectedclient @sbercore/app-state)) @sbercore/app-state)  )  ) ) )
-              ;; )
-            )
+            (dom/div {:className "col-xs-1 col-md-1" :style {:padding-left "0px" :padding-right "0px" :text-align "right" :font-size "18px"}})
           )
         )
       )
@@ -985,6 +897,7 @@
                 client (first (filter (fn [x] (if (= (:selectedclient @sbercore/app-state) (:code x)) true false)) (:clients @sbercore/app-state)))
                 seccur (:currency sec)
                 multiple (:multiple sec)
+                nominal (:nominal sec)
                 isbond (if (= 5 (:assettype sec)) true false)
 
                 usdrate (:price (first (filter (fn [x] (if (= "USD" (:acode x)) true false)) (:securities @sbercore/app-state))))
@@ -993,7 +906,7 @@
 
                 ;;isrusbond (if (and (= 5 (:assettype sec)) (= "RUB" (:currency sec)))  true false)
 
-                usdcosts (* 0.01 (:multiple sec) (:amount item) (:wapusd item))
+                usdcosts (* 0.01 (:multiple sec) (:nominal sec) 0.001 (:amount item) (:wapusd item))
 
                 ;tr1 (if (= false isrusbond) (println (str (:acode sec) " не российский бонд: "  " costs: " usdcosts " usdvalue: " (:usdvalue item)  " wapusd: " (:wapusd item) )))
                 isbond (if (and (= 5 (:assettype sec)))  true false)
@@ -1117,7 +1030,7 @@
               ;; USD RUB P/L
               (dom/div {:className "hidden-xs col-md-1" :style {:padding-left "0px" :padding-right "0px" :padding-top "5px"}}                
                 (dom/div {:className "col-md-6" :style {:padding-left "0px" :padding-right "0px" }}
-                  (dom/span {:style {:position "absolute" :padding-right "5px" :text-align "right" :display "block" :width "100%" :background-color (if (> (:currubprice item) (:waprub item)) "lightgreen" "lightpink") :white-space "nowrap" }} (sbercore/split-thousands (str (.round js/Math  (/ (* multiple (-  (:currubprice item) (:waprub item)) (:amount item))  100.0)))))
+                  (dom/span {:style {:position "absolute" :padding-right "5px" :text-align "right" :display "block" :width "100%" :background-color (if (> (:currubprice item) (:waprub item)) "lightgreen" "lightpink") :white-space "nowrap" }} (sbercore/split-thousands (str (.round js/Math  (/ (* multiple nominal 0.001 (-  (:currubprice item) (:waprub item)) (:amount item)) 100.0)))))
                 )
                 (dom/div {:className "col-md-6" :style {:padding-left "0px" :padding-right "0px"}}
                   (dom/div 
@@ -1203,7 +1116,7 @@
                 ;;tr1 (.log js/console (str "amount= " (:amount item) " multiple= " (:multiple sec) " priceitem= " (:price item) " pricesec= " (:price sec))) 
                 newfxrate (if (= 0 (compare "GBX" seccur)) (/ fxrate 100.) fxrate)
 
-                usdprofit (if (= "USD" seccur) (* (:amount item) (:multiple sec) (- (:price item) (:wapusd item)))      (if (= "RUB" seccur) (/ (* (:amount item) (:multiple sec) (- (:currubprice item) (:waprub item))) usdrate) -7777777.777))
+                usdprofit (if (= "USD" seccur) (* (:amount item) (:multiple sec)  (- (:price item) (:wapusd item)))      (if (= "RUB" seccur) (/ (* (:amount item) (:multiple sec) (- (:currubprice item) (:waprub item))) usdrate) -7777777.777))
 
                 rubprofit (if (= "USD" seccur) (* (:amount item) (:multiple sec) (- (:price item) (:wapusd item)) usdrate)   (if (= "RUB" seccur) (* (:amount item) (:multiple sec) (- (:currubprice item) (:waprub item))) -7777777.777))
             ]
@@ -1308,9 +1221,8 @@
   (let [sec (first (filter (fn[x] (if (= (:id x) (:security item) ) true false)) (:securities @sbercore/app-state)))
         ;isrusbond (if (and (= 5 (:assettype sec)) (= "RUB" (:currency sec)))  true false)
         multiple (:multiple sec)
-        isbond (if (and (= 5 (:assettype sec))
-                                        ;(= "RU" (subs (:isin security) 0 2))
-                        )  true false)
+        nominal (:nominal sec)
+        isbond (if (and (= 5 (:assettype sec)))  true false)
         ;tr1 (.log js/console (str "showtranitem: " item))
         ]
     (dom/div {:className "row tablerow" :style {:margin-left "0px" :margin-right "0px"}}
@@ -1357,7 +1269,7 @@
       ;; Стоимость в валюте бумаги
       (dom/div {:className "hidden-xs col-md-2" :style {:padding-left "0px" :padding-right "0px"}}
         (dom/a {:className "list-group-item" :style {:background "transparent"} :href (str  "#/postrans/" (:id (first (filter (fn [x] (if (= (compare (:code x) (:selectedclient @sbercore/app-state)) 0) true false)) (:clients @sbercore/app-state)))) "/" (:id sec))}
-          (dom/h4 {:className "list-group-item-heading" :style {:text-align "right" :white-space "nowrap"}} (sbercore/split-thousands (gstring/format "%.0f"  (* (:multiple sec) (:nominal item) (:wap item) (if (= true isbond) 0.01 1.0)))))
+          (dom/h4 {:className "list-group-item-heading" :style {:text-align "right" :white-space "nowrap"}} (sbercore/split-thousands (gstring/format "%.0f"  (* (:multiple sec) (:nominal sec) 0.001 (:nominal item) (:wap item) (if (= true isbond) 0.01 1.0)))))
         )
       )
 
@@ -1365,14 +1277,14 @@
       ;; Стоимость в долларах США
       (dom/div {:className "col-xs-2 col-md-2" :style {:padding-left "0px" :padding-right "0px"}}
         (dom/a {:className "list-group-item" :style {:background "transparent"} :href (str  "#/postrans/" (:id (first (filter (fn [x] (if (= (compare (:code x) (:selectedclient @sbercore/app-state)) 0) true false)) (:clients @sbercore/app-state)))) "/" (:id sec))}
-          (dom/h4 {:className "list-group-item-heading" :style {:text-align "right" :white-space "nowrap"}} (sbercore/split-thousands (gstring/format "%.0f" (* (:multiple sec) (:nominal item) (:wapusd item) (if (= true isbond) 0.01 1.0)))))
+          (dom/h4 {:className "list-group-item-heading" :style {:text-align "right" :white-space "nowrap"}} (sbercore/split-thousands (gstring/format "%.0f" (* (:multiple sec) (:nominal sec) 0.001 (:nominal item) (:wapusd item) (if (= true isbond) 0.01 1.0)))))
         )
       )
 
       ;; Стоимость в рублях РФ
       (dom/div {:className "col-xs-2 col-md-2" :style {:padding-left "0px" :padding-right "0px"}}
         (dom/a {:className "list-group-item" :style {:background "transparent"} :href (str  "#/postrans/" (:id (first (filter (fn [x] (if (= (compare (:code x) (:selectedclient @sbercore/app-state)) 0) true false)) (:clients @sbercore/app-state)))) "/" (:id sec)) }
-          (dom/h4 {:className "list-group-item-heading" :style {:text-align "right" :white-space "nowrap"}} (sbercore/split-thousands (gstring/format "%.0f" (* (:multiple sec) (:nominal item) (:waprub item) (if (= true isbond) 0.01 1.0)))))
+          (dom/h4 {:className "list-group-item-heading" :style {:text-align "right" :white-space "nowrap"}} (sbercore/split-thousands (gstring/format "%.0f" (* (:multiple sec) (:nominal sec) 0.001 (:nominal item) (:waprub item) (if (= true isbond) 0.01 1.0)))))
         )
       )
 
