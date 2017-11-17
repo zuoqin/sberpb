@@ -958,9 +958,10 @@
           newprevsec (update newprevsec :type (fn [x] (if (and (= isin (:isin prevsec)) (= dateval (:date prevsec)) (= newtype (:type prevsec))) (if (> tranamnt 0) (if (> newamnt 0) "BUY LONG" "BUY TO COVER") (if (< newamnt 0) "SELL SHORT" "SELL LONG")) (if (> tranamnt 0) (if (> newamnt 0) "BUY LONG" "BUY TO COVER") (if (< newamnt 0) "SELL SHORT" "SELL LONG")))))
 
           
-          ;tr1 (if (= isin "GB0032360173") (println (str "price= " (:price tran) "fullprice=" (:price tran) " fx=" (:fx tran)) )) 
+          ;tr1 (println (str "isin " isin "previsin=" (:isin prevsec) " newtype=" newtype " prevtype=" (:type prevsec) " dateval=" dateval " prevdate=") (:date prevsec) " assettype=" assettype)
+
       ]
-      (recur (if (or (= assettype 10) (and (= isin (:isin prevsec)) (= newtype (:type prevsec)) (= dateval (:date prevsec)))) result (if (= (:assettype prevsec) 10) result (conj result {:portfolio client :isin (:isin prevsec) :bcode (:bcode prevsec) :quantity (abs (:amount prevsec)) :price (:price prevsec) :date (:date prevsec) :type (:type prevsec)}))) (assoc-in amounts [(keyword (:acode sec)) ] {:amount newamnt} ) (rest trans) tran newprevsec)
+      (recur (if (or (= (:assettype prevsec) 10) (and (= isin (:isin prevsec)) (= newtype (:type prevsec)) (= dateval (:date prevsec)))) result (conj result {:portfolio client :isin (:isin prevsec) :bcode (:bcode prevsec) :quantity (abs (:amount prevsec)) :price (:price prevsec) :date (:date prevsec) :type (:type prevsec)})) (assoc-in amounts [(keyword (:acode sec)) ] {:amount newamnt} ) (rest trans) tran newprevsec)
       )
       (if (or (= (:assettype prevsec) 10)) result (conj result {:portfolio client :isin (:isin prevsec) :bcode (:bcode prevsec) :quantity (abs (:amount prevsec)) :price (:price prevsec) :date (:date prevsec) :type (:type prevsec)})))
     )

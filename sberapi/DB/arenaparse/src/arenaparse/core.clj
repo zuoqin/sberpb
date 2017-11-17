@@ -500,8 +500,10 @@
 )
 
 (defn parse [s]
-   (clojure.xml/parse
-     (java.io.ByteArrayInputStream. (.getBytes s))))
+  (clojure.xml/parse 
+    (java.io.ByteArrayInputStream. (.getBytes s "UTF-8"))
+  )
+)
 
 
 (defn get-isin-by-seccode [code]
@@ -1886,8 +1888,8 @@
 
 (defn recent-deals-to-db []
   (let [
-    ;files ["03" "04" "05" "06" "07" "08" "09-0" "09-1" "09-2" "09-3" "10-1"]
-    files ["11-1"]
+    files ["03" "04" "05" "06" "07" "08" "09-0" "09-1" "09-2" "09-3" "10-1"]
+    ;files ["11-1"]
     trans (doall (map (fn [x] (recent-deals-to-db-by-num x))  files )) 
     ]
     ;(count secs)
