@@ -309,7 +309,7 @@
                    )  true false)
     newfxrate (if (= 0 (compare "GBX" (:currency security))) (/ fxrate 100.) fxrate)
 
-    result {:id secid :currency (:currency security) :amount (:amount (nth position 1)) :wap posprice :price price :waprub (:rubprice (nth position 1)) :currubprice (* price newfxrate) :wapusd (:wapusd (nth position 1)) :usdvalue (/ (* (:amount (nth position 1)) (:price security)  (if (= isbond true) (* newfxrate (:multiple security) (:nominal security) 0.001 0.01) newfxrate )  ) usdrate) :posvalue (/ (* (:amount (nth position 1)) (:price security) (:multiple security) (:nominal security) 0.001 newfxrate (if (= isbond true) 0.01 1.0) ) clientcurrencyrate) 
+    result {:id secid :currency (:currency security) :amount (:amount (nth position 1)) :wap posprice :price price :waprub (:rubprice (nth position 1)) :currubprice (* price newfxrate) :wapusd (:wapusd (nth position 1)) :usdvalue (/ (* (:amount (nth position 1)) (:price security)  (if (= isbond true) (* newfxrate (:multiple security) (:nominal security) 0.001 0.01) newfxrate)) usdrate) :posvalue (/ (* (:amount (nth position 1)) (:price security) (:multiple security) (:nominal security) newfxrate (if (= isbond true) 0.00001 1.0) ) clientcurrencyrate) 
      }
 
     ]
@@ -341,7 +341,7 @@
                    ;(= "RU" (subs (:isin security) 0 2))
                    )  true false)
 
-    result {:id (:id portfolio) :amount (:amount (nth item 1) ) :wapcur (:price (nth item 1) ) :wapusd (:wapusd (nth item 1) ) :waprub (:rubprice (nth item 1) ) :currubprice (* price newfxrate) :usdvalue (/ (* (:amount (nth item 1)) (:price security)  (if (= isbond true) (* newfxrate 0.01 (:multiple security) (:nominal security) 0.001) newfxrate)) usdrate) :share (:share (nth item 1)) }
+    result {:id (:id portfolio) :amount (:amount (nth item 1) ) :wapcur (:price (nth item 1) ) :wapusd (:wapusd (nth item 1) ) :waprub (:rubprice (nth item 1) ) :currubprice (* price newfxrate) :usdvalue (/ (* (:amount (nth item 1)) (:price security) (:nominal security) (if (= isbond true) (* newfxrate 0.01 (:multiple security) 0.001) newfxrate)) usdrate) :share (:share (nth item 1)) }
 
     ]
     result
@@ -434,7 +434,7 @@
                    )  true false)
     newfxrate (if (= 0 (compare "GBX" (:currency security))) (/ fxrate 100.) fxrate)
 
-    result {:id secid :currency (:currency security) :amount (:amount position) :wap posprice :price price :waprub (:waprub position) :currubprice (* price newfxrate) :wapusd (:wapusd position) :usdvalue (/ (* (:amount position) (:price security)  (if (= isbond true) (* newfxrate (:multiple security) (:nominal security) 0.001 0.01 ) newfxrate )  ) usdrate) :posvalue (/ (* (:amount position) (:price security)  (if (= isbond true) (* newfxrate 0.01 (:multiple security) (:nominal security) 0.001) newfxrate )  ) clientcurrencyrate) }
+    result {:id secid :currency (:currency security) :amount (:amount position) :wap posprice :price price :waprub (:waprub position) :currubprice (* price newfxrate) :wapusd (:wapusd position) :usdvalue (/ (* (:amount position) (:nominal security) (:price security) (if (= isbond true) (* newfxrate (:multiple security) 0.001 0.01 ) newfxrate )  ) usdrate) :posvalue (/ (* (:amount position) (:price security) (:nominal security) (if (= isbond true) (* newfxrate 0.01 (:multiple security) 0.001) newfxrate )  ) clientcurrencyrate) }
     ]
     result
   )

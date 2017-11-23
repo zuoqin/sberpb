@@ -216,8 +216,8 @@
           borrowings (do (if (nil? (:selectedclient @data)) 0.0 (/ (+ (* (usdrate) usdcash) (* (eurrate) eurcash) (* (gbprate) gbpcash) rubcash) (clientcurrencyrate))))
 
 
-          futures (if (nil? (:selectedclient @data)) 0.0 (:posvalue (reduce (fn [x y] (let [;tr1 (.log js/console (str "x=" x " y=" y))
-           ] {:posvalue (+ (if (< (:posvalue y) 0.0) (- 0.0 (:posvalue y)) (:posvalue y)) (:posvalue x))})  ) (filter (fn [x] (if (and (= 1 1) (or (= (:assettype (first (filter (fn [z] (if (= (:id z) (:id x)) true false)) (:securities @sbercore/app-state)))) 15)) )  true false)) (:positions ((keyword (:selectedclient @data)) @data))))))
+          futures (abs (if (nil? (:selectedclient @data)) 0.0 (:posvalue (reduce (fn [x y] (let [ ;tr1 (.log js/console (str "x=" x " y=" y))
+                                                                                               ] {:posvalue (+ (if (< (:posvalue y) 0.0) (- 0.0 (:posvalue y)) (:posvalue y)) (:posvalue x))})  ) (filter (fn [x] (if (and (= 1 1) (or (= (:assettype (first (filter (fn [z] (if (= (:id z) (:id x)) true false)) (:securities @sbercore/app-state)))) 15)) )  true false)) (:positions ((keyword (:selectedclient @data)) @data)))))))
 
           portfvalue (sbercore/calc_portfvalue)
 
@@ -1269,7 +1269,7 @@
       ;; Стоимость в валюте бумаги
       (dom/div {:className "hidden-xs col-md-2" :style {:padding-left "0px" :padding-right "0px"}}
         (dom/a {:className "list-group-item" :style {:background "transparent"} :href (str  "#/postrans/" (:id (first (filter (fn [x] (if (= (compare (:code x) (:selectedclient @sbercore/app-state)) 0) true false)) (:clients @sbercore/app-state)))) "/" (:id sec))}
-          (dom/h4 {:className "list-group-item-heading" :style {:text-align "right" :white-space "nowrap"}} (sbercore/split-thousands (gstring/format "%.0f"  (* (:multiple sec) (:nominal sec) 0.001 (:nominal item) (:wap item) (if (= true isbond) 0.01 1.0)))))
+          (dom/h4 {:className "list-group-item-heading" :style {:text-align "right" :white-space "nowrap"}} (sbercore/split-thousands (gstring/format "%.0f"  (* (:multiple sec) (:nominal sec) (:nominal item) (:wap item) (if (= true isbond) 0.00001 1.0)))))
         )
       )
 
@@ -1277,14 +1277,14 @@
       ;; Стоимость в долларах США
       (dom/div {:className "col-xs-2 col-md-2" :style {:padding-left "0px" :padding-right "0px"}}
         (dom/a {:className "list-group-item" :style {:background "transparent"} :href (str  "#/postrans/" (:id (first (filter (fn [x] (if (= (compare (:code x) (:selectedclient @sbercore/app-state)) 0) true false)) (:clients @sbercore/app-state)))) "/" (:id sec))}
-          (dom/h4 {:className "list-group-item-heading" :style {:text-align "right" :white-space "nowrap"}} (sbercore/split-thousands (gstring/format "%.0f" (* (:multiple sec) (:nominal sec) 0.001 (:nominal item) (:wapusd item) (if (= true isbond) 0.01 1.0)))))
+          (dom/h4 {:className "list-group-item-heading" :style {:text-align "right" :white-space "nowrap"}} (sbercore/split-thousands (gstring/format "%.0f" (* (:multiple sec) (:nominal sec) (:nominal item) (:wapusd item) (if (= true isbond) 0.00001 1.0)))))
         )
       )
 
       ;; Стоимость в рублях РФ
       (dom/div {:className "col-xs-2 col-md-2" :style {:padding-left "0px" :padding-right "0px"}}
         (dom/a {:className "list-group-item" :style {:background "transparent"} :href (str  "#/postrans/" (:id (first (filter (fn [x] (if (= (compare (:code x) (:selectedclient @sbercore/app-state)) 0) true false)) (:clients @sbercore/app-state)))) "/" (:id sec)) }
-          (dom/h4 {:className "list-group-item-heading" :style {:text-align "right" :white-space "nowrap"}} (sbercore/split-thousands (gstring/format "%.0f" (* (:multiple sec) (:nominal sec) 0.001 (:nominal item) (:waprub item) (if (= true isbond) 0.01 1.0)))))
+          (dom/h4 {:className "list-group-item-heading" :style {:text-align "right" :white-space "nowrap"}} (sbercore/split-thousands (gstring/format "%.0f" (* (:multiple sec) (:nominal sec) (:nominal item) (:waprub item) (if (= true isbond) 0.00001 1.0)))))
         )
       )
 

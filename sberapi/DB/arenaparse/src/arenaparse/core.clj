@@ -217,7 +217,11 @@
   (let [
      conn (d/connect uri)
      ]
-    (d/transact-async conn [{ :security/acode "EURONAT19U", :security/isin "XS1631530257", :security/bcode "XS1631530257 Corp", :security/assettype 5, :security/multiple 1.0, :security/name "Structured Note of Natixis Structured Issuance SA", :security/currency "USD", :db/id #db/id[:db.part/user -100809] }
+    (d/transact-async conn [{ :security/acode "EURONAT20FA", :security/isin "XS1631529838", :security/bcode "XS1631529838 Corp", :security/assettype 5, :security/nominal 1000.0, :security/multiple 1.0, :security/name "", :security/currency "USD", :db/id #db/id[:db.part/user -100812] }
+
+{ :security/acode "MACYS23", :security/isin "US55616XAH08", :security/bcode "US55616XAH08 Corp", :security/assettype 5, :security/nominal 1000.0, :security/multiple 1.0, :security/name "Macys Retail Holdings 2,875% 2/2023", :security/currency "USD", :db/id #db/id[:db.part/user -100813] }
+
+{ :security/acode "XRTUS", :security/isin "US78464A7147", :security/bcode "XRT US Equity", :security/assettype 1, :security/nominal 1.0, :security/multiple 1.0, :security/name "SPDR S&P Retail ETF", :security/currency "USD", :db/id #db/id[:db.part/user -100814] }
 ]
     )
     ; To insert new entity:
@@ -353,7 +357,7 @@
 
 (defn security-to-map [security]
   (let [
-    newsec {:id (nth security 0) :acode (nth security 1) :exchange (nth security 2) :isin (nth security 3) :currency (nth security 4) :bcode (nth security 5) :assettype (nth security 6) :multiple (nth security 7)}
+    newsec {:id (nth security 0) :acode (nth security 1) :exchange (nth security 2) :isin (nth security 3) :currency (nth security 4) :bcode (nth security 5) :assettype (nth security 6) :multiple (nth security 7) :nominal (nth security 8)}
         
   ]
 
@@ -392,7 +396,7 @@
 (defn get-securities []
   (let [
         conn (d/connect uri)
-        securities (d/q '[:find ?e ?a ?x ?i ?currency ?bcode ?assettype ?m
+        securities (d/q '[:find ?e ?a ?x ?i ?currency ?bcode ?assettype ?m ?n
                           :where
                           [?e :security/acode]
                           [?e :security/acode ?a]
@@ -402,6 +406,7 @@
                           (or [?e :security/bcode ?bcode] [?e :security/bcode ?bcode])                          
                           [?e :security/assettype ?assettype]
                           [(get-else $ ?e :security/multiple 1) ?m]
+                          [(get-else $ ?e :security/nominal 1000) ?n]
                           ]
                         (d/db conn)) 
 
@@ -1888,8 +1893,8 @@
 
 (defn recent-deals-to-db []
   (let [
-    files ["03" "04" "05" "06" "07" "08" "09-0" "09-1" "09-2" "09-3" "10-1"]
-    ;files ["11-1"]
+    ;files ["03" "04" "05" "06" "07" "08" "09-0" "09-1" "09-2" "09-3" "10-1"]
+    files ["11-1"]
     trans (doall (map (fn [x] (recent-deals-to-db-by-num x))  files )) 
     ]
     ;(count secs)
@@ -1991,8 +1996,10 @@
 (defn export-securities []
   (let [
     secs (filter (fn [x] (if (or (= 1 1) (= 5 (:assettype x))) true false)) (get-securities))
+
+    tr1 (println (first secs))
     ]
-    (save-xls ["sheet1" (dataset [:acode :bcode :isin :assettype :multiple :currency] secs)] (str drive ":/DEV/Java/" "securiites.xlsx") )
+    (save-xls ["sheet1" (dataset [:acode :bcode :isin :assettype :multiple :currency :nominal] secs)] (str drive ":/DEV/Java/" "securiites.xlsx") )
   )
 )
 
