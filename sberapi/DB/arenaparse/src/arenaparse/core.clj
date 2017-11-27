@@ -217,11 +217,7 @@
   (let [
      conn (d/connect uri)
      ]
-    (d/transact-async conn [{ :security/acode "EURONAT20FA", :security/isin "XS1631529838", :security/bcode "XS1631529838 Corp", :security/assettype 5, :security/nominal 1000.0, :security/multiple 1.0, :security/name "", :security/currency "USD", :db/id #db/id[:db.part/user -100812] }
-
-{ :security/acode "MACYS23", :security/isin "US55616XAH08", :security/bcode "US55616XAH08 Corp", :security/assettype 5, :security/nominal 1000.0, :security/multiple 1.0, :security/name "Macys Retail Holdings 2,875% 2/2023", :security/currency "USD", :db/id #db/id[:db.part/user -100813] }
-
-{ :security/acode "XRTUS", :security/isin "US78464A7147", :security/bcode "XRT US Equity", :security/assettype 1, :security/nominal 1.0, :security/multiple 1.0, :security/name "SPDR S&P Retail ETF", :security/currency "USD", :db/id #db/id[:db.part/user -100814] }
+    (d/transact-async conn [{ :security/acode "OILGAS27", :security/isin "US67778NAA63", :security/bcode "US67778NAA6 Corp", :security/assettype 5, :security/nominal 1000.0, :security/multiple 1.0, :security/name "Oil and Gas Holding Company, 7.5% 25oct2027", :security/currency "USD", :db/id #db/id[:db.part/user -100815] }
 ]
     )
     ; To insert new entity:
@@ -1191,7 +1187,7 @@
                     
                     tr1 (println (str client))
                     positions (sort (comp sort-positions-by-isin) (build-excel-positions client))
-                    newpositions (map (fn [x] {:client client :isin (name (first x)) :acode (get-secattr-by-isin (name (first x)) "acode") :nominal (:amount (second x)) :waprub (:waprub (second x)) :wapusd (:wapusd (second x))} ) positions)                    
+                    newpositions (map (fn [x] {:client client :isin (name (first x)) :acode (get-secattr-by-isin (name (first x)) "acode") :nominal (:amount (second x)) :waprub (:waprub (second x)) :wapusd (:wapusd (second x)) :wapcurr (:wapseccurr (second x))} ) positions)                    
                     ]
                 (recur (conj result newpositions) 
                      (rest clients))
@@ -1201,7 +1197,7 @@
     newpositions (sort (comp sort-portfs-to-excel) (flatten positions))
     ]
     ;
-    (save-xls ["sheet1" (dataset [:client :isin :acode :nominal :waprub :wapusd] newpositions)] "c:/DEV/Java/yyy.xlsx")
+    (save-xls ["sheet1" (dataset [:client :isin :acode :nominal :waprub :wapusd :wapcurr] newpositions)] "c:/DEV/Java/yyy.xlsx")
     "Success"
   )
 )

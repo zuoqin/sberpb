@@ -1473,7 +1473,7 @@
 
 { :security/acode "EURONAT19P", :security/isin "XS1581931083", :security/bcode "XS1581931083 Corp", :security/assettype 5, :security/nominal 1000.0, :security/multiple 1.0, :security/name "", :security/currency "USD", :db/id #db/id[:db.part/user -100729]}
 
-{ :security/acode "EFGIF_0219A", :security/isin "CH0374210356", :security/bcode "CH0374210356 Corp", :security/assettype 5, :security/nominal 1000.0, :security/multiple 1.0, :security/name "", :security/currency "USD", :db/id #db/id[:db.part/user -100730]}
+{ :security/acode "EFGIF_0219A", :security/isin "CH0374210356", :security/bcode "CH0374210356 Corp", :security/assettype 5, :security/nominal 1000.0, :security/multiple 1.0, :security/ismatured true, :security/currency "USD", :db/id #db/id[:db.part/user -100730]}
 
 { :security/acode "MOESKBO27", :security/isin "RU000A0JXJS0", :security/bcode "RU000A0JXJS0 Corp", :security/assettype 5, :security/nominal 1000.0, :security/multiple 1000.0, :security/name "", :security/currency "RUB", :db/id #db/id[:db.part/user -100731]}
 
@@ -1642,6 +1642,8 @@
 { :security/acode "MACYS23", :security/isin "US55616XAH08", :security/bcode "US55616XAH08 Corp", :security/assettype 5, :security/nominal 1000.0, :security/multiple 1.0, :security/name "Macys Retail Holdings 2,875% 2/2023", :security/currency "USD", :db/id #db/id[:db.part/user -100813] }
 
 { :security/acode "XRTUS", :security/isin "US78464A7147", :security/bcode "XRT US Equity", :security/assettype 1, :security/nominal 1.0, :security/multiple 1.0, :security/name "SPDR S&P Retail ETF", :security/currency "USD", :db/id #db/id[:db.part/user -100814] }
+
+{ :security/acode "OILGAS27", :security/isin "US67778NAA63", :security/bcode "US67778NAA6 Corp", :security/assettype 5, :security/nominal 1000.0, :security/multiple 1.0, :security/name "Oil and Gas Holding Company, 7.5% 25oct2027", :security/currency "USD", :db/id #db/id[:db.part/user -100815] }
 
 
 

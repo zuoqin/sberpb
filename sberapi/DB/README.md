@@ -20,7 +20,7 @@ Backup:
 bin\datomic backup-db "datomic:dev://localhost:4334/sberpb_dev" file:///C:/backup/20170410
 
 Restore:
-bin\datomic restore-db file:///C://backup//20170410 "datomic:dev://localhost:4334/sberpb_prod" 12290
+bin\datomic restore-db file:///C://backup//20171122base "datomic:dev://localhost:4334/sberpb_dev" 58377
 
 
 
