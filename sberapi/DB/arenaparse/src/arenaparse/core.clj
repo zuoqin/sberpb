@@ -217,7 +217,7 @@
   (let [
      conn (d/connect uri)
      ]
-    (d/transact-async conn [{ :security/acode "OILGAS27", :security/isin "US67778NAA63", :security/bcode "US67778NAA6 Corp", :security/assettype 5, :security/nominal 1000.0, :security/multiple 1.0, :security/name "Oil and Gas Holding Company, 7.5% 25oct2027", :security/currency "USD", :db/id #db/id[:db.part/user -100815] }
+    (d/transact-async conn [{ :security/acode "EELT", :security/assettype 1, :security/nominal 1.0, :security/isin "RU000A0JWW54", :security/bcode "VOW GY Equity", :security/name "Европейская электротехника, акция обыкновенная", :security/currency "RUB", :db/id #db/id[:db.part/user -100837] }
 ]
     )
     ; To insert new entity:
@@ -1889,8 +1889,8 @@
 
 (defn recent-deals-to-db []
   (let [
-    ;files ["03" "04" "05" "06" "07" "08" "09-0" "09-1" "09-2" "09-3" "10-1"]
-    files ["11-1"]
+    files ["03" "04" "05" "06" "07" "08" "09-0" "09-1" "09-2" "09-3" "10-1" "11-1" "11-2" "12-1"]
+    ;files [ "12-1"]
     trans (doall (map (fn [x] (recent-deals-to-db-by-num x))  files )) 
     ]
     ;(count secs)
@@ -1993,7 +1993,7 @@
   (let [
     secs (filter (fn [x] (if (or (= 1 1) (= 5 (:assettype x))) true false)) (get-securities))
 
-    tr1 (println (first secs))
+    ;tr1 (println (first secs))
     ]
     (save-xls ["sheet1" (dataset [:acode :bcode :isin :assettype :multiple :currency :nominal] secs)] (str drive ":/DEV/Java/" "securiites.xlsx") )
   )
