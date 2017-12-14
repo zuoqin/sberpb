@@ -126,6 +126,14 @@
   )
 )
 
+(defn comp-by-r2 [res1 res2]
+  (let [
+    ;tr1 (println (str "res1= " res1 "; res2=" res2))
+    ]
+    (if (> (:b res1) (:b res2)) true (if (and (= (:b res1) (:b res2)) (> (:profit res1) (:profit res2))) true false))
+  )
+)
+
 (defn loadexcel [filename]
   (let [
     ;data (to-map (read-xls "c:/data/Book3.xlsx"))
@@ -208,6 +216,53 @@
 
     ;tr1 (println (str "o0=" (first colo_main) "; count=" (count colo_main) "; last=" (nth colo_main (- (count colo_main) 1))))
 
+    colb_truncated (drop 63 (colb_main filename))
+    coli_truncated (drop 62 (coli_main filename))
+    res (loop [result [] p1 1.0 p2 3.5 p3 0.1 p4 1.0 p5 0.2 pass 1]
+           ;[result [] p1 3.0 p2 5.0 p3 0.1 p4 1.0 p5 0.2 pass 1]
+        (if (<= p1 3.01)
+          (if (<= p2 5.01)
+            (if (<= p3 1.51)
+              (if (<= p4 6.0)
+                (if (<= p5 4.1)
+                  (let [
+                      ;tr1 (if (< pass 60) (println (str "1. pass=" pass "; count=" (count result) "; p1=" p1 "; p2=" p2 "; p3=" p3 "; p4=" p4 "; p5=" p5)))
+                    ]
+                    (recur (conj result (calccase p1 p2 p3 p4 p5 colb_truncated coli_truncated colm_main coln_main colo_main coll_main)) p1 p2 p3 p4 (+ p5 0.2) (+ pass 1))
+                    ;(recur (conj result pass) p1 p2 p3 p4 (+ p5 0.2) (+ pass 1))
+                  )
+                  ;
+                  (let [
+                    ;tr1 (println (str (java.time.LocalDateTime/now)))
+                    ;tr1 (if (< pass 1000) (println (str "2. pass=" (- pass 1) "; count=" (count result) "; p1=" p1 "; p2=" p2 "; p3=" p3 "; p4=" p4 "; p5=" p5)))
+                    ]
+                    (recur result p1 p2 p3 (+ p4 1.0) 0.2 pass)
+                  )
+                  
+                )
+                (let [
+                  ;tr1 (println (str (java.time.LocalDateTime/now) " pass=" pass))
+                  ;tr1 (if (< pass 2000) (println (str "3. pass=" (- pass 1) "; count=" (count result))))
+                  ]
+                  (recur result p1 p2 (+ p3 0.1) 1.0 0.2 pass)
+                )
+                
+              )
+              (let [
+                  ;tr1 (if (< pass 6000) (println (str "4.pass=" (- pass 1) "; count=" (count result) "; p1=" p1 "; p2=" p2 "; p3=" p3 "; p4=" p4 "; p5=" p5)))
+                  tr1 (println (str (java.time.LocalDateTime/now) " pass=" (- pass 1)))
+                ]
+                (recur result p1 (+ p2 0.25) 0.1 1.0 0.2 pass)
+              )
+            )
+            (recur result (+ p1 0.2) 3.5 0.1 1.0 0.2 pass)
+          )
+
+          result
+        )
+      )
+    sorted_res (sort (comp comp-by-r2) res)
+    top_by_r2 (take ())
     ]
     
     ;(println (nth coll 0))
@@ -218,8 +273,11 @@
     ;(println (nth colk 295))
     ;(println (count coll))
     ;(println (count (coli_main filename)))
-
-    (calccase 2.0 3.5 0.2 3.0 1.0 (drop 63 (colb_main filename)) (drop 62 (coli_main filename)) colm_main coln_main colo_main coll_main)
+    
+    
+  
+    (println (str "count=" (count res) "1st=" (first sorted_res) ))
+    ;(calccase 2.0 3.5 0.2 3.0 1.0 (drop 63 (colb_main filename)) (drop 62 (coli_main filename)) colm_main coln_main colo_main coll_main)
   )
 )
 
@@ -273,9 +331,8 @@
       )
 
     ;tr1 (println (str "y0=" (first coly_main) "; count=" (count coly_main) "; last=" (nth coly_main (- (count coly_main) 1))))
-    colz_main (map (fn [x] 0.0) (range (count coln_main)))
 
-    colv_main (loop [colb colb_main coli (drop 1 coli_main) colm (drop 12 colm_main) colp colp_main colr [] cols [] colt [] colu [] colv [] coly coly_main colz [] colaa [] pass 0 previ 0.0 prevr 0.0 prevs 0.0 valv-1 0.0 valv-2 0.0 valv-3 0.0 prevz 0.0 prevaa 0.0 prevad 0.0 prevae 0.0]
+    colv_main (loop [colb colb_main coli (drop 1 coli_main) colm (drop 12 colm_main) colp colp_main colv [] coly coly_main pass 0 previ 0.0 prevr 0.0 prevs 0.0 valv-1 0.0 valv-2 0.0 valv-3 0.0 prevz 0.0 prevaa 0.0 prevad 0.0 prevae 0.0]
       (if (seq colp)
         (let [
 
@@ -377,7 +434,7 @@
 
           ;tr1 (if (< pass 50) (println (str pass ". b=" valb "; m=" valm "; r=" valr "; aa=" valaa "; s=" vals "; i=" vali "; v=" valv "; ae=" valae)))
           ]
-          (recur (rest colb) (rest coli) (rest colm) (rest colp) (conj colr valr) (conj cols vals) (conj colt valt) (conj colu valu) (conj colv valv) (rest coly) (conj colz valz) (conj colaa valaa) (+ pass 1) vali valr vals valv valv-1 valv-2  valz valaa valad valae)
+          (recur (rest colb) (rest coli) (rest colm) (rest colp) (conj colv valv) (rest coly) (+ pass 1) vali valr vals valv valv-1 valv-2  valz valaa valad valae)
         )
         
         colv
@@ -398,19 +455,25 @@
     ;tr1 (println (str "x_av=" x_av "; y_av=" y_av))
 
     ;tr1 (println (map (fn [x] (x - x_av)) (range n)))
-    coeff (/ (reduce + (map (fn [a b] (* a b)) (map (fn [x] (- x x_av)) (range n)) (map (fn [y] (- y y_av)) colv_main)))
+    ;; coeff (/ (reduce + (map (fn [a b] (* a b)) (map (fn [x] (- x x_av)) (range n)) (map (fn [y] (- y y_av)) colv_main)))
 
-      (reduce + (map (fn [x] (* (- x x_av) (- x x_av))) (range n)) )
-    )
+    ;;   (reduce + (map (fn [x] (* (- x x_av) (- x x_av))) (range n)) )
+    ;; )
 
-    b (/  (-  (* n (reduce + (map (fn [x y] (* x y)) (range n) colv_main))) (* sum_x sum_y)) (Math/sqrt (* (- (* n (reduce (fn [x  y] (+ x (* y y))) 0.0 (range n))) (* sum_x sum_x))  
+
+    denominator (Math/sqrt (* (- (* n (reduce (fn [x  y] (+ x (* y y))) 0.0 (range n))) (* sum_x sum_x))  
 
     (- (* n (reduce (fn [x  y] (+ x (* y y))) 0.0 colv_main)) (* sum_y sum_y))
 
-    )))
+    ))
+    b (if (> denominator 0.0) (/  (-  (* n (reduce + (map (fn [x y] (* x y)) (range n) colv_main))) (* sum_x sum_y)) denominator) 0.0) 
     ]
+    
     ;colv_main
-    {:b (* b b) :p (nth colv_main (- (count colv_main) 1)) }
+    {:b (* b b) :profit (nth colv_main (- (count colv_main) 1)) :p1 p1 :p2 p2 :p3 p3 :p4 p4 :p5 p5}
+
+   ;{:profit (nth colv_main (- (count colv_main) 1)) :p1 p1 :p2 p2 :p3 p3 :p4 p4 :p5 p5}
+  
   )
 )
 
