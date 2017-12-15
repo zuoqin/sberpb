@@ -1689,6 +1689,8 @@
 
 { :security/acode "EELT", :security/assettype 1, :security/nominal 1.0, :security/isin "RU000A0JWW54", :security/bcode "EELT RM Equity", :security/name "Европейская электротехника, акция обыкновенная", :security/currency "RUB", :db/id #db/id[:db.part/user -100837] }
 
+{ :security/acode "FNSRUS", :security/assettype 1, :security/nominal 1.0, :security/isin "US31787A5074", :security/bcode "FNSR US Equity", :security/name "FINISAR CORP, акция обыкновенная", :security/currency "USD", :db/id #db/id[:db.part/user -100838] }
+
 
 
 
