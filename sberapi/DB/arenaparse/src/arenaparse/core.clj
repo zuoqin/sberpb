@@ -217,7 +217,13 @@
   (let [
      conn (d/connect uri)
      ]
-    (d/transact-async conn [{ :security/acode "FNSRUS", :security/assettype 1, :security/nominal 1.0, :security/isin "US31787A5074", :security/bcode "FNSR US Equity", :security/name "FINISAR CORP, акция обыкновенная", :security/currency "USD", :db/id #db/id[:db.part/user -100838] }
+    (d/transact-async conn [{ :security/acode "ACRSUS", :security/assettype 1, :security/nominal 1.0, :security/isin "US00461U1051", :security/bcode "ACRS US Equity", :security/name "ACLARIS THERAPEUTICS INC, акция обыкновенная", :security/currency "USD", :db/id #db/id[:db.part/user -100839] }
+
+{ :security/acode "ALRPUS", :security/assettype 1, :security/nominal 1.0, :security/isin "US01877R1086", :security/bcode "ALRP US Equity", :security/name "ALLIANCE RESOURCE PARTNERS LP AKTIE, акция обыкновенная", :security/currency "USD", :db/id #db/id[:db.part/user -100840] }
+
+{ :security/acode "ITVLN", :security/assettype 1, :security/nominal 1.0, :security/isin "GB0033986497", :security/bcode "ITV LN Equity", :security/name "ITV AKTIE, акция обыкновенная", :security/currency "GBX", :db/id #db/id[:db.part/user -100841] }
+
+{ :security/acode "PNDORADC", :security/assettype 1, :security/nominal 1.0, :security/isin "DK0060252690", :security/bcode "PNDORA DC Equity", :security/name "PNDORA, Pandora, акция обыкновенная", :security/currency "NOK", :db/id #db/id[:db.part/user -100842] }
 ]
     )
     ; To insert new entity:
@@ -1889,8 +1895,8 @@
 
 (defn recent-deals-to-db []
   (let [
-    ;files ["03" "04" "05" "06" "07" "08" "09-0" "09-1" "09-2" "09-3" "10-1" "11-1" "11-2" "12-1"]
-    files [ "12-1"]
+    files ["03" "04" "05" "06" "07" "08" "09-0" "09-1" "09-2" "09-3" "10-1" "11-1" "11-2" "12-1"]
+    ;files [ "12-1"]
     trans (doall (map (fn [x] (recent-deals-to-db-by-num x))  files )) 
     ]
     ;(count secs)
